@@ -13,7 +13,7 @@ export default function StudentDashboard() {
       <main className="container" style={{ padding: '2rem', flex: 1 }}>
         <h2>Student Dashboard</h2>
         <p>List of enrolled subjects goes here.</p>
-        
+        <SubjectCard  />
         {/* Developer implementation for displaying SubjectCards goes here */}
         
       </main>
