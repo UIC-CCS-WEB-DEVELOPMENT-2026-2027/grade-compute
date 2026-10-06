@@ -1,0 +1,175 @@
+/* src/assets/index.css */
+
+/* =========================================
+   Typography (Local Fonts)
+   ========================================= */
+
+/* Heading Font: Khand (SemiBold) */
+@font-face {
+  font-family: 'Khand';
+  src: url('./Khand-SemiBold.ttf') format('truetype');
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
+}
+
+/* Body Font: General Sans (Regular) */
+@font-face {
+  font-family: 'General Sans';
+  src: url('./GeneralSans-Regular.otf') format('opentype');
+  font-weight: 400; /* Regular */
+  font-style: normal;
+}
+
+:root {
+  /* CompUGrade Design System Colors */
+  --color-primary: #406093;       /* Deep Blue: Main UI, headers, active states */
+  --color-accent: #4C8CE4;        /* Bright Blue: Student-reported inputs, self-generated tasks */
+  --color-warning: #FF7070;       /* Coral: System warnings, destructive actions */
+  --color-highlight: #FFF799;     /* Pale Yellow: Alert banners, pending verification states */
+  --color-text-locked: #2C2C2C;   /* Deep Navy: Official locked scores, standard text */
+  
+  /* Backgrounds & Neutrals */
+  --color-bg-main: #F4F7F9;       /* Light grayish-blue for the app background */
+  --color-surface: #FFFFFF;       /* White for cards, modals, and tables */
+  --color-border: #E2E8F0;        /* Light border color for dividers and standard inputs */
+  --color-muted: #64748B;         /* Muted text for helpers and effective multipliers */
+
+  /* Typography Variables */
+  --font-heading: 'Khand', sans-serif;
+  --font-body: 'General Sans', sans-serif;
+}
+
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body); /* Applied Body Font */
+  background-color: var(--color-bg-main);
+  color: var(--color-text-locked);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading); /* Applied Heading Font */
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* =========================================
+   Fluid Layout Utilities 
+   ========================================= */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Horizontal flex container that wraps automatically on small screens */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; 
+  gap: 1rem;
+}
+
+/* Vertical flex container */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* =========================================
+   Base UI Elements
+   ========================================= */
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+}
+
+.btn-warning {
+  background-color: var(--color-warning);
+  color: #FFFFFF;
+}
+
+input, select {
+  font-family: var(--font-body);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.5rem;
+  outline: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+input:focus, select:focus {
+  border-color: var(--color-primary);
+}
+
+/* =========================================
+   3-State Grading Specifics
+   ========================================= */
+
+/* State 1: Official Score (Locked Text) */
+.text-official {
+  color: var(--color-text-locked);
+  font-weight: 700;
+}
+
+/* State 2: Student-Reported Score (Input Box) */
+.input-self-reported {
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  background-color: #F0F6FF; /* Very subtle blue tint */
+  font-weight: 600;
+}
+
+.input-self-reported:focus {
+  box-shadow: 0 0 0 3px rgba(76, 140, 228, 0.2);
+}
+
+/* Alert Banners (e.g., Pending Verification) */
+.banner-pending {
+  background-color: var(--color-highlight);
+  color: var(--color-text-locked);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  border-left: 4px solid var(--color-warning);
+}
