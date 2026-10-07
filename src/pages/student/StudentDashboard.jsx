@@ -1,4 +1,7 @@
 // src/pages/student/StudentDashboard.jsx
+
+// Initializing student dashboard layout structure
+
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/shared/Sidebar';
 import SubjectCard from '../../components/student/SubjectCard';
