@@ -33,6 +33,7 @@
   --color-surface: #FFFFFF;       /* White for cards, modals, and tables */
   --color-border: #E2E8F0;        /* Light border color for dividers and standard inputs */
   --color-muted: #64748B;         /* Muted text for helpers and effective multipliers */
+  --color-bg-alt: #fff79a;     /* Yellow background for alternative */
 
   /* Typography Variables */
   --font-heading: 'Khand', sans-serif;
@@ -141,6 +142,32 @@ input, select {
 input:focus, select:focus {
   border-color: var(--color-primary);
 }
+
+/* =========================================
+   Base Containers
+   ========================================= */
+
+.sidebar {
+   width: 250px;
+   border-right: 1px solid var(--color-border);
+   background-color: var(--color-bg-alt);
+   padding: 1rem 1rem;
+   min-height: 100vh;
+}
+
+.sidebar-link {
+   padding: 0.5rem;
+    gap: 1rem;
+    font: var(--font-body);
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.sidebar-link:hover {
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+}
+
 
 /* =========================================
    3-State Grading Specifics
