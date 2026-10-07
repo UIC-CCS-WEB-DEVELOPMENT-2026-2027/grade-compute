@@ -89,13 +89,13 @@ export default function LoginRegister() {
         {/* Logo */}
         <div className="login-brand-header">
           <div className="login-brand-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
               <path d="M6 6h10"></path>
               <path d="M6 10h10"></path>
             </svg>
           </div>
-          <span className="login-brand-name">CompUGrade.</span>
+          <span className="login-brand-name">CompUGrade<span className="login-brand-dot">.</span></span>
         </div>
 
         {/* Main Pitch */}
@@ -108,47 +108,81 @@ export default function LoginRegister() {
 
           {/* Floating Target Preview Graphic */}
           <div className="login-preview-card-container">
-            {/* Sparkle Decorations */}
-            <svg className="sparkle-icon sparkle-1" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            {/* Cheerful Sparkle Accents */}
+            <svg className="sparkle-icon sparkle-1" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"></path>
             </svg>
-            <svg className="sparkle-icon sparkle-2" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="sparkle-icon sparkle-2" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"></path>
+            </svg>
+            <svg className="sparkle-icon sparkle-3" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"></path>
             </svg>
 
             <div className="login-preview-card">
               <div className="preview-card-header">
-                <div>
-                  <div className="preview-card-tag">You're Very On Track</div>
-                  <p className="preview-card-subtitle">A plan for your Q1 target</p>
+                <div className="preview-header-left">
+                  <div className="preview-header-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                      <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="preview-card-tag">You're Very On Track</div>
+                    <p className="preview-card-subtitle">A plan for your Q1 target</p>
+                  </div>
                 </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-muted)" strokeWidth="2">
-                  <line x1="7" y1="17" x2="17" y2="7"></line>
-                  <polyline points="7 7 17 7 17 17"></polyline>
-                </svg>
+                <div className="preview-card-action" title="View details">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </div>
               </div>
 
               <div className="preview-target-row">
-                <span className="preview-target-label">My grade target</span>
+                <div className="preview-target-meta">
+                  <span className="preview-target-label">My grade target</span>
+                  <span className="preview-status-chip">
+                    <span className="status-dot"></span> On Track
+                  </span>
+                </div>
                 <span className="preview-target-value">90%</span>
               </div>
 
-              {/* Ascending Chart Visualization */}
-              <div className="preview-bars-wrapper" aria-hidden="true">
-                <div className="preview-bar-col">
-                  <div className="preview-bar" style={{ height: '35%' }}></div>
+              {/* Ascending Chart Visualization with Target Threshold */}
+              <div className="preview-chart-area">
+                <div className="chart-threshold-line">
+                  <span className="threshold-tag">Goal: 90%</span>
                 </div>
-                <div className="preview-bar-col">
-                  <div className="preview-bar" style={{ height: '52%' }}></div>
-                </div>
-                <div className="preview-bar-col">
-                  <div className="preview-bar" style={{ height: '70%' }}></div>
-                </div>
-                <div className="preview-bar-col">
-                  <div className="preview-bar active" style={{ height: '88%' }}></div>
-                </div>
-                <div className="preview-bar-col">
-                  <div className="preview-bar" style={{ height: '100%', backgroundColor: 'var(--color-accent)' }}></div>
+
+                <div className="preview-bars-wrapper" aria-hidden="true">
+                  <div className="preview-bar-col">
+                    <span className="bar-val-label">84%</span>
+                    <div className="preview-bar bar-1" style={{ height: '42%' }}></div>
+                    <span className="bar-name-label">Quiz 1</span>
+                  </div>
+                  <div className="preview-bar-col">
+                    <span className="bar-val-label">88%</span>
+                    <div className="preview-bar bar-2" style={{ height: '56%' }}></div>
+                    <span className="bar-name-label">Lab 1</span>
+                  </div>
+                  <div className="preview-bar-col">
+                    <span className="bar-val-label">91%</span>
+                    <div className="preview-bar bar-3" style={{ height: '72%' }}></div>
+                    <span className="bar-name-label">Quiz 2</span>
+                  </div>
+                  <div className="preview-bar-col">
+                    <span className="bar-val-label">93%</span>
+                    <div className="preview-bar bar-4" style={{ height: '86%' }}></div>
+                    <span className="bar-name-label">Midterm</span>
+                  </div>
+                  <div className="preview-bar-col">
+                    <span className="bar-val-label star-highlight">95% ⭐</span>
+                    <div className="preview-bar bar-target" style={{ height: '96%' }}></div>
+                    <span className="bar-name-label target-name">Target</span>
+                  </div>
                 </div>
               </div>
 
