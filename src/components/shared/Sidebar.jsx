@@ -45,14 +45,15 @@ export default function Sidebar() {
         </Link>
 
         {/* The Dropdown Toggle Button */}
-        <button 
+        <Link
+          to="/student/subject"
           className="sidebar-link" 
           onClick={() => setIsSubjectsOpen(!isSubjectsOpen)}
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         >
           My Subjects
           <span>{isSubjectsOpen ? '▲' : '▼'}</span>
-        </button>
+        </Link>
 
         {/* The Dropdown Menu List */}
         {isSubjectsOpen && (
