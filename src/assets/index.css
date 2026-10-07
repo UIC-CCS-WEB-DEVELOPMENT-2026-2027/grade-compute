@@ -34,6 +34,7 @@
   --color-border: #E2E8F0;        /* Light border color for dividers and standard inputs */
   --color-muted: #64748B;         /* Muted text for helpers and effective multipliers */
   --color-bg-alt: #fff79a;     /* Yellow background for alternative */
+  --color-bg-selected: #edf1fa; /* Light blue background for selected items */
 
   /* Typography Variables */
   --font-heading: 'Khand', sans-serif;
@@ -159,13 +160,18 @@ input:focus, select:focus {
    padding: 0.5rem;
     gap: 1rem;
     font: var(--font-body);
+    color: var(--color-text-locked);
     text-decoration: none;
     border-radius: 4px;
 }
 
+.sidebar-link.btn-primary {
+    background-color: var(--color-bg-selected);
+    color: var(--color-primary);
+  }
+
 .sidebar-link:hover {
-    background-color: var(--color-accent);
-    color: #FFFFFF;
+    background-color: var(--color-bg-main);
 }
 
 

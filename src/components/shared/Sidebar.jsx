@@ -26,6 +26,7 @@ export default function Sidebar() {
     return {
       classId: c.id,
       subjectCode: subjectDetails?.subjectCode || "Unknown",
+      subjectName: subjectDetails?.subjectName || "Unknown"
     };
   });
 
@@ -67,7 +68,7 @@ export default function Sidebar() {
                     to={linkPath}
                     className={`sidebar-link ${isActive ? 'btn-primary' : ''}`}
                   >
-                    {sub.subjectCode}
+                    {sub.subjectCode} - {sub.subjectName}
                   </Link>
                 );
               })
