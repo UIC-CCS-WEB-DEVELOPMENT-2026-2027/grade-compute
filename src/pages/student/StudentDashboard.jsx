@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from '../../components/shared/Sidebar';
 import SubjectCard from '../../components/student/SubjectCard';
 import { getDb } from '../../utils/db';
-import './StudentDashboard.css';
+import './StudentDashBoard.css';
 
 export default function StudentDashboard() {
   // TODO: Initialize database state and filter enrolled classes
@@ -23,8 +23,8 @@ export default function StudentDashboard() {
         <p className='welcome-subtitle'>List of enrolled subjects goes here.</p>
 
         <div className='top-right-user-bar'>
-          <img>bell icon</img>
-          <img>user profile</img>
+          <div>bell icon</div>
+          <div>user profile</div>
           <div className='user-name'>Juan Dela Cruz</div>
           <div className='user-role'>Student BS Information Technology</div>
         </div>
