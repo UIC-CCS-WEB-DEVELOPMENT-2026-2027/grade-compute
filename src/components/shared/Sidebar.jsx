@@ -47,7 +47,7 @@ export default function Sidebar() {
         {/* The Dropdown Toggle Button */}
         <Link
           to="/student/subject"
-          className="sidebar-link" 
+          className={`sidebar-link ${location.pathname === '/student/subject' ? 'btn-primary' : ''}`}
           onClick={() => setIsSubjectsOpen(!isSubjectsOpen)}
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         >
