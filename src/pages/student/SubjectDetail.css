@@ -1,7 +1,5 @@
 
-/* =========================
-   STUDENT DASHBOARD
-========================= */
+/* STUDENT DASHBOARD*/
 
 .student-dashboard {
     width: 100%;
@@ -14,9 +12,7 @@
     font-family: Arial, sans-serif;
 }
 
-/* =========================
-   TERM NAVIGATION
-========================= */
+/* TERM NAVIGATION */
 
 .subject-term-navigation {
     display: flex;
@@ -59,9 +55,7 @@
     font-size: 9px;
 }
 
-/* =========================
-   BREADCRUMB
-========================= */
+/* BREADCRUMP */
 
 .subject-breadcrumb {
     display: flex;
@@ -76,9 +70,7 @@
     color: #41649d;
 }
 
-/* =========================
-   SUBJECT OVERVIEW
-========================= */
+/* SUBJECT OVERVIEW */
 
 .subject-overview {
     width: 100%;
@@ -151,9 +143,7 @@
     background: #304f81;
 }
 
-/* =========================
-   OFFICIAL GRADE CARD
-========================= */
+/* OFFICIAL GRADE CARD */
 
 .official-grade-card {
     display: grid;
@@ -247,9 +237,7 @@
     white-space: nowrap;
 }
 
-/* =========================
-   MOBILE RESPONSIVENESS
-========================= */
+/*  MOBILE RESPONSIVENESS */
 
 @media (max-width: 760px) {
     .student-dashboard {
