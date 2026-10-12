@@ -35,7 +35,7 @@ const buildStudentEmail = (value) => {
 
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const getNextStudentId = (users = []) => {
+const getNextUserId = (users = []) => {
   const latestId = users
     .filter((user) => /^U\d+$/i.test(String(user?.id || '')))
     .reduce((max, user) => {
@@ -52,7 +52,8 @@ export default function LoginRegister() {
 
   // Form states
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
-  const [selectedRole, setSelectedRole] = useState('student'); // 'student' | 'professor'
+  const [registrationRole, setRegistrationRole] = useState('student'); // 'student' | 'professor'
+  const [fullName, setFullName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -62,17 +63,14 @@ export default function LoginRegister() {
 
   const changeAuthMode = (mode) => {
     setActiveTab(mode);
-    setSelectedRole('student');
+    setRegistrationRole('student');
+    setFullName('');
     setIdentifier('');
     setPassword('');
     setShowPassword(false);
     setErrorMessage('');
     setFieldErrors({});
-    setInfoMessage(
-      mode === 'register'
-        ? 'Create a student account with your email and a password.'
-        : ''
-    );
+    setInfoMessage('');
     formPanelRef.current?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       block: 'start',
@@ -87,16 +85,15 @@ export default function LoginRegister() {
     }
   };
 
-  // Handle Role Selection
-  const handleRoleChange = (role) => {
-    setSelectedRole(role);
+  const handleRegistrationRoleChange = (role) => {
+    setRegistrationRole(role);
     setErrorMessage('');
     setFieldErrors({});
-    if (role === 'professor') {
-      setInfoMessage('Notice: Professor Workspace is scheduled for Phase 2. To test the Phase 1 MVP, select Student.');
-    } else {
-      setInfoMessage('');
-    }
+    setInfoMessage(
+      role === 'professor'
+        ? 'Professor accounts can be created, but the Professor Workspace is not available in this build yet.'
+        : ''
+    );
   };
 
   // Handle Submission (login/register)
@@ -105,11 +102,6 @@ export default function LoginRegister() {
     setErrorMessage('');
     setInfoMessage('');
     setFieldErrors({});
-
-    if (selectedRole === 'professor') {
-      setErrorMessage('The Professor Workspace is locked for the Phase 1 MVP. Please log in as a Student.');
-      return;
-    }
 
     const invalidFields = {};
 
@@ -121,6 +113,10 @@ export default function LoginRegister() {
 
     if (!password.trim()) {
       invalidFields.password = true;
+    }
+
+    if (activeTab === 'register' && registrationRole === 'professor' && !fullName.trim()) {
+      invalidFields.fullName = true;
     }
 
     if (Object.keys(invalidFields).length > 0) {
@@ -148,8 +144,7 @@ export default function LoginRegister() {
       const normalizedIdentifier = identifier.trim();
       const normalizedEmail = buildStudentEmail(normalizedIdentifier).toLowerCase();
       const existingUser = users.find(
-        (user) =>
-          String(user?.email || '').trim().toLowerCase() === normalizedEmail
+        (user) => String(user?.email || '').trim().toLowerCase() === normalizedEmail
       );
 
       if (existingUser) {
@@ -159,12 +154,12 @@ export default function LoginRegister() {
       }
 
       const newUser = {
-        id: getNextStudentId(users),
-        role: 'student',
-        name: buildDisplayName(normalizedIdentifier),
-        programSection: 'New Student',
+        id: getNextUserId(users),
+        role: registrationRole,
+        name: registrationRole === 'professor' ? fullName.trim() : buildDisplayName(normalizedIdentifier),
         email: normalizedEmail,
         password,
+        ...(registrationRole === 'student' ? { programSection: 'New Student' } : {}),
       };
 
       const updatedDb = {
@@ -176,6 +171,14 @@ export default function LoginRegister() {
         saveDb(updatedDb);
       } catch {
         setErrorMessage('Your account could not be saved to this browser. Check that browser storage is enabled and try again.');
+        return;
+      }
+
+      if (newUser.role === 'professor') {
+        setFullName('');
+        setIdentifier('');
+        setPassword('');
+        setInfoMessage('Professor account created. The Professor Workspace is not available in this build yet.');
         return;
       }
 
@@ -192,23 +195,32 @@ export default function LoginRegister() {
       return;
     }
 
-    // Match by ID or Email (case-insensitive)
+    // Resolve the account and its role from the saved database.
     const matchedUser = users.find(
       (u) =>
         (String(u?.id || '').toLowerCase() === identifier.trim().toLowerCase() ||
-          String(u?.email || '').toLowerCase() === identifier.trim().toLowerCase()) &&
-        u?.role === 'student'
+          String(u?.email || '').trim().toLowerCase() === identifier.trim().toLowerCase())
     );
 
     if (!matchedUser) {
       setFieldErrors({ identifier: true });
-      setErrorMessage('No student account found with this email or ID. (Try demo: ysa@student.edu or U1)');
+      setErrorMessage('No account found with this email or ID. Check your details and try again.');
       return;
     }
 
     if (matchedUser.password !== password) {
       setFieldErrors({ password: true });
       setErrorMessage('Incorrect password. (Demo password: password123)');
+      return;
+    }
+
+    if (matchedUser.role === 'professor') {
+      setInfoMessage('Your professor account is verified, but the Professor Workspace is not available in this build yet.');
+      return;
+    }
+
+    if (matchedUser.role !== 'student') {
+      setErrorMessage('This account type does not have an available workspace.');
       return;
     }
 
@@ -1304,28 +1316,29 @@ export default function LoginRegister() {
 
           .login-page-wrapper .login-brand-name {
             margin-right: auto;
-            font-size: 1.4rem;
+            font-size: clamp(1.25rem, 6vw, 1.5rem);
           }
 
           .login-page-wrapper .mobile-auth-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
           }
 
           .login-page-wrapper .mobile-auth-action {
-            min-height: 34px;
-            padding: 7px 11px;
+            min-height: 32px;
+            padding: 6px 8px;
             border: 1px solid var(--auth-blue);
             border-radius: 18px;
             background: transparent;
             color: var(--auth-blue);
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             font-weight: 600;
             white-space: nowrap;
+            flex: 0 0 auto;
           }
 
-          .login-page-wrapper .mobile-auth-action.primary {
+          .login-page-wrapper .mobile-auth-action[aria-pressed="true"] {
             background: var(--auth-blue);
             color: #fff;
           }
@@ -1361,18 +1374,25 @@ export default function LoginRegister() {
           .login-page-wrapper .login-form-panel {
             flex: none;
             height: auto;
-            min-height: 100vh;
-            padding: 70px 24px 58px;
+            min-height: 0;
+            padding: 32px 20px 40px;
+            justify-content: flex-start;
             overflow: visible;
           }
 
           .login-page-wrapper .login-form-container {
             width: 100%;
             max-width: 420px;
+            margin: 0 auto;
           }
 
-          .login-page-wrapper .login-tab-btn {
-            font-size: 0.82rem;
+          .login-page-wrapper .login-form-meta,
+          .login-page-wrapper .login-form-footer {
+            display: none;
+          }
+
+          .login-page-wrapper .login-tab-switcher {
+            display: none;
           }
 
           .login-page-wrapper .login-form-overline {
@@ -1441,13 +1461,15 @@ export default function LoginRegister() {
             <button
               type="button"
               className="mobile-auth-action"
+              aria-pressed={activeTab === 'login'}
               onClick={() => changeAuthMode('login')}
             >
-              Login
+              Log In
             </button>
             <button
               type="button"
-              className="mobile-auth-action primary"
+              className="mobile-auth-action"
+              aria-pressed={activeTab === 'register'}
               onClick={() => changeAuthMode('register')}
             >
               Sign Up
@@ -1577,14 +1599,18 @@ export default function LoginRegister() {
       {/* =========================================
           RIGHT FORM PANEL (White Background)
           ========================================= */}
-      <section ref={formPanelRef} className="login-form-panel" aria-label="Sign In Form">
+      <section
+        ref={formPanelRef}
+        className="login-form-panel"
+        aria-label={activeTab === 'login' ? 'Sign In Form' : 'Create Account Form'}
+      >
         <div className="login-form-meta">
           <span aria-hidden="true">YOUR ACADEMIC GUIDE</span>
           <span>CompUGrade · 2026</span>
         </div>
         <div className="login-form-container">
           {/* Top Switcher Tabs */}
-          <div className="login-tab-switcher" data-active={activeTab}>
+          <div className="login-tab-switcher">
             <button
               type="button"
               className={`login-tab-btn ${activeTab === 'login' ? 'active' : ''}`}
@@ -1615,55 +1641,54 @@ export default function LoginRegister() {
           </p>
 
           <form key={activeTab} onSubmit={handleSubmit} noValidate style={{ width: '100%' }}>
-            {/* Role Selector Cards */}
-            <div className="role-select-section">
-              <span className="role-select-label">I am a:</span>
-              <div className="role-cards-grid">
-                {/* Student Option */}
-                <button
-                  type="button"
-                  className={`role-card-btn ${selectedRole === 'student' ? 'selected' : ''}`}
-                  aria-pressed={selectedRole === 'student'}
-                  onClick={() => handleRoleChange('student')}
-                >
-                  <div className="role-icon-box">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                      <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                  </div>
-                  <div className="role-card-info">
-                    <span className="role-card-title">Student</span>
-                    <span className="role-card-desc">Track &amp; simulate your scores</span>
-                  </div>
-                  <div className="role-radio-indicator">
-                    {selectedRole === 'student' && <div className="role-radio-dot"></div>}
-                  </div>
-                </button>
+            {activeTab === 'register' && (
+              <div className="role-select-section">
+                <span className="role-select-label">Create account as:</span>
+                <div className="role-cards-grid">
+                  <button
+                    type="button"
+                    className={`role-card-btn ${registrationRole === 'student' ? 'selected' : ''}`}
+                    aria-pressed={registrationRole === 'student'}
+                    onClick={() => handleRegistrationRoleChange('student')}
+                  >
+                    <div className="role-icon-box">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                      </svg>
+                    </div>
+                    <div className="role-card-info">
+                      <span className="role-card-title">Student</span>
+                      <span className="role-card-desc">Track &amp; simulate your scores</span>
+                    </div>
+                    <div className="role-radio-indicator">
+                      {registrationRole === 'student' && <div className="role-radio-dot"></div>}
+                    </div>
+                  </button>
 
-                {/* Professor Option */}
-                <button
-                  type="button"
-                  className={`role-card-btn ${selectedRole === 'professor' ? 'selected' : ''}`}
-                  aria-pressed={selectedRole === 'professor'}
-                  onClick={() => handleRoleChange('professor')}
-                >
-                  <div className="role-icon-box">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                  </div>
-                  <div className="role-card-info">
-                    <span className="role-card-title">Professor</span>
-                    <span className="role-card-desc">Quick &amp; easy grade input</span>
-                  </div>
-                  <div className="role-radio-indicator">
-                    {selectedRole === 'professor' && <div className="role-radio-dot"></div>}
-                  </div>
-                </button>
+                  <button
+                    type="button"
+                    className={`role-card-btn ${registrationRole === 'professor' ? 'selected' : ''}`}
+                    aria-pressed={registrationRole === 'professor'}
+                    onClick={() => handleRegistrationRoleChange('professor')}
+                  >
+                    <div className="role-icon-box">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                      </svg>
+                    </div>
+                    <div className="role-card-info">
+                      <span className="role-card-title">Professor</span>
+                      <span className="role-card-desc">For instructors and faculty</span>
+                    </div>
+                    <div className="role-radio-indicator">
+                      {registrationRole === 'professor' && <div className="role-radio-dot"></div>}
+                    </div>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Error & Info Alerts - Always render to reserve space, prevent layout shift */}
             <div className="login-alerts-container">
@@ -1674,6 +1699,26 @@ export default function LoginRegister() {
                 {infoMessage}
               </div>
             </div>
+
+            {activeTab === 'register' && registrationRole === 'professor' && (
+              <div className="login-form-group">
+                <label htmlFor="full-name-input" className="login-form-label">Full name</label>
+                <input
+                  id="full-name-input"
+                  type="text"
+                  className={`login-form-input ${fieldErrors.fullName ? 'invalid' : ''}`}
+                  placeholder="Your full name"
+                  value={fullName}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    clearFieldError('fullName');
+                  }}
+                  autoComplete="name"
+                  aria-invalid={Boolean(fieldErrors.fullName)}
+                  required
+                />
+              </div>
+            )}
 
             {/* Email / ID Field */}
             <div className="login-form-group">
@@ -1748,13 +1793,6 @@ export default function LoginRegister() {
 
           {/* Links & Helpers */}
           <div className="login-footer-links" key={`footer-links-${activeTab}`}>
-            <button
-              type="button"
-              className="login-link-btn"
-              onClick={() => alert('Demo Reset: Your student password is "password123".')}
-            >
-              Forgot Password?
-            </button>
             <div className="login-switch-prompt">
               {activeTab === 'login' ? (
                 <>
@@ -1782,10 +1820,11 @@ export default function LoginRegister() {
             </div>
           </div>
 
-          {/* Seed Account Helper for Smooth Testing */}
-          <div className="login-demo-helper">
-            <strong>Demo student:</strong> <code>ysa@student.edu</code> (or <code>U1</code>) · Password: <code>password123</code>
-          </div>
+          {activeTab === 'login' && (
+            <div className="login-demo-helper">
+              <strong>Demo student:</strong> <code>ysa@student.edu</code> (or <code>U1</code>) · Password: <code>password123</code>
+            </div>
+          )}
         </div>
         <div className="login-form-footer" aria-hidden="true">
           <span>A clearer path. A stronger semester.</span>
