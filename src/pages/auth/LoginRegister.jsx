@@ -61,15 +61,19 @@ export default function LoginRegister() {
   const [infoMessage, setInfoMessage] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const changeAuthMode = (mode) => {
-    setActiveTab(mode);
-    setRegistrationRole('student');
+  const clearAuthFields = () => {
     setFullName('');
     setIdentifier('');
     setPassword('');
     setShowPassword(false);
-    setErrorMessage('');
     setFieldErrors({});
+  };
+
+  const changeAuthMode = (mode) => {
+    setActiveTab(mode);
+    setRegistrationRole('student');
+    clearAuthFields();
+    setErrorMessage('');
     setInfoMessage('');
     formPanelRef.current?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
@@ -192,8 +196,22 @@ export default function LoginRegister() {
       try {
         localStorage.setItem('activeUserId', newUser.id);
       } catch {
-        setErrorMessage('Your account was saved, but automatic sign-in failed. Please log in with your new account.');
+        let previousSignInCleared = true;
+        try {
+          localStorage.removeItem('activeUserId');
+        } catch {
+          previousSignInCleared = false;
+        }
+
         setActiveTab('login');
+        setRegistrationRole('student');
+        clearAuthFields();
+        setInfoMessage('');
+        setErrorMessage(
+          previousSignInCleared
+            ? 'Your account was saved, but automatic sign-in failed. Please log in with your new account.'
+            : 'Your account was saved, but sign-in could not be updated or cleared in this browser. Please check browser storage before logging in.'
+        );
         return;
       }
 
@@ -221,20 +239,19 @@ export default function LoginRegister() {
       return;
     }
 
-    if (matchedUser.role === 'professor') {
+    if (matchedUser.role !== 'student') {
       try {
         localStorage.removeItem('activeUserId');
       } catch {
-        setErrorMessage('Your professor account is verified, but the previous sign-in could not be cleared from this browser.');
+        setErrorMessage('Your account is verified, but the previous sign-in could not be cleared from this browser.');
         return;
       }
 
-      setInfoMessage('Your professor account is verified, but the Professor Workspace is not available in this build yet.');
-      return;
-    }
-
-    if (matchedUser.role !== 'student') {
-      setErrorMessage('This account type does not have an available workspace.');
+      setInfoMessage(
+        matchedUser.role === 'professor'
+          ? 'Your professor account is verified, but the Professor Workspace is not available in this build yet.'
+          : 'This account type does not have an available workspace.'
+      );
       return;
     }
 
