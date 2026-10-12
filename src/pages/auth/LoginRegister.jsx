@@ -33,6 +33,8 @@ const buildStudentEmail = (value) => {
   return `${cleanValue.toLowerCase().replace(/\s+/g, '')}@student.edu`;
 };
 
+const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
 const getNextStudentId = (users = []) => {
   const latestId = users
     .filter((user) => /^U\d+$/i.test(String(user?.id || '')))
@@ -55,11 +57,36 @@ export default function LoginRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const changeAuthMode = (mode) => {
+    setActiveTab(mode);
+    setSelectedRole('student');
+    setIdentifier('');
+    setPassword('');
+    setShowPassword(false);
+    setErrorMessage('');
+    setFieldErrors({});
+    setInfoMessage(
+      mode === 'register'
+        ? 'Create a student account with your email and a password.'
+        : ''
+    );
+  };
+
+  const clearFieldError = (field) => {
+    const nextFieldErrors = { ...fieldErrors, [field]: false };
+    setFieldErrors(nextFieldErrors);
+    if (!Object.values(nextFieldErrors).some(Boolean)) {
+      setErrorMessage('');
+    }
+  };
 
   // Handle Role Selection
   const handleRoleChange = (role) => {
     setSelectedRole(role);
     setErrorMessage('');
+    setFieldErrors({});
     if (role === 'professor') {
       setInfoMessage('Notice: Professor Workspace is scheduled for Phase 2. To test the Phase 1 MVP, select Student.');
     } else {
@@ -72,19 +99,28 @@ export default function LoginRegister() {
     e.preventDefault();
     setErrorMessage('');
     setInfoMessage('');
+    setFieldErrors({});
 
     if (selectedRole === 'professor') {
       setErrorMessage('The Professor Workspace is locked for the Phase 1 MVP. Please log in as a Student.');
       return;
     }
 
+    const invalidFields = {};
+
     if (!identifier.trim()) {
-      setErrorMessage('Please enter your email or Student ID.');
-      return;
+      invalidFields.identifier = true;
+    } else if (activeTab === 'register' && !isValidEmail(identifier.trim())) {
+      invalidFields.identifier = true;
     }
 
-    if (!password) {
-      setErrorMessage('Please enter your password.');
+    if (!password.trim()) {
+      invalidFields.password = true;
+    }
+
+    if (Object.keys(invalidFields).length > 0) {
+      setFieldErrors(invalidFields);
+      setErrorMessage('Please check the highlighted fields and try again.');
       return;
     }
 
@@ -108,14 +144,12 @@ export default function LoginRegister() {
       const normalizedEmail = buildStudentEmail(normalizedIdentifier).toLowerCase();
       const existingUser = users.find(
         (user) =>
-          user?.role === 'student' &&
-          (String(user.id || '').toLowerCase() === normalizedIdentifier.toLowerCase() ||
-            String(user.email || '').toLowerCase() === normalizedIdentifier.toLowerCase() ||
-            String(user.email || '').toLowerCase() === normalizedEmail)
+          String(user?.email || '').trim().toLowerCase() === normalizedEmail
       );
 
       if (existingUser) {
-        setErrorMessage('An account with that email or ID already exists. Please log in instead.');
+        setFieldErrors({ identifier: true });
+        setErrorMessage('An account with that email already exists. Please log in instead.');
         return;
       }
 
@@ -162,11 +196,13 @@ export default function LoginRegister() {
     );
 
     if (!matchedUser) {
+      setFieldErrors({ identifier: true });
       setErrorMessage('No student account found with this email or ID. (Try demo: ysa@student.edu or U1)');
       return;
     }
 
     if (matchedUser.password !== password) {
+      setFieldErrors({ password: true });
       setErrorMessage('Incorrect password. (Demo password: password123)');
       return;
     }
@@ -839,6 +875,22 @@ export default function LoginRegister() {
           height: 2px;
           border-radius: 0;
           background: var(--auth-blue);
+          transform: scaleX(0);
+          transform-origin: left;
+          animation: authTabUnderlineEnter 220ms ease-out forwards;
+        }
+
+        @keyframes authTabUnderlineEnter {
+          to {
+            transform: scaleX(1);
+          }
+        }
+
+        @-webkit-keyframes authTabUnderlineEnter {
+          to {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+          }
         }
 
         .login-page-wrapper .login-form-overline,
@@ -1061,6 +1113,12 @@ export default function LoginRegister() {
           box-shadow: 0 0 0 2px rgba(66, 100, 151, 0.1);
         }
 
+        .login-page-wrapper .login-form-input.invalid,
+        .login-page-wrapper .login-form-input.invalid:focus {
+          border-color: #d14343;
+          box-shadow: 0 0 0 2px rgba(209, 67, 67, 0.12);
+        }
+
         .login-page-wrapper .password-toggle-btn {
           right: 9px;
           -webkit-transition: color 180ms ease, background-color 180ms ease, -webkit-transform 180ms ease;
@@ -1159,6 +1217,17 @@ export default function LoginRegister() {
           padding: 0;
           background: transparent;
           font-size: inherit;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .login-page-wrapper *,
+          .login-page-wrapper *::before,
+          .login-page-wrapper *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+          }
         }
 
         @media (max-width: 960px) {
@@ -1416,28 +1485,23 @@ export default function LoginRegister() {
             <button
               type="button"
               className={`login-tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-              onClick={() => {
-                setActiveTab('login');
-                setErrorMessage('');
-                setInfoMessage('');
-              }}
+              onClick={() => changeAuthMode('login')}
             >
               Log In
             </button>
             <button
               type="button"
               className={`login-tab-btn ${activeTab === 'register' ? 'active' : ''}`}
-              onClick={() => {
-                setActiveTab('register');
-                setInfoMessage('Create a student account with your email and a password.');
-              }}
+              onClick={() => changeAuthMode('register')}
             >
               Create Account
             </button>
           </div>
 
           {/* Heading */}
-          <div className="login-form-overline" key={`overline-${activeTab}`}>Good to see you again</div>
+          <div className="login-form-overline" key={`overline-${activeTab}`}>
+            {activeTab === 'login' ? 'Good to see you again' : 'Get started with CompUGrade'}
+          </div>
           <h2 className="login-form-title" key={`title-${activeTab}`}>
             {activeTab === 'login' ? 'Welcome back.' : 'Create your account.'}
           </h2>
@@ -1447,7 +1511,7 @@ export default function LoginRegister() {
               : 'Join CompUGrade to calculate and achieve your target grades.'}
           </p>
 
-          <form key={activeTab} onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <form key={activeTab} onSubmit={handleSubmit} noValidate style={{ width: '100%' }}>
             {/* Role Selector Cards */}
             <div className="role-select-section">
               <span className="role-select-label">I am a:</span>
@@ -1456,6 +1520,7 @@ export default function LoginRegister() {
                 <button
                   type="button"
                   className={`role-card-btn ${selectedRole === 'student' ? 'selected' : ''}`}
+                  aria-pressed={selectedRole === 'student'}
                   onClick={() => handleRoleChange('student')}
                 >
                   <div className="role-icon-box">
@@ -1477,6 +1542,7 @@ export default function LoginRegister() {
                 <button
                   type="button"
                   className={`role-card-btn ${selectedRole === 'professor' ? 'selected' : ''}`}
+                  aria-pressed={selectedRole === 'professor'}
                   onClick={() => handleRoleChange('professor')}
                 >
                   <div className="role-icon-box">
@@ -1513,12 +1579,16 @@ export default function LoginRegister() {
               </label>
               <input
                 id="identifier-input"
-                type="text"
-                className="login-form-input"
+                type={activeTab === 'register' ? 'email' : 'text'}
+                className={`login-form-input ${fieldErrors.identifier ? 'invalid' : ''}`}
                 placeholder={activeTab === 'login' ? 'you@university.edu or U1' : 'you@university.edu'}
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                  clearFieldError('identifier');
+                }}
                 autoComplete={activeTab === 'register' ? 'email' : 'username'}
+                aria-invalid={Boolean(fieldErrors.identifier)}
                 required
               />
             </div>
@@ -1532,11 +1602,15 @@ export default function LoginRegister() {
                 <input
                   id="password-input"
                   type={showPassword ? 'text' : 'password'}
-                  className="login-form-input"
+                  className={`login-form-input ${fieldErrors.password ? 'invalid' : ''}`}
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError('password');
+                  }}
                   autoComplete={activeTab === 'register' ? 'new-password' : 'current-password'}
+                  aria-invalid={Boolean(fieldErrors.password)}
                   required
                 />
                 <button
@@ -1585,7 +1659,7 @@ export default function LoginRegister() {
                   <button
                     type="button"
                     className="login-link-btn"
-                    onClick={() => setActiveTab('register')}
+                    onClick={() => changeAuthMode('register')}
                   >
                     Create an account
                   </button>
@@ -1596,7 +1670,7 @@ export default function LoginRegister() {
                   <button
                     type="button"
                     className="login-link-btn"
-                    onClick={() => setActiveTab('login')}
+                    onClick={() => changeAuthMode('login')}
                   >
                     Sign in here
                   </button>

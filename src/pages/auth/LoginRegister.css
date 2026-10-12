@@ -603,7 +603,7 @@
   margin: auto 0;
 }
 
-/* Top Navigation Tabs - Smooth Slide Transition */
+/* Top Navigation Tabs */
 .login-tab-switcher {
   display: flex;
   gap: 0.5rem;
@@ -613,24 +613,6 @@
   padding: 0.35rem;
   border-radius: 12px;
   width: 100%;
-}
-
-.login-tab-switcher::before {
-  content: '';
-  position: absolute;
-  top: 0.35rem;
-  left: 0.35rem;
-  width: calc(50% - 0.35rem);
-  height: calc(100% - 0.7rem);
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(64, 96, 147, 0.12), 0 0 0 1px rgba(64, 96, 147, 0.08);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 0;
-}
-
-.login-tab-switcher[data-active="register"]::before {
-  transform: translateX(100%);
 }
 
 .login-tab-btn {
