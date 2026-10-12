@@ -369,7 +369,7 @@ export default function LoginRegister() {
 
         .login-page-wrapper .login-brand-name {
           color: var(--auth-ink);
-          font-size: 1.25rem;
+          font-size: 1.8rem;
           letter-spacing: -0.3px;
         }
 
@@ -1316,7 +1316,7 @@ export default function LoginRegister() {
 
           .login-page-wrapper .login-brand-name {
             margin-right: auto;
-            font-size: clamp(1.25rem, 6vw, 1.5rem);
+            font-size: clamp(1.6rem, 6vw, 1.8rem);
           }
 
           .login-page-wrapper .mobile-auth-actions {
