@@ -1,5 +1,5 @@
 // src/pages/auth/LoginRegister.jsx
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDb, saveDb } from '../../utils/db';
 import './LoginRegister.css';
@@ -48,6 +48,7 @@ const getNextStudentId = (users = []) => {
 
 export default function LoginRegister() {
   const navigate = useNavigate();
+  const formPanelRef = useRef(null);
 
   // Form states
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
@@ -72,6 +73,10 @@ export default function LoginRegister() {
         ? 'Create a student account with your email and a password.'
         : ''
     );
+    formPanelRef.current?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
   };
 
   const clearFieldError = (field) => {
@@ -814,6 +819,10 @@ export default function LoginRegister() {
           margin: auto 0;
         }
 
+        .login-page-wrapper .mobile-auth-actions {
+          display: none;
+        }
+
         .login-page-wrapper .login-form-container > .login-tab-switcher {
           animation: authContentEnter 380ms ease-out 100ms both;
         }
@@ -1263,17 +1272,95 @@ export default function LoginRegister() {
 
         @media (max-width: 680px) {
           .login-page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
             min-height: 100vh;
             height: auto;
             overflow: auto;
           }
 
           .login-page-wrapper .login-hero-panel {
+            display: flex;
+            flex: none;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            padding: 16px 20px 22px;
+            gap: 20px;
+            overflow: hidden;
+          }
+
+          .login-page-wrapper .login-brand-header {
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+          }
+
+          .login-page-wrapper .login-brand-icon {
+            width: 34px;
+            height: 34px;
+          }
+
+          .login-page-wrapper .login-brand-name {
+            margin-right: auto;
+            font-size: 1.4rem;
+          }
+
+          .login-page-wrapper .mobile-auth-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .login-page-wrapper .mobile-auth-action {
+            min-height: 34px;
+            padding: 7px 11px;
+            border: 1px solid var(--auth-blue);
+            border-radius: 18px;
+            background: transparent;
+            color: var(--auth-blue);
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+          }
+
+          .login-page-wrapper .mobile-auth-action.primary {
+            background: var(--auth-blue);
+            color: #fff;
+          }
+
+          .login-page-wrapper .login-hero-content {
+            width: 100%;
+            max-width: 520px;
+            margin: 0;
+            top: 0;
+          }
+
+          .login-page-wrapper .login-pill-badge {
+            margin-bottom: 7px;
+            font-size: 0.58rem;
+          }
+
+          .login-page-wrapper .login-hero-title {
+            max-width: 440px;
+            margin-bottom: 7px;
+            font-size: clamp(1.7rem, 7vw, 2.2rem);
+          }
+
+          .login-page-wrapper .login-hero-subtitle {
+            font-size: 0.82rem;
+          }
+
+          .login-page-wrapper .login-preview-card-container,
+          .login-page-wrapper .login-checklist,
+          .login-page-wrapper .login-hero-footer {
             display: none;
           }
 
           .login-page-wrapper .login-form-panel {
-            flex: 1 1 auto;
+            flex: none;
+            height: auto;
             min-height: 100vh;
             padding: 70px 24px 58px;
             overflow: visible;
@@ -1350,6 +1437,22 @@ export default function LoginRegister() {
             </svg>
           </div>
           <span className="login-brand-name">CompUGrade<span className="login-brand-dot">.</span></span>
+          <nav className="mobile-auth-actions" aria-label="Account actions">
+            <button
+              type="button"
+              className="mobile-auth-action"
+              onClick={() => changeAuthMode('login')}
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              className="mobile-auth-action primary"
+              onClick={() => changeAuthMode('register')}
+            >
+              Sign Up
+            </button>
+          </nav>
         </div>
 
         {/* Main Pitch */}
@@ -1474,7 +1577,7 @@ export default function LoginRegister() {
       {/* =========================================
           RIGHT FORM PANEL (White Background)
           ========================================= */}
-      <section className="login-form-panel" aria-label="Sign In Form">
+      <section ref={formPanelRef} className="login-form-panel" aria-label="Sign In Form">
         <div className="login-form-meta">
           <span aria-hidden="true">YOUR ACADEMIC GUIDE</span>
           <span>CompUGrade · 2026</span>
