@@ -6,16 +6,15 @@ import { useState, useEffect } from 'react';
 import Sidebar from '../../components/shared/Sidebar';
 import SubjectCard from '../../components/student/SubjectCard';
 import { getDb } from '../../utils/db';
-import './StudentDashBoard.css';
+import './StudentDashboard.css';
 
 export default function StudentDashboard() {
   // TODO: Initialize database state and filter enrolled classes
 
   return (
-    /*Sidebar Container*/
     <div className="dashboard-page flex-row">
       <Sidebar />
-    {/*Main Content Container*/}
+      {/*Main Content Container*/}
       <main className="dashboard-main container">
 
         <div className='top-user-bar'>
@@ -51,7 +50,7 @@ export default function StudentDashboard() {
           <div className='subject-focus'>
 
             <div className='subject-1'>
-            <img>subject icon</img>
+            <div>subject icon</div>
             <div>subject status</div>
             <div>subject code</div>
             <div>subject name</div>
@@ -64,7 +63,7 @@ export default function StudentDashboard() {
             </div>
 
             <div className='subject-2'>
-            <img>subject icon</img>
+            <div>subject icon</div>
             <div>subject status</div>
             <div>subject code</div>
             <div>subject name</div>
@@ -77,7 +76,7 @@ export default function StudentDashboard() {
             </div>
 
             <div className='subject-3'>
-            <img>subject icon</img>
+            <div>subject icon</div>
             <div>subject status</div>
             <div>subject code</div>
             <div>subject name</div>
@@ -133,7 +132,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        <SubjectCard  />
+        {/* <SubjectCard  /> */}
         {/* Developer implementation for displaying SubjectCards goes here */}
         
       </main>

@@ -1,0 +1,17 @@
+/* src/pages/student/StudentDashboard.css */
+
+/* Ensures the entire page spans horizontally */
+.dashboard-page {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Forces the main container to take up all remaining width next to Sidebar */
+.dashboard-main {
+  flex: 1;
+  min-width: 0; 
+  padding: 2rem;
+  background-color: #f8fafc; 
+}
