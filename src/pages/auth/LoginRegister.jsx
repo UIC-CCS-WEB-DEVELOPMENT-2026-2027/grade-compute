@@ -35,9 +35,9 @@ const buildStudentEmail = (value) => {
 
 const getNextStudentId = (users = []) => {
   const latestId = users
-    .filter((user) => user?.role === 'student' && /^U\d+$/i.test(user.id || ''))
+    .filter((user) => /^U\d+$/i.test(String(user?.id || '')))
     .reduce((max, user) => {
-      const numericId = Number.parseInt(user.id.replace(/\D/g, ''), 10);
+      const numericId = Number.parseInt(String(user.id).replace(/\D/g, ''), 10);
       return Number.isFinite(numericId) ? Math.max(max, numericId) : max;
     }, 0);
 
@@ -46,9 +46,6 @@ const getNextStudentId = (users = []) => {
 
 export default function LoginRegister() {
   const navigate = useNavigate();
-
-  // Lazy database initialization to prevent cascading renders
-  const [dbData] = useState(() => getDb());
 
   // Form states
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
@@ -74,6 +71,7 @@ export default function LoginRegister() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage('');
+    setInfoMessage('');
 
     if (selectedRole === 'professor') {
       setErrorMessage('The Professor Workspace is locked for the Phase 1 MVP. Please log in as a Student.');
@@ -90,16 +88,30 @@ export default function LoginRegister() {
       return;
     }
 
-    const users = dbData?.users || [];
+    let dbData;
+    try {
+      dbData = getDb();
+    } catch {
+      setErrorMessage('Your saved account data could not be read. Please refresh the page and try again.');
+      return;
+    }
+
+    if (!dbData || !Array.isArray(dbData.users)) {
+      setErrorMessage('The JSON account data is unavailable. Please refresh the page and try again.');
+      return;
+    }
+
+    const users = dbData.users;
 
     if (activeTab === 'register') {
       const normalizedIdentifier = identifier.trim();
+      const normalizedEmail = buildStudentEmail(normalizedIdentifier).toLowerCase();
       const existingUser = users.find(
         (user) =>
-          user.role === 'student' &&
-          (user.id.toLowerCase() === normalizedIdentifier.toLowerCase() ||
-            user.email.toLowerCase() === normalizedIdentifier.toLowerCase() ||
-            user.email.toLowerCase() === buildStudentEmail(normalizedIdentifier).toLowerCase())
+          user?.role === 'student' &&
+          (String(user.id || '').toLowerCase() === normalizedIdentifier.toLowerCase() ||
+            String(user.email || '').toLowerCase() === normalizedIdentifier.toLowerCase() ||
+            String(user.email || '').toLowerCase() === normalizedEmail)
       );
 
       if (existingUser) {
@@ -112,7 +124,7 @@ export default function LoginRegister() {
         role: 'student',
         name: buildDisplayName(normalizedIdentifier),
         programSection: 'New Student',
-        email: buildStudentEmail(normalizedIdentifier),
+        email: normalizedEmail,
         password,
       };
 
@@ -123,9 +135,17 @@ export default function LoginRegister() {
 
       try {
         saveDb(updatedDb);
+      } catch {
+        setErrorMessage('Your account could not be saved to this browser. Check that browser storage is enabled and try again.');
+        return;
+      }
+
+      try {
         localStorage.setItem('activeUserId', newUser.id);
       } catch {
-        // Local storage access fallback
+        setErrorMessage('Your account was saved, but automatic sign-in failed. Please log in with your new account.');
+        setActiveTab('login');
+        return;
       }
 
       setInfoMessage('Account created successfully. Redirecting to your dashboard...');
@@ -136,9 +156,9 @@ export default function LoginRegister() {
     // Match by ID or Email (case-insensitive)
     const matchedUser = users.find(
       (u) =>
-        (u.id.toLowerCase() === identifier.trim().toLowerCase() ||
-          u.email.toLowerCase() === identifier.trim().toLowerCase()) &&
-        u.role === 'student'
+        (String(u?.id || '').toLowerCase() === identifier.trim().toLowerCase() ||
+          String(u?.email || '').toLowerCase() === identifier.trim().toLowerCase()) &&
+        u?.role === 'student'
     );
 
     if (!matchedUser) {
@@ -155,7 +175,8 @@ export default function LoginRegister() {
     try {
       localStorage.setItem('activeUserId', matchedUser.id);
     } catch {
-      // LocalStorage access fallback
+      setErrorMessage('Sign-in could not be saved in this browser. Check that browser storage is enabled and try again.');
+      return;
     }
 
     navigate('/student/dashboard');
@@ -181,7 +202,7 @@ export default function LoginRegister() {
         @keyframes authPanelEnter {
           from {
             opacity: 0;
-            transform: translateY(6px);
+            transform: translateY(8px);
           }
           to {
             opacity: 1;
@@ -190,14 +211,14 @@ export default function LoginRegister() {
         }
 
         @-webkit-keyframes authPanelEnter {
-          from { opacity: 0; -webkit-transform: translateY(6px); transform: translateY(6px); }
+          from { opacity: 0; -webkit-transform: translateY(8px); transform: translateY(8px); }
           to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
         }
 
         @keyframes authContentEnter {
           from {
             opacity: 0;
-            transform: translateY(4px);
+            transform: translateY(6px);
           }
           to {
             opacity: 1;
@@ -206,38 +227,38 @@ export default function LoginRegister() {
         }
 
         @-webkit-keyframes authContentEnter {
-          from { opacity: 0; -webkit-transform: translateY(4px); transform: translateY(4px); }
+          from { opacity: 0; -webkit-transform: translateY(6px); transform: translateY(6px); }
           to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
         }
 
         .login-page-wrapper .login-hero-panel {
-          -webkit-animation: authPanelEnter 650ms ease-out both;
-          animation: authPanelEnter 480ms ease-out both;
+          -webkit-animation: authPanelEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation: authPanelEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         .login-page-wrapper .login-form-panel {
-          -webkit-animation: authPanelEnter 650ms ease-out 80ms both;
-          animation: authPanelEnter 480ms ease-out 60ms both;
+          -webkit-animation: authPanelEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) 50ms both;
+          animation: authPanelEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) 50ms both;
         }
 
         .login-page-wrapper .login-brand-header {
-          -webkit-animation: authContentEnter 400ms ease-out 100ms both;
-          animation: authContentEnter 400ms ease-out 100ms both;
+          -webkit-animation: authContentEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+          animation: authContentEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
         }
 
         .login-page-wrapper .login-pill-badge {
-          -webkit-animation: authContentEnter 400ms ease-out 120ms both;
-          animation: authContentEnter 400ms ease-out 120ms both;
+          -webkit-animation: authContentEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+          animation: authContentEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
         }
 
         .login-page-wrapper .login-hero-title {
-          -webkit-animation: authContentEnter 440ms ease-out 160ms both;
-          animation: authContentEnter 440ms ease-out 160ms both;
+          -webkit-animation: authContentEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 180ms both;
+          animation: authContentEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 180ms both;
         }
 
         .login-page-wrapper .login-hero-subtitle {
-          -webkit-animation: authContentEnter 440ms ease-out 200ms both;
-          animation: authContentEnter 440ms ease-out 200ms both;
+          -webkit-animation: authContentEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+          animation: authContentEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
         }
 
         .login-page-wrapper .login-hero-footer,
@@ -337,8 +358,8 @@ export default function LoginRegister() {
         .login-page-wrapper .login-preview-card-container {
           width: min(410px, 92%);
           margin: 36px auto 10px;
-          -webkit-animation: heroCardFloat 7s ease-in-out 800ms infinite;
-          animation: heroCardFloat 7s ease-in-out 800ms infinite;
+          -webkit-animation: heroCardFloat 9s ease-in-out 800ms infinite;
+          animation: heroCardFloat 9s ease-in-out 800ms infinite;
         }
 
         .login-page-wrapper .login-preview-card {
@@ -606,22 +627,22 @@ export default function LoginRegister() {
 
         @keyframes heroCardFloat {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
+          50% { transform: translateY(-2px); }
         }
 
         @-webkit-keyframes heroCardFloat {
           0%, 100% { -webkit-transform: translateY(0); transform: translateY(0); }
-          50% { -webkit-transform: translateY(-3px); transform: translateY(-3px); }
+          50% { -webkit-transform: translateY(-2px); transform: translateY(-2px); }
         }
 
         @keyframes heroPillFloat {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
+          50% { transform: translateY(-2px); }
         }
 
         @-webkit-keyframes heroPillFloat {
           0%, 100% { -webkit-transform: translateY(0); transform: translateY(0); }
-          50% { -webkit-transform: translateY(-3px); transform: translateY(-3px); }
+          50% { -webkit-transform: translateY(-2px); transform: translateY(-2px); }
         }
 
         .login-page-wrapper .preview-floating-pill {
@@ -782,6 +803,8 @@ export default function LoginRegister() {
         }
 
         .login-page-wrapper .login-tab-switcher {
+          display: flex;
+          align-items: flex-end;
           gap: 16px;
           margin: 0 0 17px;
           padding: 0;
@@ -790,22 +813,8 @@ export default function LoginRegister() {
           background: transparent;
         }
 
-        .login-page-wrapper .login-tab-switcher::before {
-          top: auto;
-          bottom: -1px;
-          left: 0;
-          width: 34px;
-          height: 2px;
-          border-radius: 0;
-          background: var(--auth-blue);
-          box-shadow: none;
-        }
-
-        .login-page-wrapper .login-tab-switcher[data-active="register"]::before {
-          transform: translateX(52px);
-        }
-
         .login-page-wrapper .login-tab-btn {
+          position: relative;
           flex: none;
           width: auto;
           padding: 0 0 9px;
@@ -819,6 +828,17 @@ export default function LoginRegister() {
 
         .login-page-wrapper .login-tab-btn.active {
           color: var(--auth-blue);
+        }
+
+        .login-page-wrapper .login-tab-btn.active::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -1px;
+          height: 2px;
+          border-radius: 0;
+          background: var(--auth-blue);
         }
 
         .login-page-wrapper .login-form-overline,
