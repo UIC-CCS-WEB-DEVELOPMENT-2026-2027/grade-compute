@@ -175,6 +175,13 @@ export default function LoginRegister() {
       }
 
       if (newUser.role === 'professor') {
+        try {
+          localStorage.removeItem('activeUserId');
+        } catch {
+          setErrorMessage('Professor account created, but the previous sign-in could not be cleared from this browser.');
+          return;
+        }
+
         setFullName('');
         setIdentifier('');
         setPassword('');
@@ -215,6 +222,13 @@ export default function LoginRegister() {
     }
 
     if (matchedUser.role === 'professor') {
+      try {
+        localStorage.removeItem('activeUserId');
+      } catch {
+        setErrorMessage('Your professor account is verified, but the previous sign-in could not be cleared from this browser.');
+        return;
+      }
+
       setInfoMessage('Your professor account is verified, but the Professor Workspace is not available in this build yet.');
       return;
     }
@@ -1643,8 +1657,8 @@ export default function LoginRegister() {
           <form key={activeTab} onSubmit={handleSubmit} noValidate style={{ width: '100%' }}>
             {activeTab === 'register' && (
               <div className="role-select-section">
-                <span className="role-select-label">Create account as:</span>
-                <div className="role-cards-grid">
+                <span className="role-select-label" id="registration-role-label">Create account as:</span>
+                <div className="role-cards-grid" role="group" aria-labelledby="registration-role-label">
                   <button
                     type="button"
                     className={`role-card-btn ${registrationRole === 'student' ? 'selected' : ''}`}
@@ -1692,7 +1706,7 @@ export default function LoginRegister() {
 
             {/* Error & Info Alerts - Always render to reserve space, prevent layout shift */}
             <div className="login-alerts-container">
-              <div className={`login-alert-banner login-alert-warning ${errorMessage ? 'visible' : ''}`} role="alert" aria-live="polite">
+              <div id="auth-error-message" className={`login-alert-banner login-alert-warning ${errorMessage ? 'visible' : ''}`} role="alert" aria-live="polite">
                 {errorMessage}
               </div>
               <div className={`login-alert-banner login-alert-info ${infoMessage ? 'visible' : ''}`} role="status" aria-live="polite">
@@ -1715,6 +1729,7 @@ export default function LoginRegister() {
                   }}
                   autoComplete="name"
                   aria-invalid={Boolean(fieldErrors.fullName)}
+                  aria-describedby={fieldErrors.fullName ? 'auth-error-message' : undefined}
                   required
                 />
               </div>
@@ -1737,6 +1752,7 @@ export default function LoginRegister() {
                 }}
                 autoComplete={activeTab === 'register' ? 'email' : 'username'}
                 aria-invalid={Boolean(fieldErrors.identifier)}
+                aria-describedby={fieldErrors.identifier ? 'auth-error-message' : undefined}
                 required
               />
             </div>
@@ -1759,6 +1775,7 @@ export default function LoginRegister() {
                   }}
                   autoComplete={activeTab === 'register' ? 'new-password' : 'current-password'}
                   aria-invalid={Boolean(fieldErrors.password)}
+                  aria-describedby={fieldErrors.password ? 'auth-error-message' : undefined}
                   required
                 />
                 <button
