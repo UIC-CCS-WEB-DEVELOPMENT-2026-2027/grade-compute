@@ -288,6 +288,86 @@ export default function StudentDashboard() {
           </div>
         </div>
         
+        {/* --- RECENT UPDATES SECTION --- */}
+        <div className="recent-updates-section">
+          <div className="updates-header">
+            <div>
+              <h2 className="updates-title">Recent Updates</h2>
+              <p className="updates-subtitle">The latest from your professors.</p>
+            </div>
+            <div className="grade-activity-indicator">
+              <span className="blue-dot">•</span> Grade activity
+            </div>
+          </div>
+
+          <div className="updates-card">
+            {/* Update Item 1 */}
+            <div className="update-row">
+              <div className="update-left">
+                <div className="check-icon-circle">✓</div>
+                <div className="update-info">
+                  <p className="update-text">
+                    Prof. Ana Cruz posted an official grade
+                  </p>
+                  <p className="update-subtext">
+                    Introduction to Programming <span className="dot-sep">•</span> Prelim grade: 86%
+                  </p>
+                </div>
+              </div>
+              <div className="update-right">
+                <span className="update-time">Today, 10:30 AM</span>
+                <span className="update-arrow">↗</span>
+              </div>
+            </div>
+
+            {/* Update Item 2 */}
+            <div className="update-row">
+              <div className="update-left">
+                <div className="check-icon-circle">✓</div>
+                <div className="update-info">
+                  <p className="update-text">
+                    Prof. Maria Santos posted an official grade
+                  </p>
+                  <p className="update-subtext">
+                    Computer Systems <span className="dot-sep">•</span> Prelim grade: 72%
+                  </p>
+                </div>
+              </div>
+              <div className="update-right">
+                <span className="update-time">Yesterday, 2:15 PM</span>
+                <span className="update-arrow">↗</span>
+              </div>
+            </div>
+
+            {/* Update Item 3 */}
+            <div className="update-row">
+              <div className="update-left">
+                <div className="check-icon-circle">✓</div>
+                <div className="update-info">
+                  <p className="update-text">
+                    Prof. Carlo Reyes posted an official grade
+                  </p>
+                  <p className="update-subtext">
+                    General Mathematics <span className="dot-sep">•</span> Prelim grade: 78%
+                  </p>
+                </div>
+              </div>
+              <div className="update-right">
+                <span className="update-time">Oct 3, 9:00 AM</span>
+                <span className="update-arrow">↗</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Page Disclaimer & Footer Branding */}
+          <div className="dashboard-page-footer">
+            <p className="disclaimer-text">Sample student workspace · Grades shown are demonstration data.</p>
+            <div className="branding-row">
+              <span>A clearer picture. A stronger semester.</span>
+              <span>CompuGrade · Built for your potential.</span>
+            </div>
+          </div>
+        </div>
 
       </main>
     </div>

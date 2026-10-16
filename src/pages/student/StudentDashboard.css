@@ -605,3 +605,149 @@
   font-size: 0.8rem;
   color: #64748b;
 }
+
+
+/* RECENT UPDATES SECTION */
+.recent-updates-section {
+  margin-top: 2.5rem;
+}
+
+.updates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.updates-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1;
+}
+
+.updates-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.35rem 0 0 0;
+}
+
+.grade-activity-indicator {
+  font-size: 0.825rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.blue-dot {
+  color: #2563eb;
+  font-size: 1rem;
+}
+
+.updates-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.update-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.update-row:last-child {
+  border-bottom: none;
+}
+
+.update-row:hover {
+  background-color: #fafaf9;
+}
+
+.update-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.check-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.update-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.update-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.update-subtext {
+  margin: 0;
+  font-size: 0.775rem;
+  color: #64748b;
+}
+
+.dot-sep {
+  color: #cbd5e1;
+  margin: 0 0.2rem;
+}
+
+.update-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.update-time {
+  font-size: 0.775rem;
+  color: #94a3b8;
+}
+
+.update-arrow {
+  color: #2563eb;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Footer Disclaimer & Branding */
+.dashboard-page-footer {
+  margin-top: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.disclaimer-text {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  margin: 0 0 2rem 0;
+}
+
+.branding-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.775rem;
+  color: #94a3b8;
+}
