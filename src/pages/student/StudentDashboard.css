@@ -15,3 +15,89 @@
   padding: 2rem;
   background-color: #f8fafc; 
 }
+
+/* --- Top User Bar Container --- */
+.top-user-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e2e8f0; /* Light gray line beneath header */
+}
+
+/* --- Left: Text Block --- */
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.welcome-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+}
+
+/* --- Right: Controls Block --- */
+.top-right-user-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.icon-placeholder {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid black;
+}
+
+/* Stack Name over Role */
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 0.775rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Settings / Dropdown Button */
+.dropdown-arrow-btn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+.dropdown-arrow-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}

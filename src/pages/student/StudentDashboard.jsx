@@ -18,16 +18,33 @@ export default function StudentDashboard() {
       <main className="dashboard-main container">
 
         <div className='top-user-bar'>
-        <h2 className='welcome-title'>Student Dashboard</h2>
-        <p className='welcome-subtitle'>List of enrolled subjects goes here.</p>
+          {/* Left: Welcome Header Stack */}
+          <div className='welcome-text'>
+            <h2 className='welcome-title'>Welcome back, Juan!</h2>
+            <p className='welcome-subtitle'>A little progress, every day.</p>
+          </div>
 
-        <div className='top-right-user-bar'>
-          <div>bell icon</div>
-          <div>user profile</div>
-          <div className='user-name'>Juan Dela Cruz</div>
-          <div className='user-role'>Student BS Information Technology</div>
-        </div>
+          {/* Right: Placeholders & Profile Stack */}
+          <div className='top-right-user-bar'>
+            <div className='icon-placeholder'>bell icon</div>
+            <div className='icon-placeholder'>user profile</div>
+            
+            <div className='user-details'>
+              <span className='user-name'>Juan Dela Cruz</span>
+              <span className='user-role'>Student · BS Information Technology</span>
+            </div>
 
+            {/* Settings Dropdown Button (Placeholder) */}
+            <button 
+              type="button" 
+              className="dropdown-arrow-btn"
+              onClick={(e) => e.preventDefault()} 
+              title="Settings (Under Development)"
+            >
+              ▼
+            </button>
+            
+          </div>
         </div>
 
         <div className='overview-banner'>
