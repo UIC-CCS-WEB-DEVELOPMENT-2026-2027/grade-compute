@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import Sidebar from "../../components/shared/Sidebar";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import "./SubjectDetail.css";
 
@@ -9,7 +10,9 @@ function SubjectDetail() {
     const terms = ["Prelim", "Midterm", "Finals"];
 
     return (
-        <main className="student-dashboard">
+        <div className="flex-row" style={{ minHeight: "100vh", gap: 0 }}>
+            <Sidebar />
+            <main className="student-dashboard" style={{ flex: 1, minWidth: 0 }}>
 
             {/* Term Navigation */}
             <div className="subject-term-navigation">
@@ -114,7 +117,8 @@ function SubjectDetail() {
             {/* Current Term Records */}
             <CurrentTermRecords term={term} />
 
-        </main>
+            </main>
+        </div>
     );
 }
 
