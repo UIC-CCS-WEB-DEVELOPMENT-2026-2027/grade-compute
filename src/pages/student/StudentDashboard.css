@@ -101,3 +101,277 @@
   background-color: #f1f5f9;
   color: #0f172a;
 }
+
+
+/* 3. STUDENT OVERVIEW BANNER                 */
+.overview-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.overview-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.overview-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.25rem 0 0.2rem 0;
+  line-height: 1;
+}
+
+.overview-subtitle {
+  color: #64748b;
+  font-size: 0.925rem;
+  margin: 0;
+}
+
+/* Semester Badge Pill */
+.semester-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  background-color: #ffffff;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.badge-dot {
+  color: #2563eb;
+  font-size: 1.2rem;
+  line-height: 0;
+}
+
+.badge-divider {
+  color: #cbd5e1;
+}
+
+
+/* 4. FOCUS SUBJECTS SECTION & CARDS GRID    */
+
+.focus-section {
+  margin-bottom: 2.5rem;
+}
+
+.focus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.focus-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.focus-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.passing-grade-label {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.grade-val {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* 3-Column Grid for Subject Cards */
+.subject-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Card Container Styles */
+.focus-card {
+  background-color: #fafaf9;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.focus-card.card-needs-attention {
+  border-top: 3px solid #ef4444;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Status Badges */
+.status-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-alert {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.status-warning {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.status-success {
+  background-color: #f0f9ff;
+  color: #0284c7;
+}
+
+/* Subject Information */
+.subject-code {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.subject-name {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.2rem 0 0 0;
+  line-height: 1.1;
+}
+
+/* Grade Display & Progress Bars */
+.grade-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.grade-number {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.grade-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+/* Progress Fill Modifiers */
+.progress-bar-fill.fill-72 {
+  width: 72%;
+  background-color: #ef4444;
+}
+
+.progress-bar-fill.fill-78 {
+  width: 78%;
+  background-color: #1e3a8a;
+}
+
+.progress-bar-fill.fill-86 {
+  width: 86%;
+  background-color: #1e3a8a;
+}
+
+.progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.text-alert {
+  color: #dc2626;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.card-footer:hover {
+  color: #0f172a;
+}
+
+
+
+/* 5. ENROLLED SUBJECTS TABLE & FOOTER        */
+.user-data-grade {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.student-dashboard-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  color: #64748b;
+}

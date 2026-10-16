@@ -1,7 +1,5 @@
 // src/pages/student/StudentDashboard.jsx
 
-// Initializing student dashboard layout structure
-
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/shared/Sidebar';
 import SubjectCard from '../../components/student/SubjectCard';
@@ -14,24 +12,26 @@ export default function StudentDashboard() {
   return (
     <div className="dashboard-page flex-row">
       <Sidebar />
-      {/*Main Content Container*/}
+      
+      {/* Main Content Container */}
       <main className="dashboard-main container">
 
-        <div className='top-user-bar'>
+        {/* --- TOP USER BAR --- */}
+        <div className="top-user-bar">
           {/* Left: Welcome Header Stack */}
-          <div className='welcome-text'>
-            <h2 className='welcome-title'>Welcome back, Juan!</h2>
-            <p className='welcome-subtitle'>A little progress, every day.</p>
+          <div className="welcome-text">
+            <h2 className="welcome-title">Welcome back, Juan!</h2>
+            <p className="welcome-subtitle">A little progress, every day.</p>
           </div>
 
           {/* Right: Placeholders & Profile Stack */}
-          <div className='top-right-user-bar'>
-            <div className='icon-placeholder'>bell icon</div>
-            <div className='icon-placeholder'>user profile</div>
+          <div className="top-right-user-bar">
+            <div className="icon-placeholder">bell icon</div>
+            <div className="icon-placeholder">user profile</div>
             
-            <div className='user-details'>
-              <span className='user-name'>Juan Dela Cruz</span>
-              <span className='user-role'>Student · BS Information Technology</span>
+            <div className="user-details">
+              <span className="user-name">Juan Dela Cruz</span>
+              <span className="user-role">Student · BS Information Technology</span>
             </div>
 
             {/* Settings Dropdown Button (Placeholder) */}
@@ -43,115 +43,121 @@ export default function StudentDashboard() {
             >
               ▼
             </button>
-            
           </div>
         </div>
 
-        <div className='overview-banner'>
-          <div>YOUR LEARNING JOURNEY</div>
-          <div>Student Oveview</div>
-          <div>Your subjects, your progress, your next step.</div>
+        {/* --- STUDENT OVERVIEW BANNER --- */}
+        <div className="overview-banner">
+          <div className="overview-text">
+            <span className="overview-label">YOUR LEARNING JOURNEY</span>
+            <h1 className="overview-title">Student Overview</h1>
+            <p className="overview-subtitle">Your subjects, your progress, your next step.</p>
+          </div>
 
-          <div className='right-overview-banner'>
-            <div className='user-semester'>First Semester</div>
-            <div className='user-year'>2026 - 2027</div>
-
+          <div className="semester-badge">
+            <span className="badge-dot">•</span>
+            <span className="badge-term">First Semester</span>
+            <span className="badge-divider">|</span>
+            <span className="badge-year">2026–2027</span>
           </div>
         </div>
 
-        <div className='focus-bar'>
-          <div>Focus Subjects</div>
-          <div>A little extra attention can make a big difference.</div>
-          <div className='right-focus-bar'>Passing Grade: 75%</div>
-
-          <div className='subject-focus'>
-
-            <div className='subject-1'>
-            <div>subject icon</div>
-            <div>subject status</div>
-            <div>subject code</div>
-            <div>subject name</div>
-            <div>grade percentage</div>
-            <div>current prelim grade</div>
-            <div>loading bar based on performance</div>
-            <div>points needed</div>
-            <div>Target: 75%</div>
-            <div>navigation to the subject detail</div>
+        {/* --- FOCUS SUBJECTS SECTION --- */}
+        <div className="focus-section">
+          <div className="focus-header">
+            <div>
+              <h2 className="focus-title">Focus Subjects</h2>
+              <p className="focus-subtitle">A little extra attention can make a big difference.</p>
             </div>
-
-            <div className='subject-2'>
-            <div>subject icon</div>
-            <div>subject status</div>
-            <div>subject code</div>
-            <div>subject name</div>
-            <div>grade percentage</div>
-            <div>current prelim grade</div>
-            <div>loading bar based on performance</div>
-            <div>points needed</div>
-            <div>Target: 75%</div>
-            <div>navigation to the subject detail</div>
+            <div className="passing-grade-label">
+              Passing grade <span className="grade-val">75%</span>
             </div>
-
-            <div className='subject-3'>
-            <div>subject icon</div>
-            <div>subject status</div>
-            <div>subject code</div>
-            <div>subject name</div>
-            <div>grade percentage</div>
-            <div>current prelim grade</div>
-            <div>loading bar based on performance</div>
-            <div>points needed</div>
-            <div>Target: 75%</div>
-            <div>navigation to the subject detail</div>
-            </div>
-
           </div>
 
-          <div className='user-data-grade'>
-            <div>Enrolled Subjects</div>
-            <div>All your subjects for the current semester.</div>
-            <div>navigation for all subjects</div>
-            <div>navigation for needs attention</div>
-            <div>search bar for subjects</div>
+          {/* 3 Focus Subject Cards using the reusable component */}
+          <div className="subject-focus-grid">
+            <SubjectCard 
+              icon="</>"
+              code="IT101"
+              name="Computer Systems"
+              grade={72}
+              status="Needs attention"
+              statusType="alert"
+              pointsText="3 points below passing"
+              target={75}
+              progressClass="fill-72"
+              isAttentionNeeded={true}
+            />
 
-            <table>
-              <thead>
-                <tr>
-                  <th>SUBJECT / PROFESSOR</th>
-                  <th>UNIT</th>
-                  <th>PRELIM GRADE</th>
-                  <th>STATUS</th>
-                  <th>navigation for certain subject</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    subject code
-                    subject name
-                    professor name
-                  </td>
-                  <td>3</td>
-                  <td>
-                    72%
-                    Official Grade
-                    </td>
-                    <td>passing grade status</td>
-                    <td>navigation link</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div className='student-dashboard-footer'>
-            <div>Official grades are posted by your professors</div>
-            <div>Passing Grade: 75%</div>
+            <SubjectCard 
+              icon="Σ"
+              code="MATH 101"
+              name="General Mathematics"
+              grade={78}
+              status="Almost there"
+              statusType="warning"
+              pointsText="3 points above passing"
+              target={75}
+              progressClass="fill-78"
+            />
+
+            <SubjectCard 
+              icon="≡"
+              code="PROG 101"
+              name="Introduction to Programming"
+              grade={86}
+              status="On track"
+              statusType="success"
+              pointsText="11 points above passing"
+              target={75}
+              progressClass="fill-86"
+            />
           </div>
         </div>
 
-        {/* <SubjectCard  /> */}
-        {/* Developer implementation for displaying SubjectCards goes here */}
+        {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
+        <div className="user-data-grade">
+          <div>Enrolled Subjects</div>
+          <div>All your subjects for the current semester.</div>
+          <div>navigation for all subjects</div>
+          <div>navigation for needs attention</div>
+          <div>search bar for subjects</div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>SUBJECT / PROFESSOR</th>
+                <th>UNIT</th>
+                <th>PRELIM GRADE</th>
+                <th>STATUS</th>
+                <th>navigation for certain subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  subject code
+                  subject name
+                  professor name
+                </td>
+                <td>3</td>
+                <td>
+                  72%
+                  Official Grade
+                </td>
+                <td>passing grade status</td>
+                <td>navigation link</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         
+        {/* --- FOOTER --- */}
+        <div className="student-dashboard-footer">
+          <div>Official grades are posted by your professors</div>
+          <div>Passing Grade: 75%</div>
+        </div>
+
       </main>
     </div>
   );
