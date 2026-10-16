@@ -12,6 +12,9 @@ import {
   getVerifiedMethods,
   verifyPrototypeChallenge,
 } from '../utils/prototypeVerification';
+import SettingRow from '../components/SettingRow';
+import SelectSetting from '../components/SelectSetting';
+import ToggleSetting from '../components/ToggleSetting';
 import './GlobalSettings.css';
 
 const sidebarItems = [
@@ -77,6 +80,7 @@ function GlobalSettings({ onLogout }) {
     system: true,
     assignments: true,
   });
+  const [defaultLandingPage, setDefaultLandingPage] = useState('Profile');
   useEffect(() => {
     setPasswordIsSet(hasLocalPassword());
   }, []);
@@ -853,66 +857,60 @@ function GlobalSettings({ onLogout }) {
 
   const renderNotificationsSection = () => (
     <div className="settings-panel" onClick={handleSettingRowClick}>
-      <div className="simple-row">
-        <div>
-          <h4>Email notifications</h4>
-          <p>Receive important updates through email.</p>
-        </div>
-        <button
-          type="button"
-          className={notifications.email ? 'toggle-button on' : 'toggle-button'}
-          onClick={() => toggleNotification('email')}
-        >
-          {notifications.email ? 'On' : 'Off'}
-        </button>
-      </div>
-
-      <div className="simple-row">
-        <div>
-          <h4>Important system notifications</h4>
-          <p>Platform alerts for deadlines, outages, and account changes.</p>
-        </div>
-        <button
-          type="button"
-          className={notifications.system ? 'toggle-button on' : 'toggle-button'}
-          onClick={() => toggleNotification('system')}
-        >
-          {notifications.system ? 'On' : 'Off'}
-        </button>
-      </div>
-
-      <div className="simple-row">
-        <div>
-          <h4>Assignment and grade notifications</h4>
-          <p>Get reminded when tasks are graded or submitted.</p>
-        </div>
-        <button
-          type="button"
-          className={notifications.assignments ? 'toggle-button on' : 'toggle-button'}
-          onClick={() => toggleNotification('assignments')}
-        >
-          {notifications.assignments ? 'On' : 'Off'}
-        </button>
-      </div>
+      <SettingRow
+        title="Email notifications"
+        description="Receive important updates through email."
+      >
+        <ToggleSetting
+          label="Email notifications"
+          enabled={notifications.email}
+          onToggle={() => toggleNotification('email')}
+        />
+      </SettingRow>
+      <SettingRow
+        title="Important system notifications"
+        description="Platform alerts for deadlines, outages, and account changes."
+      >
+        <ToggleSetting
+          label="Important system notifications"
+          enabled={notifications.system}
+          onToggle={() => toggleNotification('system')}
+        />
+      </SettingRow>
+      <SettingRow
+        title="Assignment and grade notifications"
+        description="Get reminded when tasks are graded or submitted."
+      >
+        <ToggleSetting
+          label="Assignment and grade notifications"
+          enabled={notifications.assignments}
+          onToggle={() => toggleNotification('assignments')}
+        />
+      </SettingRow>
     </div>
   );
 
   const renderAppearanceSection = () => (
     <div className="settings-panel" onClick={handleSettingRowClick}>
-      <div className="simple-row">
-        <div>
-          <h4>Interface theme</h4>
-          <p>Switch between light and dark interface mode for your viewing preference.</p>
-        </div>
-        <button
-          type="button"
-          className="toggle-button on"
-          onClick={() => setDarkMode((prev) => !prev)}
-        >
-          {darkMode ? 'Dark' : 'Light'}
-        </button>
-      </div>
-
+      <SettingRow
+        title="Interface theme"
+        description="Switch between light and dark interface mode for your viewing preference."
+      >
+        <ToggleSetting
+          label="Interface theme"
+          enabled={darkMode}
+          enabledLabel="Dark"
+          disabledLabel="Light"
+          onToggle={() => setDarkMode((prev) => !prev)}
+        />
+      </SettingRow>
+      <SelectSetting
+        title="Default landing page"
+        description="Choose which settings section to open by default."
+        value={defaultLandingPage}
+        options={sidebarItems.map(({ label }) => ({ label, value: label }))}
+        onChange={(event) => setDefaultLandingPage(event.target.value)}
+      />
     </div>
   );
 

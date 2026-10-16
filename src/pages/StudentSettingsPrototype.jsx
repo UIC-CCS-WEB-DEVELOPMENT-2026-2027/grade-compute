@@ -8,7 +8,7 @@ const courses = [
   { code: 'ANTH 101', title: 'Cultural Anthropology' },
 ];
 
-function App() {
+function StudentSettingsPrototype() {
   const [activeSection, setActiveSection] = useState('profile');
 
   const sectionMeta = {
@@ -190,4 +190,4 @@ function App() {
   );
 }
 
-export default App;
+export default StudentSettingsPrototype;
