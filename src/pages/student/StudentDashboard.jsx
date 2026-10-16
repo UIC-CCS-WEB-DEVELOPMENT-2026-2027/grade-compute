@@ -5,6 +5,8 @@ import Sidebar from '../../components/shared/Sidebar';
 import SubjectCard from '../../components/student/SubjectCard';
 import { getDb } from '../../utils/db';
 import './StudentDashboard.css';
+import bellIcon from '../../assets/bell-icon.png';
+import userProfile from '../../assets/user-profile.png';
 
 export default function StudentDashboard() {
   // TODO: Initialize database state and filter enrolled classes
@@ -26,8 +28,8 @@ export default function StudentDashboard() {
 
           {/* Right: Placeholders & Profile Stack */}
           <div className="top-right-user-bar">
-            <div className="icon-placeholder">bell icon</div>
-            <div className="icon-placeholder">user profile</div>
+            <img src={bellIcon} alt="Notifications" className="header-icon-img" />
+            <img src={userProfile} alt="User Profile" className="profile-avatar-img" />
             
             <div className="user-details">
               <span className="user-name">Juan Dela Cruz</span>
@@ -116,47 +118,176 @@ export default function StudentDashboard() {
         </div>
 
         {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
-        <div className="user-data-grade">
-          <div>Enrolled Subjects</div>
-          <div>All your subjects for the current semester.</div>
-          <div>navigation for all subjects</div>
-          <div>navigation for needs attention</div>
-          <div>search bar for subjects</div>
+        <div className="enrolled-subjects-container">
+          {/* Header & Export Action */}
+          <div className="table-header-top">
+            <div>
+              <div className="table-title-row">
+                <h2 className="table-title">Enrolled Subjects</h2>
+                <span className="count-badge">5</span>
+              </div>
+              <p className="table-subtitle">All your subjects for the current semester.</p>
+            </div>
+            <button type="button" className="export-link-btn" onClick={(e) => e.preventDefault()}>
+              ↓ Export grades
+            </button>
+          </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>SUBJECT / PROFESSOR</th>
-                <th>UNIT</th>
-                <th>PRELIM GRADE</th>
-                <th>STATUS</th>
-                <th>navigation for certain subject</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  subject code
-                  subject name
-                  professor name
-                </td>
-                <td>3</td>
-                <td>
-                  72%
-                  Official Grade
-                </td>
-                <td>passing grade status</td>
-                <td>navigation link</td>
-              </tr>
-            </tbody>
-          </table>
+          {/* Filter Tabs & Search Bar */}
+          <div className="table-controls">
+            <div className="filter-tabs">
+              <button type="button" className="tab-btn active">All subjects</button>
+              <button type="button" className="tab-btn">
+                Needs attention <span className="tab-count-badge">1</span>
+              </button>
+            </div>
+            <div className="search-box">
+              <input 
+                type="text" 
+                placeholder="Search subjects..." 
+                className="search-input"
+              />
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <div className="table-wrapper">
+            <table className="subjects-table">
+              <thead>
+                <tr>
+                  <th>SUBJECT / PROFESSOR</th>
+                  <th>UNITS</th>
+                  <th>PRELIM GRADE</th>
+                  <th>STATUS</th>
+                  <th className="th-action"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Row 1: IT101 */}
+                <tr>
+                  <td className="subject-cell">
+                    <div className="subject-icon-box">&lt;/&gt;</div>
+                    <div className="subject-details-stack">
+                      <span className="subject-code-sm">IT101</span>
+                      <span className="subject-name-bold">Computer Systems</span>
+                      <span className="prof-name">Prof. Maria Santos</span>
+                    </div>
+                  </td>
+                  <td className="units-cell">3</td>
+                  <td className="grade-cell">
+                    <span className="table-grade-num">72%</span>
+                    <span className="official-grade-lbl">Official grade</span>
+                  </td>
+                  <td className="status-cell">
+                    <span className="status-pill status-alert">Below passing</span>
+                  </td>
+                  <td className="action-cell">
+                    <span className="table-arrow">→</span>
+                  </td>
+                </tr>
+
+                {/* Row 2: MATH 101 */}
+                <tr>
+                  <td className="subject-cell">
+                    <div className="subject-icon-box">Σ</div>
+                    <div className="subject-details-stack">
+                      <span className="subject-code-sm">MATH 101</span>
+                      <span className="subject-name-bold">General Mathematics</span>
+                      <span className="prof-name">Prof. Carlo Reyes</span>
+                    </div>
+                  </td>
+                  <td className="units-cell">3</td>
+                  <td className="grade-cell">
+                    <span className="table-grade-num">78%</span>
+                    <span className="official-grade-lbl">Official grade</span>
+                  </td>
+                  <td className="status-cell">
+                    <span className="status-pill status-passing">Passing</span>
+                  </td>
+                  <td className="action-cell">
+                    <span className="table-arrow">→</span>
+                  </td>
+                </tr>
+
+                {/* Row 3: PROG 101 */}
+                <tr>
+                  <td className="subject-cell">
+                    <div className="subject-icon-box">≡</div>
+                    <div className="subject-details-stack">
+                      <span className="subject-code-sm">PROG 101</span>
+                      <span className="subject-name-bold">Introduction to Programming</span>
+                      <span className="prof-name">Prof. Ana Cruz</span>
+                    </div>
+                  </td>
+                  <td className="units-cell">3</td>
+                  <td className="grade-cell">
+                    <span className="table-grade-num">86%</span>
+                    <span className="official-grade-lbl">Official grade</span>
+                  </td>
+                  <td className="status-cell">
+                    <span className="status-pill status-passing">Passing</span>
+                  </td>
+                  <td className="action-cell">
+                    <span className="table-arrow">→</span>
+                  </td>
+                </tr>
+
+                {/* Row 4: STAT 201 */}
+                <tr>
+                  <td className="subject-cell">
+                    <div className="subject-icon-box">σ</div>
+                    <div className="subject-details-stack">
+                      <span className="subject-code-sm">STAT 201</span>
+                      <span className="subject-name-bold">Probability &amp; Statistics</span>
+                      <span className="prof-name">Prof. David Park</span>
+                    </div>
+                  </td>
+                  <td className="units-cell">3</td>
+                  <td className="grade-cell">
+                    <span className="table-grade-num">85.8%</span>
+                    <span className="official-grade-lbl">Official grade</span>
+                  </td>
+                  <td className="status-cell">
+                    <span className="status-pill status-passing">Passing</span>
+                  </td>
+                  <td className="action-cell">
+                    <span className="table-arrow">→</span>
+                  </td>
+                </tr>
+
+                {/* Row 5: ENG 102 */}
+                <tr>
+                  <td className="subject-cell">
+                    <div className="subject-icon-box">Aa</div>
+                    <div className="subject-details-stack">
+                      <span className="subject-code-sm">ENG 102</span>
+                      <span className="subject-name-bold">Academic Writing</span>
+                      <span className="prof-name">Dr. Olivia Reyes</span>
+                    </div>
+                  </td>
+                  <td className="units-cell">3</td>
+                  <td className="grade-cell">
+                    <span className="table-grade-num">91%</span>
+                    <span className="official-grade-lbl">Official grade</span>
+                  </td>
+                  <td className="status-cell">
+                    <span className="status-pill status-passing">Passing</span>
+                  </td>
+                  <td className="action-cell">
+                    <span className="table-arrow">→</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table Footer */}
+          <div className="table-footer-bottom">
+            <span>• Official grades are posted by your professors.</span>
+            <span>Passing grade: 75%</span>
+          </div>
         </div>
         
-        {/* --- FOOTER --- */}
-        <div className="student-dashboard-footer">
-          <div>Official grades are posted by your professors</div>
-          <div>Passing Grade: 75%</div>
-        </div>
 
       </main>
     </div>
