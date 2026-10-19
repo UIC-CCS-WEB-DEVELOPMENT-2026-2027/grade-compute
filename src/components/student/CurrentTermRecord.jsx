@@ -270,7 +270,7 @@ function CurrentTermRecords({ term = "Prelim" }) {
                 </div>
 
                 <span className="breakdown-weight">
-                    35% of term grade
+                    70% of classwork
                 </span>
             </div>
 
@@ -326,7 +326,7 @@ function CurrentTermRecords({ term = "Prelim" }) {
                 </div>
 
                 <span className="breakdown-weight">
-                    35% of term grade
+                    30% of classwork
                 </span>
             </div>
 
@@ -394,4 +394,3 @@ function CurrentTermRecords({ term = "Prelim" }) {
 }
 
 export default CurrentTermRecords;
-
