@@ -20,6 +20,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [taskCategory, setTaskCategory] = useState("AT");
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
+    const [editingScores, setEditingScores] = useState({});
     const [saveError, setSaveError] = useState("");
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
@@ -168,10 +169,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     return (
         <section className="current-term-records">
             <header className="records-heading">
-                <h2>{term} Records &amp; Sandbox</h2>
+                <h2>Current Term Records</h2>
                 <p>
-                    Professor scores are official and locked. Sandbox entries
-                    are private to you.
+                    Professor records stay locked. Your own entries stay private.
                 </p>
             </header>
 
@@ -194,14 +194,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
             </div>
 
             <p className="records-description">
-                Review official results and record private sandbox scores for
-                this term.
+                Review official scores, add your own notes, and create custom tasks for this term.
             </p>
 
             <div className="records-box">
                 <div className="records-header">
-                    <span>{term.toUpperCase()} · SCORES &amp; SANDBOX</span>
-                    <span>Official · Private</span>
+                    <span>{term.toUpperCase()} · SCORES &amp; TASKS</span>
+                    <span>Score / Max</span>
                 </div>
 
                 {["AT", "TLA"].map((category) => {
@@ -213,14 +212,22 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     ? "Assessment Tasks"
                                     : "Teaching & Learning Activities"}
                             </h3>
-                            {categoryTasks.length ? categoryTasks.map((task) => (
+                            {categoryTasks.length ? categoryTasks.map((task) => {
+                                const name = taskName(task, category);
+                                const displayName = task.isCustomTask &&
+                                    !name.toLowerCase().startsWith(category.toLowerCase())
+                                    ? `${category} - ${name}`
+                                    : name;
+                                return (
                                 <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
                                     <div className="record-information">
-                                        <h3>{taskName(task, category)}</h3>
+                                        <h3>{displayName}</h3>
                                         <p>
                                             {task.isCustomTask
-                                                ? "Student-created · Private"
-                                                : "Professor-recorded assessment"}
+                                                ? <><span className="record-tag">Custom Addition</span> Student-created · Private</>
+                                                : task.officialScore === null || task.officialScore === undefined
+                                                    ? <><span className="record-tag">Self Reported</span> Student entry · Not an official grade</>
+                                                    : "Professor-recorded assessment"}
                                         </p>
                                     </div>
                                     <div className="official-score">
@@ -235,28 +242,49 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 : "Locked · Official"}
                                         </small>
                                     </div>
-                                    <div className="score-editor">
-                                        <label className="score-input-group">
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                max={task.maxScore}
-                                                step="any"
-                                                placeholder="Score"
-                                                aria-label={`Private score for ${taskName(task, category)}`}
-                                                value={task.studentReportedScore ?? ""}
-                                                onChange={(event) =>
-                                                    updateSandbox(category, task.id, "studentReportedScore", event.target.value)
-                                                }
-                                            />
-                                            <span>/</span>
-                                            <span className="sandbox-max-score">
-                                                {task.maxScore ?? "Max"}
-                                            </span>
-                                        </label>
-                                    </div>
+                                    {(task.officialScore === null ||
+                                        task.officialScore === undefined ||
+                                        task.studentReportedScore !== null &&
+                                        task.studentReportedScore !== undefined ||
+                                        editingScores[task.id]) ? (
+                                        <div className="score-editor">
+                                            <label className="score-input-group">
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    max={task.maxScore}
+                                                    step="any"
+                                                    placeholder="Add Score"
+                                                    aria-label={`Private score for ${displayName}`}
+                                                    value={task.studentReportedScore ?? ""}
+                                                    onChange={(event) =>
+                                                        updateSandbox(category, task.id, "studentReportedScore", event.target.value)
+                                                    }
+                                                />
+                                                <span>/</span>
+                                                <span className="sandbox-max-score">
+                                                    {task.maxScore ?? "Max"}
+                                                </span>
+                                            </label>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="edit-score-button"
+                                            aria-label={`Add a private score for ${displayName}`}
+                                            onClick={() => setEditingScores((scores) => ({
+                                                ...scores,
+                                                [task.id]: true,
+                                            }))}
+                                        >
+                                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                                <path d="m10.8 2.2 3 3M2 14l3.2-.7L13.8 4.7a1.4 1.4 0 0 0-2-2L3.2 11.3 2 14Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </button>
+                                    )}
                                 </div>
-                            )) : (
+                            );
+                            }) : (
                                 <p className="term-empty">No {category} records for {term} yet.</p>
                             )}
                         </section>
@@ -319,7 +347,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                         </select>
                         <input
                             type="text"
-                            placeholder="Enter sandbox task name"
+                            placeholder="Task name"
                             value={taskNameInput}
                             onChange={(event) => setTaskNameInput(event.target.value)}
                             aria-label="Sandbox task name"
@@ -362,10 +390,10 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     }}
                     aria-expanded={showAddTask}
                 >
-                    {showAddTask ? "Cancel Adding Sandbox Task" : "+ Add Private Sandbox Task"}
+                    {showAddTask ? "Close" : "+ Add Custom Task"}
                 </button>
                 <p className="records-privacy">
-                    Private sandbox scores never change or replace official records.
+                    ⓘ Self-reported scores and custom tasks are private notes for this term. They do not change official records or the target calculator’s formula.
                 </p>
             </div>
 
@@ -384,8 +412,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
             {showBreakdown && (
                 <div className="official-breakdown">
                     <p className="official-breakdown-intro">
-                        Only professor-recorded scores are shown here. Private
-                        sandbox entries are not included.
+                        All professor-recorded assessments used by the calculator are listed here. Private task notes above are excluded.
                     </p>
                     {breakdownSections.map(({ category, title, icon, weight }) => {
                         const tasks = (currentTerm[category] ?? []).filter(
@@ -473,7 +500,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 </div>
             )}
             <p className="sandbox-notice">
-                Your sandbox edits are private and saved separately for each term.
+                ⓘ Sandbox edits cannot change these records.
             </p>
         </section>
     );

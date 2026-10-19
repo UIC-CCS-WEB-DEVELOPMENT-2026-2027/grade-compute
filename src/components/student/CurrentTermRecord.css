@@ -390,8 +390,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 24px;
-    padding: 8px 0;
+    margin-top: 12px;
+    padding: 4px 0;
     border: none;
     background: transparent;
     color: #41669b;
@@ -509,6 +509,177 @@
 
     .add-task-form {
         padding: 12px 10px;
+    }
+}
+
+@media (max-width: 380px) {
+    .record-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+.current-term-records {
+    margin-top: 30px;
+    color: #526c91;
+    font-family: Arial, sans-serif;
+}
+
+.records-heading h2 {
+    color: #243c59;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.records-heading p {
+    margin: 8px 0 16px;
+    color: #74869d;
+    font-size: 10px;
+}
+
+.grade-weight {
+    min-height: 75px;
+    border-radius: 7px;
+    background: #f4f7fb;
+}
+
+.records-description {
+    margin: 14px 0 18px;
+    color: #71839c;
+    font-size: 9px;
+}
+
+.records-box {
+    border-color: #e6e4df;
+    border-radius: 8px;
+}
+
+.records-header {
+    min-height: 40px;
+    padding: 12px 16px;
+    background: #fcfbf8;
+    color: #75869c;
+    font-size: 9px;
+}
+
+.term-task-heading {
+    display: none;
+}
+
+.term-task-section + .term-task-section {
+    border-top: 0;
+}
+
+.record-row {
+    min-height: 78px;
+    padding: 14px 16px;
+    gap: 16px;
+    border-bottom-color: #e9e7e3;
+}
+
+.term-task-section:last-of-type .record-row {
+    border-bottom: 0;
+}
+
+.record-information h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    color: #536e93;
+    font-size: 11px;
+}
+
+.record-category {
+    flex: 0 0 auto;
+}
+
+.record-information p {
+    margin-top: 6px;
+    font-size: 8px;
+}
+
+.official-score {
+    min-width: 94px;
+}
+
+.official-score strong {
+    color: #314c70;
+    font-size: 14px;
+}
+
+.official-score small {
+    font-size: 8px;
+}
+
+.score-input-group {
+    width: 126px;
+    min-height: 38px;
+    padding: 5px 8px;
+    border-radius: 7px;
+    border-color: #4385ff;
+}
+
+.score-input-group input {
+    flex: 1;
+    width: 54px;
+    font-size: 10px;
+}
+
+.score-input-group input::placeholder {
+    font-size: 9px;
+}
+
+.score-input-group .sandbox-max-score {
+    width: 35px;
+    font-size: 10px;
+}
+
+.edit-score-button {
+    width: 24px;
+    height: 30px;
+    padding: 5px;
+    border: 0;
+    background: transparent;
+    color: #4385ff;
+    cursor: pointer;
+}
+
+.edit-score-button svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+}
+
+.custom-record {
+    background: #f6faff;
+}
+
+.add-task-button {
+    width: calc(100% - 32px);
+    min-height: 38px;
+    margin: 16px;
+    border-radius: 7px;
+    font-size: 10px;
+}
+
+.records-privacy {
+    padding: 0 16px 14px;
+    font-size: 8px;
+}
+
+@media (max-width: 600px) {
+    .record-row {
+        align-items: center;
+        flex-direction: row;
+        padding: 12px 10px;
+    }
+
+    .official-score {
+        min-width: auto;
+    }
+
+    .score-input-group {
+        width: 106px;
     }
 }
 
