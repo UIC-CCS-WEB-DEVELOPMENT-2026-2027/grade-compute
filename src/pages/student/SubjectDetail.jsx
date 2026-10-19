@@ -186,6 +186,14 @@ function SubjectDetail() {
             <CurrentTermRecords term={term} />
 
                 </main>
+                <footer className="subject-page-footer">
+                    <span>A clearer picture. A stronger semester.</span>
+                    <span className="subject-page-footer-brand">
+                        <span>CompUGrade</span>
+                        <span aria-hidden="true">·</span>
+                        <span>Built for your potential.</span>
+                    </span>
+                </footer>
             </div>
         </div>
     );
