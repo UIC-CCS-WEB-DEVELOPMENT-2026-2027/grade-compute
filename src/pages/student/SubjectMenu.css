@@ -1,0 +1,353 @@
+.subject-menu-layout {
+    min-height: 100vh;
+    gap: 0;
+    background: #ffffff;
+}
+
+.subject-menu-main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px clamp(20px, 5vw, 76px);
+}
+
+.subject-menu-heading,
+.subject-menu-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.subject-menu-heading {
+    margin-bottom: 38px;
+}
+
+.subject-menu-heading h1 {
+    margin: 0;
+    color: #292929;
+    font-size: 34px;
+}
+
+.subject-menu-heading p,
+.subject-menu-section-heading p {
+    margin-top: 5px;
+    color: #8491a1;
+    font-size: 10px;
+}
+
+.subject-menu-semester {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #52657f;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.subject-menu-semester span {
+    margin-right: 6px;
+    color: #41649b;
+}
+
+.subject-menu-section {
+    margin-bottom: 28px;
+}
+
+.subject-menu-section-heading {
+    margin-bottom: 16px;
+}
+
+.subject-menu-section-heading h2,
+.subject-menu-section > h2 {
+    margin: 0;
+    color: #292929;
+    font-size: 21px;
+}
+
+.subject-menu-section-heading h2 span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 17px;
+    height: 17px;
+    margin-left: 5px;
+    border-radius: 4px;
+    background: #edf1fa;
+    color: #41649b;
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    vertical-align: middle;
+}
+
+.subject-menu-add-button {
+    flex-shrink: 0;
+    padding: 9px 14px;
+    border-radius: 6px;
+    background: #41649b;
+    color: #ffffff;
+    font-size: 11px;
+}
+
+.subject-menu-add-button:hover {
+    background: #304f81;
+}
+
+.subject-request-form {
+    margin: 0 0 18px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fafbfd;
+}
+
+.subject-request-form h2 {
+    margin: 0;
+    color: #293c57;
+    font-size: 17px;
+}
+
+.subject-request-form > p {
+    margin: 5px 0 14px;
+    color: #8491a1;
+    font-size: 10px;
+}
+
+.subject-request-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.subject-request-fields label {
+    display: grid;
+    gap: 5px;
+    color: #52657f;
+    font-size: 10px;
+}
+
+.subject-request-fields input {
+    padding: 9px 10px;
+    border: 1px solid #d8e1ee;
+    border-radius: 5px;
+    background: #ffffff;
+    font-size: 11px;
+}
+
+.subject-request-error {
+    margin: 0 0 12px;
+    color: #b42318;
+    font-size: 11px;
+}
+
+.subject-menu-table {
+    overflow: hidden;
+    border: 1px solid #e3e6e9;
+    border-radius: 8px 8px 0 0;
+}
+
+.subject-menu-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 53px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e3e6e9;
+}
+
+.subject-menu-filters {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.subject-menu-filters button {
+    padding: 7px 10px;
+    border-radius: 16px;
+    background: transparent;
+    color: #71839c;
+    font-size: 9px;
+}
+
+.subject-menu-filters button.selected {
+    background: #edf1fa;
+    color: #41649b;
+}
+
+.subject-menu-filters button span {
+    margin-left: 3px;
+    color: #d36c6c;
+}
+
+.subject-menu-search {
+    width: min(190px, 45%);
+    padding: 8px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #52657f;
+    font-size: 9px;
+}
+
+.subject-menu-table-scroll {
+    overflow-x: auto;
+}
+
+.subject-menu-table table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.subject-menu-table th {
+    padding: 12px 16px;
+    background: #fcfbf8;
+    color: #8491a1;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.subject-menu-table td {
+    padding: 12px 16px;
+    border-top: 1px solid #e8e8e8;
+    color: #293c57;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.subject-menu-table tbody tr:hover {
+    background: #fafbfd;
+}
+
+.subject-menu-subject-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 230px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.subject-menu-subject-link:hover strong {
+    color: #41649b;
+}
+
+.subject-menu-course-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 36px;
+    flex: 0 0 34px;
+    border-radius: 7px;
+    background: #edf1fa;
+    color: #41649b;
+    font-size: 13px;
+}
+
+.subject-menu-subject-link > span:last-child {
+    display: grid;
+    gap: 3px;
+}
+
+.subject-menu-subject-link small,
+.subject-menu-grade-caption {
+    display: block;
+    color: #8491a1;
+    font-size: 8px;
+}
+
+.subject-menu-subject-link strong {
+    color: #41649b;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.subject-menu-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 13px;
+    font-size: 8px;
+    white-space: nowrap;
+}
+
+.subject-menu-status.passing {
+    background: #edf1fa;
+    color: #41649b;
+}
+
+.subject-menu-status.attention {
+    background: #fff0ef;
+    color: #c36f6f;
+}
+
+.subject-menu-status.pending {
+    background: #fff5d6;
+    color: #8b6d1d;
+}
+
+.subject-menu-row-action {
+    color: #41649b;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.subject-menu-no-results {
+    padding: 24px !important;
+    color: #8491a1 !important;
+    text-align: center;
+}
+
+.subject-menu-pending-section ul {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    color: #8491a1;
+    font-size: 10px;
+    line-height: 1.8;
+}
+
+@media (max-width: 640px) {
+    .subject-menu-main {
+        padding: 22px 14px;
+    }
+
+    .subject-menu-heading,
+    .subject-menu-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .subject-menu-heading {
+        gap: 14px;
+        margin-bottom: 28px;
+    }
+
+    .subject-menu-heading h1 {
+        font-size: 29px;
+    }
+
+    .subject-menu-semester {
+        white-space: normal;
+    }
+
+    .subject-request-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .subject-menu-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .subject-menu-search {
+        width: 100%;
+    }
+
+    .subject-menu-table th,
+    .subject-menu-table td {
+        padding: 11px 12px;
+    }
+}

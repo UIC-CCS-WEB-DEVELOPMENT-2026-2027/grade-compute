@@ -1,12 +1,15 @@
 
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import { getDb } from "../../utils/db";
+import { calculateOfficialGrade, getOfficialAssessments } from "../../utils/grades";
 import "./SubjectDetail.css";
 
 function SubjectDetail() {
     const [term, setTerm] = useState("Prelim");
+    const { subjectId } = useParams();
     const dbData = getDb();
     const student = dbData?.users?.find((user) => user.id === "U1");
     const studentName = student?.name || "Student";
@@ -18,6 +21,43 @@ function SubjectDetail() {
         .join("")
         .toUpperCase();
     const terms = ["Prelim", "Midterm", "Finals"];
+    const classItem = dbData?.classes?.find((item) => item.id === subjectId);
+    const subject = dbData?.subjects?.find(
+        (item) => item.id === classItem?.subjectId
+    );
+    const professor =
+        classItem?.professorName ??
+        dbData?.users?.find((user) => user.id === classItem?.professorId)?.name ??
+        "Awaiting professor assignment";
+    const studentRecord = classItem?.studentRecords?.find(
+        (record) => record.studentId === "U1"
+    );
+    const computationRule = dbData?.computationRules?.find(
+        (rule) => rule.id === classItem?.computationRuleId
+    );
+
+    if (!classItem || !subject || !studentRecord) {
+        return (
+            <div className="subject-detail-layout">
+                <Sidebar />
+                <div className="subject-detail-main">
+                    <main className="student-dashboard">
+                        <h1>Subject not found</h1>
+                        <p>This subject is not available for your account.</p>
+                    </main>
+                </div>
+            </div>
+        );
+    }
+
+    const selectedTermKey = term.toLowerCase();
+    const selectedTerm = studentRecord.grades?.[selectedTermKey];
+    const officialTasks = getOfficialAssessments(selectedTerm);
+    const officialAverage = calculateOfficialGrade(
+        studentRecord,
+        term,
+        computationRule
+    );
 
     return (
         <div className="subject-detail-layout">
@@ -121,15 +161,20 @@ function SubjectDetail() {
 
                 <div className="subject-title-row">
                     <div>
-                        <h1>IT101 - Computer Systems</h1>
+                        <h1>{subject.subjectCode} - {subject.subjectName}</h1>
 
                         <div className="subject-meta">
                             <span className="instructor-avatar">
-                                MS
+                                {professor
+                                    .split(" ")
+                                    .map((part) => part[0])
+                                    .slice(0, 2)
+                                    .join("")
+                                    .toUpperCase()}
                             </span>
-                            <span>Prof. Maria Santos</span>
+                            <span>{professor}</span>
                             <span className="meta-divider">·</span>
-                            <span>3 units</span>
+                            <span>{classItem.units ?? 3} units</span>
                         </div>
                     </div>
 
@@ -150,8 +195,13 @@ function SubjectDetail() {
                 <div className="official-grade-card">
 
                     <div className="official-average">
-                        <span>Official recorded average</span>
-                        <strong>89.50<span>%</span></strong>
+                        <span>{term} official average</span>
+                        <strong>
+                            {officialAverage === null
+                                ? "—"
+                                : officialAverage.toFixed(2)}
+                            {officialAverage !== null && <span>%</span>}
+                        </strong>
                     </div>
 
                     <div className="grade-card-divider" />
@@ -159,7 +209,8 @@ function SubjectDetail() {
                     <div className="grade-card-information">
                         <p>
                             <span className="grade-dot blue-dot" />
-                            4% of term grade weight recorded
+                            {officialTasks.length} official assessment
+                            {officialTasks.length === 1 ? "" : "s"} recorded
                         </p>
 
                         <small>
@@ -183,7 +234,7 @@ function SubjectDetail() {
             </section>
 
             {/* Current Term Records */}
-            <CurrentTermRecords term={term} />
+            <CurrentTermRecords classId={classItem.id} term={term} />
 
                 </main>
                 <footer className="subject-page-footer">

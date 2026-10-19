@@ -1,74 +1,177 @@
-
 import { useState } from "react";
+import { getDb, saveDb } from "../../utils/db";
 import "./CurrentTermRecord.css";
 
-function CurrentTermRecords({ term = "Prelim" }) {
-    const [tasks, setTasks] = useState([
-        {
-            id: 1,
-            name: "AT 2 - Operating system installation",
-            score: "16",
-            max: "20",
-            type: "Self Reported",
-        },
-        {
-            id: 2,
-            name: "TLA 1 - Hardware identification",
-            score: "",
-            max: "",
-            type: "Self Reported",
-        },
-        {
-            id: 3,
-            name: "Practice troubleshooting",
-            score: "8",
-            max: "10",
-            type: "Custom Added",
-        },
-    ]);
+const STUDENT_ID = "U1";
 
-    const [taskName, setTaskName] = useState("");
+function termKey(term) {
+    return term.toLowerCase();
+}
+
+function taskName(task, category) {
+    const title = task.title ?? `${category} ${task.sequenceNumber ?? ""}`.trim();
+    return task.description ? `${title} - ${task.description}` : title;
+}
+
+function CurrentTermRecords({ classId, term = "Prelim" }) {
+    const [dbData, setDbData] = useState(() => getDb());
+    const [taskNameInput, setTaskNameInput] = useState("");
+    const [taskMaxScore, setTaskMaxScore] = useState("");
+    const [taskCategory, setTaskCategory] = useState("AT");
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
+    const [saveError, setSaveError] = useState("");
 
-    function updateTask(id, field, value) {
-        setTasks((currentTasks) =>
-            currentTasks.map((task) =>
-                task.id === id
-                    ? { ...task, [field]: value }
-                    : task
-            )
-        );
+    const classItem = dbData?.classes?.find((item) => item.id === classId);
+    const studentRecord = classItem?.studentRecords?.find(
+        (record) => record.studentId === STUDENT_ID
+    );
+    const currentTerm = studentRecord?.grades?.[termKey(term)] ?? {
+        AT: [],
+        TLA: [],
+        Exam: {},
+    };
+
+    function saveChanges(updateClass) {
+        const currentDb = getDb();
+        if (!currentDb) {
+            setSaveError("Your changes could not be saved because local data is unavailable.");
+            return;
+        }
+
+        const updatedDb = {
+            ...currentDb,
+            classes: currentDb.classes.map((item) =>
+                item.id === classId ? updateClass(item) : item
+            ),
+        };
+
+        try {
+            saveDb(updatedDb);
+        } catch (error) {
+            setSaveError(`Unable to save sandbox changes: ${error.message}`);
+            return false;
+        }
+
+        setDbData(updatedDb);
+        setSaveError("");
+        return true;
+    }
+
+    function updateSandbox(category, taskId, field, value) {
+        saveChanges((item) => ({
+            ...item,
+            studentRecords: item.studentRecords.map((record) => {
+                if (record.studentId !== STUDENT_ID) return record;
+                const grades = record.grades ?? {};
+                const selectedTerm = grades[termKey(term)] ?? {
+                    AT: [],
+                    TLA: [],
+                    Exam: {},
+                };
+                const updatedTerm = category === "Exam"
+                    ? {
+                        ...selectedTerm,
+                        Exam: {
+                            ...(selectedTerm.Exam ?? {}),
+                            studentReportedScore: value,
+                        },
+                    }
+                    : {
+                        ...selectedTerm,
+                        [category]: (selectedTerm[category] ?? []).map((task) =>
+                            task.id === taskId ? { ...task, [field]: value } : task
+                        ),
+                    };
+
+                return {
+                    ...record,
+                    grades: { ...grades, [termKey(term)]: updatedTerm },
+                };
+            }),
+        }));
     }
 
     function addCustomTask(event) {
         event.preventDefault();
-
-        if (!taskName.trim()) {
+        const name = taskNameInput.trim();
+        const maxScore = Number(taskMaxScore);
+        if (!name || !Number.isFinite(maxScore) || maxScore <= 0) {
+            setSaveError("Enter a task name and a maximum score greater than zero.");
             return;
         }
 
-        setTasks((currentTasks) => [
-            ...currentTasks,
-            {
-                id: Date.now(),
-                name: taskName.trim(),
-                score: "",
-                max: "",
-                type: "Custom Added",
-            },
-        ]);
+        const customTask = {
+            id: `CUSTOM-${Date.now()}`,
+            type: taskCategory,
+            sequenceNumber: null,
+            title: name,
+            description: "",
+            maxScore,
+            officialScore: null,
+            studentReportedScore: null,
+            isCustomTask: true,
+        };
 
-        setTaskName("");
-        setShowAddTask(false);
+        const saved = saveChanges((item) => ({
+            ...item,
+            studentRecords: item.studentRecords.map((record) => {
+                if (record.studentId !== STUDENT_ID) return record;
+                const grades = record.grades ?? {};
+                const selectedTerm = grades[termKey(term)] ?? {
+                    AT: [],
+                    TLA: [],
+                    Exam: {},
+                };
+
+                return {
+                    ...record,
+                    grades: {
+                        ...grades,
+                        [termKey(term)]: {
+                            ...selectedTerm,
+                            [taskCategory]: [
+                                ...(selectedTerm[taskCategory] ?? []),
+                                customTask,
+                            ],
+                        },
+                    },
+                };
+            }),
+        }));
+
+        if (saved) {
+            setTaskNameInput("");
+            setTaskMaxScore("");
+            setShowAddTask(false);
+        }
     }
+
+    if (!studentRecord) {
+        return (
+            <section className="current-term-records" role="alert">
+                This subject has no student record to display.
+            </section>
+        );
+    }
+
+    const breakdownSections = [
+        { category: "AT", title: "Assessment Tasks", icon: "✓", weight: "70% of classwork" },
+        { category: "TLA", title: "Teaching & Learning Activities", icon: "↗", weight: "30% of classwork" },
+    ];
+    const exam = {
+        title: `${term} Exam`,
+        maxScore: 100,
+        ...(currentTerm.Exam ?? {}),
+    };
 
     return (
         <section className="current-term-records">
             <header className="records-heading">
-                <h2>Current Term Records</h2>
+                <h2>{term} Records &amp; Sandbox</h2>
                 <p>
-                    Professor records stay locked. Your own entries stay private.
+                    Professor scores are official and locked. Sandbox entries
+                    are private to you.
                 </p>
             </header>
 
@@ -80,9 +183,7 @@ function CurrentTermRecords({ term = "Prelim" }) {
                         <small>70% ATs + 30% TLAs</small>
                     </div>
                 </div>
-
                 <span className="weight-plus">+</span>
-
                 <div className="weight-group exams-group">
                     <strong>30%</strong>
                     <div>
@@ -93,129 +194,155 @@ function CurrentTermRecords({ term = "Prelim" }) {
             </div>
 
             <p className="records-description">
-                Review official scores, add your own notes, and create
-                custom tasks for this term.
+                Review official results and record private sandbox scores for
+                this term.
             </p>
 
             <div className="records-box">
                 <div className="records-header">
-                    <span>{term.toUpperCase()} · SCORES &amp; TASKS</span>
-                    <span>Score / Max</span>
+                    <span>{term.toUpperCase()} · SCORES &amp; SANDBOX</span>
+                    <span>Official · Private</span>
                 </div>
 
-                <div className="record-row">
-                    <div className="record-information">
-                        <h3>AT 1 - Computer hardware essentials</h3>
-                        <p>Professor-recorded assessment</p>
-                    </div>
+                {["AT", "TLA"].map((category) => {
+                    const categoryTasks = currentTerm[category] ?? [];
+                    return (
+                        <section className="term-task-section" key={category}>
+                            <h3 className="term-task-heading">
+                                {category === "AT"
+                                    ? "Assessment Tasks"
+                                    : "Teaching & Learning Activities"}
+                            </h3>
+                            {categoryTasks.length ? categoryTasks.map((task) => (
+                                <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
+                                    <div className="record-information">
+                                        <h3>{taskName(task, category)}</h3>
+                                        <p>
+                                            {task.isCustomTask
+                                                ? "Student-created · Private"
+                                                : "Professor-recorded assessment"}
+                                        </p>
+                                    </div>
+                                    <div className="official-score">
+                                        <strong>
+                                            {task.officialScore === null || task.officialScore === undefined
+                                                ? "—"
+                                                : `${task.officialScore} / ${task.maxScore}`}
+                                        </strong>
+                                        <small>
+                                            {task.officialScore === null || task.officialScore === undefined
+                                                ? "No official score"
+                                                : "Locked · Official"}
+                                        </small>
+                                    </div>
+                                    <div className="score-editor">
+                                        <label className="score-input-group">
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max={task.maxScore}
+                                                step="any"
+                                                placeholder="Score"
+                                                aria-label={`Private score for ${taskName(task, category)}`}
+                                                value={task.studentReportedScore ?? ""}
+                                                onChange={(event) =>
+                                                    updateSandbox(category, task.id, "studentReportedScore", event.target.value)
+                                                }
+                                            />
+                                            <span>/</span>
+                                            <span className="sandbox-max-score">
+                                                {task.maxScore ?? "Max"}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            )) : (
+                                <p className="term-empty">No {category} records for {term} yet.</p>
+                            )}
+                        </section>
+                    );
+                })}
 
-                    <div className="official-score">
-                        <strong>18 / 20</strong>
-                        <small>🔒 Official · Locked</small>
-                    </div>
-                </div>
-
-                {tasks.map((task) => (
-                    <div
-                        className={`record-row ${
-                            task.type === "Custom Added"
-                                ? "custom-record"
-                                : ""
-                        }`}
-                        key={task.id}
-                    >
-                        <div className="record-information">
-                            <div className="record-title">
-                                {task.type === "Custom Added" && (
-                                    <span className="custom-prefix">
-                                        AT
+                <section className="term-task-section">
+                    <h3 className="term-task-heading">Examination</h3>
+                    {(
+                        <div className="record-row">
+                            <div className="record-information">
+                                <h3>{exam.title}</h3>
+                                <p>Professor-recorded examination</p>
+                            </div>
+                            <div className="official-score">
+                                <strong>
+                                    {exam.officialScore === null || exam.officialScore === undefined
+                                        ? "—"
+                                        : `${exam.officialScore} / ${exam.maxScore}`}
+                                </strong>
+                                <small>
+                                    {exam.officialScore === null || exam.officialScore === undefined
+                                        ? "No official score"
+                                        : "Locked · Official"}
+                                </small>
+                            </div>
+                            <div className="score-editor">
+                                <label className="score-input-group">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max={exam.maxScore}
+                                        step="any"
+                                        placeholder="Score"
+                                        aria-label={`Private score for ${term} Exam`}
+                                        value={exam.studentReportedScore ?? ""}
+                                        onChange={(event) =>
+                                            updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)
+                                        }
+                                    />
+                                    <span>/</span>
+                                    <span className="sandbox-max-score">
+                                        {exam.maxScore}
                                     </span>
-                                )}
-
-                                <h3>{task.name}</h3>
-                            </div>
-
-                            <p>
-                                <span className="record-tag">
-                                    {task.type}
-                                </span>
-
-                                {task.type === "Custom Added"
-                                    ? "Student created · Private"
-                                    : "Student entry · Not an official grade"}
-                            </p>
-                        </div>
-
-                        <div className="score-editor">
-                            <div className="score-input-group">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max={
-                                        task.max !== ""
-                                            ? task.max
-                                            : undefined
-                                    }
-                                    step="any"
-                                    placeholder="Score"
-                                    aria-label={`Score for ${task.name}`}
-                                    value={task.score}
-                                    onChange={(event) =>
-                                        updateTask(
-                                            task.id,
-                                            "score",
-                                            event.target.value
-                                        )
-                                    }
-                                />
-
-                                <span>/</span>
-
-                                <input
-                                    type="number"
-                                    min="1"
-                                    step="any"
-                                    placeholder="Max"
-                                    aria-label={`Maximum score for ${task.name}`}
-                                    value={task.max}
-                                    onChange={(event) =>
-                                        updateTask(
-                                            task.id,
-                                            "max",
-                                            event.target.value
-                                        )
-                                    }
-                                />
+                                </label>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    )}
+                </section>
 
                 {showAddTask && (
-                    <form
-                        className="add-task-form"
-                        onSubmit={addCustomTask}
-                    >
+                    <form className="add-task-form" onSubmit={addCustomTask}>
+                        <select
+                            value={taskCategory}
+                            onChange={(event) => setTaskCategory(event.target.value)}
+                            aria-label="Sandbox task category"
+                        >
+                            <option value="AT">Assessment Task</option>
+                            <option value="TLA">Teaching &amp; Learning Activity</option>
+                        </select>
                         <input
                             type="text"
-                            placeholder="Enter custom task name"
-                            value={taskName}
-                            onChange={(event) =>
-                                setTaskName(event.target.value)
-                            }
-                            aria-label="Custom task name"
-                            autoFocus
+                            placeholder="Enter sandbox task name"
+                            value={taskNameInput}
+                            onChange={(event) => setTaskNameInput(event.target.value)}
+                            aria-label="Sandbox task name"
                             required
                         />
-
+                        <input
+                            type="number"
+                            min="0.01"
+                            step="any"
+                            placeholder="Max score"
+                            value={taskMaxScore}
+                            onChange={(event) => setTaskMaxScore(event.target.value)}
+                            aria-label="Maximum score"
+                            required
+                        />
                         <button type="submit">Add</button>
-
                         <button
                             type="button"
                             className="cancel-task-button"
                             onClick={() => {
                                 setShowAddTask(false);
-                                setTaskName("");
+                                setTaskNameInput("");
+                                setTaskMaxScore("");
                             }}
                         >
                             Cancel
@@ -223,171 +350,130 @@ function CurrentTermRecords({ term = "Prelim" }) {
                     </form>
                 )}
 
+                {saveError && (
+                    <p className="sandbox-error" role="alert">{saveError}</p>
+                )}
                 <button
                     type="button"
                     className="add-task-button"
-                    onClick={() => setShowAddTask((previous) => !previous)}
+                    onClick={() => {
+                        setSaveError("");
+                        setShowAddTask((shown) => !shown);
+                    }}
                     aria-expanded={showAddTask}
                 >
-                    {showAddTask ? "− Cancel Adding Task" : "+ Add Custom Task"}
+                    {showAddTask ? "Cancel Adding Sandbox Task" : "+ Add Private Sandbox Task"}
                 </button>
-
                 <p className="records-privacy">
-                    ⓘ Self-reported scores and custom tasks are private
-                    notes for this term. They do not change official
-                    records or the target calculator's formula.
+                    Private sandbox scores never change or replace official records.
                 </p>
             </div>
 
             <button
                 type="button"
                 className="breakdown-button"
-                onClick={() =>
-                    setShowBreakdown((previous) => !previous)
-                }
+                onClick={() => setShowBreakdown((shown) => !shown)}
                 aria-expanded={showBreakdown}
             >
                 <span>{showBreakdown ? "▼" : "▶"}</span>
                 {showBreakdown
-                    ? "Complete Official Grade Breakdown"
+                    ? "Hide Official Grade Breakdown"
                     : "View Complete Official Grade Breakdown"}
             </button>
 
             {showBreakdown && (
-    <div className="official-breakdown">
-        <p className="official-breakdown-intro">
-            All professor-recorded assessment results used by the
-            calculator are listed below. Private student notes are excluded.
-        </p>
-
-        {/* ASSESSMENT TASKS */}
-        <section className="breakdown-section">
-            <div className="breakdown-section-header">
-                <div className="breakdown-section-title">
-                    <span className="breakdown-section-icon">✓</span>
-                    <h3>Assessment Tasks</h3>
-                    <span>ATs</span>
-                </div>
-
-                <span className="breakdown-weight">
-                    70% of classwork
-                </span>
-            </div>
-
-            {[
-                {
-                    name: "AT 1 - Computer hardware essentials",
-                    score: "18 / 20",
-                    status: "Recorded by professor",
-                    recorded: true,
-                },
-                {
-                    name: "AT 2 - Operating system installation",
-                    score: "—",
-                    status: "Awaiting professor score",
-                    recorded: false,
-                },
-                {
-                    name: "AT 3 - Network configuration",
-                    score: "—",
-                    status: "Awaiting professor score",
-                    recorded: false,
-                },
-            ].map((task, index) => (
-                <div className="breakdown-task" key={index}>
-                    <div className="breakdown-task-info">
-                        <p className="breakdown-task-name">
-                            {term} · {task.name}
-                        </p>
-                        <p className="breakdown-task-status">
-                            {term} · {task.status}
-                        </p>
-                    </div>
-
-                    <div className="breakdown-task-score">
-                        <strong>{task.score}</strong>
-                        <span>
-                            {task.recorded
-                                ? "Locked · Official"
-                                : "Not yet recorded"}
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </section>
-
-        {/* TEACHING AND LEARNING ACTIVITIES */}
-        <section className="breakdown-section">
-            <div className="breakdown-section-header">
-                <div className="breakdown-section-title">
-                    <span className="breakdown-section-icon">↗</span>
-                    <h3>Teaching &amp; Learning Activities</h3>
-                    <span>TLAs</span>
-                </div>
-
-                <span className="breakdown-weight">
-                    30% of classwork
-                </span>
-            </div>
-
-            {[
-                "TLA 1 - Hardware identification",
-                "TLA 2 - Troubleshooting workshop",
-                "TLA 3 - System maintenance lab",
-                "TLA 4 - Network troubleshooting",
-            ].map((name, index) => (
-                <div className="breakdown-task" key={index}>
-                    <div className="breakdown-task-info">
-                        <p className="breakdown-task-name">
-                            {term} · {name}
-                        </p>
-                        <p className="breakdown-task-status">
-                            {term} · Awaiting professor score
-                        </p>
-                    </div>
-
-                    <div className="breakdown-task-score">
-                        <strong>—</strong>
-                        <span>Not yet recorded</span>
-                    </div>
-                </div>
-            ))}
-        </section>
-
-        {/* EXAMINATIONS */}
-        <section className="breakdown-section">
-            <div className="breakdown-section-header">
-                <div className="breakdown-section-title">
-                    <span className="breakdown-section-icon">≡</span>
-                    <h3>Examinations</h3>
-                    <span>Exams</span>
-                </div>
-
-                <span className="breakdown-weight">
-                    30% of term grade
-                </span>
-            </div>
-
-            <div className="breakdown-task">
-                <div className="breakdown-task-info">
-                    <p className="breakdown-task-name">
-                        {term} Exam
+                <div className="official-breakdown">
+                    <p className="official-breakdown-intro">
+                        Only professor-recorded scores are shown here. Private
+                        sandbox entries are not included.
                     </p>
-                    <p className="breakdown-task-status">
-                        {term} · Awaiting professor score
-                    </p>
+                    {breakdownSections.map(({ category, title, icon, weight }) => {
+                        const tasks = (currentTerm[category] ?? []).filter(
+                            (task) => !task.isCustomTask
+                        );
+                        return (
+                            <section className="breakdown-section" key={category}>
+                                <div className="breakdown-section-header">
+                                    <div className="breakdown-section-title">
+                                        <span className="breakdown-section-icon">{icon}</span>
+                                        <h3>{title}</h3>
+                                        <span>{category === "AT" ? "ATs" : "TLAs"}</span>
+                                    </div>
+                                    <span className="breakdown-weight">{weight}</span>
+                                </div>
+                                {tasks.length ? tasks.map((task) => (
+                                    <div className="breakdown-task" key={task.id}>
+                                        <div className="breakdown-task-info">
+                                            <p className="breakdown-task-name">
+                                                {term} · {taskName(task, category)}
+                                            </p>
+                                            <p className="breakdown-task-status">
+                                                {task.officialScore === null || task.officialScore === undefined
+                                                    ? "Awaiting professor score"
+                                                    : "Recorded by professor"}
+                                            </p>
+                                        </div>
+                                        <div className="breakdown-task-score">
+                                            <strong>
+                                                {task.officialScore === null || task.officialScore === undefined
+                                                    ? "—"
+                                                    : `${task.officialScore} / ${task.maxScore}`}
+                                            </strong>
+                                            <span>
+                                                {task.officialScore === null || task.officialScore === undefined
+                                                    ? "Not yet recorded"
+                                                    : "Locked · Official"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <p className="breakdown-empty">
+                                        No official {category} records for {term}.
+                                    </p>
+                                )}
+                            </section>
+                        );
+                    })}
+                    <section className="breakdown-section">
+                        <div className="breakdown-section-header">
+                            <div className="breakdown-section-title">
+                                <span className="breakdown-section-icon">≡</span>
+                                <h3>Examination</h3>
+                            </div>
+                            <span className="breakdown-weight">30% of term grade</span>
+                        </div>
+                        <div className="breakdown-task">
+                            <div className="breakdown-task-info">
+                                <p className="breakdown-task-name">
+                                    {exam.title}
+                                </p>
+                                <p className="breakdown-task-status">
+                                    {exam.officialScore === null ||
+                                    exam.officialScore === undefined
+                                        ? "Awaiting professor score"
+                                        : "Recorded by professor"}
+                                </p>
+                            </div>
+                            <div className="breakdown-task-score">
+                                <strong>
+                                    {exam.officialScore === null ||
+                                    exam.officialScore === undefined
+                                        ? "—"
+                                        : `${exam.officialScore} / ${exam.maxScore}`}
+                                </strong>
+                                <span>
+                                    {exam.officialScore === null ||
+                                    exam.officialScore === undefined
+                                        ? "Not yet recorded"
+                                        : "Locked · Official"}
+                                </span>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-
-                <div className="breakdown-task-score">
-                    <strong>—</strong>
-                    <span>Not yet recorded</span>
-                </div>
-            </div>
-        </section>
-    </div>
-)}
+            )}
             <p className="sandbox-notice">
-                ⓘ Sandbox edits cannot change official records.
+                Your sandbox edits are private and saved separately for each term.
             </p>
         </section>
     );

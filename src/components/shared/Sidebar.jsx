@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getDb } from '../../utils/db';
 
@@ -13,7 +13,7 @@ export default function Sidebar() {
   });
   
   // 2. Load DB (Lazy Init)
-  const [dbData] = useState(() => getDb());
+  const dbData = getDb();
   const activeStudentId = "U1"; // Hardcoded for Phase 1
 
   // 3. Derive the student's enrolled subjects

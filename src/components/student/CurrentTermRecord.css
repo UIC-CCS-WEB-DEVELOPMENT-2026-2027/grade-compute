@@ -116,6 +116,27 @@
     white-space: nowrap;
 }
 
+.term-task-section + .term-task-section {
+    border-top: 1px solid #e3e6e9;
+}
+
+.term-task-heading {
+    margin: 0;
+    padding: 10px 17px;
+    background: #fcfbf8;
+    color: #75869c;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.term-empty {
+    margin: 0;
+    padding: 14px 17px;
+    color: #8491a1;
+    font-size: 10px;
+}
+
 /* RECORD ROWS */
 
 .record-row {
@@ -247,6 +268,13 @@
     font-size: 12px;
 }
 
+.score-input-group .sandbox-max-score {
+    width: 40px;
+    color: #8a9bb0;
+    font-size: 11px;
+    text-align: center;
+}
+
 /* CUSTOM RECORD */
 
 .custom-record {
@@ -285,6 +313,22 @@
 
 .add-task-form input:focus {
     box-shadow: 0 0 0 2px #dbeafe;
+}
+
+.add-task-form select {
+    width: auto;
+    max-width: 100%;
+    padding: 10px;
+    border: 1px solid #d8e1ee;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #41669b;
+    font-family: inherit;
+    font-size: 11px;
+}
+
+.add-task-form input[type="number"] {
+    flex: 0 1 120px;
 }
 
 .add-task-form button {
@@ -331,6 +375,13 @@
     color: #8491a1;
     font-size: 10px;
     line-height: 1.7;
+}
+
+.sandbox-error {
+    margin: 0;
+    padding: 0 17px 12px;
+    color: #b42318;
+    font-size: 10px;
 }
 
 /* GRADE BREAKDOWN */
@@ -655,4 +706,3 @@
         font-size: 12px;
     }
 }
-
