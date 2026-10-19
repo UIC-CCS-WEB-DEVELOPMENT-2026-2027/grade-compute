@@ -11,11 +11,11 @@ export default function StudentDashboard() {
     <div className="flex-row" style={{ minHeight: '100vh', gap: 0 }}>
       <Sidebar />
       <main className="container" style={{ padding: '2rem', flex: 1 }}>
-          <h2>Student Dashboard</h2>
-          <p>List of enrolled subjects goes here.</p>
-          <SubjectCard  />
-          {/* Developer implementation for displaying SubjectCards goes here */}
-          
+        <h2>Student Dashboard</h2>
+        <p>List of enrolled subjects goes here.</p>
+        <SubjectCard  />
+        {/* Developer implementation for displaying SubjectCards goes here */}
+        
       </main>
     </div>
   );
