@@ -44,20 +44,43 @@ export default function Sidebar() {
           Dashboard
         </Link>
 
-        {/* The Dropdown Toggle Button */}
-        <Link
-          to="/student/subject"
-          className={`sidebar-link ${location.pathname === '/student/subject' ? 'btn-primary' : ''}`}
-          onClick={() => setIsSubjectsOpen(!isSubjectsOpen)}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          My Subjects
-          <span>{isSubjectsOpen ? '▲' : '▼'}</span>
-        </Link>
+        <div className={`sidebar-subject-row ${isSubjectsOpen ? 'is-open' : ''}`}>
+          <Link
+            to="/student/subject"
+            className={`sidebar-link sidebar-subject-link ${
+              location.pathname === '/student/subject' ? 'is-active' : ''
+            }`}
+          >
+            <svg
+              className="sidebar-subject-icon"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect x="2" y="1.5" width="12" height="13" rx="1" />
+              <path d="M5 5h6M5 8h6M5 11h4" />
+            </svg>
+            <span className="sidebar-subject-label">My Subjects</span>
+            <span className="sidebar-subject-count">{enrolledSubjects.length}</span>
+          </Link>
+          <button
+            type="button"
+            className="sidebar-subject-toggle"
+            onClick={() => setIsSubjectsOpen((isOpen) => !isOpen)}
+            aria-label={isSubjectsOpen ? 'Collapse subject list' : 'Expand subject list'}
+            aria-expanded={isSubjectsOpen}
+            aria-controls="sidebar-subject-list"
+          >
+            <span className="sidebar-subject-chevron" aria-hidden="true" />
+          </button>
+        </div>
 
         {/* The Dropdown Menu List */}
         {isSubjectsOpen && (
-          <div className="flex-col" style={{ paddingLeft: '1rem', gap: '0.25rem' }}>
+          <div
+            id="sidebar-subject-list"
+            className="flex-col sidebar-subject-list"
+          >
             {enrolledSubjects.length > 0 ? (
               enrolledSubjects.map(sub => {
                 const linkPath = `/student/subject/${sub.classId}`;
@@ -67,7 +90,9 @@ export default function Sidebar() {
                   <Link 
                     key={sub.classId} 
                     to={linkPath}
-                    className={`sidebar-link ${isActive ? 'btn-primary' : ''}`}
+                    className={`sidebar-link sidebar-enrolled-subject ${
+                      isActive ? 'btn-primary' : ''
+                    }`}
                   >
                     {sub.subjectCode} - {sub.subjectName}
                   </Link>
