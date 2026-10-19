@@ -9,14 +9,8 @@ export default function SubjectCard({ classId, subjectCode, subjectName, profess
         <p style={{ color: 'var(--color-muted)', fontSize: '0.9rem' }}>Prof: {professorName}</p>
       </div>
       
-      <Link
-        to={`/student/subject/${classId}`}
-        className="dashboard-view-button"
-        style={{ marginTop: '1rem' }}
-      >
-        <span>View Grades</span>
-        {/* Decorative chevron; the whole control is a navigation link. */}
-        <span className="dashboard-view-chevron" aria-hidden="true" />
+      <Link to={`/student/subject/${classId}`} style={{ textDecoration: 'none', marginTop: '1rem' }}>
+        <button className="btn-accent" style={{ width: '100%' }}>View Grades</button>
       </Link>
     </div>
   );
