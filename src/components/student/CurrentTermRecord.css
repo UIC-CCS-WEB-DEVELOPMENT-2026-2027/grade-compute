@@ -21,7 +21,7 @@
 .records-heading p {
     margin: 9px 0 16px;
     color: #7c8ca1;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.5;
 }
 
@@ -496,18 +496,22 @@
 }
 
 .official-breakdown-intro {
-    margin: 0 0 18px;
+    margin: 0 0 16px;
     color: #75869c;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.7;
 }
 
 .breakdown-section {
-    margin: 0 0 30px;
+    margin: 0 0 16px;
+    padding: 14px 16px;
+    border: 1px solid #e5eaf1;
+    border-radius: 9px;
+    background: #ffffff;
 }
 
 .breakdown-section:last-child {
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
 
 .breakdown-section-header {
@@ -515,7 +519,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf1f5;
 }
 
 .breakdown-section-title {
@@ -565,8 +571,12 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    min-height: 48px;
-    padding: 10px 0;
+    min-height: 56px;
+    padding: 10px 2px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.breakdown-task:last-child {
     border-bottom: none;
 }
 
@@ -578,7 +588,7 @@
 .breakdown-task-name {
     margin: 0;
     color: #58749a;
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.6;
     overflow-wrap: anywhere;
 }
@@ -586,7 +596,7 @@
 .breakdown-task-status {
     margin: 3px 0 0;
     color: #8a98aa;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 1.5;
 }
 
@@ -598,15 +608,15 @@
 .breakdown-task-score strong {
     display: block;
     color: #41669b;
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .breakdown-task-score span {
     display: block;
     margin-top: 3px;
     color: #8491a1;
-    font-size: 9px;
+    font-size: 10px;
 }
 
 .breakdown-empty {
@@ -616,6 +626,10 @@
 }
 
 @media (max-width: 600px) {
+    .breakdown-section {
+        padding: 12px;
+    }
+
     .breakdown-section-title {
         gap: 6px;
     }
@@ -638,6 +652,7 @@
     }
 
     .breakdown-task-name {
-        font-size: 10px;
+        font-size: 12px;
     }
 }
+

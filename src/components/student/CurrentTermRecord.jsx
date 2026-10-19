@@ -394,3 +394,4 @@ function CurrentTermRecords({ term = "Prelim" }) {
 }
 
 export default CurrentTermRecords;
+
