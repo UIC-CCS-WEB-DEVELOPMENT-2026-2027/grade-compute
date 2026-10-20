@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
+import Header from "../../components/shared/Header";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import { getDb } from "../../utils/db";
 import { calculateOfficialGrade, getOfficialAssessments } from "../../utils/grades";
@@ -63,62 +64,7 @@ function SubjectDetail() {
         <div className="subject-detail-layout">
             <Sidebar />
             <div className="subject-detail-main">
-                <header className="subject-page-header">
-                    <div className="subject-page-greeting">
-                        <h1>Welcome back, {firstName}!</h1>
-                        <p>A little progress, every day.</p>
-                    </div>
-
-                    <div className="subject-page-header-actions">
-                        <button
-                            type="button"
-                            className="subject-page-notifications"
-                            aria-label="Notifications"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path
-                                    d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                            <span className="subject-page-notification-dot" />
-                        </button>
-
-                        <div className="subject-page-profile">
-                            <span className="subject-page-avatar" aria-hidden="true">
-                                {initials}
-                            </span>
-                            <span className="subject-page-profile-details">
-                                <span className="subject-page-profile-name">
-                                    {studentName}
-                                </span>
-                                <span className="subject-page-profile-role">
-                                    Student
-                                    {student?.programSection
-                                        ? ` · ${student.programSection}`
-                                        : ""}
-                                </span>
-                            </span>
-                            <svg
-                                className="subject-page-profile-chevron"
-                                viewBox="0 0 12 12"
-                                fill="none"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="m3 4.5 3 3 3-3"
-                                    stroke="currentColor"
-                                    strokeWidth="1.4"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        </div>
-                    </div>
-                </header>
+                <Header />
 
                 <main className="student-dashboard">
 

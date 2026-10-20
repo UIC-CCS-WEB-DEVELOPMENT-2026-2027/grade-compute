@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
+import Header from "../../components/shared/Header";
 import { getDb, saveDb } from "../../utils/db";
 import { calculateOfficialGrade } from "../../utils/grades";
 import "./SubjectMenu.css";
@@ -209,62 +210,7 @@ export default function SubjectMenu() {
         <div className="subject-detail-layout subject-menu-layout">
             <Sidebar />
             <div className="subject-detail-main">
-                <header className="subject-page-header">
-                    <div className="subject-page-greeting">
-                        <h1>Welcome back, {firstName}!</h1>
-                        <p>A little progress, every day.</p>
-                    </div>
-
-                    <div className="subject-page-header-actions">
-                        <button
-                            type="button"
-                            className="subject-page-notifications"
-                            aria-label="Notifications"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path
-                                    d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                            <span className="subject-page-notification-dot" />
-                        </button>
-
-                        <div className="subject-page-profile">
-                            <span className="subject-page-avatar" aria-hidden="true">
-                                {initials}
-                            </span>
-                            <span className="subject-page-profile-details">
-                                <span className="subject-page-profile-name">
-                                    {studentName}
-                                </span>
-                                <span className="subject-page-profile-role">
-                                    Student
-                                    {student?.programSection
-                                        ? ` · ${student.programSection}`
-                                        : ""}
-                                </span>
-                            </span>
-                            <svg
-                                className="subject-page-profile-chevron"
-                                viewBox="0 0 12 12"
-                                fill="none"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="m3 4.5 3 3 3-3"
-                                    stroke="currentColor"
-                                    strokeWidth="1.4"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        </div>
-                    </div>
-                </header>
+                <Header />
 
             <main className="subject-menu-main">
                 <header className="subject-menu-heading">
