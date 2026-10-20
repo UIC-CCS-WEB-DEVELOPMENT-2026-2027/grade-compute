@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import GlobalSettings from './pages/GlobalSettings';
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+// Auth
 import LoginRegister from './pages/auth/LoginRegister';
 
-function App() {
-  const [showLogin, setShowLogin] = useState(false);
+// Global Settings
+import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
 
-  if (showLogin) {
-    return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
-  }
 // Student Workspace
 import StudentDashboard from './pages/student/StudentDashboard';
 import SubjectDetail from './pages/student/SubjectDetail';
@@ -17,10 +17,27 @@ import SubjectMenu from './pages/student/SubjectMenu';
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
 import GradingWorkspace from './pages/professor/GradingWorkspace';
 
-  return <GlobalSettings onLogout={() => setShowLogin(true)} />;
-}
+// Admin Workspace
+import AdminOverview from './pages/admin/AdminOverview';
+import RequestQueue from './pages/admin/RequestQueue';
+import ManageFaculty from './pages/admin/ManageFaculty';
+import ManageCourses from './pages/admin/ManageCourses';
+import SystemFormulas from './pages/admin/SystemFormulas';
+*/
 
-export default App;
+export default function App() {
+  const [showLogin, setShowLogin] = useState(false);
+
+  if (showLogin) {
+    return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
+  }
+
+  return (
+    <Router>
+      <Routes>
+        {/* Public / Authentication */}
+        <Route path="/" element={<LoginRegister />} />
+
         {/* Global Authenticated */}
         <Route path="/settings" element={<GlobalSettings />} />
         
