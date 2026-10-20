@@ -27,12 +27,60 @@
   --color-warning: #FF7070;       /* Coral: System warnings, destructive actions */
   --color-highlight: #FFF799;     /* Pale Yellow: Alert banners, pending verification states */
   --color-text-locked: #2C2C2C;   /* Deep Navy: Official locked scores, standard text */
+  --color-primary-soft: #E6EDF9;
+  --color-warning-soft: #F9E7E2;
+  --color-warning-strong: #C95D50;
+  --color-warning-border: rgba(216, 106, 93, 0.35);
+  --color-highlight-soft: #FFF7D9;
+  --color-highlight-strong: #E9C936;
+  --color-success: #36754A;
+  --color-success-dark: #91D2A3;
+  --color-danger-dark: #F0968C;
+  --color-white: #FFFFFF;
   
   /* Backgrounds & Neutrals */
   --color-bg-main: #F4F7F9;       /* Light grayish-blue for the app background */
   --color-surface: #FFFFFF;       /* White for cards, modals, and tables */
+  --color-surface-soft: #FAFBFC;
+  --color-surface-hover: #F5F6F8;
+  --color-surface-muted: #F1F2F4;
   --color-border: #E2E8F0;        /* Light border color for dividers and standard inputs */
+  --color-border-soft: #EDF0F2;
+  --color-border-strong: #E3E6EA;
   --color-muted: #64748B;         /* Muted text for helpers and effective multipliers */
+  --color-text-subtle: #777E88;
+  --color-text-faint: #A2A8B0;
+
+  /* Shared feedback, overlay, and elevation colors */
+  --color-overlay: rgba(24, 28, 34, 0.34);
+  --color-focus-ring: rgba(76, 140, 228, 0.36);
+  --color-border-overlay: rgba(26, 29, 34, 0.08);
+  --color-border-overlay-strong: rgba(26, 29, 34, 0.12);
+  --color-border-overlay-subtle: rgba(26, 29, 34, 0.06);
+  --color-surface-overlay: rgba(255, 255, 255, 0.45);
+  --color-surface-overlay-soft: rgba(255, 255, 255, 0.22);
+  --color-surface-overlay-subtle: rgba(255, 255, 255, 0.14);
+  --color-surface-overlay-faint: rgba(255, 255, 255, 0.06);
+  --shadow-card: rgba(28, 34, 44, 0.045);
+  --shadow-hover: rgba(25, 31, 40, 0.045);
+  --shadow-hover-strong: rgba(30, 36, 44, 0.09);
+  --shadow-dialog: rgba(24, 28, 34, 0.17);
+
+  /* Dark theme surfaces and text */
+  --color-bg-dark: #191B1F;
+  --color-surface-dark: #22252A;
+  --color-surface-dark-soft: #292D33;
+  --color-surface-dark-raised: #2E3239;
+  --color-border-dark: #353941;
+  --color-border-dark-highlight: #665B2B;
+  --color-text-dark: #F0F1F3;
+  --color-text-dark-muted: #AFB4BC;
+  --color-text-dark-soft: #D4D7DC;
+  --color-primary-dark: #4C8CE4;
+  --color-primary-dark-soft: #23354D;
+  --color-warning-dark-soft: #302B1A;
+  --color-warning-dark-text: #EDE1A6;
+  --shadow-card-dark: rgba(0, 0, 0, 0.14);
   --color-bg-alt: #fff79a;     /* Yellow background for alternative */
   --color-bg-selected: #edf1fa; /* Light blue background for selected items */
 
@@ -49,11 +97,28 @@
 }
 
 body {
+  min-height: 100vh;
   font-family: var(--font-body); /* Applied Body Font */
   background-color: var(--color-bg-main);
   color: var(--color-text-locked);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+html,
+#root {
+  min-height: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -336,7 +401,7 @@ input:focus, select:focus {
 .input-self-reported {
   border: 2px solid var(--color-accent);
   color: var(--color-accent);
-  background-color: #F0F6FF; /* Very subtle blue tint */
+  background-color: var(--color-primary-soft); /* Very subtle blue tint */
   font-weight: 600;
 }
 
