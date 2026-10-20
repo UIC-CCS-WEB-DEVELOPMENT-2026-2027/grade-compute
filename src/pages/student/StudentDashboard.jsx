@@ -32,24 +32,12 @@ export default function StudentDashboard() {
   return (
     <div className="flex-row" style={{ minHeight: '100vh', gap: 0 }}>
       <Sidebar />
-      <main className="container" style={{ flex: 1, padding: '2rem' }}>
-        <header>
-          <p className="eyebrow">YOUR ACADEMIC SPACE</p>
-          <h1>Student Dashboard</h1>
-          <p>Review your enrolled subjects and open a class to view its grades.</p>
-        </header>
-
-        <section
-          aria-label="Enrolled subjects"
-          className="flex-row"
-          style={{ marginTop: '2rem', alignItems: 'stretch' }}
-        >
-          {subjects.map((subject) => (
-            <div key={subject.classId} style={{ flex: '1 1 240px', minWidth: 0 }}>
-              <SubjectCard {...subject} />
-            </div>
-          ))}
-        </section>
+      <main className="container" style={{ padding: '2rem', flex: 1 }}>
+          <h2>Student Dashboard</h2>
+          <p>List of enrolled subjects goes here.</p>
+          <SubjectCard  />
+          {/* Developer implementation for displaying SubjectCards goes here */}
+          
       </main>
     </div>
   );
