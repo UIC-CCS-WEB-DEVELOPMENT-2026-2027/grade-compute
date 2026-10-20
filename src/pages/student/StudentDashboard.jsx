@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/shared/Sidebar';
+import Header from '../../components/shared/Header';
 import SubjectCard from '../../components/student/SubjectCard';
 import { getDb } from '../../utils/db';
 import './StudentDashboard.css';
