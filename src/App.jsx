@@ -1,3 +1,4 @@
+import { useState } from 'react';
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -10,6 +11,7 @@ import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
 // Student Workspace
 import StudentDashboard from './pages/student/StudentDashboard';
 import SubjectDetail from './pages/student/SubjectDetail';
+import SubjectMenu from './pages/student/SubjectMenu';
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
@@ -22,7 +24,14 @@ import ManageFaculty from './pages/admin/ManageFaculty';
 import ManageCourses from './pages/admin/ManageCourses';
 import SystemFormulas from './pages/admin/SystemFormulas';
 */
+
 export default function App() {
+  const [showLogin, setShowLogin] = useState(false);
+
+  if (showLogin) {
+    return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
+  }
+
   return (
     <Router>
       <Routes>
@@ -34,6 +43,7 @@ export default function App() {
         
         {/* Student Workspace (Phase 1 Focus) */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/subject" element={<SubjectMenu />} />
         <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
         {/*
         {// Professor Workspace (Phase 2) }

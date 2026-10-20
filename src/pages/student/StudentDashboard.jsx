@@ -8,9 +8,34 @@ import './StudentDashboard.css';
 import bellIcon from '../../assets/bell-icon.png';
 import userProfile from '../../assets/user-profile.png';
 
-export default function StudentDashboard() {
-  // TODO: Initialize database state and filter enrolled classes
+const subjects = [
+  {
+    classId: 'C101',
+    subjectCode: 'IT101',
+    subjectName: 'Computer Systems',
+    professorName: 'Prof. Maria Santos',
+  },
+  {
+    classId: 'C102',
+    subjectCode: 'MATH 101',
+    subjectName: 'General Mathematics',
+    professorName: 'Prof. Daniel Reyes',
+  },
+  {
+    classId: 'C103',
+    subjectCode: 'PROG 101',
+    subjectName: 'Introduction to Programming',
+    professorName: 'Prof. Andrea Cruz',
+  },
+  {
+    classId: 'C104',
+    subjectCode: 'ANTH 101',
+    subjectName: 'Cultural Anthropology',
+    professorName: 'Prof. Luis Mendoza',
+  },
+];
 
+export default function StudentDashboard() {
   return (
     <div className="dashboard-page flex-row">
       <Sidebar />

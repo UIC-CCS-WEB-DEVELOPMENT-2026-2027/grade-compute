@@ -27,12 +27,60 @@
   --color-warning: #FF7070;       /* Coral: System warnings, destructive actions */
   --color-highlight: #FFF799;     /* Pale Yellow: Alert banners, pending verification states */
   --color-text-locked: #2C2C2C;   /* Deep Navy: Official locked scores, standard text */
+  --color-primary-soft: #E6EDF9;
+  --color-warning-soft: #F9E7E2;
+  --color-warning-strong: #C95D50;
+  --color-warning-border: rgba(216, 106, 93, 0.35);
+  --color-highlight-soft: #FFF7D9;
+  --color-highlight-strong: #E9C936;
+  --color-success: #36754A;
+  --color-success-dark: #91D2A3;
+  --color-danger-dark: #F0968C;
+  --color-white: #FFFFFF;
   
   /* Backgrounds & Neutrals */
   --color-bg-main: #F4F7F9;       /* Light grayish-blue for the app background */
   --color-surface: #FFFFFF;       /* White for cards, modals, and tables */
+  --color-surface-soft: #FAFBFC;
+  --color-surface-hover: #F5F6F8;
+  --color-surface-muted: #F1F2F4;
   --color-border: #E2E8F0;        /* Light border color for dividers and standard inputs */
+  --color-border-soft: #EDF0F2;
+  --color-border-strong: #E3E6EA;
   --color-muted: #64748B;         /* Muted text for helpers and effective multipliers */
+  --color-text-subtle: #777E88;
+  --color-text-faint: #A2A8B0;
+
+  /* Shared feedback, overlay, and elevation colors */
+  --color-overlay: rgba(24, 28, 34, 0.34);
+  --color-focus-ring: rgba(76, 140, 228, 0.36);
+  --color-border-overlay: rgba(26, 29, 34, 0.08);
+  --color-border-overlay-strong: rgba(26, 29, 34, 0.12);
+  --color-border-overlay-subtle: rgba(26, 29, 34, 0.06);
+  --color-surface-overlay: rgba(255, 255, 255, 0.45);
+  --color-surface-overlay-soft: rgba(255, 255, 255, 0.22);
+  --color-surface-overlay-subtle: rgba(255, 255, 255, 0.14);
+  --color-surface-overlay-faint: rgba(255, 255, 255, 0.06);
+  --shadow-card: rgba(28, 34, 44, 0.045);
+  --shadow-hover: rgba(25, 31, 40, 0.045);
+  --shadow-hover-strong: rgba(30, 36, 44, 0.09);
+  --shadow-dialog: rgba(24, 28, 34, 0.17);
+
+  /* Dark theme surfaces and text */
+  --color-bg-dark: #191B1F;
+  --color-surface-dark: #22252A;
+  --color-surface-dark-soft: #292D33;
+  --color-surface-dark-raised: #2E3239;
+  --color-border-dark: #353941;
+  --color-border-dark-highlight: #665B2B;
+  --color-text-dark: #F0F1F3;
+  --color-text-dark-muted: #AFB4BC;
+  --color-text-dark-soft: #D4D7DC;
+  --color-primary-dark: #4C8CE4;
+  --color-primary-dark-soft: #23354D;
+  --color-warning-dark-soft: #302B1A;
+  --color-warning-dark-text: #EDE1A6;
+  --shadow-card-dark: rgba(0, 0, 0, 0.14);
   --color-bg-alt: #fff79a;     /* Yellow background for alternative */
   --color-bg-selected: #edf1fa; /* Light blue background for selected items */
 
@@ -49,11 +97,28 @@
 }
 
 body {
+  min-height: 100vh;
   font-family: var(--font-body); /* Applied Body Font */
   background-color: var(--color-bg-main);
   color: var(--color-text-locked);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+html,
+#root {
+  min-height: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -125,6 +190,41 @@ button:hover {
   color: #FFFFFF;
 }
 
+.dashboard-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #f0e783;
+  border-radius: 4px;
+  background-color: var(--color-highlight);
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-view-button:hover {
+  border-color: #e3d96d;
+  background-color: #fff38a;
+}
+
+.dashboard-view-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dashboard-view-chevron {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin: -0.2rem 0.15rem 0 0.75rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
 .btn-warning {
   background-color: var(--color-warning);
   color: #FFFFFF;
@@ -170,10 +270,122 @@ input:focus, select:focus {
     color: var(--color-primary);
   }
 
+.sidebar-subject-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.sidebar-subject-link {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 0.65rem;
+    min-width: 0;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.5rem;
+    color: var(--color-primary);
+}
+
+.sidebar-link.sidebar-subject-link:hover,
+.sidebar-subject-link.is-active {
+    background-color: var(--color-surface);
+}
+
+.sidebar-subject-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 1rem;
+    stroke: currentColor;
+    stroke-width: 1.2;
+}
+
+.sidebar-subject-label {
+    flex: 1;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.sidebar-subject-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.2rem;
+    height: 1.1rem;
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
+    background-color: var(--color-bg-selected);
+    color: var(--color-primary);
+    font-size: 0.65rem;
+    line-height: 1;
+}
+
+.sidebar-subject-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-primary);
+}
+
+.sidebar-subject-toggle:hover {
+    background: transparent;
+    opacity: 1;
+}
+
+.sidebar-subject-chevron {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+}
+
+.sidebar-subject-row.is-open .sidebar-subject-chevron {
+    transform: rotate(45deg);
+}
+
+.sidebar-subject-list {
+    gap: 0.25rem;
+    margin-left: 1.25rem;
+    padding: 0.35rem 0 0.35rem 0.65rem;
+    border-left: 1px solid rgba(64, 96, 147, 0.28);
+}
+
+.sidebar-enrolled-subject {
+    position: relative;
+    padding: 0.45rem 0.35rem 0.45rem 0.95rem;
+    border-radius: 0.25rem;
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+.sidebar-enrolled-subject::before {
+    position: absolute;
+    left: 0.15rem;
+    color: var(--color-primary);
+    content: "↳";
+}
+
+.sidebar-enrolled-subject.btn-primary,
+.sidebar-enrolled-subject:hover {
+    background-color: var(--color-surface);
+}
+
+.sidebar-enrolled-subject.btn-primary {
+    border-radius: 0.5rem;
+}
+
 .sidebar-link:hover {
     background-color: var(--color-bg-main);
 }
-
 
 /* =========================================
    3-State Grading Specifics
@@ -189,7 +401,7 @@ input:focus, select:focus {
 .input-self-reported {
   border: 2px solid var(--color-accent);
   color: var(--color-accent);
-  background-color: #F0F6FF; /* Very subtle blue tint */
+  background-color: var(--color-primary-soft); /* Very subtle blue tint */
   font-weight: 600;
 }
 
