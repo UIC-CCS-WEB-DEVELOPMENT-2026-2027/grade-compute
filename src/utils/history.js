@@ -161,10 +161,13 @@ export function getEntryAccuracy(points) {
     };
 }
 
-// Index of the first point at or above the target, or -1.
-export function findTargetReached(points, target, key = "grade") {
-    if (target === null || target === undefined) return -1;
-    return points.findIndex((point) => point[key] !== null && point[key] !== undefined && point[key] >= target);
+// "Target reached" only counts when the latest task leaves the grade at or
+// above the target (an earlier peak that later dropped doesn't count).
+// Returns the index of that last point, or -1.
+export function getTargetReachedIndex(points, target, key = "grade") {
+    if (target === null || target === undefined || points.length === 0) return -1;
+    const last = points[points.length - 1][key];
+    return last !== null && last !== undefined && last >= target ? points.length - 1 : -1;
 }
 
 // Round-robin over groups of slots: one from each criterion in turn.
@@ -275,7 +278,7 @@ export function getCoursesHistory(db, studentId, termKey, semesterId = null) {
             subjectName: subject?.subjectName ?? "",
             target,
             points,
-            reachedIndex: findTargetReached(points, target),
+            reachedIndex: getTargetReachedIndex(points, target),
         }];
     });
 }

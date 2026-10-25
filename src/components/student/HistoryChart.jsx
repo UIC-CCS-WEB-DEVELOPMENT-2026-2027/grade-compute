@@ -2,7 +2,8 @@
 // One subject's term grade after each scored task (solid line), with:
 // - the target and the 75% passing grade as reference lines,
 // - a faded dot where an official score replaced your own entry,
-// - a "Target reached" marker on the first step at or above the target,
+// - a "Target reached" marker on the latest task when it is at or above the
+//   target (on the plan's last task when only the plan gets there),
 // - optionally the sandbox plan for the remaining tasks (dotted line).
 // Used on Subject Detail (SubjectGradeHistory) and in the sandbox.
 // Data comes from utils/history.js.
@@ -17,7 +18,7 @@ import {
     YAxis,
 } from "recharts";
 import { resolveColor } from "../../utils/cssColor";
-import { findTargetReached, getChartScale, PASSING_GRADE } from "../../utils/history";
+import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "../../utils/history";
 import HistoryTooltip from "./HistoryTooltip";
 import "./HistoryChart.css";
 
@@ -38,7 +39,7 @@ function labelAnchor(step, lastStep) {
 }
 
 // Real scores: filled dot for official, hollow accent dot for your own.
-// The first step at the target gets a ring and a label.
+// The latest task gets a ring and a label when it is at the target.
 function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, active = false }) {
     if (cx === undefined || cy === undefined || payload?.grade === null || payload?.grade === undefined) return null;
     const clickable = Boolean(onSelect && payload.taskId);
@@ -142,9 +143,9 @@ export default function HistoryChart({
     if (plan.length && rows.length) rows[rows.length - 1].planGrade = rows[rows.length - 1].grade;
     plan.forEach((point) => rows.push({ ...point, isPlan: true }));
 
-    const reachedIndex = findTargetReached(points, target);
+    const reachedIndex = getTargetReachedIndex(points, target);
     const reachedStep = reachedIndex >= 0 ? points[reachedIndex].step : null;
-    const planReachedIndex = reachedStep === null ? findTargetReached(plan, target, "planGrade") : -1;
+    const planReachedIndex = reachedStep === null ? getTargetReachedIndex(plan, target, "planGrade") : -1;
     const planReachedStep = planReachedIndex >= 0 ? plan[planReachedIndex].step : null;
 
     const scale = getChartScale(
