@@ -111,6 +111,10 @@ export default function StudentDashboard() {
     const professor = rawUsers.find(u => u.id === c.professorId) || {};
 
     const grade = calculatePrelimGrade(record?.grades?.prelim);
+    
+    // Extract target grade from targetGradeSandbox in db.json (defaults to 75)
+    const targetGrade = record?.targetGradeSandbox?.desiredFinalGrade ?? 75;
+
     const isBelowPassing = grade < 75;
     const diff = Math.abs(grade - 75);
 
@@ -132,6 +136,7 @@ export default function StudentDashboard() {
       units: subject.units || c.units || 3,
       icon: icons[idx % icons.length],
       grade: grade,
+      targetGrade: targetGrade, // Reads 90 from db.json
       isBelowPassing,
       status,
       statusType,
@@ -176,12 +181,7 @@ export default function StudentDashboard() {
       <div className="dashboard-content-wrapper">
 
         {/* --- SHARED HEADER --- */}
-        <Header 
-          welcomeTitle={`Welcome back, ${(currentUser.name || 'Juan').split(' ')[0]}!`}
-          welcomeSubtitle="A little progress, every day."
-          userName={currentUser.name}
-          userRole={`Student · ${currentUser.programSection || 'BS Information Technology'}`}
-        />
+        <Header/>
         
         {/* Main Content Container */}
         <main className="dashboard-main container">
@@ -239,6 +239,8 @@ export default function StudentDashboard() {
                         <span className="grade-number">{sub.grade}%</span>
                         <span className="grade-label">Current Prelim grade</span>
                       </div>
+                      
+                      {/* Progress Bar Track with Green Target Line */}
                       <div className="progress-bar-track">
                         <div 
                           className="progress-bar-fill"
@@ -247,10 +249,17 @@ export default function StudentDashboard() {
                             backgroundColor: sub.isBelowPassing ? '#ef4444' : '#1e3a8a'
                           }}
                         />
+                        {/* Green Target Indicator Line */}
+                        <div 
+                          className="target-line-marker" 
+                          style={{ left: `${sub.targetGrade}%` }}
+                          title={`Target: ${sub.targetGrade}%`}
+                        />
                       </div>
+
                       <div className="progress-details">
                         <span className={sub.isBelowPassing ? 'text-alert' : ''}>{sub.pointsText}</span>
-                        <span>Target: 75%</span>
+                        <span>Target: {sub.targetGrade}%</span>
                       </div>
                     </div>
 
@@ -263,11 +272,6 @@ export default function StudentDashboard() {
               ))}
             </div>
           </div>
-
-          {/* PLACE ADD SUBJETC BUTTON HERE */}
-          <button type="submit" className="subject-menu-add-button">
-            Add Subject
-          </button>
 
           {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
           <div className="enrolled-subjects-container">
