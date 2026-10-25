@@ -219,7 +219,7 @@ export default function Sidebar() {
 
         <Link
           to="/student/rules"
-          className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'btn-primary' : ''}`}
+          className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'is-active' : ''}`}
         >
           Grade Rules
         </Link>
