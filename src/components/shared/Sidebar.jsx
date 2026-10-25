@@ -105,6 +105,19 @@ export default function Sidebar() {
             )}
           </div>
         )}
+        <Link 
+          to="/student/rules" 
+          className={`sidebar-link ${location.pathname.includes('/student/rules') ? 'btn-primary' : ''}`} 
+        >
+          Grade Rules
+        </Link>
+
+        <Link 
+          to="/settings" 
+          className={`sidebar-link ${location.pathname.includes('/settings') ? 'btn-primary' : ''}`} 
+        >
+          Settings
+        </Link>
 
         <Link 
           to="/settings" 

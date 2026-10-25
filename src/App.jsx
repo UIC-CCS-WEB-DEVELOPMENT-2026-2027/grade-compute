@@ -12,6 +12,8 @@ import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
 import StudentDashboard from './pages/student/StudentDashboard';
 import SubjectDetail from './pages/student/SubjectDetail';
 import SubjectMenu from './pages/student/SubjectMenu';
+import GradeRules from './pages/student/GradeRules';
+
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
@@ -45,6 +47,7 @@ export default function App() {
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/subject" element={<SubjectMenu />} />
         <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
+        <Route path="/student/rules" element={<GradeRules />} />
         {/*
         {// Professor Workspace (Phase 2) }
         <Route path="/professor/classes" element={<ProfessorDashboard />} />
