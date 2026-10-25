@@ -99,44 +99,6 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-top">
-        <div className="student-switcher" aria-label="Switch workspace">
-          <span className="student-switcher-label">Dov: Switch Workspace</span>
-          <div className="student-switcher-role">
-            <button
-              className="student-switcher-user"
-              type="button"
-              aria-label={`Current role: ${selectedRole}`}
-              aria-expanded={isRoleMenuOpen}
-              aria-haspopup="menu"
-              onClick={() => setIsRoleMenuOpen((isOpen) => !isOpen)}
-            >
-              <span>{selectedRole}</span>
-              <span className="student-switcher-caret" aria-hidden="true">▾</span>
-            </button>
-            {isRoleMenuOpen && (
-              <div className="student-role-menu" role="menu" aria-label="Choose a role">
-                {['Student', 'Professor', 'Admin', 'Sign-in'].map((role) => (
-                  <button
-                    key={role}
-                    type="button"
-                    className={`student-role-option ${selectedRole === role ? 'is-selected' : ''}`}
-                    role="menuitem"
-                    onClick={() => {
-                      setIsRoleMenuOpen(false);
-                      if (role === 'Sign-in') {
-                        navigate('/');
-                        return;
-                      }
-                      setSelectedRole(role);
-                    }}
-                  >
-                    {role}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
 
         <div className="brand" aria-label="CompUGrade">
           <span className="brand-mark" aria-hidden="true">
@@ -290,6 +252,12 @@ export default function Sidebar() {
           </span>
           <span>Help &amp; Resources</span>
         </Link>
+
+        {/* Pushes the logout button to the bottom */}
+        <Link to="/" className="btn-warning sidebar-link" style={{marginTop: 'auto', textAlign: 'center'}}>
+          Logout
+        </Link>
+
       </div>
 
       {subjectToRemove && (
