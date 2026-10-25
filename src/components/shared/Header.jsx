@@ -54,7 +54,7 @@ export default function Header({
     <header className="app-header">
       <div className="app-header__welcome">
         <h1>{welcomeTitle}</h1>
-        <p>{subtitle}</p>
+        {subtitle !== null && <p>{subtitle}</p>}
       </div>
 
       <div className="app-header__account">

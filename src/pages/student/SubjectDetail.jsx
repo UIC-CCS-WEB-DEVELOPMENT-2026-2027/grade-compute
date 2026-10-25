@@ -5,7 +5,6 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
-import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import {
     calculateOfficialGrade,
@@ -25,9 +24,8 @@ const CONFETTI_PIECES = Array.from({ length: 44 }, (_, index) => ({
 
 function SubjectDetail() {
     const [term, setTerm] = useState("Prelim");
-    const [showTargetGradeSandbox, setShowTargetGradeSandbox] = useState(false);
-    const [targetGradeSaveError, setTargetGradeSaveError] = useState("");
     const [celebration, setCelebration] = useState("");
+    const [targetGradeError, setTargetGradeError] = useState("");
     const [dbData, setDbData] = useState(() => getDb());
     const previousAchievement = useRef(null);
     const { subjectId } = useParams();
@@ -153,24 +151,20 @@ function SubjectDetail() {
         targetGradeConfig.desiredFinalGrade ??
         90
     );
+
     function updateTargetGrade(value) {
-        const nextTargetGrade = Number(value);
-        if (!Number.isFinite(nextTargetGrade) || nextTargetGrade < 0 || nextTargetGrade > 100) {
-            return;
-        }
+        if (value === "") return;
+        const nextGrade = Number(value);
+        if (!Number.isFinite(nextGrade) || nextGrade < 0 || nextGrade > 100) return;
 
         const currentDb = getDb();
-        if (!currentDb) {
-            setTargetGradeSaveError("Could not save the target grade because local data is unavailable.");
-            return;
-        }
+        if (!currentDb) return;
         const updatedDb = {
             ...currentDb,
             classes: currentDb.classes.map((item) => item.id !== classItem.id ? item : ({
                 ...item,
-                studentRecords: item.studentRecords.map((record) => record.studentId !== "U1"
-                    ? record
-                    : ({
+                studentRecords: item.studentRecords.map((record) =>
+                    record.studentId !== "U1" ? record : ({
                         ...record,
                         targetGradeSandbox: {
                             ...(record.targetGradeSandbox ?? {}),
@@ -178,20 +172,21 @@ function SubjectDetail() {
                                 ...(record.targetGradeSandbox?.terms ?? {}),
                                 [selectedTermKey]: {
                                     ...(record.targetGradeSandbox?.terms?.[selectedTermKey] ?? {}),
-                                    desiredFinalGrade: nextTargetGrade,
+                                    desiredFinalGrade: nextGrade,
                                 },
                             },
                         },
-                    })),
+                    })
+                ),
             })),
         };
 
         try {
             saveDb(updatedDb);
             setDbData(updatedDb);
-            setTargetGradeSaveError("");
+            setTargetGradeError("");
         } catch (error) {
-            setTargetGradeSaveError(`Unable to save target grade: ${error.message}`);
+            setTargetGradeError(`Unable to save target grade: ${error.message}`);
         }
     }
 
@@ -251,44 +246,32 @@ function SubjectDetail() {
                             <span>{classItem.units ?? 3} units</span>
                         </div>
                     </div>
-
-                    <button
-                        type="button"
-                        className="target-grade-button"
-                        aria-expanded={showTargetGradeSandbox}
-                        aria-controls="subject-target-grade-sandbox"
-                        onClick={() => setShowTargetGradeSandbox((isOpen) => !isOpen)}
-                    >
-                        {showTargetGradeSandbox ? "Close Target Grade Sandbox" : "◎ Set Target Grade"}
-                    </button>
                 </div>
 
                 {/* Official Grade Summary */}
                 <div className="official-grade-card">
-                    <div className="grade-summary-target">
-                        <label htmlFor="subject-target-grade">Target grade</label>
-                        <div>
-                            <input
-                                id="subject-target-grade"
-                                type="number"
-                                min="0"
-                                max="100"
-                                step="1"
-                                value={targetGrade}
-                                onChange={(event) => {
-                                    if (event.target.value !== "") updateTargetGrade(event.target.value);
-                                }}
-                            />
-                            <span>%</span>
-                        </div>
-                        <small>Yellow marker shows your target</small>
-                        {targetGradeSaveError && (
-                            <small className="grade-target-error" role="alert">
-                                {targetGradeSaveError}
-                            </small>
-                        )}
-                    </div>
                     <div className="grade-gauges" aria-label={`${term} grades`}>
+                        <label className="grade-target-control">
+                            <span>Target grade</span>
+                            <span className="grade-target-input-wrap">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    value={targetGrade}
+                                    aria-label={`${term} target grade`}
+                                    onChange={(event) => updateTargetGrade(event.target.value)}
+                                />
+                                <span aria-hidden="true">%</span>
+                            </span>
+                            <small>Yellow marker shows your target</small>
+                            {targetGradeError && (
+                                <small className="grade-target-error" role="alert">
+                                    {targetGradeError}
+                                </small>
+                            )}
+                        </label>
                         <div
                             className="grade-gauge official-gauge"
                             tabIndex="0"
@@ -368,12 +351,6 @@ function SubjectDetail() {
 
                 </div>
             </section>
-
-            {showTargetGradeSandbox && (
-                <div id="subject-target-grade-sandbox" className="subject-target-grade-sandbox">
-                    <TargetGradeSandbox classId={classItem.id} variant="page" />
-                </div>
-            )}
 
             {/* Current Term Records */}
             <CurrentTermRecords classId={classItem.id} term={term} />

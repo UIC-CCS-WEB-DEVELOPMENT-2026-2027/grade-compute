@@ -40,6 +40,113 @@
     font-size: 1.05rem;
 }
 
+.sandbox-grade-summary {
+    display: grid;
+    grid-template-columns: minmax(125px, 0.65fr) minmax(0, 1.35fr);
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem;
+    border: 1px solid #e8e4dc;
+    border-radius: 0.65rem;
+    background: #fcfbf8;
+}
+
+.sandbox-grade-target-control {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    color: #26374e;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.sandbox-grade-target-input {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    color: #b39310;
+}
+
+.sandbox-grade-target-input input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #bdcce0;
+    border-radius: 0.45rem;
+    background: #fff;
+    color: #406093;
+    font: inherit;
+    font-size: 0.72rem;
+}
+
+.sandbox-grade-target-input > span {
+    flex: 0 0 auto;
+}
+
+.sandbox-grade-target-input input[aria-invalid="true"] {
+    border-color: #c74545;
+    background: #fff8f8;
+}
+
+.sandbox-target-grade-error {
+    color: #a23c3c;
+    font-size: 0.62rem;
+    font-weight: 400;
+}
+
+.sandbox-grade-target-control > small {
+    color: #8a7b3f;
+    font-size: 0.58rem;
+    font-weight: 400;
+}
+
+.sandbox-term-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+    margin-top: 0.25rem;
+    color: #71809a;
+    font-size: 0.62rem;
+    font-weight: 400;
+}
+
+.sandbox-term-select select {
+    width: 100%;
+    min-height: 2rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #bdcce0;
+    border-radius: 0.45rem;
+    background: #fff;
+    color: #406093;
+    font: inherit;
+    font-size: 0.72rem;
+}
+
+.sandbox-grade-gauges {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+.sandbox-grade-gauges .grade-gauge {
+    gap: 0.45rem;
+}
+
+.sandbox-grade-gauges .grade-gauge-ring {
+    --gauge-size: clamp(5.25rem, 9vw, 7rem);
+    width: var(--gauge-size);
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sandbox-grade-gauges .grade-gauge-label {
+    font-size: 0.65rem;
+}
+
 .sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-target strong,
 .sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-projection strong {
     font-size: 1.8rem;
@@ -282,5 +389,9 @@
 @media (max-width: 760px) {
     .sidebar-sandbox-panel {
         max-height: 55vh;
+    }
+
+    .sidebar-sandbox-panel.is-page-sandbox .sandbox-grade-summary {
+        grid-template-columns: 1fr;
     }
 }

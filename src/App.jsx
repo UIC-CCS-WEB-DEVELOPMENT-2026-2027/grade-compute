@@ -12,6 +12,7 @@ import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
 import StudentDashboard from './pages/student/StudentDashboard';
 import SubjectDetail from './pages/student/SubjectDetail';
 import SubjectMenu from './pages/student/SubjectMenu';
+import TargetGradeSandboxPage from './pages/student/TargetGradeSandboxPage';
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
@@ -44,6 +45,7 @@ export default function App() {
         {/* Student Workspace (Phase 1 Focus) */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/subject" element={<SubjectMenu />} />
+        <Route path="/student/subject/:subjectId/sandbox" element={<TargetGradeSandboxPage />} />
         <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
         {/*
         {// Professor Workspace (Phase 2) }

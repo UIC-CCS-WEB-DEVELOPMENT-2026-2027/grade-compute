@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import {
+    calculateOfficialGrade,
+    calculateUnofficialGrade,
+} from "../../utils/grades";
 import "./TargetGradeSandbox.css";
 
 const STUDENT_ID = "U1";
@@ -47,6 +51,8 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
     const [dbData, setDbData] = useState(() => getDb());
     const [term, setTerm] = useState("Prelim");
     const [saveError, setSaveError] = useState("");
+    const [targetGradeInput, setTargetGradeInput] = useState("90");
+    const [targetGradeError, setTargetGradeError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
     const termKey = term.toLowerCase();
     const classItem = dbData?.classes?.find((item) => item.id === classId);
@@ -59,12 +65,18 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
     ) ?? dbData?.computationRules?.[0];
     const config = studentRecord?.targetGradeSandbox ?? {};
     const termConfig = config.terms?.[termKey] ?? {};
-    const targetGrade = Number(termConfig.desiredFinalGrade ?? config.desiredFinalGrade ?? 90);
+    const targetGrade = Number(
+        termConfig.sandboxDesiredFinalGrade ?? config.sandboxDesiredFinalGrade ?? 90
+    );
     const expectedExamScore = Number(termConfig.expectedExamScore ?? 100);
     const upcomingAT = Number(termConfig.upcomingAT ?? 1);
     const upcomingTLA = Number(termConfig.upcomingTLA ?? 2);
     const termData = studentRecord?.grades?.[termKey] ?? { AT: [], TLA: [], Exam: {} };
     const weights = rule?.effectiveMultipliers;
+    const officialGrade = calculateOfficialGrade(studentRecord, term, rule);
+    const expectedGrade = calculateUnofficialGrade(studentRecord, term, rule);
+    const officialProgress = officialGrade === null ? 0 : Math.min(100, Math.max(0, officialGrade));
+    const expectedProgress = expectedGrade === null ? 0 : Math.min(100, Math.max(0, expectedGrade));
     const requiredDraftScore = useMemo(() => {
         if (!weights) return null;
         return getRequiredDraftScore(
@@ -90,6 +102,10 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
         window.addEventListener(DB_UPDATED_EVENT, refresh);
         return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
     }, []);
+
+    useEffect(() => {
+        setTargetGradeInput(String(targetGrade));
+    }, [targetGrade, term]);
 
     function saveSandboxConfig(updates) {
         const currentDb = getDb();
@@ -180,13 +196,13 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
     if (subjects && !subjects.length) {
         return (
             <section className={`sidebar-sandbox-panel ${variant === "page" ? "is-page-sandbox" : ""}`}>
-                <header className="sidebar-sandbox-heading">
+                {variant !== "page" && <header className="sidebar-sandbox-heading">
                     <span aria-hidden="true">◎</span>
                     <div>
                         <small>PRIVATE · NOT AN OFFICIAL RECORD</small>
                         <h2>Target Grade Sandbox</h2>
                     </div>
-                </header>
+                </header>}
                 <p className="sidebar-sandbox-empty">Add a subject to start using the sandbox.</p>
             </section>
         );
@@ -195,13 +211,13 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
     if (!studentRecord && subjects) {
         return (
             <section className={`sidebar-sandbox-panel ${variant === "page" ? "is-page-sandbox" : ""}`}>
-                <header className="sidebar-sandbox-heading">
+                {variant !== "page" && <header className="sidebar-sandbox-heading">
                     <span aria-hidden="true">◎</span>
                     <div>
                         <small>PRIVATE · NOT AN OFFICIAL RECORD</small>
                         <h2>Target Grade Sandbox</h2>
                     </div>
-                </header>
+                </header>}
                 <label className="sidebar-sandbox-field">
                     <span>Select subject</span>
                     <select
@@ -246,13 +262,13 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
 
     return (
         <section className={`sidebar-sandbox-panel ${variant === "page" ? "is-page-sandbox" : ""}`}>
-            <header className="sidebar-sandbox-heading">
+            {variant !== "page" && <header className="sidebar-sandbox-heading">
                 <span aria-hidden="true">◎</span>
                 <div>
                     <small>PRIVATE · NOT AN OFFICIAL RECORD</small>
                     <h2>Target Grade Sandbox</h2>
                 </div>
-            </header>
+            </header>}
             {subjects && (
                 <label className="sidebar-sandbox-field">
                     <span>Select subject</span>
@@ -268,28 +284,102 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
                     </select>
                 </label>
             )}
-            <p className="sidebar-sandbox-intro">
-                Try draft scores for {subject?.subjectCode}. Your official records stay untouched.
-            </p>
-            <label className="sidebar-sandbox-field">
-                <span>My target term grade</span>
-                <select
-                    value={targetGrade}
-                    onChange={(event) => saveSandboxConfig({ desiredFinalGrade: Number(event.target.value) })}
-                >
-                    {[75, 80, 85, 90, 95, 100].map((grade) => (
-                        <option key={grade} value={grade}>{grade}% · Aim higher</option>
-                    ))}
-                </select>
-            </label>
-            <label className="sidebar-sandbox-field">
-                <span>Term</span>
-                <select value={term} onChange={(event) => setTerm(event.target.value)}>
-                    {TERMS.map((option) => <option key={option} value={option}>{option}</option>)}
-                </select>
-            </label>
+            {variant !== "page" && (
+                <p className="sidebar-sandbox-intro">
+                    Try draft scores for {subject?.subjectCode}. Your official records stay untouched.
+                </p>
+            )}
+            <section className="sandbox-grade-summary" aria-label={`${term} target and grades`}>
+                <div className="sandbox-grade-target-control">
+                    <label htmlFor="sandbox-target-grade">Target grade</label>
+                    <div className="sandbox-grade-target-input">
+                        <input
+                            id="sandbox-target-grade"
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="any"
+                            value={targetGradeInput}
+                            aria-invalid={Boolean(targetGradeError)}
+                            aria-describedby={targetGradeError ? "sandbox-target-grade-error" : undefined}
+                            onChange={(event) => {
+                                setTargetGradeInput(event.target.value);
+                                setTargetGradeError("");
+                            }}
+                            onBlur={() => {
+                                const value = Number(targetGradeInput);
+                                if (
+                                    targetGradeInput === "" ||
+                                    !Number.isFinite(value) ||
+                                    value < 0 ||
+                                    value > 100
+                                ) {
+                                    setTargetGradeError("Enter a target grade from 0 to 100.");
+                                    setTargetGradeInput(String(targetGrade));
+                                    return;
+                                }
+                                saveSandboxConfig({ sandboxDesiredFinalGrade: value });
+                            }}
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter") event.currentTarget.blur();
+                            }}
+                        />
+                        <span>%</span>
+                    </div>
+                    {targetGradeError && (
+                        <small id="sandbox-target-grade-error" className="sandbox-target-grade-error" role="alert">
+                            {targetGradeError}
+                        </small>
+                    )}
+                    {variant !== "page" && <small>Yellow marker shows your target</small>}
+                    <label className="sandbox-term-select">
+                        <span>Term</span>
+                        <select value={term} onChange={(event) => setTerm(event.target.value)}>
+                            {TERMS.map((option) => <option key={option} value={option}>{option}</option>)}
+                        </select>
+                    </label>
+                </div>
+                <div className="sandbox-grade-gauges">
+                    <div className="grade-gauge official-gauge">
+                        <span className="grade-gauge-label">{term} official</span>
+                        <span
+                            className="grade-gauge-ring"
+                            role="img"
+                            style={{
+                                "--grade-progress": `${officialProgress}%`,
+                                "--target-angle": `${targetGrade * 3.6}deg`,
+                            }}
+                            aria-label={`Official grade ${officialGrade === null ? "not available" : `${officialGrade.toFixed(0)} percent`}`}
+                        >
+                            <strong>
+                                {officialGrade === null ? "—" : officialGrade.toFixed(0)}
+                                {officialGrade !== null && <small>%</small>}
+                            </strong>
+                            <span className="grade-gauge-target-marker" />
+                        </span>
+                    </div>
+                    <div className="grade-gauge expected-gauge">
+                        <span className="grade-gauge-label">{term} expected</span>
+                        <span
+                            className="grade-gauge-ring"
+                            role="img"
+                            style={{
+                                "--grade-progress": `${expectedProgress}%`,
+                                "--target-angle": `${targetGrade * 3.6}deg`,
+                            }}
+                            aria-label={`Expected grade ${expectedGrade === null ? "not available" : `${expectedGrade.toFixed(0)} percent`}`}
+                        >
+                            <strong>
+                                {expectedGrade === null ? "—" : expectedGrade.toFixed(0)}
+                                {expectedGrade !== null && <small>%</small>}
+                            </strong>
+                            <span className="grade-gauge-target-marker" />
+                        </span>
+                    </div>
+                </div>
+            </section>
             <article className="sidebar-sandbox-card">
-                <small>START WITH YOUR EXAM EXPECTATION</small>
+                {variant !== "page" && <small>START WITH YOUR EXAM EXPECTATION</small>}
                 <h3>{term} Exam</h3>
                 <label className="sidebar-sandbox-score">
                     <span>Expected exam score</span>
@@ -335,7 +425,7 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
             <div className="sidebar-sandbox-target">
                 <small>{term.toUpperCase()} TARGET · {targetGrade}%</small>
                 <strong>{requiredDraftScore === null ? "—" : `${requiredDraftScore.toFixed(2)}%`}</strong>
-                <p>Suggested average for unentered activities.</p>
+                {variant !== "page" && <p>Suggested average for unentered activities.</p>}
             </div>
             <div className="sidebar-sandbox-drafts">
                 <small>AT &amp; TLA DRAFT SCORES</small>
@@ -374,10 +464,12 @@ export default function TargetGradeSandbox({ classId, subjects, onClassChange, v
                 Sandbox projected average
                 <strong>{projectedAverage === null ? "—" : `${projectedAverage.toFixed(2)}%`}</strong>
             </p>
-            <details className="sidebar-sandbox-calculation">
-                <summary>How this is calculated</summary>
-                <p>ATs and TLAs use the grading rule for this subject. Official scores take priority, and your drafts stay private.</p>
-            </details>
+            {variant !== "page" && (
+                <details className="sidebar-sandbox-calculation">
+                    <summary>How this is calculated</summary>
+                    <p>ATs and TLAs use the grading rule for this subject. Official scores take priority, and your drafts stay private.</p>
+                </details>
+            )}
         </section>
     );
 }

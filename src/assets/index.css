@@ -610,7 +610,7 @@ input:focus, select:focus {
   justify-content: center;
   padding: 1rem;
   background: var(--color-overlay);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
 }
 
 .subject-remove-dialog {

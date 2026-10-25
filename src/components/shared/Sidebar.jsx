@@ -237,6 +237,25 @@ export default function Sidebar() {
           </div>
         )}
 
+        {enrolledSubjects.length > 0 && (
+          <Link
+            className={`sidebar-link ${location.pathname.endsWith('/sandbox') ? 'is-active' : ''}`}
+            to={`/student/subject/${(
+              enrolledSubjects.find((item) =>
+                location.pathname.includes(`/student/subject/${item.classId}`)
+              ) ?? enrolledSubjects[0]
+            ).classId}/sandbox`}
+          >
+            <span className="sidebar-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.5"/>
+                <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+                <circle cx="12" cy="12" r="1" fill="currentColor"/>
+              </svg>
+            </span>
+            <span>Target Grade Sandbox</span>
+          </Link>
+        )}
       </nav>
 
       <div className="sidebar-footer">
