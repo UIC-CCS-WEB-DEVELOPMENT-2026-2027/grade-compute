@@ -20,7 +20,6 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [taskCategory, setTaskCategory] = useState("AT");
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
-    const [editingScores, setEditingScores] = useState({});
     const [saveError, setSaveError] = useState("");
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
@@ -60,6 +59,17 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     }
 
     function updateSandbox(category, taskId, field, value) {
+        const selectedTerm = studentRecord?.grades?.[termKey(term)];
+        const selectedAssessment = category === "Exam"
+            ? selectedTerm?.Exam
+            : selectedTerm?.[category]?.find((task) => task.id === taskId);
+
+        if (selectedAssessment?.officialScore !== null &&
+            selectedAssessment?.officialScore !== undefined) {
+            setSaveError("This score is locked because it was recorded by a professor.");
+            return;
+        }
+
         saveChanges((item) => ({
             ...item,
             studentRecords: item.studentRecords.map((record) => {
@@ -218,6 +228,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     !name.toLowerCase().startsWith(category.toLowerCase())
                                     ? `${category} - ${name}`
                                     : name;
+                                const isOfficialLocked = task.officialScore !== null &&
+                                    task.officialScore !== undefined;
                                 return (
                                 <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
                                     <div className="record-information">
@@ -242,11 +254,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 : "Locked · Official"}
                                         </small>
                                     </div>
-                                    {(task.officialScore === null ||
-                                        task.officialScore === undefined ||
-                                        task.studentReportedScore !== null &&
-                                        task.studentReportedScore !== undefined ||
-                                        editingScores[task.id]) ? (
+                                    {!isOfficialLocked ? (
                                         <div className="score-editor">
                                             <label className="score-input-group">
                                                 <input
@@ -267,21 +275,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 </span>
                                             </label>
                                         </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="edit-score-button"
-                                            aria-label={`Add a private score for ${displayName}`}
-                                            onClick={() => setEditingScores((scores) => ({
-                                                ...scores,
-                                                [task.id]: true,
-                                            }))}
-                                        >
-                                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                                <path d="m10.8 2.2 3 3M2 14l3.2-.7L13.8 4.7a1.4 1.4 0 0 0-2-2L3.2 11.3 2 14Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </button>
-                                    )}
+                                    ) : null}
                                 </div>
                             );
                             }) : (
@@ -311,26 +305,28 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         : "Locked · Official"}
                                 </small>
                             </div>
-                            <div className="score-editor">
-                                <label className="score-input-group">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max={exam.maxScore}
-                                        step="any"
-                                        placeholder="Score"
-                                        aria-label={`Private score for ${term} Exam`}
-                                        value={exam.studentReportedScore ?? ""}
-                                        onChange={(event) =>
-                                            updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)
-                                        }
-                                    />
-                                    <span>/</span>
-                                    <span className="sandbox-max-score">
-                                        {exam.maxScore}
-                                    </span>
-                                </label>
-                            </div>
+                            {(exam.officialScore === null || exam.officialScore === undefined) && (
+                                <div className="score-editor">
+                                    <label className="score-input-group">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max={exam.maxScore}
+                                            step="any"
+                                            placeholder="Score"
+                                            aria-label={`Private score for ${term} Exam`}
+                                            value={exam.studentReportedScore ?? ""}
+                                            onChange={(event) =>
+                                                updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)
+                                            }
+                                        />
+                                        <span>/</span>
+                                        <span className="sandbox-max-score">
+                                            {exam.maxScore}
+                                        </span>
+                                    </label>
+                                </div>
+                            )}
                         </div>
                     )}
                 </section>
