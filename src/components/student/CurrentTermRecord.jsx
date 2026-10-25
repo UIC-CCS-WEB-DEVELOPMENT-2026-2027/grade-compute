@@ -16,7 +16,7 @@ function taskName(task, category) {
 }
 
 function hasOfficialScore(task) {
-    return task.officialScore !== null && task.officialScore !== undefined;
+    return task?.officialScore !== null && task?.officialScore !== undefined;
 }
 
 // Sections come from the subject's grading rule: one per deepest criterion
@@ -55,7 +55,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         const currentDb = getDb();
         if (!currentDb) {
             setSaveError("Your changes could not be saved because local data is unavailable.");
-            return;
+            return false;
         }
 
         const updatedDb = {
@@ -77,37 +77,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         return true;
     }
 
-    function updateSandbox(category, taskId, field, value) {
-        const selectedTerm = studentRecord?.grades?.[termKey(term)];
-        const selectedAssessment = category === "Exam"
-            ? selectedTerm?.Exam
-            : selectedTerm?.[category]?.find((task) => task.id === taskId);
-
-        if (selectedAssessment?.officialScore !== null &&
-            selectedAssessment?.officialScore !== undefined) {
-            setInvalidScoreId(`${category}-${taskId}`);
-            setSaveError("This score is locked because it was recorded by a professor.");
-            return;
-        }
-
-        if (value !== "") {
-            const score = Number(value);
-            const maxScore = Number(selectedAssessment?.maxScore);
-            const integerDigits = value.split(".")[0].length;
-            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
-            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
-                !Number.isFinite(score) ||
-                score < 0 ||
-                score > maxScore ||
-                integerDigits > maxIntegerDigits) {
-                setInvalidScoreId(`${category}-${taskId}`);
-                setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
-                return;
-            }
-        }
-
-        setInvalidScoreId("");
-        saveChanges((item) => ({
+    function updateTerm(updateTermGrades) {
+        return saveChanges((item) => ({
             ...item,
             studentRecords: item.studentRecords.map((record) => {
                 if (record.studentId !== STUDENT_ID) return record;
@@ -124,6 +95,32 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     }
 
     function updateSandbox(criterionId, taskId, field, value) {
+        const selectedAssessment = tasksFor(criterionId).find((task) => task.id === taskId);
+        const scoreId = `${criterionId}-${taskId}`;
+
+        if (hasOfficialScore(selectedAssessment)) {
+            setInvalidScoreId(scoreId);
+            setSaveError("This score is locked because it was recorded by a professor.");
+            return;
+        }
+
+        if (value !== "") {
+            const score = Number(value);
+            const maxScore = Number(selectedAssessment?.maxScore);
+            const integerDigits = value.split(".")[0].length;
+            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
+            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
+                !Number.isFinite(score) ||
+                score < 0 ||
+                score > maxScore ||
+                integerDigits > maxIntegerDigits) {
+                setInvalidScoreId(scoreId);
+                setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
+                return;
+            }
+        }
+
+        setInvalidScoreId("");
         updateTerm((selectedTerm) => ({
             ...selectedTerm,
             [criterionId]: toTaskList(selectedTerm[criterionId]).map((task) =>
@@ -136,6 +133,10 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         event.preventDefault();
         const name = taskNameInput.trim();
         const maxScore = Number(taskMaxScore);
+        if (!selectedCategory) {
+            setAddTaskError("This subject's grading rule has no criteria to add tasks to.");
+            return;
+        }
         if (!name) {
             setAddTaskError("Please enter a task name.");
             event.currentTarget.elements.namedItem("taskName")?.focus();
@@ -256,8 +257,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     !name.toLowerCase().startsWith(category.toLowerCase())
                                     ? `${category} - ${name}`
                                     : name;
-                                const isOfficialLocked = task.officialScore !== null &&
-                                    task.officialScore !== undefined;
+                                const isOfficialLocked = hasOfficialScore(task);
                                 return (
                                 <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
                                     <div className="record-information">
@@ -265,19 +265,19 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         <p>
                                             {task.isCustomTask
                                                 ? <><span className="record-tag">Custom Addition</span> Student-created · Private</>
-                                                : !hasOfficialScore(task)
+                                                : !isOfficialLocked
                                                     ? <><span className="record-tag">Self Reported</span> Student entry · Not an official grade</>
                                                     : "Professor-recorded assessment"}
                                         </p>
                                     </div>
                                     <div className="official-score">
                                         <strong>
-                                            {hasOfficialScore(task)
+                                            {isOfficialLocked
                                                 ? `${task.officialScore} / ${task.maxScore}`
                                                 : "—"}
                                         </strong>
                                         <small>
-                                            {hasOfficialScore(task)
+                                            {isOfficialLocked
                                                 ? "Locked · Official"
                                                 : "No official score"}
                                         </small>
@@ -292,7 +292,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                     max={task.maxScore}
                                                     placeholder="Add Score"
                                                     aria-label={`Private score for ${displayName}`}
-                                                    aria-invalid={invalidScoreId === `${category}-${task.id}`}
+                                                    aria-invalid={invalidScoreId === `${criterion.id}-${task.id}`}
                                                     value={task.studentReportedScore ?? ""}
                                                     onChange={(event) =>
                                                         updateSandbox(criterion.id, task.id, "studentReportedScore", event.target.value)
@@ -314,52 +314,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     );
                 })}
 
-                <section className="term-task-section">
-                    <h3 className="term-task-heading">Examination</h3>
-                    {(
-                        <div className="record-row">
-                            <div className="record-information">
-                                <h3>{exam.title}</h3>
-                                <p>Professor-recorded examination</p>
-                            </div>
-                            <div className="official-score">
-                                <strong>
-                                    {exam.officialScore === null || exam.officialScore === undefined
-                                        ? "—"
-                                        : `${exam.officialScore} / ${exam.maxScore}`}
-                                </strong>
-                                <small>
-                                    {exam.officialScore === null || exam.officialScore === undefined
-                                        ? "No official score"
-                                        : "Locked · Official"}
-                                </small>
-                            </div>
-                            {(exam.officialScore === null || exam.officialScore === undefined) && (
-                                <div className="score-editor">
-                                    <label className="score-input-group">
-                                        <input
-                                            type="text"
-                                            inputMode="decimal"
-                                            min="0"
-                                            max={exam.maxScore}
-                                            placeholder="Score"
-                                            aria-label={`Private score for ${term} Exam`}
-                                            aria-invalid={invalidScoreId === `Exam-${exam.id}`}
-                                            value={exam.studentReportedScore ?? ""}
-                                            onChange={(event) =>
-                                                updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)
-                                            }
-                                        />
-                                        <span>/</span>
-                                        <span className="sandbox-max-score">
-                                            {exam.maxScore}
-                                        </span>
-                                    </label>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </section>
+                {uncountedTasks > 0 && (
+                    <p className="term-empty">
+                        {uncountedTasks} task{uncountedTasks === 1 ? "" : "s"} from criteria that are no
+                        longer in this subject&apos;s grading rule {uncountedTasks === 1 ? "is" : "are"} hidden
+                        and not counted.
+                    </p>
+                )}
 
                 {showAddTask && (
                     <form className="add-task-form" onSubmit={addCustomTask} noValidate>
@@ -430,6 +391,11 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                         >
                             Cancel
                         </button>
+                        {addTaskError.startsWith("This subject") && (
+                            <span className="add-task-field-error" role="alert">
+                                {addTaskError}
+                            </span>
+                        )}
                     </form>
                 )}
 

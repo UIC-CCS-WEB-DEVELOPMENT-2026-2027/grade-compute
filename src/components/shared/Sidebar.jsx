@@ -256,18 +256,16 @@ export default function Sidebar() {
             <span>Target Grade Sandbox</span>
           </Link>
         )}
-      </nav>
 
-      <div className="sidebar-footer">
-        <Link
-          to="/settings"
-          className={`sidebar-link sidebar-footer-link ${settingsActive ? 'is-active' : ''}`}
         <Link
           to="/student/rules"
           className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'btn-primary' : ''}`}
         >
           Grade Rules
         </Link>
+      </nav>
+
+      <div className="sidebar-footer">
 
         <Link 
           to="/settings" 

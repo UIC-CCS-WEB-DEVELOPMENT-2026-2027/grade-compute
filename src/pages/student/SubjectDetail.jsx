@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
@@ -112,16 +111,6 @@ function SubjectDetail() {
         };
     }, [celebration]);
 
-    const student = dbData?.users?.find((user) => user.id === "U1");
-    const studentName = student?.name || "Student";
-    const firstName = studentName.split(" ")[0];
-    const initials = studentName
-        .split(" ")
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
-    const dbData = getDb();
     const terms = ["Prelim", "Midterm", "Finals"];
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find(

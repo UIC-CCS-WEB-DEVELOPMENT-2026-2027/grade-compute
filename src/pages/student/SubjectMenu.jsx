@@ -43,7 +43,7 @@ function semesterId(classItem) {
 }
 
 // Tasks are added per criterion of the subject's grading rule, so each term
-// starts empty. See grades.js for the stored shape.
+// starts empty. See grades-guide.txt for the stored shape.
 function createEmptyGrades() {
     return { prelim: {}, midterm: {}, finals: {} };
 }
@@ -54,16 +54,6 @@ export default function SubjectMenu() {
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
     const [showForm, setShowForm] = useState(false);
-    const [subjectCode, setSubjectCode] = useState("");
-    const [subjectName, setSubjectName] = useState("");
-    const [professorName, setProfessorName] = useState("");
-    const [section, setSection] = useState(
-        () => getDb()?.users?.find((user) => user.id === STUDENT_ID)?.programSection ?? ""
-    );
-    const [ruleId, setRuleId] = useState(
-        () => getDb()?.computationRules?.[0]?.id ?? ""
-    );
-    const [formError, setFormError] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
@@ -140,7 +130,15 @@ export default function SubjectMenu() {
         return matchesFilter && searchText.includes(search.trim().toLowerCase());
     });
 
-    function submitSubject({ subjectCode: code, subjectName: name, professorName: instructor, section: programSection }) {
+    // computationRuleId comes from AddSubjectForm's grading rule picker.
+    // If the form doesn't send one, the first rule is used.
+    function submitSubject({
+        subjectCode: code,
+        subjectName: name,
+        professorName: instructor,
+        section: programSection,
+        computationRuleId,
+    }) {
         const currentDb = getDb() ?? dbData;
         const duplicateCode = (currentDb.subjects ?? []).some(
             (subject) => subject.subjectCode.toUpperCase() === code
@@ -149,13 +147,14 @@ export default function SubjectMenu() {
             return { fieldErrors: { subjectCode: "A subject with that code already exists." } };
         }
 
-        const rule = currentDb.computationRules?.[0];
+        const rules = currentDb.computationRules ?? [];
+        const rule = computationRuleId
+            ? rules.find((item) => item.id === computationRuleId)
+            : rules[0];
         if (!rule) {
-            return { formError: "A grading rule is required before creating subjects." };
-        const rule = dbData.computationRules?.find((item) => item.id === ruleId);
-        if (!rule) {
-            setFormError("Choose a grading rule for this subject.");
-            return;
+            return computationRuleId
+                ? { fieldErrors: { computationRuleId: "Choose a grading rule for this subject." } }
+                : { formError: "Create a grading rule on the Grade Rules page before adding subjects." };
         }
 
         const subjectId = nextId(currentDb.subjects ?? [], "SUB");
@@ -267,78 +266,10 @@ export default function SubjectMenu() {
                     {showForm && (
                         <AddSubjectForm
                             initialSection={studentSection}
+                            rules={dbData.computationRules ?? []}
                             onCancel={() => setShowForm(false)}
                             onSubmit={submitSubject}
                         />
-                        <form className="subject-request-form" onSubmit={submitSubject}>
-                            <h2>New Subject Request</h2>
-                            <p>
-                                You can view all three terms and add private sandbox
-                                entries while your request awaits verification.
-                            </p>
-                            <div className="subject-request-fields">
-                                <label>
-                                    Subject code
-                                    <input
-                                        value={subjectCode}
-                                        onChange={(event) => setSubjectCode(event.target.value)}
-                                        placeholder="e.g. IT102"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Subject name
-                                    <input
-                                        value={subjectName}
-                                        onChange={(event) => setSubjectName(event.target.value)}
-                                        placeholder="e.g. Data Structures"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Professor
-                                    <input
-                                        value={professorName}
-                                        onChange={(event) => setProfessorName(event.target.value)}
-                                        placeholder="e.g. Prof. Maria Santos"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Program / section
-                                    <input
-                                        value={section}
-                                        onChange={(event) => setSection(event.target.value)}
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Grading rule
-                                    <select
-                                        value={ruleId}
-                                        onChange={(event) => setRuleId(event.target.value)}
-                                        required
-                                    >
-                                        {(dbData.computationRules ?? []).map((rule) => (
-                                            <option key={rule.id} value={rule.id}>
-                                                {rule.ruleName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <Link className="subject-request-rule-link" to="/student/rules">
-                                        View or create grading rules
-                                    </Link>
-                                </label>
-                            </div>
-                            {formError && (
-                                <p className="subject-request-error" role="alert">
-                                    {formError}
-                                </p>
-                            )}
-                            <button type="submit" className="subject-menu-add-button">
-                                Add Subject
-                            </button>
-                        </form>
                     )}
 
                     <div className="subject-menu-table">
