@@ -454,3 +454,59 @@
 .sandbox-page-heading h1 {
     margin: 0;
 }
+
+/* "Show plan on a chart" button on the result card */
+.sandbox-result-chart-toggle {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--result-line);
+    border-radius: 8px;
+    background: var(--color-surface-overlay-faint);
+    color: var(--result-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.sandbox-result-chart-toggle:hover {
+    background: var(--color-surface-overlay-subtle);
+    opacity: 1;
+}
+
+.sandbox-result--impossible .sandbox-result-chart-toggle,
+.sandbox-result--empty .sandbox-result-chart-toggle {
+    background: var(--color-surface);
+}
+
+/* Chart card */
+.sandbox-chart-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.sandbox-chart-close {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-size: 0.75rem;
+}
+
+/* A draft row picked from the chart (utils/focusTask.js) */
+.sandbox-draft.is-highlighted {
+    animation: sandbox-draft-highlight 2.4s ease-out;
+}
+
+@keyframes sandbox-draft-highlight {
+    0%,
+    35% {
+        background: var(--color-highlight-soft);
+    }
+
+    100% {
+        background: transparent;
+    }
+}

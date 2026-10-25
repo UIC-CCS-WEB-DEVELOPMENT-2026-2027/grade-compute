@@ -107,6 +107,18 @@ export function calculateUnofficialFinalGrade(studentRecord, computationRule) {
     return calculateFinalGrade(studentRecord, computationRule, true);
 }
 
+// A task after the student saves their own score. studentScoredAt keeps
+// when the task was first scored (the History chart orders tasks by it);
+// clearing the score clears the time.
+export function withStudentScore(task, value) {
+    const cleared = value === null || value === undefined || value === "";
+    return {
+        ...task,
+        studentReportedScore: value,
+        studentScoredAt: cleared ? null : task.studentScoredAt ?? new Date().toISOString(),
+    };
+}
+
 // Professor-entered (non-custom) tasks of a term that have an official score.
 export function getOfficialAssessments(termGrades) {
     if (!termGrades) return [];

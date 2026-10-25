@@ -2,7 +2,7 @@ import { useState } from "react";
 import DraftInput from "../shared/DraftInput";
 import { getDb, saveDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
-import { toTaskList } from "../../utils/grades";
+import { toTaskList, withStudentScore } from "../../utils/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
 import "./CurrentTermRecord.css";
 
@@ -137,7 +137,11 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         updateTerm((selectedTerm) => ({
             ...selectedTerm,
             [criterionId]: toTaskList(selectedTerm[criterionId]).map((task) =>
-                task.id === taskId ? { ...task, [field]: value } : task
+                task.id !== taskId
+                    ? task
+                    : field === "studentReportedScore"
+                        ? withStudentScore(task, value)
+                        : { ...task, [field]: value }
             ),
         }));
     }
@@ -172,6 +176,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
             officialScore: null,
             studentReportedScore: null,
             isCustomTask: true,
+            createdAt: new Date().toISOString(),
         };
 
         const saved = updateTerm((selectedTerm) => ({
@@ -272,7 +277,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     : name;
                                 const isOfficialLocked = hasOfficialScore(task);
                                 return (
-                                <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
+                                <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id} data-task-id={task.id}>
                                     <div className="record-information">
                                         <h3>{displayName}</h3>
                                         <p>

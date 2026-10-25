@@ -6,6 +6,7 @@ import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import DraftInput from "../../components/shared/DraftInput";
 import TermNavigation from "../../components/student/TermNavigation";
+import SubjectGradeHistory from "../../components/student/SubjectGradeHistory";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import congratulationAudio from "../../assets/congrats_voice .mp3";
 import {
@@ -15,6 +16,7 @@ import {
 } from "../../utils/grades";
 import { getTermLabel, toTermKey } from "../../utils/terms";
 import { getActiveStudentId } from "../../utils/session";
+import { focusTaskRow } from "../../utils/focusTask";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
@@ -32,6 +34,8 @@ function SubjectDetail() {
     const [searchParams, setSearchParams] = useSearchParams();
     const termKey = toTermKey(searchParams.get("term"));
     const term = getTermLabel(termKey);
+    // ?task=<id> (from a Dashboard chart click): scroll to that task once.
+    const focusTaskId = searchParams.get("task");
     const [celebration, setCelebration] = useState("");
     const [targetGradeError, setTargetGradeError] = useState("");
     const [dbData, setDbData] = useState(() => getDb());
@@ -90,6 +94,16 @@ function SubjectDetail() {
             expectedReached,
         };
     }, [dbData, subjectId, term, studentId]);
+
+    useEffect(() => {
+        if (!focusTaskId) return;
+        focusTaskRow(focusTaskId);
+        setSearchParams((params) => {
+            const next = new URLSearchParams(params);
+            next.delete("task");
+            return next;
+        }, { replace: true });
+    }, [focusTaskId, setSearchParams]);
 
     useEffect(() => {
         if (!celebration) return undefined;
@@ -378,6 +392,8 @@ function SubjectDetail() {
 
             {/* Current Term Records */}
             <CurrentTermRecords classId={classItem.id} term={term} />
+
+            <SubjectGradeHistory classId={classItem.id} termKey={termKey} />
 
                 </main>
                 <PageFooter />

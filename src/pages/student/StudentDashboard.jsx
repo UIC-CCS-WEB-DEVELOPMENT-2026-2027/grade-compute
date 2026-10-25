@@ -5,6 +5,7 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
+import AllSubjectsHistory from "../../components/student/AllSubjectsHistory";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
 import { getCurrentSemester, getEnrolledSubjects } from "../../utils/subjects";
@@ -54,6 +55,9 @@ export default function StudentDashboard() {
                         <span className="badge-year">{semester.academicYear}</span>
                     </div>
                 </div>
+
+                {/* --- GRADE HISTORY (all subjects, one term) --- */}
+                <AllSubjectsHistory db={dbData} studentId={studentId} semesterId={semester.id} />
 
                 {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
                 <EnrolledSubjectsTable

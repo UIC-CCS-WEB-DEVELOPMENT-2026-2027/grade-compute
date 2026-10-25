@@ -15,6 +15,8 @@ export default function TargetGradeSandboxPage() {
     // Same ?term= as Subject Detail, so both pages stay on the same term.
     const [searchParams, setSearchParams] = useSearchParams();
     const termKey = toTermKey(searchParams.get("term"));
+    // The chart is open when the URL has chart=1 ("Plan in sandbox" adds it).
+    const showChart = searchParams.get("chart") === "1";
     const [dbData, setDbData] = useState(() => getDb());
     const studentId = getActiveStudentId(dbData);
 
@@ -41,7 +43,10 @@ export default function TargetGradeSandboxPage() {
                         <>
                             <TermNavigation
                                 termKey={termKey}
-                                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                                onTermChange={(nextTerm) => setSearchParams(
+                                    showChart ? { term: nextTerm, chart: "1" } : { term: nextTerm },
+                                    { replace: true }
+                                )}
                                 action={
                                     <Link
                                         className="term-nav-link"
@@ -63,7 +68,15 @@ export default function TargetGradeSandboxPage() {
                                 </div>
                             </section>
 
-                            <TargetGradeSandbox classId={classItem.id} termKey={termKey} />
+                            <TargetGradeSandbox
+                                classId={classItem.id}
+                                termKey={termKey}
+                                showChart={showChart}
+                                onShowChartChange={(shown) => setSearchParams(
+                                    shown ? { term: termKey, chart: "1" } : { term: termKey },
+                                    { replace: true }
+                                )}
+                            />
                         </>
                     ) : (
                         <section className="subject-target-grade-section">

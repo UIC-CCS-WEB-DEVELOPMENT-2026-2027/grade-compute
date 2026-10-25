@@ -5,7 +5,7 @@
 // are private to the student and never change official scores.
 import { useEffect, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
-import { calculateOfficialGrade, calculateUnofficialGrade } from "../../utils/grades";
+import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "../../utils/grades";
 import { formatPercent } from "../../utils/rules";
 import { getActiveStudentId } from "../../utils/session";
 import {
@@ -15,6 +15,9 @@ import {
     requiredScore,
     updateSandboxSettings,
 } from "../../utils/sandbox";
+import { focusTaskRow } from "../../utils/focusTask";
+import { getGradeHistory, getPlanPoints } from "../../utils/history";
+import HistoryChart from "./HistoryChart";
 import "./TargetGradeSandbox.css";
 
 const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
@@ -49,7 +52,7 @@ function Gauge({ label, grade, target, className }) {
 }
 
 // The answer card. Kept separate so it is easy to find in the code too.
-function SandboxResult({ plan, termLabel }) {
+function SandboxResult({ plan, termLabel, chartShown, onToggleChart }) {
     const { status, target, required, projected, best, requiredSlots, criteria } = plan;
     const requiredCriteria = criteria.filter((criterion) => criterion.counted && criterion.usesRequired);
 
@@ -106,18 +109,34 @@ function SandboxResult({ plan, termLabel }) {
                     <strong>{formatGrade(projected)}</strong>
                 </p>
             )}
+
+            {onToggleChart && (
+                <button
+                    type="button"
+                    className="sandbox-result-chart-toggle"
+                    aria-pressed={chartShown}
+                    aria-controls="sandbox-chart"
+                    onClick={onToggleChart}
+                >
+                    {chartShown ? "Hide chart" : "Show plan on a chart"}
+                </button>
+            )}
         </section>
     );
 }
 
 // classId: the class to plan. termKey: "prelim" | "midterm" | "finals".
-export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
+// showChart / onShowChartChange(shown): whether the chart is open. The page
+// keeps this in the URL (?chart=1): "Plan in sandbox" on Subject Detail
+// opens it, the sidebar and other links don't.
+export default function TargetGradeSandbox({ classId, termKey = "prelim", showChart = false, onShowChartChange }) {
     const [dbData, setDbData] = useState(() => getDb());
     const studentId = getActiveStudentId(dbData);
     const [saveError, setSaveError] = useState("");
     const [targetInput, setTargetInput] = useState(null);
     const [targetError, setTargetError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
+    const setShowChart = (update) => onShowChartChange?.(typeof update === "function" ? update(showChart) : update);
 
     useEffect(() => {
         const refresh = () => setDbData(getDb());
@@ -142,6 +161,10 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const officialGrade = calculateOfficialGrade(studentRecord, termKey, rule);
     const expectedGrade = calculateUnofficialGrade(studentRecord, termKey, rule);
     const suggestion = plan.status === "required" ? plan.required : null;
+    const historyPoints = showChart ? getGradeHistory(studentRecord, rule, termKey) : [];
+    const planPoints = showChart
+        ? getPlanPoints(studentRecord, rule, termKey, target, historyPoints.length).points
+        : [];
 
     // Applies a change to this student's record and saves it.
     function saveRecord(updateRecord, errorPrefix) {
@@ -216,7 +239,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     [termKey]: {
                         ...termGrades,
                         [criterionId]: tasks.map((item) =>
-                            item.id === task.id ? { ...item, studentReportedScore: value } : item
+                            item.id === task.id ? withStudentScore(item, value) : item
                         ),
                     },
                 },
@@ -231,7 +254,12 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
             <div className="sandbox-layout">
                 {/* Answer first on phones, sticky on the right on wide screens. */}
                 <div className="sandbox-result-column">
-                    <SandboxResult plan={plan} termLabel={termLabel} />
+                    <SandboxResult
+                        plan={plan}
+                        termLabel={termLabel}
+                        chartShown={showChart}
+                        onToggleChart={plan.status === "empty" ? null : () => setShowChart((shown) => !shown)}
+                    />
                 </div>
 
                 <div className="sandbox-inputs">
@@ -275,6 +303,33 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                             <Gauge label={`${termLabel} expected`} grade={expectedGrade} target={target} className="expected-gauge" />
                         </div>
                     </section>
+
+                    {showChart && plan.status !== "empty" && (
+                        <section className="sandbox-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
+                            <div className="sandbox-chart-heading">
+                                <h2 className="sandbox-step" id="sandbox-chart-title">Your plan on a chart</h2>
+                                <button type="button" className="sandbox-chart-close" onClick={() => setShowChart(false)}>
+                                    Hide chart
+                                </button>
+                            </div>
+                            <p className="sandbox-help">
+                                Solid line: your {termLabel} grade so far. Dotted line: each remaining task at the
+                                score in your result. The order of upcoming tasks is a guess, so the end point is
+                                what matters.
+                            </p>
+                            <HistoryChart
+                                points={historyPoints}
+                                planPoints={planPoints}
+                                showPlan
+                                emphasizePlan
+                                target={target}
+                                targetLabel="Target"
+                                termLabel={termLabel}
+                                onSelect={(point) => focusTaskRow(point.taskId)}
+                                height={280}
+                            />
+                        </section>
+                    )}
 
                     {/* Step 2: remaining tasks per criterion */}
                     <section className="sandbox-card" aria-labelledby="sandbox-step-remaining">
@@ -401,7 +456,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                         ? requiredScore(suggestion, task.maxScore ?? 100)
                                         : requiredScore(criterion.expected, task.maxScore ?? 100);
                                     return (
-                                        <label className="sandbox-draft" key={task.id ?? index}>
+                                        <label className="sandbox-draft" key={task.id ?? index} data-task-id={task.id}>
                                             <span className="sandbox-draft-name">
                                                 {label}
                                                 {task.description && <small>{task.description}</small>}

@@ -920,3 +920,28 @@
         font-size: 12px;
     }
 }
+
+/* A row picked from the History chart (see utils/focusTask.js). */
+.record-row.is-highlighted {
+    animation: record-row-highlight 2.4s ease-out;
+}
+
+@keyframes record-row-highlight {
+    0%,
+    35% {
+        background: var(--color-highlight-soft);
+        box-shadow: inset 4px 0 0 var(--color-highlight-strong);
+    }
+
+    100% {
+        background: transparent;
+        box-shadow: inset 4px 0 0 transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .record-row.is-highlighted {
+        animation: none;
+        background: var(--color-highlight-soft);
+    }
+}
