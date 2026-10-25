@@ -21,6 +21,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
     const [saveError, setSaveError] = useState("");
+    const [addTaskError, setAddTaskError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
@@ -126,11 +127,18 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         event.preventDefault();
         const name = taskNameInput.trim();
         const maxScore = Number(taskMaxScore);
-        if (!name || !Number.isInteger(maxScore) || maxScore <= 0) {
-            setSaveError("Enter a task name and a whole-number maximum score greater than zero.");
+        if (!name) {
+            setAddTaskError("Please enter a task name.");
+            event.currentTarget.elements.namedItem("taskName")?.focus();
+            return;
+        }
+        if (!taskMaxScore || !Number.isInteger(maxScore) || maxScore <= 0) {
+            setAddTaskError("Please enter a whole-number maximum score greater than zero.");
+            event.currentTarget.elements.namedItem("taskMaxScore")?.focus();
             return;
         }
 
+        setAddTaskError("");
         const customTask = {
             id: `CUSTOM-${Date.now()}`,
             type: taskCategory,
@@ -353,7 +361,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 </section>
 
                 {showAddTask && (
-                    <form className="add-task-form" onSubmit={addCustomTask}>
+                    <form className="add-task-form" onSubmit={addCustomTask} noValidate>
                         <select
                             value={taskCategory}
                             onChange={(event) => setTaskCategory(event.target.value)}
@@ -362,27 +370,49 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                             <option value="AT">Assessment Task</option>
                             <option value="TLA">Teaching &amp; Learning Activity</option>
                         </select>
-                        <input
-                            type="text"
-                            placeholder="Task name"
-                            value={taskNameInput}
-                            onChange={(event) => setTaskNameInput(event.target.value)}
-                            aria-label="Sandbox task name"
-                            required
-                        />
-                        <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="Max score"
-                            value={taskMaxScore}
-                            onChange={(event) => {
-                                const value = event.target.value;
-                                if (/^\d*$/.test(value)) setTaskMaxScore(value);
-                            }}
-                            aria-label="Maximum score"
-                            required
-                        />
+                        <div className="add-task-field task-name-field">
+                            <input
+                                type="text"
+                                name="taskName"
+                                placeholder="Task name"
+                                value={taskNameInput}
+                                aria-invalid={addTaskError === "Please enter a task name."}
+                                onChange={(event) => {
+                                    setTaskNameInput(event.target.value);
+                                    setAddTaskError("");
+                                }}
+                                aria-label="Sandbox task name"
+                            />
+                            {addTaskError === "Please enter a task name." && (
+                                <span className="add-task-field-error" role="alert">
+                                    {addTaskError}
+                                </span>
+                            )}
+                        </div>
+                        <div className="add-task-field task-max-score-field">
+                            <input
+                                type="text"
+                                name="taskMaxScore"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                placeholder="Max score"
+                                value={taskMaxScore}
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        setTaskMaxScore(value);
+                                        setAddTaskError("");
+                                    }
+                                }}
+                                aria-invalid={addTaskError.startsWith("Please enter a whole-number")}
+                                aria-label="Maximum score"
+                            />
+                            {addTaskError.startsWith("Please enter a whole-number") && (
+                                <span className="add-task-field-error" role="alert">
+                                    {addTaskError}
+                                </span>
+                            )}
+                        </div>
                         <button type="submit">Add</button>
                         <button
                             type="button"
@@ -391,6 +421,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 setShowAddTask(false);
                                 setTaskNameInput("");
                                 setTaskMaxScore("");
+                                setAddTaskError("");
                             }}
                         >
                             Cancel
@@ -406,6 +437,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     className="add-task-button"
                     onClick={() => {
                         setSaveError("");
+                        setAddTaskError("");
                         setShowAddTask((shown) => !shown);
                     }}
                     aria-expanded={showAddTask}
