@@ -4,59 +4,142 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/shared/Sidebar';
 import Header from '../../components/shared/Header';
-import SubjectCard from '../../components/student/SubjectCard';
 import { getDb } from '../../utils/db';
+import dbJson from '../../utils/db.json';
 import './StudentDashboard.css';
 
-export default function StudentDashboard() {
-  // TODO: Initialize database state and filter enrolled classes
+// Helper to compute Prelim Grade from db.json raw scores
+function calculatePrelimGrade(prelimGrades) {
+  if (!prelimGrades) return 75;
 
+  let totalScore = 0;
+  let totalMax = 0;
+
+  if (Array.isArray(prelimGrades.AT)) {
+    prelimGrades.AT.forEach(task => {
+      const score = task.officialScore ?? task.studentReportedScore;
+      if (score !== null && score !== undefined && task.maxScore) {
+        totalScore += score;
+        totalMax += task.maxScore;
+      }
+    });
+  }
+
+  if (Array.isArray(prelimGrades.TLA)) {
+    prelimGrades.TLA.forEach(task => {
+      const score = task.officialScore ?? task.studentReportedScore;
+      if (score !== null && score !== undefined && task.maxScore) {
+        totalScore += score;
+        totalMax += task.maxScore;
+      }
+    });
+  }
+
+  if (prelimGrades.Exam && typeof prelimGrades.Exam === 'object') {
+    const exam = prelimGrades.Exam;
+    const score = exam.officialScore ?? exam.studentReportedScore;
+    if (score !== null && score !== undefined && exam.maxScore) {
+      totalScore += score;
+      totalMax += exam.maxScore;
+    }
+  }
+
+  if (totalMax === 0) return 75;
+  return Math.round((totalScore / totalMax) * 100 * 10) / 10;
+}
+
+// Safely obtain DB data or seed localStorage with db.json if empty
+function loadDatabaseData() {
+  const local = getDb();
+  if (local && Array.isArray(local.users) && local.users.length > 0) {
+    return local;
+  }
+  try {
+    localStorage.setItem('compugrade_db', JSON.stringify(dbJson));
+    localStorage.setItem('activeUserId', 'U1');
+  } catch (e) {
+    console.error('Failed to seed localStorage', e);
+  }
+  return dbJson;
+}
+
+export default function StudentDashboard() {
   const navigate = useNavigate();
 
-  // 1. State & Database Initialization
-  const [dbData, setDbData] = useState(() => getDb() || {});
+  // 1. Database & User Context State
+  const [dbData, setDbData] = useState(() => loadDatabaseData());
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTab, setFilterTab] = useState('all');
 
   const activeStudentId = localStorage.getItem('activeUserId') || "U1";
 
   useEffect(() => {
-    const freshDb = getDb();
-    if (freshDb) setDbData(freshDb);
+    const data = loadDatabaseData();
+    setDbData(data);
   }, []);
 
-  const currentUser = dbData?.users?.find(u => u.id === activeStudentId) || {
-    name: "Juan Dela Cruz",
-    role: "Student · BS Information Technology"
-  };
+  // Find user inside users array
+  const currentUser = dbData?.users?.find(u => String(u.id) === String(activeStudentId)) || 
+                      dbData?.users?.find(u => u.role === 'student') || {
+                        id: "U1",
+                        name: "Juan Dela Cruz",
+                        programSection: "BSIT-2A"
+                      };
 
-  // 2. Derive Enrolled Classes from DB
-  const enrolledClasses = (dbData?.classes || [])
-    .filter(c => c.studentRecords?.some(r => r.studentId === activeStudentId))
-    .map(c => {
-      const record = c.studentRecords.find(r => r.studentId === activeStudentId);
-      const subject = (dbData?.subjects || []).find(s => s.id === c.subjectId) || {};
-      const grade = record?.prelimGrade ?? 75;
-      const isBelowPassing = grade < 75;
-      const diff = Math.abs(grade - 75);
+  const effectiveUserId = currentUser.id;
 
-      return {
-        classId: c.id,
-        subjectCode: subject.subjectCode || "IT101",
-        subjectName: subject.subjectName || "Computer Systems",
-        professorName: c.professorName || subject.professorName || "Prof. Maria Santos",
-        units: subject.units || 3,
-        icon: subject.icon || "</>",
-        grade: grade,
-        isBelowPassing,
-        status: isBelowPassing ? "Needs attention" : (grade >= 85 ? "On track" : "Almost there"),
-        statusType: isBelowPassing ? "alert" : (grade >= 85 ? "success" : "warning"),
-        pointsText: isBelowPassing ? `${diff} points below passing` : `${diff} points above passing`,
-        progressClass: `fill-${Math.min(100, Math.max(0, Math.round(grade)))}`
-      };
-    });
+  // 2. Fetch Classes Relationally from DB
+  const rawClasses = dbData?.classes || [];
+  const rawSubjects = dbData?.subjects || [];
+  const rawUsers = dbData?.users || [];
 
-  // 3. Table Search & Tab Filtering
+  let userClasses = rawClasses.filter(c => 
+    c.studentRecords?.some(r => String(r.studentId) === String(effectiveUserId))
+  );
+
+  // Fallback: If logged in user has no specific records, load all default database classes
+  if (userClasses.length === 0) {
+    userClasses = rawClasses;
+  }
+
+  // Icons array to alternate on subject cards
+  const icons = ['</>', 'Σ', '≡', '⚡', '📊'];
+
+  const enrolledClasses = userClasses.map((c, idx) => {
+    const record = c.studentRecords?.find(r => String(r.studentId) === String(effectiveUserId)) || c.studentRecords?.[0];
+    const subject = rawSubjects.find(s => s.id === c.subjectId) || {};
+    const professor = rawUsers.find(u => u.id === c.professorId) || {};
+
+    const grade = calculatePrelimGrade(record?.grades?.prelim);
+    const isBelowPassing = grade < 75;
+    const diff = Math.abs(grade - 75);
+
+    let status = "On track";
+    let statusType = "success";
+    if (isBelowPassing) {
+      status = "Needs attention";
+      statusType = "alert";
+    } else if (grade < 85) {
+      status = "Almost there";
+      statusType = "warning";
+    }
+
+    return {
+      classId: c.id,
+      subjectCode: subject.subjectCode || c.subjectCode || "IT101",
+      subjectName: subject.subjectName || c.subjectName || "Computer Systems",
+      professorName: professor.name || c.professorName || "Prof. Maria Santos",
+      units: subject.units || c.units || 3,
+      icon: icons[idx % icons.length],
+      grade: grade,
+      isBelowPassing,
+      status,
+      statusType,
+      pointsText: isBelowPassing ? `${diff} points below passing` : `${diff} points above passing`
+    };
+  });
+
+  // 3. Search & Tab Filter Logic
   const filteredSubjects = enrolledClasses.filter(sub => {
     const matchesSearch = 
       sub.subjectCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,7 +164,7 @@ export default function StudentDashboard() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${currentUser.name.replace(/\s+/g, '_')}_Grades.csv`;
+    a.download = `${(currentUser.name || 'Student').replace(/\s+/g, '_')}_Grades.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -93,12 +176,12 @@ export default function StudentDashboard() {
       <div className="dashboard-content-wrapper">
 
         {/* --- SHARED HEADER --- */}
-          <Header 
-            welcomeTitle={`Welcome back, ${currentUser.name.split(' ')[0]}!`}
-            welcomeSubtitle="A little progress, every day."
-            userName={currentUser.name}
-            userRole={currentUser.role}
-          />
+        <Header 
+          welcomeTitle={`Welcome back, ${(currentUser.name || 'Juan').split(' ')[0]}!`}
+          welcomeSubtitle="A little progress, every day."
+          userName={currentUser.name}
+          userRole={`Student · ${currentUser.programSection || 'BS Information Technology'}`}
+        />
         
         {/* Main Content Container */}
         <main className="dashboard-main container">
@@ -131,7 +214,6 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* 3 Focus Subject Cards using the reusable component (Functionality Added) */}
             <div className="subject-focus-grid">
               {enrolledClasses.slice(0, 3).map(sub => (
                 <div 
@@ -139,27 +221,56 @@ export default function StudentDashboard() {
                   className="subject-card-clickable"
                   onClick={() => navigate(`/student/subject/${sub.classId}`)}
                 >
-                  <SubjectCard 
-                    icon={sub.icon}
-                    code={sub.subjectCode}
-                    name={sub.subjectName}
-                    grade={sub.grade}
-                    status={sub.status}
-                    statusType={sub.statusType}
-                    pointsText={sub.pointsText}
-                    target={75}
-                    progressClass={sub.progressClass}
-                    isAttentionNeeded={sub.isBelowPassing}
-                  />
+                  <div className={`focus-card ${sub.isBelowPassing ? 'card-needs-attention' : ''}`}>
+                    <div className="card-top">
+                      <div className="card-icon-box">{sub.icon}</div>
+                      <span className={`status-pill status-${sub.statusType}`}>
+                        {sub.status}
+                      </span>
+                    </div>
+
+                    <div className="subject-info">
+                      <span className="subject-code">{sub.subjectCode}</span>
+                      <h3 className="subject-name">{sub.subjectName}</h3>
+                    </div>
+
+                    <div className="grade-section">
+                      <div className="grade-display">
+                        <span className="grade-number">{sub.grade}%</span>
+                        <span className="grade-label">Current Prelim grade</span>
+                      </div>
+                      <div className="progress-bar-track">
+                        <div 
+                          className="progress-bar-fill"
+                          style={{ 
+                            width: `${Math.min(100, Math.max(10, sub.grade))}%`,
+                            backgroundColor: sub.isBelowPassing ? '#ef4444' : '#1e3a8a'
+                          }}
+                        />
+                      </div>
+                      <div className="progress-details">
+                        <span className={sub.isBelowPassing ? 'text-alert' : ''}>{sub.pointsText}</span>
+                        <span>Target: 75%</span>
+                      </div>
+                    </div>
+
+                    <div className="card-footer">
+                      <span>Explore your target</span>
+                      <span>↗</span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
+          {/* PLACE ADD SUBJETC BUTTON HERE */}
+          <button type="submit" className="subject-menu-add-button">
+            Add Subject
+          </button>
 
           {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
           <div className="enrolled-subjects-container">
-            {/* Header & Export Action */}
             <div className="table-header-top">
               <div>
                 <div className="table-title-row">
@@ -260,9 +371,8 @@ export default function StudentDashboard() {
               </table>
             </div>
 
-            {/* Table Footer */}
             <div className="table-footer-bottom">
-              <span>• Official grades are posted by your professors.</span>
+              <span>Official grades are posted by your professors.</span>
               <span>Passing grade: 75%</span>
             </div>
           </div>
