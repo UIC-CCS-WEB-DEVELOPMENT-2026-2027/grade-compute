@@ -5,7 +5,7 @@ import Header from '../../components/shared/Header';
 
 export default function SubjectDetail() {
   const { subjectId } = useParams(); // URL parameter (e.g., C101)
-  
+
   // TODO: Initialize database state, handle target grade logic, and render 3-State UI
 
   return (
