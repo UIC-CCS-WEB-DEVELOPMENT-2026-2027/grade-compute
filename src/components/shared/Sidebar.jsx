@@ -6,8 +6,6 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [dbData, setDbData] = useState(() => getDb());
-  const [selectedRole, setSelectedRole] = useState('Student');
-  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
   const [subjectToRemove, setSubjectToRemove] = useState(null);
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(() => {
     return location.pathname.includes('/student/subject');
@@ -47,7 +45,6 @@ export default function Sidebar() {
 
   const dashboardActive = location.pathname.includes('/student/dashboard');
   const subjectsActive = location.pathname === '/student/subject';
-  const settingsActive = location.pathname.includes('/settings');
 
   const removeSubjectEnrollment = ({ classId, subjectCode, subjectName }) => {
     const currentDb = getDb() || dbData;
