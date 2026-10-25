@@ -1,69 +1,77 @@
 // src/components/student/HistoryTooltip.jsx
-// Tooltip for the history charts. Shows the task at that step: its score,
-// the entry an official score replaced, or the planned score, and the
-// grade right after it. Multi-subject charts pass one entry per subject.
+// Tooltip for the history charts. Shows only the point under the pointer
+// (see usePointHover.js): the task, its score, the entry an official score
+// replaced or the planned score, and the grade right after it.
+import { useEffect, useState } from "react";
+
 function formatGrade(value) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
 }
 
-function PointDetails({ point, seriesName, color }) {
-    if (point.isPlan) {
+function ReplacedLine({ point }) {
+    const change = point.percent - point.replacedEntry.percent;
+    return (
+        <p className="history-tooltip-replaced">
+            You entered {point.replacedEntry.score}/{point.replacedEntry.maxScore} ({point.replacedEntry.percent.toFixed(1)}%)
+            {" → "}official {point.percent.toFixed(1)}% ({change > 0 ? "+" : ""}{change.toFixed(1)} pts)
+        </p>
+    );
+}
+
+function PointDetails({ point, kind, seriesName, color }) {
+    if (kind === "plan") {
         return (
-            <div>
+            <>
                 <p>Step {point.step} · planned</p>
                 <p className="history-tooltip-task">{point.label}</p>
-                <p>
-                    {point.isExpected ? "Your estimate" : "Score needed"} {formatGrade(point.percent)}
-                </p>
+                <p>{point.isExpected ? "Your estimate" : "Score needed"} {formatGrade(point.percent)}</p>
                 <p>Grade then <strong>{formatGrade(point.planGrade)}</strong></p>
-            </div>
+            </>
+        );
+    }
+    if (kind === "ghost") {
+        return (
+            <>
+                <p>Task {point.step} · your entry before the official score</p>
+                <p className="history-tooltip-task">{point.label}</p>
+                <ReplacedLine point={point} />
+                <p>
+                    Grade with your entry <strong>{formatGrade(point.ghostGrade)}</strong>
+                    {" · "}with the official score <strong>{formatGrade(point.grade)}</strong>
+                </p>
+            </>
         );
     }
     return (
-        <div>
+        <>
             {seriesName && (
                 <strong className="history-tooltip-series" style={{ color }}>{seriesName}</strong>
             )}
             <p>Task {point.step} · {point.termLabel} · {point.criterionName}</p>
             <p className="history-tooltip-task">{point.label}</p>
-            <p>
-                Score {point.percent.toFixed(1)}% ({point.isOfficial ? "official" : "yours"})
-            </p>
-            {point.replacedEntry && (
-                <p className="history-tooltip-replaced">
-                    You entered {point.replacedEntry.score}/{point.replacedEntry.maxScore} ({point.replacedEntry.percent.toFixed(1)}%)
-                    {" → "}official {point.percent.toFixed(1)}%
-                    {" "}({point.percent - point.replacedEntry.percent > 0 ? "+" : ""}{(point.percent - point.replacedEntry.percent).toFixed(1)} pts)
-                </p>
-            )}
+            <p>Score {point.percent.toFixed(1)}% ({point.isOfficial ? "official" : "yours"})</p>
+            {point.replacedEntry && <ReplacedLine point={point} />}
             <p>Grade so far <strong>{formatGrade(point.grade)}</strong></p>
-        </div>
+        </>
     );
 }
 
-export default function HistoryTooltip({ active, payload, multiSeries = false }) {
-    if (!active || !payload?.length) return null;
+// store: from usePointHover(). It sends { x, y, flipX, below, data } where
+// data is { point, kind: "real" | "ghost" | "plan", seriesName?, color? }.
+export default function HistoryTooltip({ store }) {
+    const [hover, setHover] = useState(null);
+    useEffect(() => store.subscribe(setHover), [store]);
 
-    // Single-subject charts: every line shares one row, so show it once.
-    if (!multiSeries) {
-        const point = payload[0].payload;
-        return (
-            <div className="history-tooltip">
-                <PointDetails point={point} />
-            </div>
-        );
-    }
-
+    if (!hover) return null;
+    const offsetX = hover.flipX ? "calc(-100% - 14px)" : "14px";
+    const offsetY = hover.below ? "14px" : "calc(-100% - 14px)";
     return (
-        <div className="history-tooltip">
-            {payload.map((entry) => (
-                <PointDetails
-                    key={entry.name}
-                    point={entry.payload}
-                    seriesName={entry.name}
-                    color={entry.stroke}
-                />
-            ))}
+        <div
+            className="history-tooltip history-tooltip-float"
+            role="status"
+            style={{ left: hover.x, top: hover.y, transform: `translate(${offsetX}, ${offsetY})` }}
+        >
+            <PointDetails {...hover.data} />
         </div>
     );
 }

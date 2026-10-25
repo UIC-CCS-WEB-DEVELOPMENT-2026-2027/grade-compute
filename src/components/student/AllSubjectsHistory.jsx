@@ -12,7 +12,6 @@ import {
     LineChart,
     ReferenceLine,
     ResponsiveContainer,
-    Tooltip,
     XAxis,
     YAxis,
 } from "recharts";
@@ -21,6 +20,7 @@ import { getCriteriaColor } from "../../utils/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "../../utils/history";
 import { TERMS, getTermLabel } from "../../utils/terms";
 import HistoryTooltip from "./HistoryTooltip";
+import usePointHover from "./usePointHover";
 import "./HistoryChart.css";
 
 // Strong colors first so the first lines read well on white.
@@ -34,17 +34,33 @@ function formatGrade(value) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
 }
 
-function SubjectDot({ cx, cy, payload, color, reached, surface, success, onSelect, active = false }) {
+// One subject's dot. Hovering it shows a tooltip for this point only;
+// clicking opens the task.
+function SubjectDot({ cx, cy, payload, course, reached, surface, success, onSelect, hover }) {
     if (cx === undefined || cy === undefined || payload?.grade === null || payload?.grade === undefined) return null;
+    const key = `${course.classId}-${payload.step}`;
     return (
-        <g className="history-dot is-clickable" onClick={() => onSelect(payload)}>
+        <g className="history-dot is-clickable">
             {reached && <circle cx={cx} cy={cy} r={9} fill="none" stroke={success} strokeWidth={2} />}
             {payload.isOfficial ? (
-                <circle cx={cx} cy={cy} r={active ? 6 : 4} fill={color} />
+                <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={course.color} />
             ) : (
-                <circle cx={cx} cy={cy} r={active ? 6 : 4} fill={surface} stroke={color} strokeWidth={2} />
+                <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={surface} stroke={course.color} strokeWidth={2} />
             )}
-            <circle cx={cx} cy={cy} r={11} fill="transparent" />
+            <circle
+                cx={cx}
+                cy={cy}
+                r={11}
+                fill="transparent"
+                onMouseEnter={(event) => hover.show(event, key, {
+                    point: payload,
+                    kind: "real",
+                    seriesName: `${course.subjectCode} · target ${course.target}%`,
+                    color: course.color,
+                })}
+                onMouseLeave={() => hover.hide(key)}
+                onClick={() => onSelect(payload)}
+            />
         </g>
     );
 }
@@ -53,6 +69,9 @@ function SubjectDot({ cx, cy, payload, color, reached, surface, success, onSelec
 // semesterId: only this semester's subjects. initialTerm: "prelim" etc.
 export default function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "prelim" }) {
     const navigate = useNavigate();
+    const { plotRef, store, show, hide } = usePointHover();
+    // What each dot needs to open and close the tooltip.
+    const hover = { show, hide };
     const [termKey, setTermKey] = useState(initialTerm);
     const [hiddenIds, setHiddenIds] = useState(() => new Set());
     const termLabel = getTermLabel(termKey);
@@ -159,6 +178,7 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                     ) : (
                         <div
                             className="history-plot"
+                            ref={plotRef}
                             role="img"
                             aria-label={`${termLabel} grade after each task for ${plotted
                                 .map((course) => `${course.subjectCode} (latest ${formatGrade(course.points.at(-1).grade)}, target ${course.target}%)`)
@@ -203,17 +223,14 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                             strokeWidth={1.5}
                                         />
                                     ))}
-                                    <Tooltip
-                                        content={<HistoryTooltip multiSeries />}
-                                        cursor={{ stroke: colors.grid }}
-                                    />
                                     {plotted.map((course) => {
                                         const reachedStep = course.reachedIndex >= 0 ? course.points[course.reachedIndex].step : null;
                                         const dotProps = {
-                                            color: course.color,
+                                            course,
                                             surface: colors.surface,
                                             success: colors.success,
                                             onSelect: (point) => openTask(course, point),
+                                            hover,
                                         };
                                         return (
                                             <Line
@@ -227,9 +244,7 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                                 dot={(props) => (
                                                     <SubjectDot key={`${course.classId}-${props.index}`} {...props} {...dotProps} reached={props.payload?.step === reachedStep} />
                                                 )}
-                                                activeDot={(props) => (
-                                                    <SubjectDot {...props} {...dotProps} reached={props.payload?.step === reachedStep} active />
-                                                )}
+                                                activeDot={false}
                                                 isAnimationActive={false}
                                                 connectNulls={false}
                                             />
@@ -237,6 +252,7 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                     })}
                                 </LineChart>
                             </ResponsiveContainer>
+                            <HistoryTooltip store={store} />
                         </div>
                     )}
 

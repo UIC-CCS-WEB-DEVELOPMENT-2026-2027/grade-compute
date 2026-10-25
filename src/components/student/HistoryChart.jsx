@@ -13,13 +13,13 @@ import {
     LineChart,
     ReferenceLine,
     ResponsiveContainer,
-    Tooltip,
     XAxis,
     YAxis,
 } from "recharts";
 import { resolveColor } from "../../utils/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "../../utils/history";
 import HistoryTooltip from "./HistoryTooltip";
+import usePointHover from "./usePointHover";
 import "./HistoryChart.css";
 
 function formatGrade(value) {
@@ -38,17 +38,30 @@ function labelAnchor(step, lastStep) {
     return "middle";
 }
 
+// Invisible circle over each dot: makes it easy to hover, click or tap, and
+// opens the tooltip for that one point only.
+function HitArea({ cx, cy, hoverKey, data, hover, onClick }) {
+    return (
+        <circle
+            cx={cx}
+            cy={cy}
+            r={12}
+            fill="transparent"
+            onMouseEnter={(event) => hover.show(event, hoverKey, data)}
+            onMouseLeave={() => hover.hide(hoverKey)}
+            onClick={onClick}
+        />
+    );
+}
+
 // Real scores: filled dot for official, hollow accent dot for your own.
 // The latest task gets a ring and a label when it is at the target.
-function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, active = false }) {
+function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, hover }) {
     if (cx === undefined || cy === undefined || payload?.grade === null || payload?.grade === undefined) return null;
     const clickable = Boolean(onSelect && payload.taskId);
-    const radius = active ? 7 : 5;
+    const key = `real-${payload.step}`;
     return (
-        <g
-            className={clickable ? "history-dot is-clickable" : "history-dot"}
-            onClick={clickable ? () => onSelect(payload) : undefined}
-        >
+        <g className={clickable ? "history-dot is-clickable" : "history-dot"}>
             {payload.step === reachedStep && (
                 <>
                     <circle cx={cx} cy={cy} r={11} fill="none" stroke={colors.success} strokeWidth={2} />
@@ -58,44 +71,56 @@ function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, act
                 </>
             )}
             {payload.isOfficial ? (
-                <circle cx={cx} cy={cy} r={radius} fill={colors.official} />
+                <circle className="history-dot-mark" cx={cx} cy={cy} r={5} fill={colors.official} />
             ) : (
-                <circle cx={cx} cy={cy} r={radius} fill={colors.surface} stroke={colors.accent} strokeWidth={2.5} />
+                <circle className="history-dot-mark" cx={cx} cy={cy} r={5} fill={colors.surface} stroke={colors.accent} strokeWidth={2.5} />
             )}
-            {/* Bigger invisible target so the dot is easy to click or tap. */}
-            {clickable && <circle cx={cx} cy={cy} r={12} fill="transparent" />}
+            <HitArea
+                cx={cx}
+                cy={cy}
+                hoverKey={key}
+                data={{ point: payload, kind: "real" }}
+                hover={hover}
+                onClick={clickable ? () => onSelect(payload) : undefined}
+            />
         </g>
     );
 }
 
 // Your own entry that an official score replaced: a faded hollow dot.
-function GhostDot({ cx, cy, payload, colors }) {
+function GhostDot({ cx, cy, payload, colors, hover }) {
     if (cx === undefined || cy === undefined || payload?.ghostGrade === null || payload?.ghostGrade === undefined) return null;
+    const key = `ghost-${payload.step}`;
     return (
-        <circle
-            cx={cx}
-            cy={cy}
-            r={4.5}
-            fill={colors.surface}
-            stroke={colors.accent}
-            strokeWidth={2}
-            strokeDasharray="2 2"
-            opacity={0.55}
-        />
+        <g className="history-dot is-ghost">
+            <circle
+                className="history-dot-mark"
+                cx={cx}
+                cy={cy}
+                r={4.5}
+                fill={colors.surface}
+                stroke={colors.accent}
+                strokeWidth={2}
+                strokeDasharray="2 2"
+            />
+            <HitArea cx={cx} cy={cy} hoverKey={key} data={{ point: payload, kind: "ghost" }} hover={hover} />
+        </g>
     );
 }
 
 // Planned (simulated) tasks: small hollow dots on the dotted line.
-function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep }) {
+function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
     if (cx === undefined || cy === undefined || !payload?.isPlan) return null;
+    const key = `plan-${payload.step}`;
     return (
-        <g>
+        <g className="history-dot">
             {payload.step === reachedStep && (
                 <text x={cx} y={labelY(cy, 12)} textAnchor={labelAnchor(payload.step, lastStep)} fill={colors.success} fontSize={11} fontWeight={700}>
                     Target reached
                 </text>
             )}
-            <circle cx={cx} cy={cy} r={4} fill={colors.surface} stroke={colors.plan} strokeWidth={2} />
+            <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={colors.surface} stroke={colors.plan} strokeWidth={2} />
+            <HitArea cx={cx} cy={cy} hoverKey={key} data={{ point: payload, kind: "plan" }} hover={hover} />
         </g>
     );
 }
@@ -115,6 +140,9 @@ export default function HistoryChart({
     onSelect,
     height = 300,
 }) {
+    const { plotRef, store, show, hide } = usePointHover();
+    // What each dot needs to open and close the tooltip.
+    const hover = { show, hide };
     const plan = showPlan ? planPoints : [];
     if (points.length === 0 && plan.length === 0) {
         return (
@@ -183,6 +211,7 @@ export default function HistoryChart({
 
             <div
                 className="history-plot"
+                ref={plotRef}
                 role="img"
                 aria-label={`${termLabel} grade after each task${latest !== null ? `, latest ${formatGrade(latest)}` : ""}${target !== null ? `, ${targetLabel.toLowerCase()} ${formatGrade(target)}` : ""}${plan.length ? `, with a plan for ${plan.length} remaining tasks ending at ${formatGrade(plan[plan.length - 1].planGrade)}` : ""}. The same data is in the table below.`}
             >
@@ -223,7 +252,6 @@ export default function HistoryChart({
                                 strokeWidth={1.5}
                             />
                         )}
-                        <Tooltip content={<HistoryTooltip />} cursor={{ stroke: colors.grid }} />
                         {plan.length > 0 && (
                             <Line
                                 dataKey="planGrade"
@@ -231,7 +259,7 @@ export default function HistoryChart({
                                 stroke={colors.plan}
                                 strokeWidth={emphasizePlan ? 3 : 2}
                                 strokeDasharray="6 5"
-                                dot={<PlanDot colors={colors} reachedStep={planReachedStep} lastStep={rows.length} />}
+                                dot={<PlanDot colors={colors} reachedStep={planReachedStep} lastStep={rows.length} hover={hover} />}
                                 activeDot={false}
                                 isAnimationActive={false}
                                 connectNulls={false}
@@ -241,7 +269,7 @@ export default function HistoryChart({
                             <Line
                                 dataKey="ghostGrade"
                                 stroke="none"
-                                dot={<GhostDot colors={colors} />}
+                                dot={<GhostDot colors={colors} hover={hover} />}
                                 activeDot={false}
                                 isAnimationActive={false}
                                 legendType="none"
@@ -252,15 +280,14 @@ export default function HistoryChart({
                             type="linear"
                             stroke={colors.line}
                             strokeWidth={3}
-                            dot={<RealDot colors={colors} reachedStep={reachedStep} lastStep={rows.length} onSelect={onSelect} />}
-                            activeDot={(props) => (
-                                <RealDot {...props} colors={colors} reachedStep={reachedStep} lastStep={rows.length} onSelect={onSelect} active />
-                            )}
+                            dot={<RealDot colors={colors} reachedStep={reachedStep} lastStep={rows.length} onSelect={onSelect} hover={hover} />}
+                            activeDot={false}
                             isAnimationActive={false}
                             connectNulls={false}
                         />
                     </LineChart>
                 </ResponsiveContainer>
+                <HistoryTooltip store={store} />
             </div>
 
             <p className="history-legend">
