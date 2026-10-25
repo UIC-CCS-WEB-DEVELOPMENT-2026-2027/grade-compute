@@ -6,6 +6,7 @@ import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import congratulationAudio from "../../assets/congrats_voice .mp3";
 import {
     calculateOfficialGrade,
     calculateUnofficialGrade,
@@ -28,6 +29,7 @@ function SubjectDetail() {
     const [targetGradeError, setTargetGradeError] = useState("");
     const [dbData, setDbData] = useState(() => getDb());
     const previousAchievement = useRef(null);
+    const celebrationAudioRef = useRef(null);
     const { subjectId } = useParams();
 
     useEffect(() => {
@@ -85,6 +87,29 @@ function SubjectDetail() {
         if (!celebration) return undefined;
         const timeoutId = window.setTimeout(() => setCelebration(""), 6000);
         return () => window.clearTimeout(timeoutId);
+    }, [celebration]);
+
+    useEffect(() => {
+        const audio = celebrationAudioRef.current;
+        if (!audio) return undefined;
+
+        if (!celebration) {
+            audio.pause();
+            audio.currentTime = 0;
+            return undefined;
+        }
+
+        audio.currentTime = 0;
+        audio.play().catch((error) => {
+            if (error.name !== "NotAllowedError") {
+                console.error("Unable to play the grade celebration audio.", error);
+            }
+        });
+
+        return () => {
+            audio.pause();
+            audio.currentTime = 0;
+        };
     }, [celebration]);
 
     const student = dbData?.users?.find((user) => user.id === "U1");
@@ -192,6 +217,7 @@ function SubjectDetail() {
 
     return (
         <div className="subject-detail-layout">
+            <audio ref={celebrationAudioRef} src={congratulationAudio} preload="auto" />
             <Sidebar />
             <div className="subject-detail-main">
                 <Header />
