@@ -7,13 +7,15 @@ import "./StudentDashboard.css";
 
 export default function StudentDashboard() {
     return (
-        <div className="dashboard-page flex-row">
+        <div className="dashboard-page">
             <Sidebar />
 
-            {/* Main Content Container */}
-            <main className="dashboard-main container">
-                {/* Added Header */}
+            {/* Everything right of the sidebar. It takes the remaining width,
+                so the header and content always line up with the sidebar. */}
+            <div className="dashboard-shell">
                 <Header />
+
+            <main className="dashboard-main">
                 {/* --- STUDENT OVERVIEW BANNER --- */}
                 <div className="overview-banner">
                     <div className="overview-text">
@@ -385,6 +387,7 @@ export default function StudentDashboard() {
                     </div>
                 </div>
             </main>
+            </div>
         </div>
     );
 }
