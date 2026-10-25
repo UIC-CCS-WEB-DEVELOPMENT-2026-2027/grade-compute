@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { getDb, saveDb } from '../../utils/db';
+import { DB_UPDATED_EVENT, getDb, saveDb } from '../../utils/db';
 
 export default function Sidebar() {
   const location = useLocation();
@@ -12,6 +12,12 @@ export default function Sidebar() {
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(() => {
     return location.pathname.includes('/student/subject');
   });
+
+  useEffect(() => {
+    const refreshDbData = () => setDbData(getDb());
+    window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
+    return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
+  }, []);
 
   useEffect(() => {
     if (!subjectToRemove) return undefined;
@@ -43,19 +49,43 @@ export default function Sidebar() {
   const subjectsActive = location.pathname === '/student/subject';
   const settingsActive = location.pathname.includes('/settings');
 
-  const removeSubjectEnrollment = ({ classId }) => {
+  const removeSubjectEnrollment = ({ classId, subjectCode, subjectName }) => {
+    const currentDb = getDb() || dbData;
+    const classToRemove = currentDb.classes.find((classItem) => classItem.id === classId);
+    if (!classToRemove) return;
+
+    const subjectId = classToRemove.subjectId;
+    const remainingClasses = currentDb.classes.flatMap((classItem) => {
+      if (classItem.id !== classId) return [classItem];
+
+      const remainingRecords = classItem.studentRecords.filter(
+        (record) => record.studentId !== activeStudentId
+      );
+      return remainingRecords.length > 0
+        ? [{ ...classItem, studentRecords: remainingRecords }]
+        : [];
+    });
+    const subjectStillUsed = remainingClasses.some(
+      (classItem) => classItem.subjectId === subjectId
+    );
+    const normalizedCode = subjectCode.trim().toLowerCase();
+    const normalizedName = subjectName.trim().toLowerCase();
+    const matchesSubject = (item) => (
+      item.subjectCode?.trim().toLowerCase() === normalizedCode &&
+      item.subjectName?.trim().toLowerCase() === normalizedName
+    );
     const updatedDb = {
-      ...dbData,
-      classes: dbData.classes.map((classItem) => (
-        classItem.id === classId
-          ? {
-              ...classItem,
-              studentRecords: classItem.studentRecords.filter(
-                (record) => record.studentId !== activeStudentId
-              )
-            }
-          : classItem
-      ))
+      ...currentDb,
+      classes: remainingClasses,
+      subjects: subjectStillUsed
+        ? currentDb.subjects
+        : currentDb.subjects.filter((subject) => subject.id !== subjectId),
+      verificationQueue: (currentDb.verificationQueue ?? []).filter((request) => {
+        const isThisStudentRequest = request.requestedByStudentId === activeStudentId;
+        const isThisSubjectRequest = request.subjectId === subjectId ||
+          (request.subjectId == null && matchesSubject(request));
+        return !(isThisStudentRequest && isThisSubjectRequest && request.status === 'pending');
+      })
     };
 
     saveDb(updatedDb);

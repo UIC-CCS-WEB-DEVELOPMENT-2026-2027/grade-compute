@@ -35,9 +35,10 @@ const DEFAULT_SEMESTER_ID = CURRENT_SEMESTER.id;
 function semesterId(classItem) {
     const semesterName = classItem.semester ?? SEMESTERS[0].semester;
     const year = classItem.academicYear ?? academicYear;
-    return SEMESTERS.find(
+    const semester = SEMESTERS.find(
         (option) => option.semester === semesterName
-    )?.id.replace(academicYear, year);
+    );
+    return semester ? `${semester.id}-${year}` : undefined;
 }
 
 function nextId(items, prefix) {
@@ -155,21 +156,22 @@ export default function SubjectMenu() {
     });
 
     function submitSubject({ subjectCode: code, subjectName: name, professorName: instructor, section: programSection }) {
-        const duplicateCode = (dbData.subjects ?? []).some(
+        const currentDb = getDb() ?? dbData;
+        const duplicateCode = (currentDb.subjects ?? []).some(
             (subject) => subject.subjectCode.toUpperCase() === code
         );
         if (duplicateCode) {
             return { fieldErrors: { subjectCode: "A subject with that code already exists." } };
         }
 
-        const rule = dbData.computationRules?.[0];
+        const rule = currentDb.computationRules?.[0];
         if (!rule) {
             return { formError: "A grading rule is required before creating subjects." };
         }
 
-        const subjectId = nextId(dbData.subjects ?? [], "SUB");
-        const classId = nextId(dbData.classes ?? [], "C");
-        const requestId = nextId(dbData.verificationQueue ?? [], "REQ");
+        const subjectId = nextId(currentDb.subjects ?? [], "SUB");
+        const classId = nextId(currentDb.classes ?? [], "C");
+        const requestId = nextId(currentDb.verificationQueue ?? [], "REQ");
         const subject = {
             id: subjectId,
             subjectCode: code,
@@ -209,10 +211,10 @@ export default function SubjectMenu() {
             createdAt: new Date().toISOString(),
         };
         const updatedDb = {
-            ...dbData,
-            subjects: [...(dbData.subjects ?? []), subject],
-            classes: [...(dbData.classes ?? []), classItem],
-            verificationQueue: [...(dbData.verificationQueue ?? []), request],
+            ...currentDb,
+            subjects: [...(currentDb.subjects ?? []), subject],
+            classes: [...(currentDb.classes ?? []), classItem],
+            verificationQueue: [...(currentDb.verificationQueue ?? []), request],
         };
 
         try {
@@ -221,7 +223,8 @@ export default function SubjectMenu() {
             return { formError: `Could not save the subject: ${error.message}` };
         }
 
-        setDbData(updatedDb);
+        setDbData(getDb() ?? updatedDb);
+        setSelectedSemesterId(semesterId(classItem));
         setShowForm(false);
         return null;
     }
