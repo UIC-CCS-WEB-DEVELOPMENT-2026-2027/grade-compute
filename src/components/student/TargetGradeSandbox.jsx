@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import { calculateOfficialGrade, calculateUnofficialGrade } from "../../utils/grades";
 import { formatPercent } from "../../utils/rules";
+import { getActiveStudentId } from "../../utils/session";
 import {
     getSandboxPlan,
     getSandboxTarget,
@@ -16,7 +17,6 @@ import {
 } from "../../utils/sandbox";
 import "./TargetGradeSandbox.css";
 
-const STUDENT_ID = "U1";
 const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
 
 function formatGrade(value) {
@@ -113,6 +113,7 @@ function SandboxResult({ plan, termLabel }) {
 // classId: the class to plan. termKey: "prelim" | "midterm" | "finals".
 export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const [dbData, setDbData] = useState(() => getDb());
+    const studentId = getActiveStudentId(dbData);
     const [saveError, setSaveError] = useState("");
     const [targetInput, setTargetInput] = useState(null);
     const [targetError, setTargetError] = useState("");
@@ -126,7 +127,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
 
     const termLabel = TERM_LABELS[termKey] ?? "Prelim";
     const classItem = dbData?.classes?.find((item) => item.id === classId);
-    const studentRecord = classItem?.studentRecords?.find((record) => record.studentId === STUDENT_ID);
+    const studentRecord = classItem?.studentRecords?.find((record) => record.studentId === studentId);
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
     if (!studentRecord) {
@@ -151,7 +152,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
             classes: currentDb.classes.map((item) => item.id !== classId ? item : {
                 ...item,
                 studentRecords: item.studentRecords.map((record) =>
-                    record.studentId === STUDENT_ID ? updateRecord(record) : record
+                    record.studentId === studentId ? updateRecord(record) : record
                 ),
             }),
         };

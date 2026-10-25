@@ -120,11 +120,18 @@ export function addSubject(db, studentId, values, date = new Date()) {
     const instructor = String(values.professorName ?? "").trim();
     const programSection = String(values.section ?? "").trim();
 
-    const duplicateCode = (db?.subjects ?? []).some(
-        (subject) => subject.subjectCode.toUpperCase() === code
+    // Subjects are shared by all students; enrollments (classes with a
+    // studentRecord) are per student. Only block a code this student
+    // already has, so different students can add the same subject.
+    const subjectsByCode = (db?.subjects ?? []).filter(
+        (subject) => String(subject.subjectCode ?? "").toUpperCase() === code
     );
-    if (duplicateCode) {
-        return { ok: false, fieldErrors: { subjectCode: "A subject with that code already exists." } };
+    const alreadyEnrolled = (db?.classes ?? []).some((classItem) =>
+        subjectsByCode.some((subject) => subject.id === classItem.subjectId) &&
+        classItem.studentRecords?.some((record) => record.studentId === studentId)
+    );
+    if (alreadyEnrolled) {
+        return { ok: false, fieldErrors: { subjectCode: "You already have a subject with that code." } };
     }
 
     const rules = db?.computationRules ?? [];
@@ -138,10 +145,16 @@ export function addSubject(db, studentId, values, date = new Date()) {
     }
 
     const semester = getCurrentSemester(date);
-    const subjectId = nextId(db.subjects ?? [], "SUB");
+    // Reuse the shared subject when the code and name both match;
+    // otherwise add a new one (the same code can mean different courses
+    // at different schools).
+    const existingSubject = subjectsByCode.find(
+        (subject) => String(subject.subjectName ?? "").trim().toLowerCase() === name.toLowerCase()
+    );
+    const subjectId = existingSubject?.id ?? nextId(db.subjects ?? [], "SUB");
     const classId = nextId(db.classes ?? [], "C");
     const requestId = nextId(db.verificationQueue ?? [], "REQ");
-    const subject = {
+    const subject = existingSubject ?? {
         id: subjectId,
         subjectCode: code,
         subjectName: name,
@@ -186,7 +199,7 @@ export function addSubject(db, studentId, values, date = new Date()) {
         classItem,
         db: {
             ...db,
-            subjects: [...(db.subjects ?? []), subject],
+            subjects: existingSubject ? db.subjects : [...(db.subjects ?? []), subject],
             classes: [...(db.classes ?? []), classItem],
             verificationQueue: [...(db.verificationQueue ?? []), request],
         },

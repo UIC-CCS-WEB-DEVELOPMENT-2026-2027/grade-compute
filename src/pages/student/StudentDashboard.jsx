@@ -6,17 +6,17 @@ import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import { getActiveStudentId } from "../../utils/session";
 import { getCurrentSemester, getEnrolledSubjects } from "../../utils/subjects";
 import "./StudentDashboard.css";
 
-const STUDENT_ID = "U1";
-
 export default function StudentDashboard() {
     const [dbData, setDbData] = useState(() => getDb());
+    const studentId = getActiveStudentId(dbData);
     const semester = getCurrentSemester();
-    const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
+    const student = dbData?.users?.find((user) => user.id === studentId);
     // The dashboard shows the current semester's subjects.
-    const subjects = getEnrolledSubjects(dbData, STUDENT_ID, semester.id);
+    const subjects = getEnrolledSubjects(dbData, studentId, semester.id);
 
     // Refresh when any page saves the database (e.g. a subject is added).
     useEffect(() => {
@@ -58,7 +58,7 @@ export default function StudentDashboard() {
                 {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
                 <EnrolledSubjectsTable
                     subjects={subjects}
-                    studentId={STUDENT_ID}
+                    studentId={studentId}
                     initialSection={student?.programSection ?? ""}
                 />
 

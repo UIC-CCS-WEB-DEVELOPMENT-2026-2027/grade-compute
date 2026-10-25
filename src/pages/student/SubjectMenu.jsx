@@ -4,6 +4,7 @@ import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import { getActiveStudentId } from "../../utils/session";
 import {
     getClassSemesterId,
     getCurrentSemester,
@@ -12,13 +13,13 @@ import {
 } from "../../utils/subjects";
 import "./SubjectMenu.css";
 
-const STUDENT_ID = "U1";
 const SEMESTER_OPTIONS = getSemesterOptions();
 const DEFAULT_SEMESTER_ID = getCurrentSemester().id;
 
 export default function SubjectMenu() {
     const [dbData, setDbData] = useState(() => getDb());
-    const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
+    const studentId = getActiveStudentId(dbData);
+    const student = dbData?.users?.find((user) => user.id === studentId);
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
     const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
@@ -50,11 +51,11 @@ export default function SubjectMenu() {
         );
     }
 
-    const subjects = getEnrolledSubjects(dbData, STUDENT_ID, selectedSemesterId);
+    const subjects = getEnrolledSubjects(dbData, studentId, selectedSemesterId);
     const selectedSemester = SEMESTER_OPTIONS.find((option) => option.id === selectedSemesterId);
     const pendingRequests = (dbData.verificationQueue ?? []).filter(
         (request) =>
-            request.requestedByStudentId === STUDENT_ID &&
+            request.requestedByStudentId === studentId &&
             request.status === "pending" &&
             !(dbData.classes ?? []).some((classItem) => classItem.subjectId === request.subjectId)
     );
@@ -94,7 +95,7 @@ export default function SubjectMenu() {
                             ? `Your subjects for ${selectedSemester.semester}, ${selectedSemester.academicYear}.`
                             : "Your subjects for this semester."
                     }
-                    studentId={STUDENT_ID}
+                    studentId={studentId}
                     initialSection={studentSection}
                     // New subjects go into the current semester, so show it.
                     onSubjectAdded={(classItem) => setSelectedSemesterId(getClassSemesterId(classItem))}

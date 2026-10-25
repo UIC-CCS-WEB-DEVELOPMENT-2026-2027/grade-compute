@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DB_UPDATED_EVENT, getDb, saveDb } from '../../utils/db';
 import { getEnrolledSubjects } from '../../utils/subjects';
 import { toTermKey } from '../../utils/terms';
+import { getActiveStudentId, signOut } from '../../utils/session';
 import SandboxSubjectPicker from '../student/SandboxSubjectPicker';
 
 export default function Sidebar() {
@@ -32,7 +33,7 @@ export default function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [subjectToRemove]);
 
-  const activeStudentId = 'U1';
+  const activeStudentId = getActiveStudentId(dbData);
 
   const myClasses = dbData?.classes?.filter((c) =>
     c.studentRecords.some((record) => record.studentId === activeStudentId)
@@ -219,7 +220,7 @@ export default function Sidebar() {
 
         <Link
           to="/student/rules"
-          className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'is-active' : ''}`}
+          className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'btn-primary' : ''}`}
         >
           Grade Rules
         </Link>
@@ -252,7 +253,7 @@ export default function Sidebar() {
         </Link>
 
         {/* Pushes the logout button to the bottom */}
-        <Link to="/" className="btn-warning sidebar-link" style={{marginTop: 'auto', textAlign: 'center'}}>
+        <Link to="/" onClick={signOut} className="btn-warning sidebar-link" style={{marginTop: 'auto', textAlign: 'center'}}>
           Logout
         </Link>
 

@@ -6,10 +6,9 @@ import PageFooter from "../../components/shared/PageFooter";
 import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
 import TermNavigation from "../../components/student/TermNavigation";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import { getActiveStudentId } from "../../utils/session";
 import { toTermKey } from "../../utils/terms";
 import "./SubjectDetail.css";
-
-const STUDENT_ID = "U1";
 
 export default function TargetGradeSandboxPage() {
     const { subjectId } = useParams();
@@ -17,6 +16,7 @@ export default function TargetGradeSandboxPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const termKey = toTermKey(searchParams.get("term"));
     const [dbData, setDbData] = useState(() => getDb());
+    const studentId = getActiveStudentId(dbData);
 
     useEffect(() => {
         const refresh = () => setDbData(getDb());
@@ -27,7 +27,7 @@ export default function TargetGradeSandboxPage() {
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
     const hasStudentRecord = classItem?.studentRecords?.some(
-        (record) => record.studentId === STUDENT_ID
+        (record) => record.studentId === studentId
     );
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 

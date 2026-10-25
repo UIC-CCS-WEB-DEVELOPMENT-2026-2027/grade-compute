@@ -32,7 +32,7 @@ function subjectInitials(subjectCode) {
 export default function EnrolledSubjectsTable({
     subjects = [],
     subtitle = "All your subjects for the current semester.",
-    studentId = "U1",
+    studentId,
     initialSection = "",
     onSubjectAdded,
 }) {

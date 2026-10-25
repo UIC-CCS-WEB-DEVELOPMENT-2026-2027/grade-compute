@@ -15,6 +15,7 @@ import SubjectMenu from './pages/student/SubjectMenu';
 import TargetGradeSandboxPage from './pages/student/TargetGradeSandboxPage';
 import GradeRules from './pages/student/GradeRules';
 import RuleDetail from './pages/student/RuleDetail';
+import RequireStudent from './components/shared/RequireStudent';
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
@@ -42,16 +43,16 @@ export default function App() {
         <Route path="/" element={<LoginRegister />} />
 
         {/* Global Authenticated */}
-        <Route path="/settings" element={<GlobalSettings />} />
+        <Route path="/settings" element={<RequireStudent><GlobalSettings /></RequireStudent>} />
         
         {/* Student Workspace (Phase 1 Focus) */}
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
-        <Route path="/student/subject" element={<SubjectMenu />} />
-        <Route path="/student/subject/:subjectId/sandbox" element={<TargetGradeSandboxPage />} />
-        <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
-        <Route path="/student/rules" element={<GradeRules />} />
-        <Route path="/student/rules/new" element={<RuleDetail isNew />} />
-        <Route path="/student/rules/:ruleId" element={<RuleDetail />} />
+        <Route path="/student/dashboard" element={<RequireStudent><StudentDashboard /></RequireStudent>} />
+        <Route path="/student/subject" element={<RequireStudent><SubjectMenu /></RequireStudent>} />
+        <Route path="/student/subject/:subjectId/sandbox" element={<RequireStudent><TargetGradeSandboxPage /></RequireStudent>} />
+        <Route path="/student/subject/:subjectId" element={<RequireStudent><SubjectDetail /></RequireStudent>} />
+        <Route path="/student/rules" element={<RequireStudent><GradeRules /></RequireStudent>} />
+        <Route path="/student/rules/new" element={<RequireStudent><RuleDetail isNew /></RequireStudent>} />
+        <Route path="/student/rules/:ruleId" element={<RequireStudent><RuleDetail /></RequireStudent>} />
         {/*
         {// Professor Workspace (Phase 2) }
         <Route path="/professor/classes" element={<ProfessorDashboard />} />

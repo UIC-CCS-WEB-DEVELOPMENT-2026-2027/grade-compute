@@ -21,12 +21,12 @@ function missingFieldMessage(field) {
         : `Please enter your ${FIELD_LABELS[field]}.`;
 }
 
-// studentId: who is adding the subject.
+// studentId: who is adding the subject (the signed-in student).
 // initialSection: prefilled program / section (usually the student's own).
 // onAdded(classItem): called after the subject is saved.
 // onCancel(): called when the student closes the form.
 export default function AddSubjectForm({
-    studentId = "U1",
+    studentId,
     initialSection = "",
     onCancel,
     onAdded,

@@ -1,5 +1,6 @@
 import './Header.css';
 import { getDb } from '../../utils/db';
+import { getActiveUser } from '../../utils/session';
 
 function BellIcon() {
   return (
@@ -34,8 +35,7 @@ export default function Header({
   user,
 }) {
   const dbData = getDb();
-  const activeUserId = localStorage.getItem('activeUserId') || 'U1';
-  const activeUser = dbData?.users?.find((item) => item.id === activeUserId);
+  const activeUser = getActiveUser(dbData);
   const profile = user ?? activeUser ?? {
     name: 'Student',
     role: 'student',

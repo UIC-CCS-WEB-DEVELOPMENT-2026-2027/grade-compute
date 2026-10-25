@@ -14,6 +14,7 @@ import {
     getOfficialAssessments,
 } from "../../utils/grades";
 import { getTermLabel, toTermKey } from "../../utils/terms";
+import { getActiveStudentId } from "../../utils/session";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
@@ -34,6 +35,7 @@ function SubjectDetail() {
     const [celebration, setCelebration] = useState("");
     const [targetGradeError, setTargetGradeError] = useState("");
     const [dbData, setDbData] = useState(() => getDb());
+    const studentId = getActiveStudentId(dbData);
     const previousAchievement = useRef(null);
     const celebrationAudioRef = useRef(null);
     const { subjectId } = useParams();
@@ -48,7 +50,7 @@ function SubjectDetail() {
         const currentDb = dbData;
         const currentClass = currentDb?.classes?.find((item) => item.id === subjectId);
         const currentRecord = currentClass?.studentRecords?.find(
-            (record) => record.studentId === "U1"
+            (record) => record.studentId === studentId
         );
         const currentRule = currentDb?.computationRules?.find(
             (rule) => rule.id === currentClass?.computationRuleId
@@ -87,7 +89,7 @@ function SubjectDetail() {
             officialReached,
             expectedReached,
         };
-    }, [dbData, subjectId, term]);
+    }, [dbData, subjectId, term, studentId]);
 
     useEffect(() => {
         if (!celebration) return undefined;
@@ -127,7 +129,7 @@ function SubjectDetail() {
         dbData?.users?.find((user) => user.id === classItem?.professorId)?.name ??
         "Awaiting professor assignment";
     const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === "U1"
+        (record) => record.studentId === studentId
     );
     const computationRule = dbData?.computationRules?.find(
         (rule) => rule.id === classItem?.computationRuleId
@@ -185,7 +187,7 @@ function SubjectDetail() {
             classes: currentDb.classes.map((item) => item.id !== classItem.id ? item : ({
                 ...item,
                 studentRecords: item.studentRecords.map((record) =>
-                    record.studentId !== "U1" ? record : ({
+                    record.studentId !== studentId ? record : ({
                         ...record,
                         targetGradeSandbox: {
                             ...(record.targetGradeSandbox ?? {}),

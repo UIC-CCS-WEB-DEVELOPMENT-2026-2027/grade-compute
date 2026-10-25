@@ -1,11 +1,11 @@
 import { useState } from "react";
 import DraftInput from "../shared/DraftInput";
 import { getDb, saveDb } from "../../utils/db";
+import { getActiveStudentId } from "../../utils/session";
 import { toTaskList } from "../../utils/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
 import "./CurrentTermRecord.css";
 
-const STUDENT_ID = "U1";
 
 function termKey(term) {
     return term.toLowerCase();
@@ -25,6 +25,7 @@ function hasOfficialScore(task) {
 // criterion's id in each term (see grades-guide.txt).
 function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [dbData, setDbData] = useState(() => getDb());
+    const studentId = getActiveStudentId(dbData);
     const [taskNameInput, setTaskNameInput] = useState("");
     const [taskMaxScore, setTaskMaxScore] = useState("");
     const [taskCategory, setTaskCategory] = useState("");
@@ -36,7 +37,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
     const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === STUDENT_ID
+        (record) => record.studentId === studentId
     );
     const rule = dbData?.computationRules?.find(
         (item) => item.id === classItem?.computationRuleId
@@ -82,7 +83,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         return saveChanges((item) => ({
             ...item,
             studentRecords: item.studentRecords.map((record) => {
-                if (record.studentId !== STUDENT_ID) return record;
+                if (record.studentId !== studentId) return record;
                 const grades = record.grades ?? {};
                 return {
                     ...record,
