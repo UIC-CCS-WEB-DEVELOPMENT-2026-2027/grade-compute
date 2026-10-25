@@ -229,6 +229,11 @@
     background: #ffffff;
 }
 
+.score-input-group:has(input[aria-invalid="true"]) {
+    border-color: #c74545;
+    background: #fff8f8;
+}
+
 .score-input-group input {
     width: 48px;
     min-width: 0;

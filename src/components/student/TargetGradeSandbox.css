@@ -1,0 +1,286 @@
+.sidebar-sandbox-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: calc(100vh - 13rem);
+    overflow-y: auto;
+    margin: 0.5rem 0 0 0.1rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(64, 96, 147, 0.18);
+    border-radius: 0.7rem;
+    background: #fff;
+    color: #405574;
+    scrollbar-width: thin;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox {
+    max-height: none;
+    margin: 0 0 1.75rem;
+    padding: 1.25rem;
+    overflow: visible;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-heading h2 {
+    font-size: 1.3rem;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-intro,
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-field,
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-score,
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-draft {
+    font-size: 0.78rem;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-card {
+    padding: 1rem;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-card h3,
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-subheading {
+    font-size: 1.05rem;
+}
+
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-target strong,
+.sidebar-sandbox-panel.is-page-sandbox .sidebar-sandbox-projection strong {
+    font-size: 1.8rem;
+}
+
+.sidebar-sandbox-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #e4e9f0;
+}
+
+.sidebar-sandbox-heading > span {
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    flex: 0 0 1.8rem;
+    border-radius: 0.45rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 1rem;
+}
+
+.sidebar-sandbox-heading small,
+.sidebar-sandbox-card > small,
+.sidebar-sandbox-target > small,
+.sidebar-sandbox-drafts > small {
+    display: block;
+    color: #71829b;
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+}
+
+.sidebar-sandbox-heading h2 {
+    margin: 0.12rem 0 0;
+    color: #1d2d48;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    line-height: 1.15;
+}
+
+.sidebar-sandbox-intro,
+.sidebar-sandbox-field > span,
+.sidebar-sandbox-score > span,
+.sidebar-sandbox-projection,
+.sidebar-sandbox-calculation p,
+.sidebar-sandbox-drafts > p {
+    margin: 0;
+    color: #71809a;
+    font-size: 0.62rem;
+    line-height: 1.5;
+}
+
+.sidebar-sandbox-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    min-width: 0;
+    color: #516580;
+    font-size: 0.62rem;
+}
+
+.sidebar-sandbox-field select,
+.sidebar-sandbox-field input,
+.sidebar-sandbox-score input,
+.sidebar-sandbox-draft-input input {
+    width: 100%;
+    min-width: 0;
+    min-height: 2rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #bdcce0;
+    border-radius: 0.45rem;
+    background: #fff;
+    color: #406093;
+    font: inherit;
+    font-size: 0.72rem;
+}
+
+.sidebar-sandbox-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.7rem;
+    border-radius: 0.55rem;
+    background: #f8faff;
+}
+
+.sidebar-sandbox-card h3,
+.sidebar-sandbox-subheading {
+    margin: 0;
+    color: #2d3c56;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+}
+
+.sidebar-sandbox-score {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.3rem;
+    color: #72829a;
+    font-size: 0.58rem;
+}
+
+.sidebar-sandbox-score > span:first-child {
+    grid-column: 1 / -1;
+}
+
+.sidebar-sandbox-score input {
+    min-height: 2.5rem;
+    font-size: 1rem;
+}
+
+.sidebar-sandbox-counts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+}
+
+.sidebar-sandbox-target {
+    padding: 0.75rem;
+    border: 1px solid #d8e2f0;
+    border-radius: 0.55rem;
+}
+
+.sidebar-sandbox-target strong,
+.sidebar-sandbox-projection strong {
+    display: block;
+    margin: 0.2rem 0;
+    color: var(--color-primary);
+    font-size: 1.45rem;
+    line-height: 1.15;
+}
+
+.sidebar-sandbox-target p {
+    margin: 0;
+    color: #71809a;
+    font-size: 0.57rem;
+    line-height: 1.45;
+}
+
+.sidebar-sandbox-drafts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+.sidebar-sandbox-draft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e4e9f0;
+    color: #53647c;
+    font-size: 0.62rem;
+}
+
+.sidebar-sandbox-draft > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.sidebar-sandbox-draft > span:first-child small {
+    display: block;
+    margin-top: 0.15rem;
+    color: #8793a4;
+    font-size: 0.52rem;
+}
+
+.sidebar-sandbox-draft-input {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex: 0 0 6rem;
+    color: #7c8da4;
+    font-size: 0.55rem;
+}
+
+.sidebar-sandbox-draft-input input {
+    min-height: 1.85rem;
+    padding: 0.3rem;
+    text-align: right;
+}
+
+.sidebar-sandbox-draft-input input[aria-invalid="true"] {
+    border-color: #c74545;
+    background: #fff8f8;
+}
+
+.sidebar-sandbox-locked-score {
+    color: #405574;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sidebar-sandbox-projection {
+    padding: 0.65rem 0 0.25rem;
+    border-top: 1px solid #e4e9f0;
+}
+
+.sidebar-sandbox-projection strong {
+    margin-top: 0.35rem;
+    font-size: 1.4rem;
+}
+
+.sidebar-sandbox-calculation {
+    padding-top: 0.65rem;
+    border-top: 1px solid #e4e9f0;
+    color: #53647c;
+    font-size: 0.68rem;
+}
+
+.sidebar-sandbox-calculation summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+}
+
+.sidebar-sandbox-calculation p {
+    margin-top: 0.45rem;
+}
+
+.sidebar-sandbox-empty {
+    margin: 0.35rem 0 0 1rem;
+    color: #71809a;
+    font-size: 0.65rem;
+}
+
+.sidebar-sandbox-error {
+    margin: 0;
+    color: #a23c3c;
+    font-size: 0.62rem;
+    line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+    .sidebar-sandbox-panel {
+        max-height: 55vh;
+    }
+}

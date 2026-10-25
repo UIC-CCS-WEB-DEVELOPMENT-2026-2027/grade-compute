@@ -21,6 +21,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
     const [saveError, setSaveError] = useState("");
+    const [invalidScoreId, setInvalidScoreId] = useState("");
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
     const studentRecord = classItem?.studentRecords?.find(
@@ -66,10 +67,28 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
 
         if (selectedAssessment?.officialScore !== null &&
             selectedAssessment?.officialScore !== undefined) {
+            setInvalidScoreId(`${category}-${taskId}`);
             setSaveError("This score is locked because it was recorded by a professor.");
             return;
         }
 
+        if (value !== "") {
+            const score = Number(value);
+            const maxScore = Number(selectedAssessment?.maxScore);
+            const integerDigits = value.split(".")[0].length;
+            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
+            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
+                !Number.isFinite(score) ||
+                score < 0 ||
+                score > maxScore ||
+                integerDigits > maxIntegerDigits) {
+                setInvalidScoreId(`${category}-${taskId}`);
+                setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
+                return;
+            }
+        }
+
+        setInvalidScoreId("");
         saveChanges((item) => ({
             ...item,
             studentRecords: item.studentRecords.map((record) => {
@@ -258,12 +277,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         <div className="score-editor">
                                             <label className="score-input-group">
                                                 <input
-                                                    type="number"
+                                                    type="text"
+                                                    inputMode="decimal"
                                                     min="0"
                                                     max={task.maxScore}
-                                                    step="any"
                                                     placeholder="Add Score"
                                                     aria-label={`Private score for ${displayName}`}
+                                                    aria-invalid={invalidScoreId === `${category}-${task.id}`}
                                                     value={task.studentReportedScore ?? ""}
                                                     onChange={(event) =>
                                                         updateSandbox(category, task.id, "studentReportedScore", event.target.value)
@@ -309,12 +329,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 <div className="score-editor">
                                     <label className="score-input-group">
                                         <input
-                                            type="number"
+                                            type="text"
+                                            inputMode="decimal"
                                             min="0"
                                             max={exam.maxScore}
-                                            step="any"
                                             placeholder="Score"
                                             aria-label={`Private score for ${term} Exam`}
+                                            aria-invalid={invalidScoreId === `Exam-${exam.id}`}
                                             value={exam.studentReportedScore ?? ""}
                                             onChange={(event) =>
                                                 updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)

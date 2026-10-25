@@ -236,6 +236,7 @@ export default function Sidebar() {
             )}
           </div>
         )}
+
       </nav>
 
       <div className="sidebar-footer">
