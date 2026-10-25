@@ -4,6 +4,7 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
+import DraftInput from "../../components/shared/DraftInput";
 import TermNavigation from "../../components/student/TermNavigation";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import congratulationAudio from "../../assets/congrats_voice .mp3";
@@ -272,14 +273,17 @@ function SubjectDetail() {
                         <label className="grade-target-control">
                             <span>Target grade</span>
                             <span className="grade-target-input-wrap">
-                                <input
+                                {/* Saved on blur / Enter, so a half-typed target
+                                    (e.g. "8" on the way to "85") can't trigger
+                                    the celebration. */}
+                                <DraftInput
                                     type="number"
                                     min="0"
                                     max="100"
                                     step="1"
                                     value={targetGrade}
                                     aria-label={`${term} target grade`}
-                                    onChange={(event) => updateTargetGrade(event.target.value)}
+                                    onCommit={updateTargetGrade}
                                 />
                                 <span aria-hidden="true">%</span>
                             </span>

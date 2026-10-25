@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DraftInput from "../shared/DraftInput";
 import { getDb, saveDb } from "../../utils/db";
 import { toTaskList } from "../../utils/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
@@ -94,14 +95,16 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         }));
     }
 
-    function updateSandbox(criterionId, taskId, field, value) {
+    // Checks a typed score. Shows the problem and returns false if it is not
+    // valid, so the keystroke is rejected (or the save is skipped).
+    function checkScore(criterionId, taskId, value) {
         const selectedAssessment = tasksFor(criterionId).find((task) => task.id === taskId);
         const scoreId = `${criterionId}-${taskId}`;
 
         if (hasOfficialScore(selectedAssessment)) {
             setInvalidScoreId(scoreId);
             setSaveError("This score is locked because it was recorded by a professor.");
-            return;
+            return false;
         }
 
         if (value !== "") {
@@ -116,11 +119,20 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 integerDigits > maxIntegerDigits) {
                 setInvalidScoreId(scoreId);
                 setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
-                return;
+                return false;
             }
         }
 
         setInvalidScoreId("");
+        setSaveError("");
+        return true;
+    }
+
+    // Saves a score. Called by DraftInput when the box loses focus (or on
+    // Enter), not on every keystroke, so the grade and the target
+    // celebration only update once the student has finished typing.
+    function updateSandbox(criterionId, taskId, field, value) {
+        if (!checkScore(criterionId, taskId, value)) return;
         updateTerm((selectedTerm) => ({
             ...selectedTerm,
             [criterionId]: toTaskList(selectedTerm[criterionId]).map((task) =>
@@ -285,7 +297,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     {!isOfficialLocked ? (
                                         <div className="score-editor">
                                             <label className="score-input-group">
-                                                <input
+                                                <DraftInput
                                                     type="text"
                                                     inputMode="decimal"
                                                     min="0"
@@ -293,9 +305,10 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                     placeholder="Add Score"
                                                     aria-label={`Private score for ${displayName}`}
                                                     aria-invalid={invalidScoreId === `${criterion.id}-${task.id}`}
-                                                    value={task.studentReportedScore ?? ""}
-                                                    onChange={(event) =>
-                                                        updateSandbox(criterion.id, task.id, "studentReportedScore", event.target.value)
+                                                    value={task.studentReportedScore}
+                                                    acceptTyping={(text) => checkScore(criterion.id, task.id, text)}
+                                                    onCommit={(text) =>
+                                                        updateSandbox(criterion.id, task.id, "studentReportedScore", text)
                                                     }
                                                 />
                                                 <span>/</span>
