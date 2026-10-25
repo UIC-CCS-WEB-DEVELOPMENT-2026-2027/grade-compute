@@ -1,16 +1,126 @@
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
+import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
-import { getDb } from "../../utils/db";
-import { calculateOfficialGrade, getOfficialAssessments } from "../../utils/grades";
+import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import congratulationAudio from "../../assets/congrats_voice .mp3";
+import {
+    calculateOfficialGrade,
+    calculateUnofficialGrade,
+    getOfficialAssessments,
+} from "../../utils/grades";
 import "./SubjectDetail.css";
+
+const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
+const CONFETTI_PIECES = Array.from({ length: 44 }, (_, index) => ({
+    left: `${(index * 37) % 100}%`,
+    delay: `${(index % 11) * 0.08}s`,
+    duration: `${2.3 + (index % 7) * 0.22}s`,
+    color: CONFETTI_COLORS[index % CONFETTI_COLORS.length],
+    rotation: `${(index * 53) % 360}deg`,
+}));
 
 function SubjectDetail() {
     const [term, setTerm] = useState("Prelim");
+    const [celebration, setCelebration] = useState("");
+    const [targetGradeError, setTargetGradeError] = useState("");
+    const [dbData, setDbData] = useState(() => getDb());
+    const previousAchievement = useRef(null);
+    const celebrationAudioRef = useRef(null);
     const { subjectId } = useParams();
+
+    useEffect(() => {
+        const refreshDbData = () => setDbData(getDb());
+        window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
+        return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
+    }, []);
+
+    useEffect(() => {
+        const currentDb = dbData;
+        const currentClass = currentDb?.classes?.find((item) => item.id === subjectId);
+        const currentRecord = currentClass?.studentRecords?.find(
+            (record) => record.studentId === "U1"
+        );
+        const currentRule = currentDb?.computationRules?.find(
+            (rule) => rule.id === currentClass?.computationRuleId
+        );
+        if (!currentRecord) return;
+
+        const currentTerm = term.toLowerCase();
+        const currentTarget = Number(
+            currentRecord.targetGradeSandbox?.terms?.[currentTerm]?.desiredFinalGrade ??
+            currentRecord.targetGradeSandbox?.desiredFinalGrade ??
+            90
+        );
+        const officialGrade = calculateOfficialGrade(currentRecord, term, currentRule);
+        const expectedGrade = calculateUnofficialGrade(currentRecord, term, currentRule);
+        const officialReached = officialGrade !== null && officialGrade >= currentTarget;
+        const expectedReached = expectedGrade !== null && expectedGrade >= currentTarget;
+        const key = `${subjectId}:${currentTerm}`;
+        const previous = previousAchievement.current;
+
+        if (previous?.key === key) {
+            const officialJustReached = !previous.officialReached && officialReached;
+            const expectedJustReached = !previous.expectedReached && expectedReached;
+            if (officialJustReached || expectedJustReached) {
+                setCelebration(
+                    officialJustReached && expectedJustReached
+                        ? "Both your official and expected grades reached the target!"
+                        : officialJustReached
+                            ? "Your official grade reached the target!"
+                            : "Your expected grade reached the target!"
+                );
+            }
+        }
+
+        previousAchievement.current = {
+            key,
+            officialReached,
+            expectedReached,
+        };
+    }, [dbData, subjectId, term]);
+
+    useEffect(() => {
+        if (!celebration) return undefined;
+        const timeoutId = window.setTimeout(() => setCelebration(""), 6000);
+        return () => window.clearTimeout(timeoutId);
+    }, [celebration]);
+
+    useEffect(() => {
+        const audio = celebrationAudioRef.current;
+        if (!audio) return undefined;
+
+        if (!celebration) {
+            audio.pause();
+            audio.currentTime = 0;
+            return undefined;
+        }
+
+        audio.currentTime = 0;
+        audio.play().catch((error) => {
+            if (error.name !== "NotAllowedError") {
+                console.error("Unable to play the grade celebration audio.", error);
+            }
+        });
+
+        return () => {
+            audio.pause();
+            audio.currentTime = 0;
+        };
+    }, [celebration]);
+
+    const student = dbData?.users?.find((user) => user.id === "U1");
+    const studentName = student?.name || "Student";
+    const firstName = studentName.split(" ")[0];
+    const initials = studentName
+        .split(" ")
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
     const dbData = getDb();
     const terms = ["Prelim", "Midterm", "Finals"];
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
@@ -50,9 +160,65 @@ function SubjectDetail() {
         term,
         computationRule
     );
+    const expectedAverage = calculateUnofficialGrade(
+        studentRecord,
+        term,
+        computationRule
+    );
+    const officialProgress = officialAverage === null
+        ? 0
+        : Math.min(100, Math.max(0, officialAverage));
+    const expectedProgress = expectedAverage === null
+        ? 0
+        : Math.min(100, Math.max(0, expectedAverage));
+    const targetGradeConfig = studentRecord.targetGradeSandbox ?? {};
+    const targetGrade = Number(
+        targetGradeConfig.terms?.[selectedTermKey]?.desiredFinalGrade ??
+        targetGradeConfig.desiredFinalGrade ??
+        90
+    );
+
+    function updateTargetGrade(value) {
+        if (value === "") return;
+        const nextGrade = Number(value);
+        if (!Number.isFinite(nextGrade) || nextGrade < 0 || nextGrade > 100) return;
+
+        const currentDb = getDb();
+        if (!currentDb) return;
+        const updatedDb = {
+            ...currentDb,
+            classes: currentDb.classes.map((item) => item.id !== classItem.id ? item : ({
+                ...item,
+                studentRecords: item.studentRecords.map((record) =>
+                    record.studentId !== "U1" ? record : ({
+                        ...record,
+                        targetGradeSandbox: {
+                            ...(record.targetGradeSandbox ?? {}),
+                            terms: {
+                                ...(record.targetGradeSandbox?.terms ?? {}),
+                                [selectedTermKey]: {
+                                    ...(record.targetGradeSandbox?.terms?.[selectedTermKey] ?? {}),
+                                    desiredFinalGrade: nextGrade,
+                                },
+                            },
+                        },
+                    })
+                ),
+            })),
+        };
+
+        try {
+            saveDb(updatedDb);
+            setDbData(updatedDb);
+            setTargetGradeError("");
+        } catch (error) {
+            setTargetGradeError(`Unable to save target grade: ${error.message}`);
+        }
+    }
 
     return (
         <div className="subject-detail-layout">
+            <audio ref={celebrationAudioRef} src={congratulationAudio} preload="auto" />
             <Sidebar />
             <div className="subject-detail-main">
                 <Header />
@@ -82,13 +248,6 @@ function SubjectDetail() {
                 </span>
             </div>
 
-            {/* Breadcrumb */}
-            <div className="subject-breadcrumb">
-                <span>← My Subjects</span>
-                <span>/</span>
-                <span>Subject details</span>
-            </div>
-
             {/* Subject Heading */}
             <section className="subject-overview">
 
@@ -114,31 +273,81 @@ function SubjectDetail() {
                             <span>{classItem.units ?? 3} units</span>
                         </div>
                     </div>
-
-                    <button
-                        type="button"
-                        className="target-grade-button"
-                        onClick={() =>
-                            window.dispatchEvent(
-                                new CustomEvent("openTargetGrade")
-                            )
-                        }
-                    >
-                        ◎ Set Target Grade
-                    </button>
                 </div>
 
                 {/* Official Grade Summary */}
                 <div className="official-grade-card">
+                    <div className="grade-gauges" aria-label={`${term} grades`}>
+                        <label className="grade-target-control">
+                            <span>Target grade</span>
+                            <span className="grade-target-input-wrap">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    value={targetGrade}
+                                    aria-label={`${term} target grade`}
+                                    onChange={(event) => updateTargetGrade(event.target.value)}
+                                />
+                                <span aria-hidden="true">%</span>
+                            </span>
+                            <small>Yellow marker shows your target</small>
+                            {targetGradeError && (
+                                <small className="grade-target-error" role="alert">
+                                    {targetGradeError}
+                                </small>
+                            )}
+                        </label>
+                        <div
+                            className="grade-gauge official-gauge"
+                            tabIndex="0"
+                            aria-label={`Official grade: ${officialAverage === null ? "no grade yet" : `${officialAverage.toFixed(2)} percent`}`}
+                        >
+                            <span className="grade-gauge-label">{term} official</span>
+                            <span
+                                className="grade-gauge-ring"
+                                style={{
+                                    "--grade-progress": `${officialProgress}%`,
+                                    "--target-angle": `${targetGrade * 3.6}deg`,
+                                }}
+                                aria-hidden="true"
+                            >
+                                <strong>
+                                    {officialAverage === null ? "—" : officialAverage.toFixed(0)}
+                                    {officialAverage !== null && <small>%</small>}
+                                </strong>
+                                <span className="grade-gauge-target-marker" />
+                            </span>
+                            <span className="grade-gauge-details">
+                                Professor-recorded scores only. These grades are locked.
+                            </span>
+                        </div>
 
-                    <div className="official-average">
-                        <span>{term} official average</span>
-                        <strong>
-                            {officialAverage === null
-                                ? "—"
-                                : officialAverage.toFixed(2)}
-                            {officialAverage !== null && <span>%</span>}
-                        </strong>
+                        <div
+                            className="grade-gauge expected-gauge"
+                            tabIndex="0"
+                            aria-label={`Expected grade: ${expectedAverage === null ? "no grade yet" : `${expectedAverage.toFixed(2)} percent`}`}
+                        >
+                            <span className="grade-gauge-label">{term} expected</span>
+                            <span
+                                className="grade-gauge-ring"
+                                style={{
+                                    "--grade-progress": `${expectedProgress}%`,
+                                    "--target-angle": `${targetGrade * 3.6}deg`,
+                                }}
+                                aria-hidden="true"
+                            >
+                                <strong>
+                                    {expectedAverage === null ? "—" : expectedAverage.toFixed(0)}
+                                    {expectedAverage !== null && <small>%</small>}
+                                </strong>
+                                <span className="grade-gauge-target-marker" />
+                            </span>
+                            <span className="grade-gauge-details">
+                                Includes student-reported draft scores with official scores taking priority.
+                            </span>
+                        </div>
                     </div>
 
                     <div className="grade-card-divider" />
@@ -174,15 +383,52 @@ function SubjectDetail() {
             <CurrentTermRecords classId={classItem.id} term={term} />
 
                 </main>
-                <footer className="subject-page-footer">
-                    <span>A clearer picture. A stronger semester.</span>
-                    <span className="subject-page-footer-brand">
-                        <span>CompUGrade</span>
-                        <span aria-hidden="true">·</span>
-                        <span>Built for your potential.</span>
-                    </span>
-                </footer>
+                <PageFooter />
             </div>
+            {celebration && (
+                <div
+                    className="grade-celebration-backdrop"
+                    role="presentation"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) setCelebration("");
+                    }}
+                >
+                    <div className="grade-celebration-confetti" aria-hidden="true">
+                        {CONFETTI_PIECES.map((piece, index) => (
+                            <span
+                                key={index}
+                                style={{
+                                    "--confetti-left": piece.left,
+                                    "--confetti-delay": piece.delay,
+                                    "--confetti-duration": piece.duration,
+                                    "--confetti-color": piece.color,
+                                    "--confetti-rotation": piece.rotation,
+                                }}
+                            />
+                        ))}
+                    </div>
+                    <section
+                        className="grade-celebration-card"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="grade-celebration-title"
+                    >
+                        <button
+                            type="button"
+                            className="grade-celebration-close"
+                            aria-label="Close congratulations"
+                            onClick={() => setCelebration("")}
+                        >
+                            ×
+                        </button>
+                        <span className="grade-celebration-sparkle" aria-hidden="true">✦</span>
+                        <p className="grade-celebration-eyebrow">TARGET ACHIEVED</p>
+                        <h2 id="grade-celebration-title">Congratulations!</h2>
+                        <p>{celebration}</p>
+                        <span className="grade-celebration-trophy" aria-hidden="true">🏆</span>
+                    </section>
+                </div>
+            )}
         </div>
     );
 }

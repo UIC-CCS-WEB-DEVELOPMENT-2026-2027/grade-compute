@@ -1,5 +1,41 @@
 // src/pages/student/StudentDashboard.jsx
 
+import { useState, useEffect } from "react";
+import Sidebar from "../../components/shared/Sidebar";
+import Header from "../../components/shared/Header";
+import PageFooter from "../../components/shared/PageFooter";
+import SubjectCard from "../../components/student/SubjectCard";
+import { getDb } from "../../utils/db";
+import "./StudentDashboard.css";
+import bellIcon from "../../assets/bell-icon.png";
+import userProfile from "../../assets/user-profile.png";
+
+const subjects = [
+    {
+        classId: "C101",
+        subjectCode: "IT101",
+        subjectName: "Computer Systems",
+        professorName: "Prof. Maria Santos",
+    },
+    {
+        classId: "C102",
+        subjectCode: "MATH 101",
+        subjectName: "General Mathematics",
+        professorName: "Prof. Daniel Reyes",
+    },
+    {
+        classId: "C103",
+        subjectCode: "PROG 101",
+        subjectName: "Introduction to Programming",
+        professorName: "Prof. Andrea Cruz",
+    },
+    {
+        classId: "C104",
+        subjectCode: "ANTH 101",
+        subjectName: "Cultural Anthropology",
+        professorName: "Prof. Luis Mendoza",
+    },
+];
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/shared/Sidebar';
@@ -251,6 +287,13 @@ export default function StudentDashboard() {
               </div>
             </div>
 
+                    {/* Page Disclaimer & Footer Branding */}
+                    <div className="dashboard-page-footer">
+                        <p className="disclaimer-text">
+                            Sample student workspace · Grades shown are
+                            demonstration data.
+                        </p>
+                        <PageFooter className="shared-page-footer--dashboard" />
             {/* Data Table */}
             <div className="table-wrapper">
               <table className="subjects-table">

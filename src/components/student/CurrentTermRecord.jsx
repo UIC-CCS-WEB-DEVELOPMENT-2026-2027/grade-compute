@@ -29,8 +29,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [taskCategory, setTaskCategory] = useState("");
     const [showAddTask, setShowAddTask] = useState(false);
     const [showBreakdown, setShowBreakdown] = useState(false);
-    const [editingScores, setEditingScores] = useState({});
     const [saveError, setSaveError] = useState("");
+    const [addTaskError, setAddTaskError] = useState("");
+    const [invalidScoreId, setInvalidScoreId] = useState("");
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
     const studentRecord = classItem?.studentRecords?.find(
@@ -76,8 +77,37 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         return true;
     }
 
-    function updateTerm(updateTermGrades) {
-        return saveChanges((item) => ({
+    function updateSandbox(category, taskId, field, value) {
+        const selectedTerm = studentRecord?.grades?.[termKey(term)];
+        const selectedAssessment = category === "Exam"
+            ? selectedTerm?.Exam
+            : selectedTerm?.[category]?.find((task) => task.id === taskId);
+
+        if (selectedAssessment?.officialScore !== null &&
+            selectedAssessment?.officialScore !== undefined) {
+            setInvalidScoreId(`${category}-${taskId}`);
+            setSaveError("This score is locked because it was recorded by a professor.");
+            return;
+        }
+
+        if (value !== "") {
+            const score = Number(value);
+            const maxScore = Number(selectedAssessment?.maxScore);
+            const integerDigits = value.split(".")[0].length;
+            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
+            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
+                !Number.isFinite(score) ||
+                score < 0 ||
+                score > maxScore ||
+                integerDigits > maxIntegerDigits) {
+                setInvalidScoreId(`${category}-${taskId}`);
+                setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
+                return;
+            }
+        }
+
+        setInvalidScoreId("");
+        saveChanges((item) => ({
             ...item,
             studentRecords: item.studentRecords.map((record) => {
                 if (record.studentId !== STUDENT_ID) return record;
@@ -106,15 +136,18 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         event.preventDefault();
         const name = taskNameInput.trim();
         const maxScore = Number(taskMaxScore);
-        if (!selectedCategory) {
-            setSaveError("This subject's grading rule has no criteria to add tasks to.");
+        if (!name) {
+            setAddTaskError("Please enter a task name.");
+            event.currentTarget.elements.namedItem("taskName")?.focus();
             return;
         }
-        if (!name || !Number.isFinite(maxScore) || maxScore <= 0) {
-            setSaveError("Enter a task name and a maximum score greater than zero.");
+        if (!taskMaxScore || !Number.isInteger(maxScore) || maxScore <= 0) {
+            setAddTaskError("Please enter a whole-number maximum score greater than zero.");
+            event.currentTarget.elements.namedItem("taskMaxScore")?.focus();
             return;
         }
 
+        setAddTaskError("");
         const customTask = {
             id: `CUSTOM-${Date.now()}`,
             type: selectedCategory,
@@ -223,6 +256,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     !name.toLowerCase().startsWith(category.toLowerCase())
                                     ? `${category} - ${name}`
                                     : name;
+                                const isOfficialLocked = task.officialScore !== null &&
+                                    task.officialScore !== undefined;
                                 return (
                                 <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id}>
                                     <div className="record-information">
@@ -247,19 +282,17 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 : "No official score"}
                                         </small>
                                     </div>
-                                    {(!hasOfficialScore(task) ||
-                                        task.studentReportedScore !== null &&
-                                        task.studentReportedScore !== undefined ||
-                                        editingScores[task.id]) ? (
+                                    {!isOfficialLocked ? (
                                         <div className="score-editor">
                                             <label className="score-input-group">
                                                 <input
-                                                    type="number"
+                                                    type="text"
+                                                    inputMode="decimal"
                                                     min="0"
                                                     max={task.maxScore}
-                                                    step="any"
                                                     placeholder="Add Score"
                                                     aria-label={`Private score for ${displayName}`}
+                                                    aria-invalid={invalidScoreId === `${category}-${task.id}`}
                                                     value={task.studentReportedScore ?? ""}
                                                     onChange={(event) =>
                                                         updateSandbox(criterion.id, task.id, "studentReportedScore", event.target.value)
@@ -271,21 +304,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 </span>
                                             </label>
                                         </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="edit-score-button"
-                                            aria-label={`Add a private score for ${displayName}`}
-                                            onClick={() => setEditingScores((scores) => ({
-                                                ...scores,
-                                                [task.id]: true,
-                                            }))}
-                                        >
-                                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                                <path d="m10.8 2.2 3 3M2 14l3.2-.7L13.8 4.7a1.4 1.4 0 0 0-2-2L3.2 11.3 2 14Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </button>
-                                    )}
+                                    ) : null}
                                 </div>
                             );
                             }) : (
@@ -295,16 +314,55 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     );
                 })}
 
-                {uncountedTasks > 0 && (
-                    <p className="term-empty">
-                        {uncountedTasks} task{uncountedTasks === 1 ? "" : "s"} from criteria that are no
-                        longer in this subject&apos;s grading rule {uncountedTasks === 1 ? "is" : "are"} hidden
-                        and not counted.
-                    </p>
-                )}
+                <section className="term-task-section">
+                    <h3 className="term-task-heading">Examination</h3>
+                    {(
+                        <div className="record-row">
+                            <div className="record-information">
+                                <h3>{exam.title}</h3>
+                                <p>Professor-recorded examination</p>
+                            </div>
+                            <div className="official-score">
+                                <strong>
+                                    {exam.officialScore === null || exam.officialScore === undefined
+                                        ? "—"
+                                        : `${exam.officialScore} / ${exam.maxScore}`}
+                                </strong>
+                                <small>
+                                    {exam.officialScore === null || exam.officialScore === undefined
+                                        ? "No official score"
+                                        : "Locked · Official"}
+                                </small>
+                            </div>
+                            {(exam.officialScore === null || exam.officialScore === undefined) && (
+                                <div className="score-editor">
+                                    <label className="score-input-group">
+                                        <input
+                                            type="text"
+                                            inputMode="decimal"
+                                            min="0"
+                                            max={exam.maxScore}
+                                            placeholder="Score"
+                                            aria-label={`Private score for ${term} Exam`}
+                                            aria-invalid={invalidScoreId === `Exam-${exam.id}`}
+                                            value={exam.studentReportedScore ?? ""}
+                                            onChange={(event) =>
+                                                updateSandbox("Exam", exam.id, "studentReportedScore", event.target.value)
+                                            }
+                                        />
+                                        <span>/</span>
+                                        <span className="sandbox-max-score">
+                                            {exam.maxScore}
+                                        </span>
+                                    </label>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </section>
 
                 {showAddTask && (
-                    <form className="add-task-form" onSubmit={addCustomTask}>
+                    <form className="add-task-form" onSubmit={addCustomTask} noValidate>
                         <select
                             value={selectedCategory}
                             onChange={(event) => setTaskCategory(event.target.value)}
@@ -316,24 +374,49 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 </option>
                             ))}
                         </select>
-                        <input
-                            type="text"
-                            placeholder="Task name"
-                            value={taskNameInput}
-                            onChange={(event) => setTaskNameInput(event.target.value)}
-                            aria-label="Sandbox task name"
-                            required
-                        />
-                        <input
-                            type="number"
-                            min="0.01"
-                            step="any"
-                            placeholder="Max score"
-                            value={taskMaxScore}
-                            onChange={(event) => setTaskMaxScore(event.target.value)}
-                            aria-label="Maximum score"
-                            required
-                        />
+                        <div className="add-task-field task-name-field">
+                            <input
+                                type="text"
+                                name="taskName"
+                                placeholder="Task name"
+                                value={taskNameInput}
+                                aria-invalid={addTaskError === "Please enter a task name."}
+                                onChange={(event) => {
+                                    setTaskNameInput(event.target.value);
+                                    setAddTaskError("");
+                                }}
+                                aria-label="Sandbox task name"
+                            />
+                            {addTaskError === "Please enter a task name." && (
+                                <span className="add-task-field-error" role="alert">
+                                    {addTaskError}
+                                </span>
+                            )}
+                        </div>
+                        <div className="add-task-field task-max-score-field">
+                            <input
+                                type="text"
+                                name="taskMaxScore"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                placeholder="Max score"
+                                value={taskMaxScore}
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        setTaskMaxScore(value);
+                                        setAddTaskError("");
+                                    }
+                                }}
+                                aria-invalid={addTaskError.startsWith("Please enter a whole-number")}
+                                aria-label="Maximum score"
+                            />
+                            {addTaskError.startsWith("Please enter a whole-number") && (
+                                <span className="add-task-field-error" role="alert">
+                                    {addTaskError}
+                                </span>
+                            )}
+                        </div>
                         <button type="submit">Add</button>
                         <button
                             type="button"
@@ -342,6 +425,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 setShowAddTask(false);
                                 setTaskNameInput("");
                                 setTaskMaxScore("");
+                                setAddTaskError("");
                             }}
                         >
                             Cancel
@@ -357,6 +441,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     className="add-task-button"
                     onClick={() => {
                         setSaveError("");
+                        setAddTaskError("");
                         setShowAddTask((shown) => !shown);
                     }}
                     aria-expanded={showAddTask}

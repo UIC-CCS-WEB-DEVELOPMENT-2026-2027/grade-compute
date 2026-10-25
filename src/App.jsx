@@ -12,6 +12,7 @@ import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
 import StudentDashboard from './pages/student/StudentDashboard';
 import SubjectDetail from './pages/student/SubjectDetail';
 import SubjectMenu from './pages/student/SubjectMenu';
+import TargetGradeSandboxPage from './pages/student/TargetGradeSandboxPage';
 import GradeRules from './pages/student/GradeRules';
 import RuleDetail from './pages/student/RuleDetail';
 /* PHASE 2
@@ -46,6 +47,7 @@ export default function App() {
         {/* Student Workspace (Phase 1 Focus) */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/subject" element={<SubjectMenu />} />
+        <Route path="/student/subject/:subjectId/sandbox" element={<TargetGradeSandboxPage />} />
         <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
         <Route path="/student/rules" element={<GradeRules />} />
         <Route path="/student/rules/new" element={<RuleDetail isNew />} />
