@@ -58,7 +58,7 @@ img {
   }
 } 
 
-.sidebar {
+.global-settings .sidebar {
   width: 360px;
   background: var(--sidebar);
   border-right: 1px solid var(--color-border-overlay-strong);
@@ -645,7 +645,7 @@ select {
     min-height: 100vh;
   }
 
-  .sidebar {
+  .global-settings .sidebar {
     width: 100%;
   }
 
@@ -795,7 +795,7 @@ body,
   background: var(--bg);
 }
 
-.sidebar {
+.global-settings .sidebar {
   position: sticky;
   top: 0;
   width: 264px;
@@ -1987,7 +1987,7 @@ select {
     flex-direction: column;
   }
 
-  .sidebar {
+  .global-settings .sidebar {
     position: static;
     width: 100%;
     height: auto;
@@ -2042,13 +2042,13 @@ select {
     padding: 32px 24px 44px;
   }
 
-  .global-settings.dark .sidebar {
+  .global-settings .global-settings.dark .sidebar {
     border-bottom-color: var(--color-border-dark);
   }
 }
 
 @media (max-width: 560px) {
-  .sidebar {
+  .global-settings .sidebar {
     padding: 13px 12px;
   }
 
