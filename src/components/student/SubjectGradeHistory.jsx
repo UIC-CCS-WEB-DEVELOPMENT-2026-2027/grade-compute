@@ -1,8 +1,8 @@
 // src/components/student/SubjectGradeHistory.jsx
 // "<Term> Grade History" section on Subject Detail, under Current Term
 // Records. Follows the selected term. Shows the sandbox plan for the
-// remaining tasks (on at first, can be turned off) and links to the sandbox
-// with its chart open. Clicking a point scrolls to that task.
+// remaining tasks (on at first, can be turned off) and links to the
+// sandbox. Clicking a point scrolls to that task.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
@@ -38,7 +38,7 @@ export default function SubjectGradeHistory({ classId, termKey }) {
     const target = getTermTarget(record, termKey);
     const { plan, points: planPoints } = getPlanPoints(record, rule, termKey, target, points.length);
     const accuracy = getEntryAccuracy(points);
-    const sandboxLink = `/student/subject/${classId}/sandbox?term=${termKey}&chart=1`;
+    const sandboxLink = `/student/subject/${classId}/sandbox?term=${termKey}`;
 
     return (
         <section className="history-section" aria-labelledby="subject-history-title">

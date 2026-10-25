@@ -25,7 +25,12 @@ function formatGrade(value) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
 }
 
-// Keep the "Target reached" label inside the chart at the first/last step.
+// Keep the "Target reached" label inside the chart: below the point when
+// the point is near the top edge, and inward at the first/last step.
+function labelY(cy, gap) {
+    return cy - gap < 34 ? cy + gap + 10 : cy - gap;
+}
+
 function labelAnchor(step, lastStep) {
     if (step <= 1) return "start";
     if (step >= lastStep) return "end";
@@ -46,7 +51,7 @@ function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, act
             {payload.step === reachedStep && (
                 <>
                     <circle cx={cx} cy={cy} r={11} fill="none" stroke={colors.success} strokeWidth={2} />
-                    <text x={cx} y={cy - 16} textAnchor={labelAnchor(payload.step, lastStep)} fill={colors.success} fontSize={11} fontWeight={700}>
+                    <text x={cx} y={labelY(cy, 16)} textAnchor={labelAnchor(payload.step, lastStep)} fill={colors.success} fontSize={11} fontWeight={700}>
                         Target reached
                     </text>
                 </>
@@ -85,7 +90,7 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep }) {
     return (
         <g>
             {payload.step === reachedStep && (
-                <text x={cx} y={cy - 12} textAnchor={labelAnchor(payload.step, lastStep)} fill={colors.success} fontSize={11} fontWeight={700}>
+                <text x={cx} y={labelY(cy, 12)} textAnchor={labelAnchor(payload.step, lastStep)} fill={colors.success} fontSize={11} fontWeight={700}>
                     Target reached
                 </text>
             )}

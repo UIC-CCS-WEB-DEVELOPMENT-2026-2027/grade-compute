@@ -282,7 +282,8 @@ export function getCoursesHistory(db, studentId, termKey, semesterId = null) {
 
 // Axis settings for the history charts.
 // y: starts 10 points below the lowest value (rounded down to a multiple of
-//    10, never below 0) and ends at 100, so small changes show.
+//    10, never below 0). Ticks stop at 100%, but the axis goes a little
+//    higher so a line sitting at 100% isn't cut in half by the chart's edge.
 // x: one tick per task while there are 12 or fewer, otherwise about 10 ticks.
 export function getChartScale(values, steps) {
     const numbers = values.filter((value) => Number.isFinite(value));
@@ -298,5 +299,6 @@ export function getChartScale(values, steps) {
     for (let tick = 1; tick <= lastStep; tick += xStep) xTicks.push(tick);
     if (xTicks[xTicks.length - 1] !== lastStep) xTicks.push(lastStep);
 
-    return { yDomain: [yTicks[0], 100], yTicks, xDomain: [1, Math.max(lastStep, 2)], xTicks };
+    const yTop = 100 + Math.max(2, (100 - yTicks[0]) * 0.06);
+    return { yDomain: [yTicks[0], yTop], yTicks, xDomain: [1, Math.max(lastStep, 2)], xTicks };
 }

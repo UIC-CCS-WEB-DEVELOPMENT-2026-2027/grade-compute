@@ -52,7 +52,7 @@ function Gauge({ label, grade, target, className }) {
 }
 
 // The answer card. Kept separate so it is easy to find in the code too.
-function SandboxResult({ plan, termLabel, chartShown, onToggleChart }) {
+function SandboxResult({ plan, termLabel }) {
     const { status, target, required, projected, best, requiredSlots, criteria } = plan;
     const requiredCriteria = criteria.filter((criterion) => criterion.counted && criterion.usesRequired);
 
@@ -109,34 +109,18 @@ function SandboxResult({ plan, termLabel, chartShown, onToggleChart }) {
                     <strong>{formatGrade(projected)}</strong>
                 </p>
             )}
-
-            {onToggleChart && (
-                <button
-                    type="button"
-                    className="sandbox-result-chart-toggle"
-                    aria-pressed={chartShown}
-                    aria-controls="sandbox-chart"
-                    onClick={onToggleChart}
-                >
-                    {chartShown ? "Hide chart" : "Show plan on a chart"}
-                </button>
-            )}
         </section>
     );
 }
 
 // classId: the class to plan. termKey: "prelim" | "midterm" | "finals".
-// showChart / onShowChartChange(shown): whether the chart is open. The page
-// keeps this in the URL (?chart=1): "Plan in sandbox" on Subject Detail
-// opens it, the sidebar and other links don't.
-export default function TargetGradeSandbox({ classId, termKey = "prelim", showChart = false, onShowChartChange }) {
+export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const [dbData, setDbData] = useState(() => getDb());
     const studentId = getActiveStudentId(dbData);
     const [saveError, setSaveError] = useState("");
     const [targetInput, setTargetInput] = useState(null);
     const [targetError, setTargetError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
-    const setShowChart = (update) => onShowChartChange?.(typeof update === "function" ? update(showChart) : update);
 
     useEffect(() => {
         const refresh = () => setDbData(getDb());
@@ -161,10 +145,8 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim", showCh
     const officialGrade = calculateOfficialGrade(studentRecord, termKey, rule);
     const expectedGrade = calculateUnofficialGrade(studentRecord, termKey, rule);
     const suggestion = plan.status === "required" ? plan.required : null;
-    const historyPoints = showChart ? getGradeHistory(studentRecord, rule, termKey) : [];
-    const planPoints = showChart
-        ? getPlanPoints(studentRecord, rule, termKey, target, historyPoints.length).points
-        : [];
+    const historyPoints = getGradeHistory(studentRecord, rule, termKey);
+    const planPoints = getPlanPoints(studentRecord, rule, termKey, target, historyPoints.length).points;
 
     // Applies a change to this student's record and saves it.
     function saveRecord(updateRecord, errorPrefix) {
@@ -257,8 +239,6 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim", showCh
                     <SandboxResult
                         plan={plan}
                         termLabel={termLabel}
-                        chartShown={showChart}
-                        onToggleChart={plan.status === "empty" ? null : () => setShowChart((shown) => !shown)}
                     />
                 </div>
 
@@ -304,32 +284,26 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim", showCh
                         </div>
                     </section>
 
-                    {showChart && plan.status !== "empty" && (
-                        <section className="sandbox-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
-                            <div className="sandbox-chart-heading">
-                                <h2 className="sandbox-step" id="sandbox-chart-title">Your plan on a chart</h2>
-                                <button type="button" className="sandbox-chart-close" onClick={() => setShowChart(false)}>
-                                    Hide chart
-                                </button>
-                            </div>
-                            <p className="sandbox-help">
-                                Solid line: your {termLabel} grade so far. Dotted line: each remaining task at the
-                                score in your result. The order of upcoming tasks is a guess, so the end point is
-                                what matters.
-                            </p>
-                            <HistoryChart
-                                points={historyPoints}
-                                planPoints={planPoints}
-                                showPlan
-                                emphasizePlan
-                                target={target}
-                                targetLabel="Target"
-                                termLabel={termLabel}
-                                onSelect={(point) => focusTaskRow(point.taskId)}
-                                height={280}
-                            />
-                        </section>
-                    )}
+                    {/* The plan as a chart: always shown. */}
+                    <section className="sandbox-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
+                        <h2 className="sandbox-step" id="sandbox-chart-title">Your plan on a chart</h2>
+                        <p className="sandbox-help">
+                            Solid line: your {termLabel} grade so far. Dotted line: each remaining task at the
+                            score in your result. The order of upcoming tasks is a guess, so the end point is
+                            what matters.
+                        </p>
+                        <HistoryChart
+                            points={historyPoints}
+                            planPoints={planPoints}
+                            showPlan
+                            emphasizePlan
+                            target={target}
+                            targetLabel="Target"
+                            termLabel={termLabel}
+                            onSelect={(point) => focusTaskRow(point.taskId)}
+                            height={280}
+                        />
+                    </section>
 
                     {/* Step 2: remaining tasks per criterion */}
                     <section className="sandbox-card" aria-labelledby="sandbox-step-remaining">
