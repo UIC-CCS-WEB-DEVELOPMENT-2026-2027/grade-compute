@@ -262,6 +262,16 @@ export default function Sidebar() {
         <Link
           to="/settings"
           className={`sidebar-link sidebar-footer-link ${settingsActive ? 'is-active' : ''}`}
+        <Link
+          to="/student/rules"
+          className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'btn-primary' : ''}`}
+        >
+          Grade Rules
+        </Link>
+
+        <Link 
+          to="/settings" 
+          className={`sidebar-link ${location.pathname.includes('/settings') ? 'btn-primary' : ''}`} 
         >
           <span className="sidebar-icon-wrap" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

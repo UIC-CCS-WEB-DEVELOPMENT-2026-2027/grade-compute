@@ -168,7 +168,8 @@
     font-size: 10px;
 }
 
-.subject-request-fields input {
+.subject-request-fields input,
+.subject-request-fields select {
     padding: 9px 10px;
     border: 1px solid #d8e1ee;
     border-radius: 5px;
@@ -190,6 +191,9 @@
     color: #ad4038;
     font-size: 10px;
     line-height: 1.35;
+.subject-request-rule-link {
+    color: var(--color-primary);
+    font-size: 10px;
 }
 
 .subject-request-error {

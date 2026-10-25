@@ -6,6 +6,7 @@ import PageFooter from "../../components/shared/PageFooter";
 import AddSubjectForm from "../../components/student/AddSubjectForm";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import { calculateOfficialGrade } from "../../utils/grades";
+import { nextId } from "../../utils/rules";
 import "./SubjectMenu.css";
 
 const STUDENT_ID = "U1";
@@ -41,30 +42,10 @@ function semesterId(classItem) {
     return semester ? `${semester.id}-${year}` : undefined;
 }
 
-function nextId(items, prefix) {
-    const highest = items.reduce((max, item) => {
-        const number = Number(item.id?.match(/(\d+)$/)?.[1] ?? 0);
-        return Math.max(max, number);
-    }, 0);
-
-    return `${prefix}-${highest + 1}`;
-}
-
+// Tasks are added per criterion of the subject's grading rule, so each term
+// starts empty. See grades.js for the stored shape.
 function createEmptyGrades() {
-    const emptyExam = (term) => ({
-        id: `${term.toUpperCase()}-EXAM`,
-        type: "Exam",
-        title: `${term[0].toUpperCase()}${term.slice(1)} Exam`,
-        maxScore: 100,
-        officialScore: null,
-        studentReportedScore: null,
-    });
-
-    return {
-        prelim: { AT: [], TLA: [], Exam: emptyExam("prelim") },
-        midterm: { AT: [], TLA: [], Exam: emptyExam("midterm") },
-        finals: { AT: [], TLA: [], Exam: emptyExam("finals") },
-    };
+    return { prelim: {}, midterm: {}, finals: {} };
 }
 
 export default function SubjectMenu() {
@@ -72,13 +53,17 @@ export default function SubjectMenu() {
     const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
-    const initials = studentName
-        .split(" ")
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
     const [showForm, setShowForm] = useState(false);
+    const [subjectCode, setSubjectCode] = useState("");
+    const [subjectName, setSubjectName] = useState("");
+    const [professorName, setProfessorName] = useState("");
+    const [section, setSection] = useState(
+        () => getDb()?.users?.find((user) => user.id === STUDENT_ID)?.programSection ?? ""
+    );
+    const [ruleId, setRuleId] = useState(
+        () => getDb()?.computationRules?.[0]?.id ?? ""
+    );
+    const [formError, setFormError] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
@@ -167,6 +152,10 @@ export default function SubjectMenu() {
         const rule = currentDb.computationRules?.[0];
         if (!rule) {
             return { formError: "A grading rule is required before creating subjects." };
+        const rule = dbData.computationRules?.find((item) => item.id === ruleId);
+        if (!rule) {
+            setFormError("Choose a grading rule for this subject.");
+            return;
         }
 
         const subjectId = nextId(currentDb.subjects ?? [], "SUB");
@@ -281,6 +270,75 @@ export default function SubjectMenu() {
                             onCancel={() => setShowForm(false)}
                             onSubmit={submitSubject}
                         />
+                        <form className="subject-request-form" onSubmit={submitSubject}>
+                            <h2>New Subject Request</h2>
+                            <p>
+                                You can view all three terms and add private sandbox
+                                entries while your request awaits verification.
+                            </p>
+                            <div className="subject-request-fields">
+                                <label>
+                                    Subject code
+                                    <input
+                                        value={subjectCode}
+                                        onChange={(event) => setSubjectCode(event.target.value)}
+                                        placeholder="e.g. IT102"
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Subject name
+                                    <input
+                                        value={subjectName}
+                                        onChange={(event) => setSubjectName(event.target.value)}
+                                        placeholder="e.g. Data Structures"
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Professor
+                                    <input
+                                        value={professorName}
+                                        onChange={(event) => setProfessorName(event.target.value)}
+                                        placeholder="e.g. Prof. Maria Santos"
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Program / section
+                                    <input
+                                        value={section}
+                                        onChange={(event) => setSection(event.target.value)}
+                                        required
+                                    />
+                                </label>
+                                <label>
+                                    Grading rule
+                                    <select
+                                        value={ruleId}
+                                        onChange={(event) => setRuleId(event.target.value)}
+                                        required
+                                    >
+                                        {(dbData.computationRules ?? []).map((rule) => (
+                                            <option key={rule.id} value={rule.id}>
+                                                {rule.ruleName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <Link className="subject-request-rule-link" to="/student/rules">
+                                        View or create grading rules
+                                    </Link>
+                                </label>
+                            </div>
+                            {formError && (
+                                <p className="subject-request-error" role="alert">
+                                    {formError}
+                                </p>
+                            )}
+                            <button type="submit" className="subject-menu-add-button">
+                                Add Subject
+                            </button>
+                        </form>
                     )}
 
                     <div className="subject-menu-table">

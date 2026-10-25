@@ -121,6 +121,7 @@ function SubjectDetail() {
         .slice(0, 2)
         .join("")
         .toUpperCase();
+    const dbData = getDb();
     const terms = ["Prelim", "Midterm", "Finals"];
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find(

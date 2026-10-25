@@ -1,9 +1,12 @@
 // src/utils/grades.js
 // CompUGrade grading engine.
 // All math uses the rule's effectiveMultipliers (project-master-context.txt, 6B).
-// The hierarchy object is for display only and is never read here.
+// effectiveMultipliers is keyed by the id of each deepest criterion, and each
+// term stores its tasks under those same ids:
+//   rule.effectiveMultipliers = { AT: 0.49, TLA: 0.21, Exam: 0.3 }
+//   studentRecord.grades.prelim = { AT: [tasks], TLA: [tasks], Exam: [tasks] }
 
-const CLASSWORK_CATEGORIES = ["AT", "TLA"];
+const TERM_KEYS = ["prelim", "midterm", "finals"];
 
 // Scores may be stored as numbers or as text from inputs ("45", "").
 // Returns a number, or null when the score is empty or invalid.
@@ -11,6 +14,13 @@ function toNumber(value) {
     if (value === null || value === undefined || value === "") return null;
     const number = Number(value);
     return Number.isFinite(number) ? number : null;
+}
+
+// Every criterion holds a list of tasks. Older data stored the exam as a
+// single object; treat that as a one-task list.
+export function toTaskList(value) {
+    if (Array.isArray(value)) return value;
+    return value && typeof value === "object" && ("maxScore" in value || "id" in value) ? [value] : [];
 }
 
 // Official mode: only officialScore counts, and custom tasks are skipped.
@@ -39,8 +49,8 @@ function average(values) {
 }
 
 // Shared engine for both grade types.
-// Each category's grade is the average of its task percentages, so every
-// task counts equally regardless of its maxScore. Only categories with at
+// Each criterion's grade is the average of its task percentages, so every
+// task counts equally regardless of its maxScore. Only criteria with at
 // least one score are included, so the result is the grade so far.
 function calculateTermGrade(studentRecord, term, computationRule, includeSelfReported) {
     const termGrades = studentRecord?.grades?.[term?.toLowerCase()];
@@ -48,22 +58,15 @@ function calculateTermGrade(studentRecord, term, computationRule, includeSelfRep
     if (!termGrades || !multipliers) return null;
 
     const weightedGrades = [];
-
-    for (const category of CLASSWORK_CATEGORIES) {
-        const weight = toNumber(multipliers[category]);
-        const percentages = (termGrades[category] ?? [])
+    for (const [criterionId, weightValue] of Object.entries(multipliers)) {
+        const weight = toNumber(weightValue);
+        const percentages = toTaskList(termGrades[criterionId])
             .map((task) => taskPercentage(task, includeSelfReported))
             .filter((percentage) => percentage !== null);
 
-        if (weight !== null && percentages.length > 0) {
+        if (weight !== null && weight > 0 && percentages.length > 0) {
             weightedGrades.push({ grade: average(percentages), weight });
         }
-    }
-
-    const examWeight = toNumber(multipliers.Exam);
-    const examPercentage = taskPercentage(termGrades.Exam, includeSelfReported);
-    if (examWeight !== null && examPercentage !== null) {
-        weightedGrades.push({ grade: examPercentage, weight: examWeight });
     }
 
     const totalWeight = weightedGrades.reduce((total, item) => total + item.weight, 0);
@@ -87,16 +90,33 @@ export function calculateUnofficialGrade(studentRecord, term, computationRule) {
     return calculateTermGrade(studentRecord, term, computationRule, true);
 }
 
+// Final grade: the three terms count equally (grade-rules-spec.txt, PART 10).
+// Only terms that have a grade are averaged, so this is the final grade so far.
+function calculateFinalGrade(studentRecord, computationRule, includeSelfReported) {
+    const termGrades = TERM_KEYS.map((term) =>
+        calculateTermGrade(studentRecord, term, computationRule, includeSelfReported)
+    ).filter((grade) => grade !== null);
+    return termGrades.length > 0 ? average(termGrades) : null;
+}
+
+export function calculateOfficialFinalGrade(studentRecord, computationRule) {
+    return calculateFinalGrade(studentRecord, computationRule, false);
+}
+
+export function calculateUnofficialFinalGrade(studentRecord, computationRule) {
+    return calculateFinalGrade(studentRecord, computationRule, true);
+}
+
+// Professor-entered (non-custom) tasks of a term that have an official score.
 export function getOfficialAssessments(termGrades) {
     if (!termGrades) return [];
 
-    const tasks = [
-        ...(termGrades.AT ?? []).filter((task) => !task.isCustomTask),
-        ...(termGrades.TLA ?? []).filter((task) => !task.isCustomTask),
-    ];
-    if (termGrades.Exam) tasks.push(termGrades.Exam);
-
-    return tasks.filter(
-        (task) => task.officialScore !== null && task.officialScore !== undefined
-    );
+    return Object.values(termGrades)
+        .flatMap(toTaskList)
+        .filter(
+            (task) =>
+                !task.isCustomTask &&
+                task.officialScore !== null &&
+                task.officialScore !== undefined
+        );
 }

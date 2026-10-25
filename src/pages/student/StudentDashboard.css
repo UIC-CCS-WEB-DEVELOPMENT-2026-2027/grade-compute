@@ -1,23 +1,36 @@
 /* src/pages/student/StudentDashboard.css */
 
-/* Ensures the entire page spans horizontally */
-.dashboard-page {
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
-  width: 100%;
-}
-
-/* Forces the main container to take up all remaining width next to Sidebar */
-.dashboard-main {
+/* ==========================================================================
+   SECTION 1: PAGE LAYOUT & MAIN CONTAINER
+   ========================================================================== */
+/* Ensure content wrapper fills space without top margin/padding */
+.dashboard-content-wrapper {
   flex: 1;
-  min-width: 0; 
-  padding: 2rem;
-  background-color: #f8fafc; 
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #f8fafc;
+}
+/* Remove extra margins from header container */
+.dashboard-content-wrapper > header,
+.header-container {
+  width: 100%;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
 }
 
+/* Apply padding only inside the main content body below header */
+.dashboard-main {
+  padding: 2rem 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-/*STUDENT OVERVIEW BANNER*/
+/* ==========================================================================
+   SECTION 2: STUDENT OVERVIEW BANNER
+   ========================================================================== */
 .overview-banner {
   display: flex;
   justify-content: space-between;
@@ -48,7 +61,6 @@
   margin: 0;
 }
 
-/* Semester Badge Pill */
 .semester-badge {
   display: flex;
   align-items: center;
@@ -72,8 +84,9 @@
 }
 
 
-/*FOCUS SUBJECTS SECTION & CARDS GRID*/
-
+/* ==========================================================================
+   SECTION 3: FOCUS SUBJECTS SECTION & CARDS GRID
+   ========================================================================== */
 .focus-section {
   margin-bottom: 2.5rem;
 }
@@ -109,14 +122,17 @@
   color: #1e293b;
 }
 
-/*3-Column Grid for Subject Cards*/
 .subject-focus-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
-/* Card Container Styles */
+/* Added Class: Replaces inline style for card wrappers */
+.subject-card-clickable {
+  cursor: pointer;
+}
+
 .focus-card {
   background-color: #fafaf9;
   border: 1px solid #e7e5e4;
@@ -226,7 +242,6 @@
   border-radius: 9999px;
 }
 
-/* Progress Fill Modifiers */
 .progress-bar-fill.fill-72 {
   width: 72%;
   background-color: #ef4444;
@@ -269,8 +284,38 @@
   color: #0f172a;
 }
 
+/* ==========================================================================
+   SECTION 3.5: Target Line
+   ========================================================================== */
 
-/* ENROLLED SUBJECTS TABLE SECTION*/
+/* Green Target Line Marker styling */
+.progress-bar-track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: visible;
+  margin-bottom: 0.5rem;
+}
+
+
+.target-line-marker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background-color: #22c55e; /* Green line indicator */
+  z-index: 3;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+  transition: left 0.3s ease;
+}
+
+/* ==========================================================================
+   SECTION 4: ENROLLED SUBJECTS TABLE SECTION
+   ========================================================================== */
 .enrolled-subjects-container {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -279,7 +324,6 @@
   margin-top: 2rem;
 }
 
-/* Header & Export Link */
 .table-header-top {
   display: flex;
   justify-content: space-between;
@@ -331,7 +375,6 @@
   color: #0f172a;
 }
 
-/* Controls: Filter Tabs & Search Input */
 .table-controls {
   display: flex;
   justify-content: space-between;
@@ -393,7 +436,6 @@
   border-color: #cbd5e1;
 }
 
-/* Table Formatting */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -420,7 +462,23 @@
   vertical-align: middle;
 }
 
-/* Subject Column */
+/* Added Rule: Replaces inline cursor/hover style on table rows */
+.subjects-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.subjects-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Added Class: Replaces inline style for empty table result cell */
+.empty-table-cell {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+}
+
 .subject-cell {
   display: flex;
   align-items: center;
@@ -467,7 +525,6 @@
   margin-top: 2px;
 }
 
-/* Units & Grade Column */
 .units-cell {
   font-size: 0.9rem;
   color: #334155;
@@ -492,13 +549,11 @@
   margin-top: 2px;
 }
 
-/* Status Badges in Table */
 .status-pill.status-passing {
   background-color: #eff6ff;
   color: #2563eb;
 }
 
-/* Action Arrow Column */
 .action-cell {
   text-align: right;
 }
@@ -514,7 +569,6 @@
   color: #0f172a;
 }
 
-/* Table Footer */
 .table-footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -527,7 +581,9 @@
 }
 
 
-/* RECENT UPDATES SECTION */
+/* ==========================================================================
+   SECTION 5: RECENT UPDATES SECTION
+   ========================================================================== */
 .recent-updates-section {
   margin-top: 2.5rem;
 }
@@ -580,6 +636,7 @@
   align-items: center;
   padding: 1.15rem 1.5rem;
   border-bottom: 1px solid #f1f5f9;
+  cursor: pointer; /* Added property: replaces inline style */
   transition: background-color 0.15s ease;
 }
 
@@ -652,7 +709,10 @@
   cursor: pointer;
 }
 
-/* Footer Disclaimer & Branding */
+
+/* ==========================================================================
+   SECTION 6: FOOTER DISCLAIMER & BRANDING
+   ========================================================================== */
 .dashboard-page-footer {
   margin-top: 2rem;
   padding-bottom: 1.5rem;
