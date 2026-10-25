@@ -189,6 +189,12 @@
     box-shadow: 0 0 0 2px rgba(185, 68, 59, 0.12);
 }
 
+.subject-request-rule-formula {
+    color: #52657f;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
 .subject-request-rule-link {
     color: var(--color-primary);
     font-size: 10px;

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { getRuleFormulaText } from "../../utils/rules";
 
 const FIELD_LABELS = {
     subjectCode: "subject code",
@@ -7,13 +9,32 @@ const FIELD_LABELS = {
     section: "program / section",
 };
 
-export default function AddSubjectForm({ initialSection = "", onCancel, onSubmit }) {
+function missingFieldMessage(field) {
+    return field === "computationRuleId"
+        ? "Please choose a grading rule."
+        : `Please enter your ${FIELD_LABELS[field]}.`;
+}
+
+// rules: the computationRules from the database.
+// initialRuleId: the rule selected when the form opens (falls back to the first rule).
+export default function AddSubjectForm({
+    initialSection = "",
+    rules = [],
+    initialRuleId = "",
+    onCancel,
+    onSubmit,
+}) {
     const [subjectCode, setSubjectCode] = useState("");
     const [subjectName, setSubjectName] = useState("");
     const [professorName, setProfessorName] = useState("");
     const [section, setSection] = useState(initialSection);
+    const [computationRuleId, setComputationRuleId] = useState(() =>
+        rules.some((rule) => rule.id === initialRuleId) ? initialRuleId : rules[0]?.id ?? ""
+    );
     const [fieldErrors, setFieldErrors] = useState({});
     const [formError, setFormError] = useState("");
+
+    const selectedRule = rules.find((rule) => rule.id === computationRuleId);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -24,15 +45,13 @@ export default function AddSubjectForm({ initialSection = "", onCancel, onSubmit
             subjectName: subjectName.trim(),
             professorName: professorName.trim(),
             section: section.trim(),
+            computationRuleId,
         };
         const missingFields = Object.entries(values).filter(([, value]) => !value);
 
         if (missingFields.length > 0) {
             const errors = Object.fromEntries(
-                missingFields.map(([field]) => [
-                    field,
-                    `Please enter your ${FIELD_LABELS[field]}.`,
-                ])
+                missingFields.map(([field]) => [field, missingFieldMessage(field)])
             );
             setFieldErrors(errors);
             event.currentTarget.elements.namedItem(missingFields[0][0])?.focus();
@@ -125,6 +144,47 @@ export default function AddSubjectForm({ initialSection = "", onCancel, onSubmit
                             {fieldErrors.section}
                         </span>
                     )}
+                </label>
+                <label>
+                    Grading rule
+                    {rules.length > 0 ? (
+                        <select
+                            name="computationRuleId"
+                            value={computationRuleId}
+                            aria-invalid={Boolean(fieldErrors.computationRuleId)}
+                            aria-describedby={
+                                fieldErrors.computationRuleId
+                                    ? "computation-rule-error"
+                                    : "computation-rule-formula"
+                            }
+                            onChange={(event) =>
+                                updateField("computationRuleId", event.target.value, setComputationRuleId)
+                            }
+                        >
+                            {rules.map((rule) => (
+                                <option key={rule.id} value={rule.id}>
+                                    {rule.ruleName}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                        <span className="subject-field-error" id="computation-rule-error">
+                            No grading rules yet. Create one first.
+                        </span>
+                    )}
+                    {selectedRule && !fieldErrors.computationRuleId && (
+                        <span className="subject-request-rule-formula" id="computation-rule-formula">
+                            {getRuleFormulaText(selectedRule)}
+                        </span>
+                    )}
+                    {fieldErrors.computationRuleId && rules.length > 0 && (
+                        <span className="subject-field-error" id="computation-rule-error">
+                            {fieldErrors.computationRuleId}
+                        </span>
+                    )}
+                    <Link className="subject-request-rule-link" to="/student/rules">
+                        {rules.length > 0 ? "View or create grading rules" : "Go to Grade Rules"}
+                    </Link>
                 </label>
             </div>
             {formError && (

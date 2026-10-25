@@ -124,6 +124,17 @@ export default function SubjectMenu() {
                 (prelimGrade !== null && prelimGrade < 75),
         }];
     });
+    // Start the form on the rule of the student's most recently added subject
+    // (students usually add several subjects from the same school), or the
+    // first rule if they have none yet.
+    const rules = dbData.computationRules ?? [];
+    const lastUsedRuleId = [...(dbData.classes ?? [])]
+        .reverse()
+        .find((classItem) =>
+            classItem.studentRecords?.some((record) => record.studentId === STUDENT_ID) &&
+            rules.some((rule) => rule.id === classItem.computationRuleId)
+        )?.computationRuleId;
+    const initialRuleId = lastUsedRuleId ?? rules[0]?.id ?? "";
     const filteredSubjects = subjectRows.filter(({ subject, professor, needsAttention }) => {
         const matchesFilter = activeFilter === "all" || needsAttention;
         const searchText = `${subject.subjectCode} ${subject.subjectName} ${professor}`.toLowerCase();
@@ -266,7 +277,8 @@ export default function SubjectMenu() {
                     {showForm && (
                         <AddSubjectForm
                             initialSection={studentSection}
-                            rules={dbData.computationRules ?? []}
+                            rules={rules}
+                            initialRuleId={initialRuleId}
                             onCancel={() => setShowForm(false)}
                             onSubmit={submitSubject}
                         />
