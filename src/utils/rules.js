@@ -12,7 +12,16 @@
 // TREE: the pill editor works on a criteria tree. Each node is:
 //   { id, name, share, children: [] }
 // "share" is the node's part of its PARENT (siblings always total 10000).
-// The tree is editor state only. db.json keeps the fixed hierarchy format.
+// The root node is the total grade. The tree is editor state only.
+//
+// SAVED RULE: db.json stores the same tree as "criteria", with weights as
+// fractions of the parent, plus flat "effectiveMultipliers" keyed by the id
+// of each deepest criterion (what grades.js uses):
+//   criteria: [{ id, name, weight: 0.7, children: [...] }, ...]
+//   effectiveMultipliers: { AT: 0.49, TLA: 0.21, Exam: 0.3 }
+// Student tasks are stored per term under the same deepest-criterion ids.
+
+import { toTaskList } from "./grades.js";
 
 export const TOTAL_SHARE = 10000;
 export const MIN_SHARE = 100;
@@ -21,9 +30,9 @@ export const MAX_DEPTH = 3;
 export const MAX_NAME_LENGTH = 30;
 export const CRITERIA_COLOR_COUNT = 8;
 export const DEFAULT_TAGS = ["Graduate", "Undergraduate"];
+export const TERM_KEYS = ["prelim", "midterm", "finals"];
 
 const ROOT_ID = "grade";
-const FIXED_LAYOUT = { classwork: ["AT", "TLA"], Exam: [] };
 
 // ---------------------------------------------------------------------------
 // Percentage conversion and formatting
@@ -241,21 +250,26 @@ export function dragHandle(tree, parentId, handleIndex, positionRatio, step = 10
 }
 
 // ---------------------------------------------------------------------------
-// Structure editing (spec PART 5). Hidden in Phase 1 (structureLocked).
+// Structure editing (spec PART 5).
 // ---------------------------------------------------------------------------
 
+function collectIds(node, ids = new Set()) {
+    if (!node) return ids;
+    ids.add(node.id);
+    (node.children ?? []).forEach((child) => collectIds(child, ids));
+    return ids;
+}
+
+// Random ids, so a deleted criterion's id is never reused by a new one.
+// (Student tasks are stored under criterion ids; reusing an id would attach
+// old tasks to an unrelated new criterion.)
 function nextCriterionId(tree) {
-    const ids = [];
-    const visit = (node) => {
-        ids.push(node.id);
-        (node.children ?? []).forEach(visit);
-    };
-    visit(tree);
-    const highest = ids.reduce((max, id) => {
-        const number = Number(String(id).match(/^crit-(\d+)$/)?.[1] ?? 0);
-        return Math.max(max, number);
-    }, 0);
-    return `crit-${highest + 1}`;
+    const taken = collectIds(tree);
+    let id;
+    do {
+        id = `crit-${Math.random().toString(36).slice(2, 8)}`;
+    } while (taken.has(id));
+    return id;
 }
 
 function uniqueDefaultName(siblings, prefix) {
@@ -374,6 +388,8 @@ export function canSplitCriterion(tree, id) {
 }
 
 // Gives a criterion its first subcriterion at 100%.
+// The new subcriterion takes over the criterion's id (and the criterion gets
+// a new one), so tasks already recorded under it move into the subcriterion.
 export function splitCriterion(tree, id, name = "SubCriteria 1") {
     const check = canSplitCriterion(tree, id);
     if (!check.allowed) return failure(tree, check.reason);
@@ -381,8 +397,11 @@ export function splitCriterion(tree, id, name = "SubCriteria 1") {
     const nameError = checkName([], name);
     if (nameError) return failure(tree, nameError);
 
-    const child = { id: nextCriterionId(tree), name: String(name).trim(), share: TOTAL_SHARE, children: [] };
-    return success(updateNode(tree, id, (node) => ({ ...node, children: [child] })));
+    const child = { id, name: String(name).trim(), share: TOTAL_SHARE, children: [] };
+    const newParentId = nextCriterionId(tree);
+    return success(
+        updateNode(tree, id, (node) => ({ ...node, id: newParentId, children: [child] }))
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -427,10 +446,18 @@ export function getEffectiveShares(tree) {
 }
 
 // ---------------------------------------------------------------------------
-// Fixed-category conversion (Phase 1: Classwork [AT, TLA] + Exam)
+// Converting between saved rules and the editor tree
 // ---------------------------------------------------------------------------
 
-function buildFixedTree(classworkShare, atShare) {
+function fractionToShare(value) {
+    if (value === null || value === undefined || value === "") return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.round(number * TOTAL_SHARE) : null;
+}
+
+// The old two-tier format (Classwork [AT, TLA] + Exam). Only used to read
+// rules saved before flexible criteria; ids match the old task keys.
+function buildStandardTree(classworkShare, atShare) {
     return {
         id: ROOT_ID,
         name: "Grade",
@@ -450,21 +477,55 @@ function buildFixedTree(classworkShare, atShare) {
     };
 }
 
-// Starting tree for "+ New Rule": 70/30 Classwork/Exam, 70/30 AT/TLA.
+// The standard 70/30 Classwork/Exam, 70/30 AT/TLA tree.
+export function createStandardTree() {
+    return buildStandardTree(7000, 7000);
+}
+
+// Starting tree for "+ New rule": one criterion at 100% (sketch 1).
 export function createDefaultTree() {
-    return buildFixedTree(7000, 7000);
+    const tree = { id: ROOT_ID, name: "Grade", share: TOTAL_SHARE, children: [] };
+    return {
+        ...tree,
+        children: [{ id: nextCriterionId(tree), name: "Criteria 1", share: TOTAL_SHARE, children: [] }],
+    };
 }
 
-function fractionToShare(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const number = Number(value);
-    return Number.isFinite(number) ? Math.round(number * TOTAL_SHARE) : null;
+// Saved weights -> share units. Each level is forced to total exactly 10000
+// (the last criterion absorbs any rounding difference).
+function criteriaToNodes(criteria) {
+    const list = Array.isArray(criteria) ? criteria : [];
+    const shares = list.map((criterion) => fractionToShare(criterion?.weight) ?? 0);
+    const total = shares.reduce((sum, share) => sum + share, 0);
+    if (list.length > 0 && total !== TOTAL_SHARE) {
+        shares[shares.length - 1] += TOTAL_SHARE - total;
+    }
+
+    return list.map((criterion, index) => ({
+        id: String(criterion.id),
+        name: String(criterion.name ?? "Criterion"),
+        share: shares[index],
+        children: criteriaToNodes(criterion.children),
+    }));
 }
 
-// Builds the editor tree from a saved rule's hierarchy. If the hierarchy is
-// missing, it is rebuilt from effectiveMultipliers; if both are missing, the
-// default 70/30 tree is used.
+function nodesToCriteria(nodes) {
+    return (nodes ?? []).map((node) => ({
+        id: node.id,
+        name: node.name,
+        weight: node.share / TOTAL_SHARE,
+        children: nodesToCriteria(node.children),
+    }));
+}
+
+// Builds the editor tree from a saved rule.
+// Reads "criteria" (current format). Rules saved in the old format are read
+// from "hierarchy", or rebuilt from effectiveMultipliers as a last resort.
 export function ruleToTree(rule) {
+    if (Array.isArray(rule?.criteria) && rule.criteria.length > 0) {
+        return { id: ROOT_ID, name: "Grade", share: TOTAL_SHARE, children: criteriaToNodes(rule.criteria) };
+    }
+
     const hierarchy = rule?.hierarchy;
     let classwork = fractionToShare(hierarchy?.classwork);
     let at = fractionToShare(hierarchy?.classworkSplit?.AT);
@@ -477,60 +538,82 @@ export function ruleToTree(rule) {
             at = Math.round((atEffective * TOTAL_SHARE) / classwork);
         }
     }
-    if (classwork === null || at === null) return createDefaultTree();
+    if (classwork === null || at === null) return createStandardTree();
 
     const maxShare = TOTAL_SHARE - MIN_SHARE;
-    return buildFixedTree(clamp(classwork, MIN_SHARE, maxShare), clamp(at, MIN_SHARE, maxShare));
+    return buildStandardTree(clamp(classwork, MIN_SHARE, maxShare), clamp(at, MIN_SHARE, maxShare));
 }
 
-export function isFixedStructure(tree) {
-    if (tree?.id !== ROOT_ID) return false;
-    const children = tree.children ?? [];
-    const topIds = Object.keys(FIXED_LAYOUT);
-    if (children.length !== topIds.length) return false;
+// Returns an error message for the first problem in the tree, or "".
+// The editor already prevents these; this guards saved data.
+export function validateTree(tree) {
+    if (!tree?.children?.length) return "Add at least one criterion.";
 
-    return children.every((child, index) => {
-        const expectedChildren = FIXED_LAYOUT[topIds[index]];
-        const grandchildren = child.children ?? [];
-        return (
-            child.id === topIds[index] &&
-            grandchildren.length === expectedChildren.length &&
-            grandchildren.every(
-                (grandchild, childIndex) =>
-                    grandchild.id === expectedChildren[childIndex] && !grandchild.children?.length
-            )
-        );
-    });
+    const seenIds = new Set();
+    const check = (node, depth) => {
+        const children = node.children ?? [];
+        if (children.length === 0) return "";
+        if (depth >= MAX_DEPTH) return `Criteria can only be nested ${MAX_DEPTH} levels deep.`;
+        if (children.length > MAX_CRITERIA_PER_LEVEL) {
+            return `A level can have at most ${MAX_CRITERIA_PER_LEVEL} criteria.`;
+        }
+        const total = children.reduce((sum, child) => sum + child.share, 0);
+        if (total !== TOTAL_SHARE) return `The criteria in ${node.name} must add up to 100%.`;
+
+        for (const child of children) {
+            if (seenIds.has(child.id)) return "Two criteria share the same id.";
+            seenIds.add(child.id);
+            if (!Number.isInteger(child.share) || child.share < MIN_SHARE) {
+                return `${child.name} must be at least 1%.`;
+            }
+            const nameError = checkName(children, child.name, child.id);
+            if (nameError) return nameError;
+            const childError = check(child, depth + 1);
+            if (childError) return childError;
+        }
+        return "";
+    };
+    return check(tree, 0);
 }
 
 // Converts the editor tree into the two objects saved on a rule.
 export function buildRuleMath(tree) {
-    if (!isFixedStructure(tree)) {
-        return {
-            ok: false,
-            error: "Rules must use the Classwork (AT, TLA) and Exam structure for now.",
-            hierarchy: null,
-            effectiveMultipliers: null,
-        };
-    }
+    const error = validateTree(tree);
+    if (error) return { ok: false, error, criteria: null, effectiveMultipliers: null };
 
-    const share = (id) => findCriterion(tree, id).share / TOTAL_SHARE;
     const effective = getEffectiveShares(tree);
+    const effectiveMultipliers = Object.fromEntries(
+        getLeaves(tree).map((leaf) => [leaf.id, effective[leaf.id] / TOTAL_SHARE])
+    );
 
-    return {
-        ok: true,
-        error: "",
-        hierarchy: {
-            classwork: share("classwork"),
-            exam: share("Exam"),
-            classworkSplit: { AT: share("AT"), TLA: share("TLA") },
-        },
-        effectiveMultipliers: {
-            AT: effective.AT / TOTAL_SHARE,
-            TLA: effective.TLA / TOTAL_SHARE,
-            Exam: effective.Exam / TOTAL_SHARE,
-        },
+    return { ok: true, error: "", criteria: nodesToCriteria(tree.children), effectiveMultipliers };
+}
+
+// The deepest criteria of a saved rule, for subject pages: where tasks go
+// and how much each one counts. "path" lists the parent names, e.g.
+// ["Classwork", "AT"]. effectiveShare comes from effectiveMultipliers.
+export function getRuleLeaves(rule) {
+    if (!rule) return [];
+    const tree = ruleToTree(rule);
+    const leaves = [];
+
+    const visit = (node, path) => {
+        (node.children ?? []).forEach((child) => {
+            const childPath = [...path, child.name];
+            if (child.children?.length) {
+                visit(child, childPath);
+            } else {
+                leaves.push({
+                    id: child.id,
+                    name: child.name,
+                    path: childPath,
+                    effectiveShare: fractionToShare(rule.effectiveMultipliers?.[child.id]) ?? 0,
+                });
+            }
+        });
     };
+    visit(tree, []);
+    return leaves;
 }
 
 // ---------------------------------------------------------------------------
@@ -549,13 +632,14 @@ export function getFormulaText(tree) {
 
 // Formula for a saved rule, built from effectiveMultipliers (what grades.js uses).
 export function getRuleFormulaText(rule) {
-    const multipliers = rule?.effectiveMultipliers;
-    const terms = ["AT", "TLA", "Exam"].map((key) => {
-        const share = fractionToShare(multipliers?.[key]);
-        return share === null ? null : `${formatMultiplier(share)} × ${key}`;
-    });
-    if (terms.includes(null)) return "Formula unavailable";
-    return `Grade = ${terms.join(" + ")}`;
+    const leaves = getRuleLeaves(rule);
+    const multipliers = rule?.effectiveMultipliers ?? {};
+    if (leaves.length === 0 || leaves.some((leaf) => fractionToShare(multipliers[leaf.id]) === null)) {
+        return "Formula unavailable";
+    }
+    return `Grade = ${leaves
+        .map((leaf) => `${formatMultiplier(leaf.effectiveShare)} × ${leaf.name}`)
+        .join(" + ")}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -571,78 +655,112 @@ export function getCriteriaColor(colorNumber) {
     return `var(--color-criteria-${colorNumber})`;
 }
 
+// One color number per criterion, shared by the editor, hover preview, bar,
+// pie chart, and table, so a criterion keeps its color everywhere:
+// - Top-level criteria use colors 1, 2, 3, ... by position.
+// - The deepest criteria under a top-level criterion cycle through the 8
+//   colors, skipping the colors of that top-level criterion's neighbors, so
+//   no previewed section matches a section beside it (spec PART 6).
+// - A middle-level criterion takes the color of its first deepest criterion.
+export function getCriterionColors(tree) {
+    const colors = new Map();
+    const topLevel = tree?.children ?? [];
+
+    topLevel.forEach((criterion, index) => {
+        colors.set(criterion.id, getColorNumber(index));
+        if (!criterion.children?.length) return;
+
+        const excluded = new Set();
+        if (index > 0) excluded.add(getColorNumber(index - 1));
+        if (index < topLevel.length - 1) excluded.add(getColorNumber(index + 1));
+        const pool = Array.from({ length: CRITERIA_COLOR_COUNT }, (_, number) => number + 1).filter(
+            (colorNumber) => !excluded.has(colorNumber)
+        );
+
+        let leafIndex = 0;
+        const visit = (node) => {
+            (node.children ?? []).forEach((child) => {
+                if (child.children?.length) {
+                    const firstLeafIndex = leafIndex;
+                    visit(child);
+                    colors.set(child.id, pool[firstLeafIndex % pool.length]);
+                } else {
+                    colors.set(child.id, pool[leafIndex % pool.length]);
+                    leafIndex += 1;
+                }
+            });
+        };
+        visit(criterion);
+    });
+    return colors;
+}
+
+// Text and dot color that reads on top of a criteria color.
+export function getCriteriaOnColor(colorNumber) {
+    return `var(--color-criteria-${colorNumber}-on)`;
+}
+
+function colorFields(colors, id) {
+    const colorNumber = colors.get(id) ?? 1;
+    return {
+        colorNumber,
+        color: getCriteriaColor(colorNumber),
+        onColor: getCriteriaOnColor(colorNumber),
+    };
+}
+
 // Sections for drawing one pill (the children of parentId).
 export function getLevelSegments(tree, parentId) {
     const parent = findCriterion(tree, parentId);
-    return (parent?.children ?? []).map((child, index) => {
-        const colorNumber = getColorNumber(index);
-        return {
-            id: child.id,
-            name: child.name,
-            share: child.share,
-            hasChildren: (child.children ?? []).length > 0,
-            colorNumber,
-            color: getCriteriaColor(colorNumber),
-        };
-    });
+    const colors = getCriterionColors(tree);
+    return (parent?.children ?? []).map((child) => ({
+        id: child.id,
+        name: child.name,
+        share: child.share,
+        hasChildren: (child.children ?? []).length > 0,
+        ...colorFields(colors, child.id),
+    }));
 }
 
 // Hover preview: the deepest children of a hovered criterion, with their
-// effective share of the total grade. Colors skip the colors of the sections
-// on either side of the hovered criterion, then cycle, so no previewed
-// section matches a section beside it. Returns [] if there is nothing to preview.
+// effective share of the total grade. Returns [] if there is nothing to preview.
 export function getPreviewSegments(tree, hoveredId) {
     const node = findCriterion(tree, hoveredId);
     if (!node?.children?.length) return [];
 
-    const context = siblingContext(tree, hoveredId);
-    const excluded = new Set();
-    if (context) {
-        if (context.index > 0) excluded.add(getColorNumber(context.index - 1));
-        if (context.index < context.siblings.length - 1) excluded.add(getColorNumber(context.index + 1));
-    }
-    const pool = Array.from({ length: CRITERIA_COLOR_COUNT }, (_, index) => index + 1).filter(
-        (colorNumber) => !excluded.has(colorNumber)
-    );
-
+    const colors = getCriterionColors(tree);
     const effective = getEffectiveShares(tree);
     const sectionShare = effective[node.id] || 1;
-    return getLeaves(node).map((leaf, index) => {
-        const colorNumber = pool[index % pool.length];
-        return {
-            id: leaf.id,
-            name: leaf.name,
-            effectiveShare: effective[leaf.id],
-            sectionRatio: effective[leaf.id] / sectionShare,
-            colorNumber,
-            color: getCriteriaColor(colorNumber),
-        };
-    });
+    return getLeaves(node).map((leaf) => ({
+        id: leaf.id,
+        name: leaf.name,
+        effectiveShare: effective[leaf.id],
+        sectionRatio: effective[leaf.id] / sectionShare,
+        ...colorFields(colors, leaf.id),
+    }));
 }
 
-// Small flattened pill for rule cards: every deepest criterion in order.
+// Flattened bar for rule cards: every deepest criterion in order.
 export function getFlattenedSegments(tree) {
+    const colors = getCriterionColors(tree);
     const effective = getEffectiveShares(tree);
-    return getLeaves(tree).map((leaf, index) => {
-        const colorNumber = getColorNumber(index);
-        return {
-            id: leaf.id,
-            name: leaf.name,
-            effectiveShare: effective[leaf.id],
-            colorNumber,
-            color: getCriteriaColor(colorNumber),
-        };
-    });
+    return getLeaves(tree).map((leaf) => ({
+        id: leaf.id,
+        name: leaf.name,
+        effectiveShare: effective[leaf.id],
+        ...colorFields(colors, leaf.id),
+    }));
 }
 
 // Rows for the hierarchy table, in display order (the root is left out).
 export function getHierarchyRows(tree) {
     if (!tree) return [];
+    const colors = getCriterionColors(tree);
     const effective = getEffectiveShares(tree);
     const rows = [];
 
     const visit = (node, depth) => {
-        (node.children ?? []).forEach((child, index) => {
+        (node.children ?? []).forEach((child) => {
             rows.push({
                 id: child.id,
                 name: child.name,
@@ -650,7 +768,7 @@ export function getHierarchyRows(tree) {
                 shareOfParent: child.share,
                 effectiveShare: effective[child.id],
                 hasChildren: (child.children ?? []).length > 0,
-                colorNumber: getColorNumber(index),
+                ...colorFields(colors, child.id),
             });
             visit(child, depth + 1);
         });
@@ -661,10 +779,12 @@ export function getHierarchyRows(tree) {
 
 // Rings for the nested pie chart, innermost first. Ring N holds every
 // criterion at depth N. A criterion with no children that ends earlier is
-// repeated as a filler (isFiller: true) so the ring angles line up; draw
-// fillers transparent. "value" is the effective share of the total grade.
+// repeated as a filler (isFiller: true) so the ring angles line up; draw a
+// filler in the same color to extend that criterion outward.
+// "value" is the effective share of the total grade.
 export function getPieRings(tree) {
     if (!tree?.children?.length) return [];
+    const colors = getCriterionColors(tree);
     const deepest = Math.max(...getLeaves(tree).map((leaf) => getDepth(tree, leaf.id)));
     const effective = getEffectiveShares(tree);
     const rings = [];
@@ -672,17 +792,16 @@ export function getPieRings(tree) {
     for (let ringDepth = 1; ringDepth <= deepest; ringDepth += 1) {
         const ring = [];
         const visit = (node, depth) => {
-            (node.children ?? []).forEach((child, index) => {
+            (node.children ?? []).forEach((child) => {
                 const isLeaf = !(child.children ?? []).length;
                 if (depth === ringDepth || (isLeaf && depth < ringDepth)) {
-                    const colorNumber = getColorNumber(index);
                     ring.push({
                         id: child.id,
                         name: child.name,
                         value: effective[child.id],
                         isFiller: depth !== ringDepth,
-                        colorNumber,
-                        color: getCriteriaColor(colorNumber),
+                        hasChildren: !isLeaf,
+                        ...colorFields(colors, child.id),
                     });
                 } else if (depth < ringDepth) {
                     visit(child, depth + 1);
@@ -701,7 +820,7 @@ export function getPieRings(tree) {
 // setDbData(result.db) only when result.ok is true.
 // ---------------------------------------------------------------------------
 
-// Next "PREFIX-n" id. Same logic as the copy in SubjectMenu.jsx.
+// Next "PREFIX-n" id (e.g. CR-2, SUB-3, C-4).
 export function nextId(items, prefix) {
     const highest = (items ?? []).reduce((max, item) => {
         const number = Number(String(item.id ?? "").match(/(\d+)$/)?.[1] ?? 0);
@@ -818,7 +937,7 @@ function prepareRule(db, input, ruleId) {
         errors: {},
         fields: {
             ...details.values,
-            hierarchy: math.hierarchy,
+            criteria: math.criteria,
             effectiveMultipliers: math.effectiveMultipliers,
         },
     };
@@ -837,7 +956,8 @@ export function createRule(db, input) {
 }
 
 // input: { ruleName, tags, schools, tree }
-// Before calling this, show the edit warning when getRuleUsage(db, ruleId).classes.length > 0.
+// Before calling this, show the edit warning when getRuleChangeImpact()
+// reports affected classes.
 export function updateRule(db, ruleId, input) {
     const rules = db?.computationRules ?? [];
     const existing = rules.find((rule) => rule.id === ruleId);
@@ -852,6 +972,7 @@ export function updateRule(db, ruleId, input) {
     }
 
     const rule = { ...existing, ...prepared.fields };
+    delete rule.hierarchy; // old format, replaced by criteria
     return {
         ok: true,
         db: { ...db, computationRules: rules.map((item) => (item.id === ruleId ? rule : item)) },
@@ -914,4 +1035,57 @@ export function deleteRule(db, ruleId, replacementRuleId = null) {
         },
         error: "",
     };
+}
+
+// ---------------------------------------------------------------------------
+// Impact of rule changes on recorded tasks
+// ---------------------------------------------------------------------------
+
+// Counts tasks, in classes using ruleId, stored under criterion ids that are
+// NOT in keepIds. Those tasks stop counting toward the grade.
+function countTasksOutside(db, ruleId, keepIds, names) {
+    const counts = new Map();
+    (db?.classes ?? [])
+        .filter((classItem) => classItem.computationRuleId === ruleId)
+        .forEach((classItem) => {
+            (classItem.studentRecords ?? []).forEach((record) => {
+                TERM_KEYS.forEach((term) => {
+                    Object.entries(record.grades?.[term] ?? {}).forEach(([criterionId, tasks]) => {
+                        if (keepIds.has(criterionId)) return;
+                        const count = toTaskList(tasks).length;
+                        if (count > 0) counts.set(criterionId, (counts.get(criterionId) ?? 0) + count);
+                    });
+                });
+            });
+        });
+
+    const lostTasks = [...counts.entries()].map(([criterionId, count]) => ({
+        criterionId,
+        name: names.get(criterionId) ?? "Removed criterion",
+        count,
+    }));
+    return { lostTasks, lostTaskCount: lostTasks.reduce((total, item) => total + item.count, 0) };
+}
+
+function leafNames(rule) {
+    return new Map(getRuleLeaves(rule).map((leaf) => [leaf.id, leaf.name]));
+}
+
+// For the edit warning: which subjects use the rule, and how many recorded
+// tasks would stop counting because their criterion was deleted.
+export function getRuleChangeImpact(db, ruleId, newTree) {
+    const rule = (db?.computationRules ?? []).find((item) => item.id === ruleId);
+    const usage = getRuleUsage(db, ruleId);
+    const keepIds = new Set(getLeaves(newTree).map((leaf) => leaf.id));
+    return { classes: usage.classes, ...countTasksOutside(db, ruleId, keepIds, leafNames(rule)) };
+}
+
+// For the delete dialog: tasks that will stop counting when the rule's
+// subjects move to replacementRuleId (criteria the replacement lacks).
+export function getRuleSwitchImpact(db, ruleId, replacementRuleId) {
+    const rules = db?.computationRules ?? [];
+    const rule = rules.find((item) => item.id === ruleId);
+    const replacement = rules.find((item) => item.id === replacementRuleId);
+    const keepIds = new Set(getRuleLeaves(replacement).map((leaf) => leaf.id));
+    return countTasksOutside(db, ruleId, keepIds, leafNames(rule));
 }

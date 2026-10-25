@@ -4,34 +4,15 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import { getDb, saveDb } from "../../utils/db";
 import { calculateOfficialGrade } from "../../utils/grades";
+import { nextId } from "../../utils/rules";
 import "./SubjectMenu.css";
 
 const STUDENT_ID = "U1";
 
-function nextId(items, prefix) {
-    const highest = items.reduce((max, item) => {
-        const number = Number(item.id?.match(/(\d+)$/)?.[1] ?? 0);
-        return Math.max(max, number);
-    }, 0);
-
-    return `${prefix}-${highest + 1}`;
-}
-
+// Tasks are added per criterion of the subject's grading rule, so each term
+// starts empty. See grades.js for the stored shape.
 function createEmptyGrades() {
-    const emptyExam = (term) => ({
-        id: `${term.toUpperCase()}-EXAM`,
-        type: "Exam",
-        title: `${term[0].toUpperCase()}${term.slice(1)} Exam`,
-        maxScore: 100,
-        officialScore: null,
-        studentReportedScore: null,
-    });
-
-    return {
-        prelim: { AT: [], TLA: [], Exam: emptyExam("prelim") },
-        midterm: { AT: [], TLA: [], Exam: emptyExam("midterm") },
-        finals: { AT: [], TLA: [], Exam: emptyExam("finals") },
-    };
+    return { prelim: {}, midterm: {}, finals: {} };
 }
 
 export default function SubjectMenu() {
@@ -39,18 +20,15 @@ export default function SubjectMenu() {
     const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
-    const initials = studentName
-        .split(" ")
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
     const [showForm, setShowForm] = useState(false);
     const [subjectCode, setSubjectCode] = useState("");
     const [subjectName, setSubjectName] = useState("");
     const [professorName, setProfessorName] = useState("");
     const [section, setSection] = useState(
         () => getDb()?.users?.find((user) => user.id === STUDENT_ID)?.programSection ?? ""
+    );
+    const [ruleId, setRuleId] = useState(
+        () => getDb()?.computationRules?.[0]?.id ?? ""
     );
     const [formError, setFormError] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
@@ -140,9 +118,9 @@ export default function SubjectMenu() {
             return;
         }
 
-        const rule = dbData.computationRules?.[0];
+        const rule = dbData.computationRules?.find((item) => item.id === ruleId);
         if (!rule) {
-            setFormError("A grading rule is required before creating subjects.");
+            setFormError("Choose a grading rule for this subject.");
             return;
         }
 
@@ -284,6 +262,23 @@ export default function SubjectMenu() {
                                         onChange={(event) => setSection(event.target.value)}
                                         required
                                     />
+                                </label>
+                                <label>
+                                    Grading rule
+                                    <select
+                                        value={ruleId}
+                                        onChange={(event) => setRuleId(event.target.value)}
+                                        required
+                                    >
+                                        {(dbData.computationRules ?? []).map((rule) => (
+                                            <option key={rule.id} value={rule.id}>
+                                                {rule.ruleName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <Link className="subject-request-rule-link" to="/student/rules">
+                                        View or create grading rules
+                                    </Link>
                                 </label>
                             </div>
                             {formError && (
