@@ -97,8 +97,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         event.preventDefault();
         const name = taskNameInput.trim();
         const maxScore = Number(taskMaxScore);
-        if (!name || !Number.isFinite(maxScore) || maxScore <= 0) {
-            setSaveError("Enter a task name and a maximum score greater than zero.");
+        if (!name || !Number.isInteger(maxScore) || maxScore <= 0) {
+            setSaveError("Enter a task name and a whole-number maximum score greater than zero.");
             return;
         }
 
@@ -354,12 +354,15 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                             required
                         />
                         <input
-                            type="number"
-                            min="0.01"
-                            step="any"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             placeholder="Max score"
                             value={taskMaxScore}
-                            onChange={(event) => setTaskMaxScore(event.target.value)}
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                if (/^\d*$/.test(value)) setTaskMaxScore(value);
+                            }}
                             aria-label="Maximum score"
                             required
                         />

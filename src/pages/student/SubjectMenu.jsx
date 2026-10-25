@@ -1,12 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
-import { getDb, saveDb } from "../../utils/db";
+import PageFooter from "../../components/shared/PageFooter";
+import AddSubjectForm from "../../components/student/AddSubjectForm";
+import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import { calculateOfficialGrade } from "../../utils/grades";
 import "./SubjectMenu.css";
 
 const STUDENT_ID = "U1";
+const SEMESTERS = [
+    { id: "first", semester: "First Semester", startMonth: 7, endMonth: 11 },
+    { id: "second", semester: "Second Semester", startMonth: 0, endMonth: 4 },
+    { id: "summer", semester: "Summer", startMonth: 5, endMonth: 6 },
+];
+
+function getAcademicYearStart(year, month) {
+    return month >= 7 ? year : year - 1;
+}
+
+const now = new Date();
+const currentMonth = now.getMonth();
+const currentAcademicYearStart = getAcademicYearStart(now.getFullYear(), currentMonth);
+const academicYear = `${currentAcademicYearStart}–${currentAcademicYearStart + 1}`;
+const SEMESTER_OPTIONS = SEMESTERS.map((semester) => ({
+    ...semester,
+    id: `${semester.id}-${academicYear}`,
+    academicYear,
+    isCurrent: currentMonth >= semester.startMonth && currentMonth <= semester.endMonth,
+}));
+const CURRENT_SEMESTER = SEMESTER_OPTIONS.find((semester) => semester.isCurrent);
+const DEFAULT_SEMESTER_ID = CURRENT_SEMESTER.id;
+
+function semesterId(classItem) {
+    const semesterName = classItem.semester ?? SEMESTERS[0].semester;
+    const year = classItem.academicYear ?? academicYear;
+    return SEMESTERS.find(
+        (option) => option.semester === semesterName
+    )?.id.replace(academicYear, year);
+}
 
 function nextId(items, prefix) {
     const highest = items.reduce((max, item) => {
@@ -46,15 +78,16 @@ export default function SubjectMenu() {
         .join("")
         .toUpperCase();
     const [showForm, setShowForm] = useState(false);
-    const [subjectCode, setSubjectCode] = useState("");
-    const [subjectName, setSubjectName] = useState("");
-    const [professorName, setProfessorName] = useState("");
-    const [section, setSection] = useState(
-        () => getDb()?.users?.find((user) => user.id === STUDENT_ID)?.programSection ?? ""
-    );
-    const [formError, setFormError] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
     const [search, setSearch] = useState("");
+    const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
+    const studentSection = student?.programSection ?? "";
+
+    useEffect(() => {
+        const refreshDbData = () => setDbData(getDb());
+        window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
+        return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
+    }, []);
 
     if (!dbData) {
         return (
@@ -70,20 +103,22 @@ export default function SubjectMenu() {
                     <main className="subject-menu-main">
                         <p role="alert">Unable to load subject data from local storage.</p>
                     </main>
-                    <SubjectMenuFooter />
+                    <PageFooter />
                 </div>
             </div>
         );
     }
 
     const studentClasses = (dbData.classes ?? []).filter((classItem) =>
+        semesterId(classItem) === selectedSemesterId
+    ).filter((classItem) =>
         classItem.studentRecords?.some((record) => record.studentId === STUDENT_ID)
     );
     const pendingRequests = (dbData.verificationQueue ?? []).filter(
         (request) =>
             request.requestedByStudentId === STUDENT_ID &&
             request.status === "pending" &&
-            !studentClasses.some((classItem) => classItem.subjectId === request.subjectId)
+            !(dbData.classes ?? []).some((classItem) => classItem.subjectId === request.subjectId)
     );
     const subjectRows = studentClasses.flatMap((classItem) => {
         const subject = dbData.subjects?.find(
@@ -119,31 +154,17 @@ export default function SubjectMenu() {
         return matchesFilter && searchText.includes(search.trim().toLowerCase());
     });
 
-    function submitSubject(event) {
-        event.preventDefault();
-        setFormError("");
-
-        const code = subjectCode.trim().toUpperCase();
-        const name = subjectName.trim();
-        const instructor = professorName.trim();
-        const programSection = section.trim();
-        if (!code || !name || !instructor || !programSection) {
-            setFormError("Please complete every field.");
-            return;
-        }
-
+    function submitSubject({ subjectCode: code, subjectName: name, professorName: instructor, section: programSection }) {
         const duplicateCode = (dbData.subjects ?? []).some(
             (subject) => subject.subjectCode.toUpperCase() === code
         );
         if (duplicateCode) {
-            setFormError("A subject with that code already exists.");
-            return;
+            return { fieldErrors: { subjectCode: "A subject with that code already exists." } };
         }
 
         const rule = dbData.computationRules?.[0];
         if (!rule) {
-            setFormError("A grading rule is required before creating subjects.");
-            return;
+            return { formError: "A grading rule is required before creating subjects." };
         }
 
         const subjectId = nextId(dbData.subjects ?? [], "SUB");
@@ -158,6 +179,8 @@ export default function SubjectMenu() {
         const classItem = {
             id: classId,
             subjectId,
+            semester: CURRENT_SEMESTER.semester,
+            academicYear: CURRENT_SEMESTER.academicYear,
             programSection,
             units: 3,
             professorId: null,
@@ -195,15 +218,12 @@ export default function SubjectMenu() {
         try {
             saveDb(updatedDb);
         } catch (error) {
-            setFormError(`Could not save the subject: ${error.message}`);
-            return;
+            return { formError: `Could not save the subject: ${error.message}` };
         }
 
         setDbData(updatedDb);
-        setSubjectCode("");
-        setSubjectName("");
-        setProfessorName("");
         setShowForm(false);
+        return null;
     }
 
     return (
@@ -219,7 +239,18 @@ export default function SubjectMenu() {
                         <p>Your subjects, progress, and next step.</p>
                     </div>
                     <label className="subject-menu-semester">
-                        <span>●</span> First Semester · 2026–2027
+                        <span aria-hidden="true">●</span>
+                        <select
+                            value={selectedSemesterId}
+                            onChange={(event) => setSelectedSemesterId(event.target.value)}
+                            aria-label="View subjects by semester"
+                        >
+                            {SEMESTER_OPTIONS.map((option) => (
+                                <option key={option.id} value={option.id} disabled={!option.isCurrent}>
+                                    {option.semester} · {option.academicYear}
+                                </option>
+                            ))}
+                        </select>
                     </label>
                 </header>
 
@@ -233,7 +264,6 @@ export default function SubjectMenu() {
                             type="button"
                             className="subject-menu-add-button"
                             onClick={() => {
-                                setFormError("");
                                 setShowForm((open) => !open);
                             }}
                             aria-expanded={showForm}
@@ -243,58 +273,11 @@ export default function SubjectMenu() {
                     </div>
 
                     {showForm && (
-                        <form className="subject-request-form" onSubmit={submitSubject}>
-                            <h2>New Subject Request</h2>
-                            <p>
-                                You can view all three terms and add private sandbox
-                                entries while your request awaits verification.
-                            </p>
-                            <div className="subject-request-fields">
-                                <label>
-                                    Subject code
-                                    <input
-                                        value={subjectCode}
-                                        onChange={(event) => setSubjectCode(event.target.value)}
-                                        placeholder="e.g. IT102"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Subject name
-                                    <input
-                                        value={subjectName}
-                                        onChange={(event) => setSubjectName(event.target.value)}
-                                        placeholder="e.g. Data Structures"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Professor
-                                    <input
-                                        value={professorName}
-                                        onChange={(event) => setProfessorName(event.target.value)}
-                                        placeholder="e.g. Prof. Maria Santos"
-                                        required
-                                    />
-                                </label>
-                                <label>
-                                    Program / section
-                                    <input
-                                        value={section}
-                                        onChange={(event) => setSection(event.target.value)}
-                                        required
-                                    />
-                                </label>
-                            </div>
-                            {formError && (
-                                <p className="subject-request-error" role="alert">
-                                    {formError}
-                                </p>
-                            )}
-                            <button type="submit" className="subject-menu-add-button">
-                                Add Subject
-                            </button>
-                        </form>
+                        <AddSubjectForm
+                            initialSection={studentSection}
+                            onCancel={() => setShowForm(false)}
+                            onSubmit={submitSubject}
+                        />
                     )}
 
                     <div className="subject-menu-table">
@@ -417,21 +400,8 @@ export default function SubjectMenu() {
                     </section>
                 )}
             </main>
-            <SubjectMenuFooter />
+            <PageFooter />
             </div>
         </div>
-    );
-}
-
-function SubjectMenuFooter() {
-    return (
-        <footer className="subject-page-footer">
-            <span>A clearer picture. A stronger semester.</span>
-            <span className="subject-page-footer-brand">
-                <span>CompUGrade</span>
-                <span aria-hidden="true">·</span>
-                <span>Built for your potential.</span>
-            </span>
-        </footer>
     );
 }

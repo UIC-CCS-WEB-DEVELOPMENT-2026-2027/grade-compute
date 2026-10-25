@@ -2,6 +2,7 @@
 import mockData from './db.json';
 
 const DB_KEY = 'compugrade_db';
+export const DB_UPDATED_EVENT = 'compugrade-db-updated';
 
 /**
  * Injects the db.json data into the browser's local storage 
@@ -30,6 +31,7 @@ export const getDb = () => {
  */
 export const saveDb = (updatedData) => {
   localStorage.setItem(DB_KEY, JSON.stringify(updatedData));
+  window.dispatchEvent(new Event(DB_UPDATED_EVENT));
 };
 
 /**

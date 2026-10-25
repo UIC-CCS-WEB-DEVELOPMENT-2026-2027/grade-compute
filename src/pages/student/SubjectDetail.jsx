@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
+import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import { getDb } from "../../utils/db";
 import { calculateOfficialGrade, getOfficialAssessments } from "../../utils/grades";
@@ -91,13 +92,6 @@ function SubjectDetail() {
                 </span>
             </div>
 
-            {/* Breadcrumb */}
-            <div className="subject-breadcrumb">
-                <span>← My Subjects</span>
-                <span>/</span>
-                <span>Subject details</span>
-            </div>
-
             {/* Subject Heading */}
             <section className="subject-overview">
 
@@ -183,14 +177,7 @@ function SubjectDetail() {
             <CurrentTermRecords classId={classItem.id} term={term} />
 
                 </main>
-                <footer className="subject-page-footer">
-                    <span>A clearer picture. A stronger semester.</span>
-                    <span className="subject-page-footer-brand">
-                        <span>CompUGrade</span>
-                        <span aria-hidden="true">·</span>
-                        <span>Built for your potential.</span>
-                    </span>
-                </footer>
+                <PageFooter />
             </div>
         </div>
     );

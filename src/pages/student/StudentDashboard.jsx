@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
+import PageFooter from "../../components/shared/PageFooter";
 import SubjectCard from "../../components/student/SubjectCard";
 import { getDb } from "../../utils/db";
 import "./StudentDashboard.css";
@@ -468,10 +469,7 @@ export default function StudentDashboard() {
                             Sample student workspace · Grades shown are
                             demonstration data.
                         </p>
-                        <div className="branding-row">
-                            <span>A clearer picture. A stronger semester.</span>
-                            <span>CompuGrade · Built for your potential.</span>
-                        </div>
+                        <PageFooter className="shared-page-footer--dashboard" />
                     </div>
                 </div>
             </main>

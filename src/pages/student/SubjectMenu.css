@@ -36,17 +36,57 @@
 }
 
 .subject-menu-semester {
-    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    max-width: 100%;
+    height: 39px;
+    padding: 0 13px;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border-radius: 6px;
     color: #52657f;
-    font-size: 10px;
+    font-size: 9px;
     white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .subject-menu-semester span {
-    margin-right: 6px;
     color: #41649b;
+    font-size: 8px;
+}
+
+.subject-menu-semester select {
+    width: auto !important;
+    max-width: max-content;
+    flex: 0 1 auto;
+    min-width: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: 1.2;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.subject-menu-semester select option:disabled {
+    color: #a2a8b0;
+}
+
+.subject-menu-semester select:focus {
+    border-color: transparent;
+    outline: none;
+}
+
+.subject-menu-semester:focus-within {
+    border-color: #41649b;
+    box-shadow: 0 0 0 2px rgba(65, 100, 155, 0.2);
 }
 
 .subject-menu-section {
@@ -115,12 +155,14 @@
 .subject-request-fields {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
     gap: 12px;
     margin-bottom: 14px;
 }
 
 .subject-request-fields label {
     display: grid;
+    align-content: start;
     gap: 5px;
     color: #52657f;
     font-size: 10px;
@@ -134,10 +176,46 @@
     font-size: 11px;
 }
 
+.subject-request-fields input[aria-invalid="true"] {
+    border-color: #cf6259;
+    background: #fffafa;
+}
+
+.subject-request-fields input[aria-invalid="true"]:focus {
+    border-color: #b9443b;
+    box-shadow: 0 0 0 2px rgba(185, 68, 59, 0.12);
+}
+
+.subject-field-error {
+    color: #ad4038;
+    font-size: 10px;
+    line-height: 1.35;
+}
+
 .subject-request-error {
     margin: 0 0 12px;
-    color: #b42318;
+    color: #ad4038;
     font-size: 11px;
+    line-height: 1.4;
+}
+
+.subject-request-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.subject-request-cancel {
+    padding: 9px 14px;
+    border: 1px solid #d8e1ee;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #52657f;
+    font-size: 11px;
+}
+
+.subject-request-cancel:hover {
+    background: #f1f4f8;
 }
 
 .subject-menu-table {
