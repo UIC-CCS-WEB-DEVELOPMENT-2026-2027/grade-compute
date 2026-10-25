@@ -1,11 +1,30 @@
 // src/pages/student/StudentDashboard.jsx
 
+import { useEffect, useState } from "react";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
+import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
+import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import { getCurrentSemester, getEnrolledSubjects } from "../../utils/subjects";
 import "./StudentDashboard.css";
 
+const STUDENT_ID = "U1";
+
 export default function StudentDashboard() {
+    const [dbData, setDbData] = useState(() => getDb());
+    const semester = getCurrentSemester();
+    const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
+    // The dashboard shows the current semester's subjects.
+    const subjects = getEnrolledSubjects(dbData, STUDENT_ID, semester.id);
+
+    // Refresh when any page saves the database (e.g. a subject is added).
+    useEffect(() => {
+        const refresh = () => setDbData(getDb());
+        window.addEventListener(DB_UPDATED_EVENT, refresh);
+        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
+    }, []);
+
     return (
         <div className="dashboard-page">
             <Sidebar />
@@ -30,265 +49,18 @@ export default function StudentDashboard() {
 
                     <div className="semester-badge">
                         <span className="badge-dot">•</span>
-                        <span className="badge-term">First Semester</span>
+                        <span className="badge-term">{semester.semester}</span>
                         <span className="badge-divider">|</span>
-                        <span className="badge-year">2026–2027</span>
+                        <span className="badge-year">{semester.academicYear}</span>
                     </div>
                 </div>
 
                 {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
-                <div className="enrolled-subjects-container">
-                    {/* Header & Export Action */}
-                    <div className="table-header-top">
-                        <div>
-                            <div className="table-title-row">
-                                <h2 className="table-title">
-                                    Enrolled Subjects
-                                </h2>
-                                <span className="count-badge">5</span>
-                            </div>
-                            <p className="table-subtitle">
-                                All your subjects for the current semester.
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            className="export-link-btn"
-                            onClick={(e) => e.preventDefault()}
-                        >
-                            ↓ Export grades
-                        </button>
-                    </div>
-
-                    {/* Filter Tabs & Search Bar */}
-                    <div className="table-controls">
-                        <div className="filter-tabs">
-                            <button type="button" className="tab-btn active">
-                                All subjects
-                            </button>
-                            <button type="button" className="tab-btn">
-                                Needs attention{" "}
-                                <span className="tab-count-badge">1</span>
-                            </button>
-                        </div>
-                        <div className="search-box">
-                            <input
-                                type="text"
-                                placeholder="Search subjects..."
-                                className="search-input"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Data Table */}
-                    <div className="table-wrapper">
-                        <table className="subjects-table">
-                            <thead>
-                                <tr>
-                                    <th>SUBJECT / PROFESSOR</th>
-                                    <th>UNITS</th>
-                                    <th>PRELIM GRADE</th>
-                                    <th>STATUS</th>
-                                    <th className="th-action"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* Row 1: IT101 */}
-                                <tr>
-                                    <td className="subject-cell">
-                                        <div className="subject-icon-box">
-                                            &lt;/&gt;
-                                        </div>
-                                        <div className="subject-details-stack">
-                                            <span className="subject-code-sm">
-                                                IT101
-                                            </span>
-                                            <span className="subject-name-bold">
-                                                Computer Systems
-                                            </span>
-                                            <span className="prof-name">
-                                                Prof. Maria Santos
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="units-cell">3</td>
-                                    <td className="grade-cell">
-                                        <span className="table-grade-num">
-                                            72%
-                                        </span>
-                                        <span className="official-grade-lbl">
-                                            Official grade
-                                        </span>
-                                    </td>
-                                    <td className="status-cell">
-                                        <span className="status-pill status-alert">
-                                            Below passing
-                                        </span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <span className="table-arrow">→</span>
-                                    </td>
-                                </tr>
-
-                                {/* Row 2: MATH 101 */}
-                                <tr>
-                                    <td className="subject-cell">
-                                        <div className="subject-icon-box">
-                                            Σ
-                                        </div>
-                                        <div className="subject-details-stack">
-                                            <span className="subject-code-sm">
-                                                MATH 101
-                                            </span>
-                                            <span className="subject-name-bold">
-                                                General Mathematics
-                                            </span>
-                                            <span className="prof-name">
-                                                Prof. Carlo Reyes
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="units-cell">3</td>
-                                    <td className="grade-cell">
-                                        <span className="table-grade-num">
-                                            78%
-                                        </span>
-                                        <span className="official-grade-lbl">
-                                            Official grade
-                                        </span>
-                                    </td>
-                                    <td className="status-cell">
-                                        <span className="status-pill status-passing">
-                                            Passing
-                                        </span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <span className="table-arrow">→</span>
-                                    </td>
-                                </tr>
-
-                                {/* Row 3: PROG 101 */}
-                                <tr>
-                                    <td className="subject-cell">
-                                        <div className="subject-icon-box">
-                                            ≡
-                                        </div>
-                                        <div className="subject-details-stack">
-                                            <span className="subject-code-sm">
-                                                PROG 101
-                                            </span>
-                                            <span className="subject-name-bold">
-                                                Introduction to Programming
-                                            </span>
-                                            <span className="prof-name">
-                                                Prof. Ana Cruz
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="units-cell">3</td>
-                                    <td className="grade-cell">
-                                        <span className="table-grade-num">
-                                            86%
-                                        </span>
-                                        <span className="official-grade-lbl">
-                                            Official grade
-                                        </span>
-                                    </td>
-                                    <td className="status-cell">
-                                        <span className="status-pill status-passing">
-                                            Passing
-                                        </span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <span className="table-arrow">→</span>
-                                    </td>
-                                </tr>
-
-                                {/* Row 4: STAT 201 */}
-                                <tr>
-                                    <td className="subject-cell">
-                                        <div className="subject-icon-box">
-                                            σ
-                                        </div>
-                                        <div className="subject-details-stack">
-                                            <span className="subject-code-sm">
-                                                STAT 201
-                                            </span>
-                                            <span className="subject-name-bold">
-                                                Probability &amp; Statistics
-                                            </span>
-                                            <span className="prof-name">
-                                                Prof. David Park
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="units-cell">3</td>
-                                    <td className="grade-cell">
-                                        <span className="table-grade-num">
-                                            85.8%
-                                        </span>
-                                        <span className="official-grade-lbl">
-                                            Official grade
-                                        </span>
-                                    </td>
-                                    <td className="status-cell">
-                                        <span className="status-pill status-passing">
-                                            Passing
-                                        </span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <span className="table-arrow">→</span>
-                                    </td>
-                                </tr>
-
-                                {/* Row 5: ENG 102 */}
-                                <tr>
-                                    <td className="subject-cell">
-                                        <div className="subject-icon-box">
-                                            Aa
-                                        </div>
-                                        <div className="subject-details-stack">
-                                            <span className="subject-code-sm">
-                                                ENG 102
-                                            </span>
-                                            <span className="subject-name-bold">
-                                                Academic Writing
-                                            </span>
-                                            <span className="prof-name">
-                                                Dr. Olivia Reyes
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="units-cell">3</td>
-                                    <td className="grade-cell">
-                                        <span className="table-grade-num">
-                                            91%
-                                        </span>
-                                        <span className="official-grade-lbl">
-                                            Official grade
-                                        </span>
-                                    </td>
-                                    <td className="status-cell">
-                                        <span className="status-pill status-passing">
-                                            Passing
-                                        </span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <span className="table-arrow">→</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Table Footer */}
-                    <div className="table-footer-bottom">
-                        <span>
-                            • Official grades are posted by your professors.
-                        </span>
-                        <span>Passing grade: 75%</span>
-                    </div>
-                </div>
+                <EnrolledSubjectsTable
+                    subjects={subjects}
+                    studentId={STUDENT_ID}
+                    initialSection={student?.programSection ?? ""}
+                />
 
                 {/* --- RECENT UPDATES SECTION --- */}
                 <div className="recent-updates-section">

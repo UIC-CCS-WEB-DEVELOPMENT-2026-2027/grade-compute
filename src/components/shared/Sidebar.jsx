@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DB_UPDATED_EVENT, getDb, saveDb } from '../../utils/db';
+import { getEnrolledSubjects } from '../../utils/subjects';
+import { toTermKey } from '../../utils/terms';
+import SandboxSubjectPicker from '../student/SandboxSubjectPicker';
 
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [dbData, setDbData] = useState(() => getDb());
   const [subjectToRemove, setSubjectToRemove] = useState(null);
+  const [isSandboxPickerOpen, setIsSandboxPickerOpen] = useState(false);
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(() => {
     return location.pathname.includes('/student/subject');
   });
@@ -196,25 +200,22 @@ export default function Sidebar() {
           </div>
         )}
 
-        {enrolledSubjects.length > 0 && (
-          <Link
-            className={`sidebar-link ${location.pathname.endsWith('/sandbox') ? 'is-active' : ''}`}
-            to={`/student/subject/${(
-              enrolledSubjects.find((item) =>
-                location.pathname.includes(`/student/subject/${item.classId}`)
-              ) ?? enrolledSubjects[0]
-            ).classId}/sandbox`}
-          >
-            <span className="sidebar-icon-wrap" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.5"/>
-                <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
-                <circle cx="12" cy="12" r="1" fill="currentColor"/>
-              </svg>
-            </span>
-            <span>Target Grade Sandbox</span>
-          </Link>
-        )}
+        {/* Asks which subject to plan, then opens that subject's sandbox. */}
+        <button
+          type="button"
+          className={`sidebar-link sidebar-link-button ${location.pathname.endsWith('/sandbox') ? 'is-active' : ''}`}
+          onClick={() => setIsSandboxPickerOpen(true)}
+          aria-haspopup="dialog"
+        >
+          <span className="sidebar-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="12" cy="12" r="1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span>Target Grade Sandbox</span>
+        </button>
 
         <Link
           to="/student/rules"
@@ -256,6 +257,24 @@ export default function Sidebar() {
         </Link>
 
       </div>
+
+      {isSandboxPickerOpen && (
+        <SandboxSubjectPicker
+          subjects={getEnrolledSubjects(dbData, activeStudentId)}
+          currentClassId={
+            enrolledSubjects.find((item) =>
+              [`/student/subject/${item.classId}`, `/student/subject/${item.classId}/sandbox`]
+                .includes(location.pathname)
+            )?.classId ?? null
+          }
+          termKey={
+            new URLSearchParams(location.search).has('term')
+              ? toTermKey(new URLSearchParams(location.search).get('term'))
+              : null
+          }
+          onClose={() => setIsSandboxPickerOpen(false)}
+        />
+      )}
 
       {subjectToRemove && (
         <div

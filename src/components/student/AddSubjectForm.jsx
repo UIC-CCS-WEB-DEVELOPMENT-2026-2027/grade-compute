@@ -1,6 +1,12 @@
+// src/components/student/AddSubjectForm.jsx
+// The "New Subject Request" form. It saves the subject itself, so any page
+// can show it (Dashboard and My Subjects use it through EnrolledSubjectsTable).
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getDb, saveDb } from "../../utils/db";
 import { getRuleFormulaText } from "../../utils/rules";
+import { addSubject, getInitialRuleId } from "../../utils/subjects";
+import "./AddSubjectForm.css";
 
 const FIELD_LABELS = {
     subjectCode: "subject code",
@@ -15,15 +21,25 @@ function missingFieldMessage(field) {
         : `Please enter your ${FIELD_LABELS[field]}.`;
 }
 
-// rules: the computationRules from the database.
-// initialRuleId: the rule selected when the form opens (falls back to the first rule).
+// studentId: who is adding the subject.
+// initialSection: prefilled program / section (usually the student's own).
+// onAdded(classItem): called after the subject is saved.
+// onCancel(): called when the student closes the form.
 export default function AddSubjectForm({
+    studentId = "U1",
     initialSection = "",
-    rules = [],
-    initialRuleId = "",
     onCancel,
-    onSubmit,
+    onAdded,
 }) {
+    // Rules are read once when the form opens. The form starts on the rule of
+    // the student's most recently added subject (see getInitialRuleId).
+    const [{ rules, initialRuleId }] = useState(() => {
+        const db = getDb();
+        return {
+            rules: db?.computationRules ?? [],
+            initialRuleId: getInitialRuleId(db, studentId),
+        };
+    });
     const [subjectCode, setSubjectCode] = useState("");
     const [subjectName, setSubjectName] = useState("");
     const [professorName, setProfessorName] = useState("");
@@ -59,13 +75,31 @@ export default function AddSubjectForm({
         }
 
         setFieldErrors({});
-        const result = onSubmit(values);
-        if (result?.fieldErrors) {
+        const db = getDb();
+        if (!db) {
+            setFormError("Unable to load subject data from local storage.");
+            return;
+        }
+
+        const result = addSubject(db, studentId, values);
+        if (result.fieldErrors) {
             setFieldErrors(result.fieldErrors);
             const firstField = Object.keys(result.fieldErrors)[0];
             event.currentTarget.elements.namedItem(firstField)?.focus();
+            return;
         }
-        if (result?.formError) setFormError(result.formError);
+        if (result.formError) {
+            setFormError(result.formError);
+            return;
+        }
+
+        try {
+            saveDb(result.db);
+        } catch (error) {
+            setFormError(`Could not save the subject: ${error.message}`);
+            return;
+        }
+        onAdded?.(result.classItem);
     }
 
     function updateField(field, value, setter) {
@@ -193,7 +227,7 @@ export default function AddSubjectForm({
                 </p>
             )}
             <div className="subject-request-actions">
-                <button type="submit" className="subject-menu-add-button">
+                <button type="submit" className="subject-request-submit">
                     Add Subject
                 </button>
                 <button type="button" className="subject-request-cancel" onClick={onCancel}>

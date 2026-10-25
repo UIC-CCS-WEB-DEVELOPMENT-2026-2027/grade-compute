@@ -1,31 +1,70 @@
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
-import { getDb } from "../../utils/db";
+import TermNavigation from "../../components/student/TermNavigation";
+import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import { toTermKey } from "../../utils/terms";
 import "./SubjectDetail.css";
+
+const STUDENT_ID = "U1";
 
 export default function TargetGradeSandboxPage() {
     const { subjectId } = useParams();
-    const dbData = getDb();
+    // Same ?term= as Subject Detail, so both pages stay on the same term.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const termKey = toTermKey(searchParams.get("term"));
+    const [dbData, setDbData] = useState(() => getDb());
+
+    useEffect(() => {
+        const refresh = () => setDbData(getDb());
+        window.addEventListener(DB_UPDATED_EVENT, refresh);
+        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
+    }, []);
+
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
     const hasStudentRecord = classItem?.studentRecords?.some(
-        (record) => record.studentId === "U1"
+        (record) => record.studentId === STUDENT_ID
     );
+    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
     return (
         <div className="subject-detail-layout">
             <Sidebar />
             <div className="subject-detail-main">
-                <Header
-                    title="Target Grade Sandbox"
-                    subtitle={null}
-                />
+                <Header title="Target Grade Sandbox" subtitle={null} />
                 <main className="student-dashboard">
                     {classItem && subject && hasStudentRecord ? (
-                        <TargetGradeSandbox classId={classItem.id} variant="page" />
+                        <>
+                            <TermNavigation
+                                termKey={termKey}
+                                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                                action={
+                                    <Link
+                                        className="term-nav-link"
+                                        to={`/student/subject/${classItem.id}?term=${termKey}`}
+                                    >
+                                        <span aria-hidden="true">←</span>
+                                        Back to subject
+                                    </Link>
+                                }
+                                note="Private planning space. Official records stay untouched."
+                            />
+
+                            <section className="subject-overview sandbox-page-heading">
+                                <div className="subject-semester">
+                                    TARGET GRADE SANDBOX{rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
+                                </div>
+                                <div className="subject-title-row">
+                                    <h1>{subject.subjectCode} - {subject.subjectName}</h1>
+                                </div>
+                            </section>
+
+                            <TargetGradeSandbox classId={classItem.id} termKey={termKey} />
+                        </>
                     ) : (
                         <section className="subject-target-grade-section">
                             <h2>Sandbox unavailable</h2>

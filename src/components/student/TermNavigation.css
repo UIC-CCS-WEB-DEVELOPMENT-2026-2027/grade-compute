@@ -1,0 +1,31 @@
+/* src/components/student/TermNavigation.css */
+/* The page action next to the term buttons (Subject Detail <-> Sandbox).
+   Term button styles live in SubjectDetail.css. */
+
+.term-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 9px 15px;
+    border: 1px solid var(--color-primary);
+    border-radius: 22px;
+    background: var(--color-bg-selected);
+    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.term-nav-link:hover,
+.term-nav-link:focus-visible {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.term-nav-link svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
+import TermNavigation from "../../components/student/TermNavigation";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import congratulationAudio from "../../assets/congrats_voice .mp3";
 import {
@@ -11,6 +12,7 @@ import {
     calculateUnofficialGrade,
     getOfficialAssessments,
 } from "../../utils/grades";
+import { getTermLabel, toTermKey } from "../../utils/terms";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
@@ -23,7 +25,11 @@ const CONFETTI_PIECES = Array.from({ length: 44 }, (_, index) => ({
 }));
 
 function SubjectDetail() {
-    const [term, setTerm] = useState("Prelim");
+    // The selected term lives in the URL (?term=midterm), so the sandbox
+    // can link back to the same term.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const termKey = toTermKey(searchParams.get("term"));
+    const term = getTermLabel(termKey);
     const [celebration, setCelebration] = useState("");
     const [targetGradeError, setTargetGradeError] = useState("");
     const [dbData, setDbData] = useState(() => getDb());
@@ -111,7 +117,6 @@ function SubjectDetail() {
         };
     }, [celebration]);
 
-    const terms = ["Prelim", "Midterm", "Finals"];
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find(
         (item) => item.id === classItem?.subjectId
@@ -215,27 +220,24 @@ function SubjectDetail() {
                 <main className="student-dashboard">
 
             {/* Term Navigation */}
-            <div className="subject-term-navigation">
-                <div className="term-selector">
-                    {terms.map((termName) => (
-                        <button
-                            key={termName}
-                            type="button"
-                            className={
-                                term === termName ? "selected" : ""
-                            }
-                            onClick={() => setTerm(termName)}
-                        >
-                            {termName}
-                        </button>
-                    ))}
-                </div>
-
-                <span className="term-note">
-                    Official scores and draft notes are separate
-                    for each term.
-                </span>
-            </div>
+            <TermNavigation
+                termKey={termKey}
+                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                action={
+                    <Link
+                        className="term-nav-link"
+                        to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+                            <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
+                            <circle cx="12" cy="12" r="1" fill="currentColor" />
+                        </svg>
+                        Target grade sandbox
+                    </Link>
+                }
+                note="Official scores and draft notes are separate for each term."
+            />
 
             {/* Subject Heading */}
             <section className="subject-overview">

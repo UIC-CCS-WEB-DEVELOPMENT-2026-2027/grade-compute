@@ -1,61 +1,26 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
-import AddSubjectForm from "../../components/student/AddSubjectForm";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
-import { calculateOfficialGrade } from "../../utils/grades";
-import { nextId } from "../../utils/rules";
+import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
+import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
+import {
+    getClassSemesterId,
+    getCurrentSemester,
+    getEnrolledSubjects,
+    getSemesterOptions,
+} from "../../utils/subjects";
 import "./SubjectMenu.css";
 
 const STUDENT_ID = "U1";
-const SEMESTERS = [
-    { id: "first", semester: "First Semester", startMonth: 7, endMonth: 11 },
-    { id: "second", semester: "Second Semester", startMonth: 0, endMonth: 4 },
-    { id: "summer", semester: "Summer", startMonth: 5, endMonth: 6 },
-];
-
-function getAcademicYearStart(year, month) {
-    return month >= 7 ? year : year - 1;
-}
-
-const now = new Date();
-const currentMonth = now.getMonth();
-const currentAcademicYearStart = getAcademicYearStart(now.getFullYear(), currentMonth);
-const academicYear = `${currentAcademicYearStart}–${currentAcademicYearStart + 1}`;
-const SEMESTER_OPTIONS = SEMESTERS.map((semester) => ({
-    ...semester,
-    id: `${semester.id}-${academicYear}`,
-    academicYear,
-    isCurrent: currentMonth >= semester.startMonth && currentMonth <= semester.endMonth,
-}));
-const CURRENT_SEMESTER = SEMESTER_OPTIONS.find((semester) => semester.isCurrent);
-const DEFAULT_SEMESTER_ID = CURRENT_SEMESTER.id;
-
-function semesterId(classItem) {
-    const semesterName = classItem.semester ?? SEMESTERS[0].semester;
-    const year = classItem.academicYear ?? academicYear;
-    const semester = SEMESTERS.find(
-        (option) => option.semester === semesterName
-    );
-    return semester ? `${semester.id}-${year}` : undefined;
-}
-
-// Tasks are added per criterion of the subject's grading rule, so each term
-// starts empty. See grades-guide.txt for the stored shape.
-function createEmptyGrades() {
-    return { prelim: {}, midterm: {}, finals: {} };
-}
+const SEMESTER_OPTIONS = getSemesterOptions();
+const DEFAULT_SEMESTER_ID = getCurrentSemester().id;
 
 export default function SubjectMenu() {
     const [dbData, setDbData] = useState(() => getDb());
     const student = dbData?.users?.find((user) => user.id === STUDENT_ID);
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
-    const [showForm, setShowForm] = useState(false);
-    const [activeFilter, setActiveFilter] = useState("all");
-    const [search, setSearch] = useState("");
     const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
     const studentSection = student?.programSection ?? "";
 
@@ -85,148 +50,14 @@ export default function SubjectMenu() {
         );
     }
 
-    const studentClasses = (dbData.classes ?? []).filter((classItem) =>
-        semesterId(classItem) === selectedSemesterId
-    ).filter((classItem) =>
-        classItem.studentRecords?.some((record) => record.studentId === STUDENT_ID)
-    );
+    const subjects = getEnrolledSubjects(dbData, STUDENT_ID, selectedSemesterId);
+    const selectedSemester = SEMESTER_OPTIONS.find((option) => option.id === selectedSemesterId);
     const pendingRequests = (dbData.verificationQueue ?? []).filter(
         (request) =>
             request.requestedByStudentId === STUDENT_ID &&
             request.status === "pending" &&
             !(dbData.classes ?? []).some((classItem) => classItem.subjectId === request.subjectId)
     );
-    const subjectRows = studentClasses.flatMap((classItem) => {
-        const subject = dbData.subjects?.find(
-            (item) => item.id === classItem.subjectId
-        );
-        const studentRecord = classItem.studentRecords?.find(
-            (record) => record.studentId === STUDENT_ID
-        );
-        if (!subject || !studentRecord) return [];
-
-        const professor =
-            classItem.professorName ??
-            dbData.users?.find((user) => user.id === classItem.professorId)?.name ??
-            "Awaiting assignment";
-        const rule = dbData.computationRules?.find(
-            (item) => item.id === classItem.computationRuleId
-        );
-        const prelimGrade = calculateOfficialGrade(studentRecord, "Prelim", rule);
-
-        return [{
-            classItem,
-            subject,
-            professor,
-            prelimGrade,
-            needsAttention:
-                classItem.status !== "verified" ||
-                (prelimGrade !== null && prelimGrade < 75),
-        }];
-    });
-    // Start the form on the rule of the student's most recently added subject
-    // (students usually add several subjects from the same school), or the
-    // first rule if they have none yet.
-    const rules = dbData.computationRules ?? [];
-    const lastUsedRuleId = [...(dbData.classes ?? [])]
-        .reverse()
-        .find((classItem) =>
-            classItem.studentRecords?.some((record) => record.studentId === STUDENT_ID) &&
-            rules.some((rule) => rule.id === classItem.computationRuleId)
-        )?.computationRuleId;
-    const initialRuleId = lastUsedRuleId ?? rules[0]?.id ?? "";
-    const filteredSubjects = subjectRows.filter(({ subject, professor, needsAttention }) => {
-        const matchesFilter = activeFilter === "all" || needsAttention;
-        const searchText = `${subject.subjectCode} ${subject.subjectName} ${professor}`.toLowerCase();
-        return matchesFilter && searchText.includes(search.trim().toLowerCase());
-    });
-
-    // computationRuleId comes from AddSubjectForm's grading rule picker.
-    // If the form doesn't send one, the first rule is used.
-    function submitSubject({
-        subjectCode: code,
-        subjectName: name,
-        professorName: instructor,
-        section: programSection,
-        computationRuleId,
-    }) {
-        const currentDb = getDb() ?? dbData;
-        const duplicateCode = (currentDb.subjects ?? []).some(
-            (subject) => subject.subjectCode.toUpperCase() === code
-        );
-        if (duplicateCode) {
-            return { fieldErrors: { subjectCode: "A subject with that code already exists." } };
-        }
-
-        const rules = currentDb.computationRules ?? [];
-        const rule = computationRuleId
-            ? rules.find((item) => item.id === computationRuleId)
-            : rules[0];
-        if (!rule) {
-            return computationRuleId
-                ? { fieldErrors: { computationRuleId: "Choose a grading rule for this subject." } }
-                : { formError: "Create a grading rule on the Grade Rules page before adding subjects." };
-        }
-
-        const subjectId = nextId(currentDb.subjects ?? [], "SUB");
-        const classId = nextId(currentDb.classes ?? [], "C");
-        const requestId = nextId(currentDb.verificationQueue ?? [], "REQ");
-        const subject = {
-            id: subjectId,
-            subjectCode: code,
-            subjectName: name,
-            defaultComputationRuleId: rule.id,
-        };
-        const classItem = {
-            id: classId,
-            subjectId,
-            semester: CURRENT_SEMESTER.semester,
-            academicYear: CURRENT_SEMESTER.academicYear,
-            programSection,
-            units: 3,
-            professorId: null,
-            professorName: instructor,
-            status: "pending",
-            computationRuleId: rule.id,
-            studentRecords: [
-                {
-                    studentId: STUDENT_ID,
-                    targetGradeSandbox: { desiredFinalGrade: 90 },
-                    grades: createEmptyGrades(),
-                },
-            ],
-        };
-        const request = {
-            id: requestId,
-            requestedByStudentId: STUDENT_ID,
-            subjectId,
-            subjectCode: code,
-            subjectName: name,
-            programSection,
-            requestedProfessorId: null,
-            requestedProfessorName: instructor,
-            computationRuleId: rule.id,
-            status: "pending",
-            createdAt: new Date().toISOString(),
-        };
-        const updatedDb = {
-            ...currentDb,
-            subjects: [...(currentDb.subjects ?? []), subject],
-            classes: [...(currentDb.classes ?? []), classItem],
-            verificationQueue: [...(currentDb.verificationQueue ?? []), request],
-        };
-
-        try {
-            saveDb(updatedDb);
-        } catch (error) {
-            return { formError: `Could not save the subject: ${error.message}` };
-        }
-
-        setDbData(getDb() ?? updatedDb);
-        setSelectedSemesterId(semesterId(classItem));
-        setShowForm(false);
-        return null;
-    }
 
     return (
         <div className="subject-detail-layout subject-menu-layout">
@@ -256,140 +87,18 @@ export default function SubjectMenu() {
                     </label>
                 </header>
 
-                <section className="subject-menu-section">
-                    <div className="subject-menu-section-heading">
-                        <div>
-                            <h2>Enrolled Subjects <span>{subjectRows.length}</span></h2>
-                            <p>All your subjects for the current semester.</p>
-                        </div>
-                        <button
-                            type="button"
-                            className="subject-menu-add-button"
-                            onClick={() => {
-                                setShowForm((open) => !open);
-                            }}
-                            aria-expanded={showForm}
-                        >
-                            {showForm ? "Cancel" : "+ Add Subject"}
-                        </button>
-                    </div>
-
-                    {showForm && (
-                        <AddSubjectForm
-                            initialSection={studentSection}
-                            rules={rules}
-                            initialRuleId={initialRuleId}
-                            onCancel={() => setShowForm(false)}
-                            onSubmit={submitSubject}
-                        />
-                    )}
-
-                    <div className="subject-menu-table">
-                        <div className="subject-menu-toolbar">
-                            <div className="subject-menu-filters" role="tablist" aria-label="Filter subjects">
-                                <button
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={activeFilter === "all"}
-                                    className={activeFilter === "all" ? "selected" : ""}
-                                    onClick={() => setActiveFilter("all")}
-                                >
-                                    All subjects
-                                </button>
-                                <button
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={activeFilter === "attention"}
-                                    className={activeFilter === "attention" ? "selected" : ""}
-                                    onClick={() => setActiveFilter("attention")}
-                                >
-                                    Needs attention <span>{subjectRows.filter((row) => row.needsAttention).length}</span>
-                                </button>
-                            </div>
-                            <input
-                                className="subject-menu-search"
-                                type="search"
-                                placeholder="Search subjects"
-                                value={search}
-                                onChange={(event) => setSearch(event.target.value)}
-                                aria-label="Search subjects"
-                            />
-                        </div>
-
-                        <div className="subject-menu-table-scroll">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Subject / Professor</th>
-                                        <th>Units</th>
-                                        <th>Prelim Grade</th>
-                                        <th>Status</th>
-                                        <th aria-label="Actions" />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredSubjects.map((row) => (
-                                        <tr key={row.classItem.id}>
-                                            <td>
-                                                <Link
-                                                    className="subject-menu-subject-link"
-                                                    to={`/student/subject/${row.classItem.id}`}
-                                                >
-                                                    <span className="subject-menu-course-icon" aria-hidden="true">
-                                                        &lt;/&gt;
-                                                    </span>
-                                                    <span>
-                                                        <small>{row.subject.subjectCode}</small>
-                                                        <strong>{row.subject.subjectName}</strong>
-                                                        <small>{row.professor}</small>
-                                                    </span>
-                                                </Link>
-                                            </td>
-                                            <td>{row.classItem.units ?? 3}</td>
-                                            <td>
-                                                {row.prelimGrade === null ? "—" : `${row.prelimGrade.toFixed(1)}%`}
-                                                <small className="subject-menu-grade-caption">
-                                                    {row.prelimGrade === null ? "No official grade" : "Official grade"}
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <span className={`subject-menu-status ${
-                                                    row.classItem.status === "verified"
-                                                        ? row.needsAttention ? "attention" : "passing"
-                                                        : "pending"
-                                                }`}>
-                                                    {row.classItem.status !== "verified"
-                                                        ? "Pending verification"
-                                                        : row.prelimGrade === null
-                                                            ? "No grade"
-                                                            : row.needsAttention
-                                                                ? "Below passing"
-                                                                : "Passing"}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <Link
-                                                    className="subject-menu-row-action"
-                                                    to={`/student/subject/${row.classItem.id}`}
-                                                    aria-label={`View ${row.subject.subjectCode} terms and sandbox`}
-                                                >
-                                                    →
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {filteredSubjects.length === 0 && (
-                                        <tr>
-                                            <td className="subject-menu-no-results" colSpan="5">
-                                                No subjects match this filter.
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+                <EnrolledSubjectsTable
+                    subjects={subjects}
+                    subtitle={
+                        selectedSemester
+                            ? `Your subjects for ${selectedSemester.semester}, ${selectedSemester.academicYear}.`
+                            : "Your subjects for this semester."
+                    }
+                    studentId={STUDENT_ID}
+                    initialSection={studentSection}
+                    // New subjects go into the current semester, so show it.
+                    onSubjectAdded={(classItem) => setSelectedSemesterId(getClassSemesterId(classItem))}
+                />
 
                 {pendingRequests.length > 0 && (
                     <section className="subject-menu-section subject-menu-pending-section">
