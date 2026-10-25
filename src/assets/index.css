@@ -27,6 +27,28 @@
   --color-warning: #FF7070;       /* Coral: System warnings, destructive actions */
   --color-highlight: #FFF799;     /* Pale Yellow: Alert banners, pending verification states */
   --color-text-locked: #2C2C2C;   /* Deep Navy: Official locked scores, standard text */
+
+  /* Criteria colors (grade computation rules).
+     Built from the brand palette: primary and accent blues, the highlight
+     yellow, and the coral, plus their deeper and softer tones. Neighbors
+     alternate between blue and warm so sections next to each other differ.
+     Each "-on" token is the text and dot color that reads on that color. */
+  --color-criteria-1: #406093;    /* primary blue */
+  --color-criteria-1-on: #FFFFFF;
+  --color-criteria-2: #E9C936;    /* highlight yellow, deep */
+  --color-criteria-2-on: #2C2C2C;
+  --color-criteria-3: #4C8CE4;    /* accent blue */
+  --color-criteria-3-on: #FFFFFF;
+  --color-criteria-4: #FF7070;    /* coral */
+  --color-criteria-4-on: #2C2C2C;
+  --color-criteria-5: #2C4870;    /* primary blue, deep */
+  --color-criteria-5-on: #FFFFFF;
+  --color-criteria-6: #F4E46A;    /* highlight yellow */
+  --color-criteria-6-on: #2C2C2C;
+  --color-criteria-7: #A9C6F2;    /* accent blue, soft */
+  --color-criteria-7-on: #2C2C2C;
+  --color-criteria-8: #F7AFA6;    /* coral, soft */
+  --color-criteria-8-on: #2C2C2C;
   --color-primary-soft: #E6EDF9;
   --color-warning-soft: #F9E7E2;
   --color-warning-strong: #C95D50;

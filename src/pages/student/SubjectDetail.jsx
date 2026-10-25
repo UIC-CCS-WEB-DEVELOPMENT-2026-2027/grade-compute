@@ -12,15 +12,6 @@ function SubjectDetail() {
     const [term, setTerm] = useState("Prelim");
     const { subjectId } = useParams();
     const dbData = getDb();
-    const student = dbData?.users?.find((user) => user.id === "U1");
-    const studentName = student?.name || "Student";
-    const firstName = studentName.split(" ")[0];
-    const initials = studentName
-        .split(" ")
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
     const terms = ["Prelim", "Midterm", "Finals"];
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find(

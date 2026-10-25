@@ -1,0 +1,210 @@
+/* src/pages/student/RuleDetail.css
+   View/edit page for one grade computation rule. */
+
+.rule-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-bottom: 0;
+}
+
+.rule-back {
+    align-self: flex-start;
+    color: var(--color-primary);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.rule-back:hover {
+    text-decoration: underline;
+}
+
+.rule-detail-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: -16px;
+}
+
+.rule-detail-heading h1 {
+    margin: 0;
+    color: var(--color-text-locked);
+    font-size: 38px;
+    line-height: 1.05;
+}
+
+.rule-detail-heading p {
+    margin-top: 6px;
+    color: var(--color-muted);
+}
+
+.rule-detail-tools {
+    display: flex;
+    gap: 8px;
+}
+
+/* ---- Sections ----------------------------------------------------------- */
+
+.rule-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 22px;
+    border-top: 1px solid var(--color-border);
+}
+
+.rule-section h2 {
+    margin: 0;
+    color: var(--color-text-locked);
+    font-size: 24px;
+}
+
+.rule-section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* ---- Details form ------------------------------------------------------- */
+
+.rule-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 20px 28px;
+    align-items: start;
+}
+
+.rule-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.rule-field legend {
+    margin-bottom: 6px;
+    padding: 0;
+}
+
+.rule-field input[aria-invalid="true"] {
+    border-color: var(--color-warning-strong);
+}
+
+.rule-field-error {
+    margin: 0;
+    color: var(--color-warning-strong);
+    font-size: 13px;
+}
+
+.rule-tag-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rule-tag-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text-locked);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.rule-tag-option input {
+    width: auto;
+}
+
+.rule-tag-option:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.rule-schools ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rule-schools li {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text-locked);
+    font-size: 13px;
+}
+
+.rule-schools li button {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-muted);
+}
+
+.rule-school-add {
+    display: flex;
+    gap: 8px;
+}
+
+.rule-school-add button {
+    white-space: nowrap;
+}
+
+/* ---- Sticky save bar ---------------------------------------------------- */
+
+.rule-savebar {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 calc(clamp(20px, 5vw, 64px) * -1);
+    padding: 14px clamp(20px, 5vw, 64px);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.rule-savebar p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.rule-savebar > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rule-savebar button {
+    padding: 9px 16px;
+}
+
+.rule-savebar button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}

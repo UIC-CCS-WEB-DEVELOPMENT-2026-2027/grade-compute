@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "users": [
     {
       "id": "U1",
@@ -23,27 +24,50 @@
       "password": "admin"
     }
   ],
-
   "computationRules": [
     {
       "id": "CR-1",
       "ruleName": "Standard IT Rule (70/30)",
-      "hierarchy": {
-        "classwork": 0.70,
-        "exam": 0.30,
-        "classworkSplit": {
-          "AT": 0.70,
-          "TLA": 0.30
+      "tags": [
+        "Undergraduate"
+      ],
+      "schools": [
+        "University of the Immaculate Conception"
+      ],
+      "criteria": [
+        {
+          "id": "classwork",
+          "name": "Classwork",
+          "weight": 0.7,
+          "children": [
+            {
+              "id": "AT",
+              "name": "AT",
+              "weight": 0.7,
+              "children": []
+            },
+            {
+              "id": "TLA",
+              "name": "TLA",
+              "weight": 0.3,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "Exam",
+          "name": "Exam",
+          "weight": 0.3,
+          "children": []
         }
-      },
+      ],
       "effectiveMultipliers": {
         "AT": 0.49,
         "TLA": 0.21,
-        "Exam": 0.30
+        "Exam": 0.3
       }
     }
   ],
-
   "subjects": [
     {
       "id": "SUB-1",
@@ -52,7 +76,6 @@
       "defaultComputationRuleId": "CR-1"
     }
   ],
-
   "classes": [
     {
       "id": "C101",
@@ -106,23 +129,34 @@
                   "isCustomTask": false
                 }
               ],
-              "Exam": {
-                "id": "EX-1",
-                "type": "Exam",
-                "title": "Prelim Exam",
-                "maxScore": 100,
-                "officialScore": null,
-                "studentReportedScore": null
-              }
+              "Exam": [
+                {
+                  "id": "EX-1",
+                  "type": "Exam",
+                  "title": "Prelim Exam",
+                  "maxScore": 100,
+                  "officialScore": null,
+                  "studentReportedScore": null,
+                  "sequenceNumber": 1,
+                  "isCustomTask": false
+                }
+              ]
             },
-            "midterm": { "AT": [], "TLA": [], "Exam": {} },
-            "finals": { "AT": [], "TLA": [], "Exam": {} }
+            "midterm": {
+              "AT": [],
+              "TLA": [],
+              "Exam": []
+            },
+            "finals": {
+              "AT": [],
+              "TLA": [],
+              "Exam": []
+            }
           }
         }
       ]
     }
   ],
-
   "verificationQueue": [
     {
       "id": "REQ-1",
@@ -138,5 +172,4 @@
       "createdAt": "2026-10-06T10:00:00Z"
     }
   ]
-
 }

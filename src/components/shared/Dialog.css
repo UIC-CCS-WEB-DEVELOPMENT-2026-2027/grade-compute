@@ -1,0 +1,67 @@
+/* src/components/shared/Dialog.css */
+
+.app-dialog {
+    width: min(520px, calc(100vw - 32px));
+    margin: auto;
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+    box-shadow: 0 18px 50px var(--shadow-dialog);
+}
+
+.app-dialog::backdrop {
+    background: var(--color-overlay);
+}
+
+.app-dialog h2 {
+    margin: 0 0 12px;
+    color: var(--color-text-locked);
+    font-size: 26px;
+}
+
+.app-dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.app-dialog-body p,
+.app-dialog-body ul {
+    margin: 0;
+}
+
+.app-dialog-body ul {
+    padding-left: 20px;
+}
+
+.app-dialog-body label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.app-dialog-warning {
+    padding: 10px 12px;
+    border-left: 4px solid var(--color-warning);
+    background: var(--color-warning-soft);
+}
+
+.app-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.app-dialog-actions .btn-secondary {
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+}
