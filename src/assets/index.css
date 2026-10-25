@@ -87,6 +87,16 @@
   /* Typography Variables */
   --font-heading: 'Khand', sans-serif;
   --font-body: 'General Sans', sans-serif;
+
+  /* Criteria colors (grade computation rules) */
+  --color-criteria-1: #406093; /* blue */
+  --color-criteria-2: #A33A3A; /* red */
+  --color-criteria-3: #3E9B4F; /* green */
+  --color-criteria-4: #9B3FA8; /* purple */
+  --color-criteria-5: #2BB5C9; /* cyan */
+  --color-criteria-6: #6C4FD1; /* violet */
+  --color-criteria-7: #E08A1E; /* orange */
+  --color-criteria-8: #E8D21D; /* yellow */
 }
 
 /* CSS Reset */
