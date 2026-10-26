@@ -39,11 +39,25 @@
     display: inline-flex;
     width: 20px;
     height: 20px;
+    flex: 0 0 20px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: var(--color-surface);
-    line-height: 1;
+}
+
+.rule-back-button span svg {
+    display: block;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+}
+
+.rule-back-button span svg path {
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.4;
 }
 
 .rule-back-button:hover,

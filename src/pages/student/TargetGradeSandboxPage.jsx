@@ -44,7 +44,11 @@ export default function TargetGradeSandboxPage() {
                                     className="term-nav-link sandbox-back-link"
                                     to={`/student/subject/${classItem.id}?term=${termKey}`}
                                 >
-                                    <span aria-hidden="true">←</span>
+                                    <span aria-hidden="true">
+                                        <svg viewBox="0 0 16 16" fill="none">
+                                            <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
+                                        </svg>
+                                    </span>
                                     Back
                                 </Link>
                             </div>

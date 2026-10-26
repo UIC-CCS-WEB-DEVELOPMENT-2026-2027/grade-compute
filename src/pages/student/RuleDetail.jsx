@@ -235,7 +235,11 @@ function RuleDetail({ ruleId }) {
                 <Header />
                 <main className="rules-content rule-detail">
                     <Link className="rule-back rule-back-button" to="/student/rules">
-                        <span aria-hidden="true">←</span>
+                        <span aria-hidden="true">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
+                            </svg>
+                        </span>
                         All rules
                     </Link>
 
