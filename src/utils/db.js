@@ -10,32 +10,40 @@ export const DB_UPDATED_EVENT = 'compugrade-db-updated';
  * ONLY if it doesn't already exist.
  */
 export const initializeDatabase = () => {
-  const existingData = localStorage.getItem(DB_KEY);
-  if (!existingData) {
-    localStorage.setItem(DB_KEY, JSON.stringify(mockData));
-    console.log('Database initialized from db.json');
-    return;
+  try {
+    const existingData = localStorage.getItem(DB_KEY);
+    if (!existingData) {
+      localStorage.setItem(DB_KEY, JSON.stringify(mockData));
+      console.log('Database initialized from db.json');
+      return;
+    }
+    getDb(); // upgrades data saved in an older format
+  } catch {
+    // Keep authentication available when browser storage is blocked.
+    // Do not replace or erase existing data.
   }
-  getDb(); // upgrades data saved in an older format
 };
-
 /**
  * Retrieves the entire database state.
  * Use this in your React components to read data.
  */
 export const getDb = () => {
-  const data = localStorage.getItem(DB_KEY);
-  if (!data) return null;
+  try {
+    const data = localStorage.getItem(DB_KEY);
+    if (!data) return null;
 
-  const parsed = JSON.parse(data);
-  if (!needsMigration(parsed)) return parsed;
+    const parsed = JSON.parse(data);
+    if (!needsMigration(parsed)) return parsed;
 
-  // Data saved in an older format: upgrade it once and save it back.
-  const upgraded = migrateDb(parsed);
-  localStorage.setItem(DB_KEY, JSON.stringify(upgraded));
-  return upgraded;
+    // Upgrade only valid older data, preserving the stored copy on failure.
+    const upgraded = migrateDb(parsed);
+    localStorage.setItem(DB_KEY, JSON.stringify(upgraded));
+    return upgraded;
+  } catch {
+    // The login page can report unavailable data instead of a blank screen.
+    return null;
+  }
 };
-
 /**
  * Overwrites the local storage with new data.
  * Use this whenever a user adds a class, types a score, etc.

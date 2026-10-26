@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getDb, saveDb } from '../../utils/db';
 import documentIcon from '../../assets/document-icon.svg';
 import graduationCap from '../../assets/graduation-cap.svg';
@@ -7,7 +7,6 @@ import sparkle from '../../assets/decorative-sparkle.svg';
 import sparkleSmall from '../../assets/decorative-sparkle-small.svg';
 import sparkleTiny from '../../assets/decorative-sparkle-tiny.svg';
 import targetStar from '../../assets/target-star.svg';
-import visibilityEye from '../../assets/visibility-eye.svg';
 import openTargetButton from '../../assets/open-target-button.svg';
 import openArrow from '../../assets/open-arrow.svg';
 import greenStatusDot from '../../assets/green-status-dot.svg';
@@ -142,7 +141,17 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
           className={error ? 'has-error' : undefined} aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined} />
         <button type="button" className="visibility-button" aria-label={(visible ? 'Hide ' : 'Show ') + (id === 'confirmPassword' ? 'confirmed password' : 'password')}
-          aria-pressed={visible} onClick={onToggle}><img src={visibilityEye} alt="" /></button>
+          title={(visible ? 'Hide ' : 'Show ') + (id === 'confirmPassword' ? 'confirmed password' : 'password')} aria-controls={id} aria-pressed={visible} onClick={onToggle}>
+          <svg className="visibility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+            <circle cx="12" cy="12" r="3" />
+            {visible && <>
+              <path d="m3 3 18 18" stroke="white" strokeWidth="4" />
+              <path className="visibility-slash" d="m3 3 18 18" />
+            </>}
+          </svg>
+        </button>
       </div>
       <small id={`${id}-error`} className="field-error" role={error ? 'alert' : undefined} aria-hidden={!error}>{error || '\u00a0'}</small>
     </div>
@@ -151,6 +160,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
 
 export default function LoginRegister() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('login');
   const [fullName, setFullName] = useState('');
   const [registrationRole, setRegistrationRole] = useState('student');
@@ -217,6 +227,19 @@ export default function LoginRegister() {
       setErrorMessage('Account data is unavailable. Refresh and try again.');
       return;
     }
+    if (database.users.some((account) => !account || typeof account !== 'object' || typeof account.id !== 'string')) {
+      setErrorMessage('Saved account data is incomplete. Please contact your project administrator.');
+      return;
+    }
+    const clearPreviousSession = () => {
+      try {
+        localStorage.removeItem('activeUserId');
+        return true;
+      } catch {
+        setErrorMessage('The previous sign-in could not be cleared. Check browser storage and try again.');
+        return false;
+      }
+    };
     let user;
     if (isRegister) {
       const registration = registerAccount(database, fields);
@@ -231,6 +254,7 @@ export default function LoginRegister() {
         return;
       }
       if (user.role === 'professor') {
+        if (!clearPreviousSession()) return;
         changeAuthMode('login');
         setIdentifier(user.email);
         setInfoMessage('Professor account created. Your workspace is coming soon.');
@@ -245,6 +269,7 @@ export default function LoginRegister() {
       }
       user = authentication.user;
       if (user.role !== 'student') {
+        if (!clearPreviousSession()) return;
         setInfoMessage(user.role === 'professor'
           ? 'Login verified. The Professor Workspace is coming soon.'
           : 'Login verified. This workspace is not available yet.');
@@ -259,7 +284,11 @@ export default function LoginRegister() {
       } else setErrorMessage('Sign-in could not be saved. Check browser storage and try again.');
       return;
     }
-    navigate('/student/dashboard');
+    const requestedPath = location.state?.from;
+    const destination = !isRegister && typeof requestedPath === 'string'
+      && (requestedPath === '/settings' || requestedPath.startsWith('/student/'))
+      ? requestedPath : '/student/dashboard';
+    navigate(destination, { replace: true });
   };
   return (
     <main className={`auth-page${isRegister ? ' is-register' : ''}`}>
