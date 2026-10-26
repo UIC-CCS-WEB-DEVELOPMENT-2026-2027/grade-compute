@@ -341,3 +341,113 @@
         width: 100%;
     }
 }
+
+/* ---- Phones: each subject becomes a stacked card ---- */
+@media (max-width: 640px) {
+    .enrolled-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+
+    .enrolled-table,
+    .enrolled-table tbody {
+        display: block;
+    }
+
+    .enrolled-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        grid-template-areas:
+            "subject subject action"
+            "official expected expected"
+            "status status status";
+        gap: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+        padding: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+    }
+
+    .enrolled-table tbody tr.enrolled-empty-row {
+        display: block;
+    }
+
+    .enrolled-table td {
+        padding: 0;
+        border-bottom: 0;
+    }
+
+    .enrolled-cell-subject {
+        grid-area: subject;
+    }
+
+    .enrolled-cell-official {
+        grid-area: official;
+    }
+
+    .enrolled-cell-expected {
+        grid-area: expected;
+    }
+
+    .enrolled-cell-status {
+        grid-area: status;
+    }
+
+    .enrolled-action {
+        grid-area: action;
+        align-self: center;
+    }
+
+    /* Column names, since the table header is hidden on cards */
+    .enrolled-cell-official::before,
+    .enrolled-cell-expected::before {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: var(--color-text-faint);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .enrolled-cell-official::before {
+        content: "Official";
+    }
+
+    .enrolled-cell-expected::before {
+        content: "Expected";
+    }
+
+    .enrolled-subject {
+        min-width: 0;
+    }
+
+    .enrolled-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .enrolled-tabs {
+        flex-wrap: wrap;
+    }
+
+    .enrolled-tab,
+    .enrolled-search,
+    .enrolled-add-button {
+        min-height: 2.75rem;
+    }
+
+    .enrolled-footer {
+        padding-right: 0;
+    }
+
+    .enrolled-footer > span:last-child {
+        white-space: normal;
+    }
+}

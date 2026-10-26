@@ -155,3 +155,11 @@
         transition: none;
     }
 }
+
+/* Phones: comfortable tap targets (at least 44px tall). */
+@media (max-width: 760px) {
+    .sandbox-term-navigation .term-selector button,
+    .sandbox-back-link {
+        min-height: 44px;
+    }
+}

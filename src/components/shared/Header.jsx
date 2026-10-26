@@ -1,6 +1,7 @@
 import './Header.css';
 import { getDb } from '../../utils/db';
 import { getActiveUser } from '../../utils/session';
+import useSidebarState, { setSidebarMenuOpen } from './useSidebarState';
 
 function BellIcon() {
   return (
@@ -49,9 +50,24 @@ export default function Header({
     ? `${role} · ${profile.programSection}`
     : `${role} · CompUGrade`;
   const welcomeTitle = title ?? `Welcome back, ${name.split(/\s+/)[0]}!`;
+  const { menuOpen } = useSidebarState();
 
   return (
     <header className="app-header">
+      {/* Phones: opens the sidebar as a slide-in menu. */}
+      <button
+        id="sidebar-menu-button"
+        className="app-header__menu"
+        type="button"
+        aria-label="Open menu"
+        aria-controls="app-sidebar"
+        aria-expanded={menuOpen}
+        onClick={() => setSidebarMenuOpen(true)}
+      >
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </button>
       <div className="app-header__welcome">
         <h1>{welcomeTitle}</h1>
         {subtitle !== null && <p>{subtitle}</p>}

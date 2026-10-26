@@ -975,3 +975,19 @@
         background: var(--color-highlight-soft);
     }
 }
+
+/* Phones: comfortable tap targets (at least 44px tall). */
+@media (max-width: 760px) {
+    .score-input-group {
+        min-height: 44px;
+    }
+
+    .score-input-group input {
+        min-height: 40px;
+    }
+
+    .add-task-button,
+    .breakdown-button {
+        min-height: 44px;
+    }
+}

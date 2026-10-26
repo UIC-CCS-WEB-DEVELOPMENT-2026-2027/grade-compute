@@ -878,3 +878,23 @@
         font-size: 25px;
     }
 }
+
+/* Phones: the gauges' hover notes would run off the screen (and there's no
+   hover on touch); the legend under the gauges explains the same thing. */
+@media (max-width: 760px) {
+    .grade-gauge-details {
+        display: none;
+    }
+}
+
+/* Phones: comfortable tap targets (at least 44px tall). */
+@media (max-width: 760px) {
+    .term-selector button,
+    .term-nav-link {
+        min-height: 44px;
+    }
+
+    .grade-target-input-wrap input {
+        min-height: 44px;
+    }
+}

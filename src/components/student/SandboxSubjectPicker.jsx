@@ -47,7 +47,12 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                 <ul className="sandbox-picker-list">
                     {ordered.map((row) => (
                         <li key={row.classId}>
-                            <div className="sandbox-picker-option">
+                            {/* The whole card opens the subject's sandbox. */}
+                            <Link
+                                className="sandbox-picker-option"
+                                to={`/student/subject/${row.classId}/sandbox${query}`}
+                                onClick={onClose}
+                            >
                                 <div className="sandbox-picker-text">
                                     <span className="sandbox-picker-code">
                                         {row.subjectCode}
@@ -57,14 +62,10 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                                     </span>
                                     <span className="sandbox-picker-name">{row.subjectName}</span>
                                 </div>
-                                <Link
-                                    className="sandbox-picker-grade"
-                                    to={`/student/subject/${row.classId}/sandbox${query}`}
-                                    onClick={onClose}
-                                >
+                                <span className="sandbox-picker-grade">
                                     {formatGrade(row.expectedGrade)}
-                                </Link>
-                            </div>
+                                </span>
+                            </Link>
                         </li>
                     ))}
                 </ul>

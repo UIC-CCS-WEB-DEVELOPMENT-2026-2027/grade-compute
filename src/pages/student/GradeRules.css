@@ -347,3 +347,12 @@
     font-size: 16px;
     font-variant-numeric: tabular-nums;
 }
+
+/* Phones: comfortable tap targets (at least 44px tall). */
+@media (max-width: 760px) {
+    .rules-toggle button,
+    .rule-card-actions button,
+    .rule-card-actions a {
+        min-height: 44px;
+    }
+}

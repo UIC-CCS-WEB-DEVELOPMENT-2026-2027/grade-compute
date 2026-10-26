@@ -406,3 +406,28 @@
         transition: none;
     }
 }
+
+/* Touch screens: bigger buttons for adding, renaming, splitting and
+   deleting criteria, and for typing a percentage. */
+@media (pointer: coarse) {
+    .pill-icon-button {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .pill-percent {
+        min-height: 40px;
+        align-items: center;
+    }
+
+    .pill-percent input {
+        min-height: 34px;
+    }
+}
+
+@media (pointer: coarse) {
+    .pill-text-button {
+        height: 36px;
+    }
+}
