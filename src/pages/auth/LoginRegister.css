@@ -15,10 +15,10 @@
 .auth-brand { display: flex; align-items: center; gap: 5px; width: fit-content; }
 .auth-brand strong { font: 600 36px/1 'Khand', sans-serif; letter-spacing: -.6px; }
 .brand-dot { color: var(--auth-primary); font: inherit; letter-spacing: 0; }
-.brand-icon { display: grid; place-items: center; width: 34px; height: 38px; border-radius: 6px; background: var(--auth-primary); }
+.auth-page .brand-icon { display: grid; place-items: center; width: 34px; height: 38px; border-radius: 6px; background: var(--auth-primary); }
 .brand-icon img { display: block; width: 22.4px; height: 27.4px; }
 .hero-content { position: relative; width: min(560px, calc(100% - 86px)); margin: 40px 0 0 86px; }
-.eyebrow { margin: 0; color: #596a81; font-size: 10px; line-height: 14px; letter-spacing: 1.1px; }
+.auth-page .eyebrow { margin: 0; color: #596a81; font-size: 10px; line-height: 14px; letter-spacing: 1.1px; }
 .hero-content h1 { margin: 0; color: var(--auth-ink); font: 600 52px/.96 'Khand', sans-serif; letter-spacing: -.6px; }
 .hero-subtitle { display: none; }
 .hero-points { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; color: #535e70; font-size: 9px; line-height: 14px; }
@@ -366,32 +366,13 @@
 
 /* Hero-only ambient effects stay behind the content and never affect layout. */
 .auth-page .auth-hero { isolation: isolate; }
-.auth-page .auth-hero::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-  content: '';
-  background:
-    radial-gradient(ellipse at 75% 28%, #ffffff 0%, #ffffff00 58%),
-    radial-gradient(ellipse at 15% 80%, #ffd76d 0%, #ffd76d00 60%);
-  animation: auth-hero-glow 7s ease-in-out infinite;
-}
 .auth-page .auth-hero .preview-scene {
   animation: auth-hero-float 6s 800ms ease-in-out infinite;
 }
 .auth-page .auth-hero .sparkle { animation-duration: 5s; animation-iteration-count: infinite; }
-@keyframes auth-hero-glow {
-  0%, 100% { opacity: .12; }
-  50% { opacity: .7; }
-}
 @keyframes auth-hero-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-7px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  /* Opacity changes preserve an ambient effect without moving the artwork. */
-  .auth-page .auth-hero::before { animation: auth-hero-glow 7s ease-in-out infinite !important; }
 }
 
 /* Separate hover growth from the load animation so both can run together. */
@@ -418,4 +399,15 @@
   .auth-page .auth-hero .bar-hover {
     transition: transform 850ms cubic-bezier(.2, .7, .2, 1), filter 650ms ease !important;
   }
+}
+/* Keep mobile input text readable without triggering automatic input zoom. */
+@media (max-width: 760px) {
+  .auth-page .auth-field input,
+  .auth-page .auth-input-wrap input { font-size: 16px; }
+  .auth-page .visibility-button { right: 0; width: 44px; height: 44px; }
+  .auth-page .auth-input-wrap input { padding-right: 48px; }
+}
+/* Let short landscape screens scroll with both panel backgrounds intact. */
+@media (min-width: 761px) and (max-height: 540px) {
+  .auth-page { height: auto; min-height: 100svh; }
 }
