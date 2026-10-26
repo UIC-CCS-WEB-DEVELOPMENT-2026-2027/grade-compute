@@ -29,3 +29,39 @@
     height: 14px;
     flex: 0 0 14px;
 }
+
+.sandbox-term-navigation {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sandbox-term-navigation .term-selector {
+    align-self: flex-start;
+    justify-content: flex-start;
+}
+
+.sandbox-term-navigation .term-nav-terms {
+    align-self: flex-start;
+    flex-wrap: nowrap;
+}
+
+.term-nav-terms {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.sandbox-term-navigation .term-nav-terms {
+    align-self: flex-start;
+}
+
+.sandbox-term-navigation .term-nav-action {
+    align-self: flex-start;
+    margin-top: 0;
+}
+
+.sandbox-term-navigation .term-note {
+    flex: 0 0 auto;
+}

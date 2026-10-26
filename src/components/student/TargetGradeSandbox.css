@@ -37,8 +37,7 @@
 
 .sandbox-result-column {
     grid-area: result;
-    position: sticky;
-    top: 1rem;
+    position: static;
 }
 
 /* ---- Result card ---- */
@@ -151,6 +150,97 @@
     border: 1px solid var(--color-border);
     border-radius: 12px;
     background: var(--color-surface);
+}
+
+.sandbox-chart-card {
+    border-color: #dbe5f3;
+    background: linear-gradient(145deg, #ffffff 55%, #f7f9fd);
+    box-shadow: 0 8px 22px rgba(49, 84, 134, 0.06);
+}
+
+.sandbox-chart-card > .sandbox-step {
+    margin-bottom: 0.15rem;
+}
+
+.sandbox-chart-card > .sandbox-help {
+    max-width: 68ch;
+    margin-bottom: 0.25rem;
+    line-height: 1.6;
+}
+
+.sandbox-remaining-card {
+    border-color: #dbe5f3;
+    background: linear-gradient(145deg, #ffffff 55%, #f7f9fd);
+    box-shadow: 0 8px 22px rgba(49, 84, 134, 0.06);
+}
+
+.sandbox-remaining-card > .sandbox-help {
+    max-width: 72ch;
+    line-height: 1.6;
+}
+
+.sandbox-remaining-card .sandbox-table-scroll {
+    border: 1px solid #e1e9f4;
+    border-radius: 10px;
+    background: #ffffff;
+    scrollbar-color: #9aa9bd #f1f4f8;
+}
+
+.sandbox-remaining-card .sandbox-table thead th {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    border-bottom-color: #dce6f3;
+    background: #f5f8fd;
+    color: #71839c;
+}
+
+.sandbox-remaining-card .sandbox-table tbody th,
+.sandbox-remaining-card .sandbox-table td {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom-color: #e8edf4;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.sandbox-remaining-card .sandbox-table tbody tr:hover th,
+.sandbox-remaining-card .sandbox-table tbody tr:hover td {
+    background: #f8faff;
+}
+
+.sandbox-remaining-card .sandbox-table tbody tr:focus-within th,
+.sandbox-remaining-card .sandbox-table tbody tr:focus-within td {
+    background: #f1f6ff;
+}
+
+.sandbox-remaining-card .sandbox-table tbody tr:focus-within th:first-child {
+    box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.sandbox-remaining-card .sandbox-number {
+    border-color: #dce4ef;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sandbox-remaining-card .sandbox-number:hover {
+    border-color: #aabbd3;
+    background: #fbfcff;
+}
+
+.sandbox-remaining-card .sandbox-number:focus {
+    border-color: var(--color-primary);
+    background: #fbfcff;
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.sandbox-remaining-card .sandbox-number::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+}
+
+.sandbox-remaining-card .sandbox-number:focus-visible {
+    outline: none;
 }
 
 .sandbox-step {
@@ -297,7 +387,11 @@
 }
 
 .sandbox-criterion-name {
+    color: #58749a;
+    font-family: var(--font-heading);
+    font-size: 1rem;
     font-weight: 600;
+    line-height: 1.25;
 }
 
 .sandbox-number {
@@ -345,26 +439,66 @@
     text-transform: uppercase;
 }
 
+.sandbox-drafts-card {
+    border-color: #dbe5f3;
+    background: linear-gradient(145deg, #ffffff 55%, #f7f9fd);
+    box-shadow: 0 8px 22px rgba(49, 84, 134, 0.06);
+}
+
+.sandbox-drafts-card .sandbox-draft-group {
+    overflow: hidden;
+    border: 1px solid #e5ebf4;
+    border-radius: 9px;
+    background: #ffffff;
+}
+
+.sandbox-drafts-card .sandbox-draft-group h3 {
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    background: #f5f8fd;
+    color: #71839c;
+}
+
 .sandbox-draft {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.5rem 0;
+    padding: 0.65rem 0.75rem;
     border-bottom: 1px solid var(--color-border-soft);
     font-size: 0.85rem;
+    transition: background-color 0.18s ease;
+}
+
+.sandbox-drafts-card .sandbox-draft:hover {
+    background: #f8faff;
+}
+
+.sandbox-drafts-card .sandbox-draft:focus-within {
+    background: #f1f6ff;
+    box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.sandbox-drafts-card .sandbox-draft:last-child {
+    border-bottom: 0;
 }
 
 .sandbox-draft-name {
     min-width: 0;
     overflow-wrap: anywhere;
+    color: #58749a;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    line-height: 1.25;
 }
 
 .sandbox-draft-name small,
 .sandbox-draft-locked small {
     display: block;
     color: var(--color-text-faint);
+    font-family: var(--font-body);
     font-size: 0.7rem;
+    line-height: 1.4;
 }
 
 .sandbox-draft-locked {
@@ -388,11 +522,24 @@
     width: 5rem;
     padding: 0.4rem 0.5rem;
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--color-surface);
     color: var(--color-accent);
     font-size: 0.85rem;
     text-align: right;
+    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sandbox-draft-input input:hover {
+    border-color: #aabbd3;
+    background: #fbfcff;
+}
+
+.sandbox-draft-input input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    background: #fbfcff;
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .sandbox-draft-input input::placeholder {
@@ -405,21 +552,56 @@
 }
 
 .sandbox-how summary {
-    color: var(--color-text-locked);
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: -0.35rem -0.45rem;
+    padding: 0.5rem 0.45rem;
+    border-radius: 8px;
+    color: var(--color-primary);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
+    list-style: none;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.sandbox-how summary::-webkit-details-marker {
+    display: none;
+}
+
+.sandbox-how summary::before {
+    content: "›";
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    line-height: 0.8;
+    transition: transform 0.18s ease;
+}
+
+.sandbox-how[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.sandbox-how summary:hover {
+    background: var(--color-primary-soft);
+}
+
+.sandbox-how summary:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
 }
 
 .sandbox-how p {
-    margin: 0.6rem 0 0;
+    margin: 0.8rem 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border-soft);
     color: var(--color-muted);
     font-size: 0.8rem;
     line-height: 1.55;
 }
 
 /* ---- Narrow space: result first, then the steps ---- */
-@container (max-width: 860px) {
+@container (max-width: 700px) {
     .sandbox-layout {
         grid-template-columns: minmax(0, 1fr);
         grid-template-areas:

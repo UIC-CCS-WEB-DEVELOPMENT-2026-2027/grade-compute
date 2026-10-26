@@ -40,6 +40,7 @@ export default function TargetGradeSandboxPage() {
                     {classItem && subject && hasStudentRecord ? (
                         <>
                             <TermNavigation
+                                className="sandbox-term-navigation"
                                 termKey={termKey}
                                 onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
                                 action={
@@ -47,7 +48,6 @@ export default function TargetGradeSandboxPage() {
                                         className="term-nav-link"
                                         to={`/student/subject/${classItem.id}?term=${termKey}`}
                                     >
-                                        <span aria-hidden="true">←</span>
                                         Back to subject
                                     </Link>
                                 }
