@@ -222,7 +222,14 @@ export default function Sidebar() {
           to="/student/rules"
           className={`sidebar-link ${location.pathname.startsWith('/student/rules') ? 'is-active' : ''}`}
         >
-          Grade Rules
+          <span className="sidebar-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="12" cy="12" r="3.7" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M9 12.3L11.1 14.2L15.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
+          <span>Grade Rules</span>
         </Link>
       </nav>
 
