@@ -21,6 +21,17 @@
 }
 
 :root {
+  /* Layer order (z-index), lowest to highest. Popups that must cover the
+     page are rendered on <body> so these values compare directly. */
+  --z-raised: 1;            /* small lifts inside a card */
+  --z-chart-tooltip: 10;    /* chart and card hover tips */
+  --z-header: 20;           /* sticky header on phones */
+  --z-sidebar: 30;          /* sidebar (and its icon tips) above the page */
+  --z-sidebar-backdrop: 35; /* phone menu backdrop */
+  --z-sidebar-phone: 40;    /* phone slide-in menu */
+  --z-popover: 60;          /* pop-out subject list */
+  --z-modal: 100;           /* Help, Remove subject */
+
   /* CompUGrade Design System Colors */
   --color-primary: #406093;       /* Deep Blue: Main UI, headers, active states */
   --color-accent: #4C8CE4;        /* Bright Blue: Student-reported inputs, self-generated tasks */
@@ -625,7 +636,7 @@ input:focus, select:focus {
 
 .subject-remove-backdrop {
   position: fixed;
-  z-index: 1000;
+  z-index: var(--z-modal);
   inset: 0;
   display: flex;
   align-items: center;
@@ -751,74 +762,6 @@ input:focus, select:focus {
   gap: 0.5rem;
 }
 
-.help-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: grid;
-  place-items: center;
-  background: rgba(38, 45, 54, 0.28);
-  backdrop-filter: none;
-}
-
-.help-modal-card {
-  position: relative;
-  width: min(26rem, calc(100vw - 2rem));
-  padding: 1.5rem 1.6rem 1.45rem;
-  border: 1px solid #f1e7b8;
-  border-radius: 0.8rem;
-  background: #ffffff;
-  box-shadow: 0 1.2rem 2.8rem rgba(27, 35, 46, 0.15);
-}
-
-.help-modal-close {
-  position: absolute;
-  top: 0.85rem;
-  right: 0.8rem;
-  padding: 0.2rem 0.45rem;
-  border: 0;
-  background: transparent;
-  color: #64748b;
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.help-modal-close:hover {
-  color: var(--color-primary);
-  opacity: 1;
-}
-
-.help-modal-title {
-  margin: 0 0 0.9rem;
-  color: var(--color-primary);
-  font-size: clamp(1.8rem, 1.5rem + 0.8vw, 2.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.06em;
-}
-
-.help-modal-lead {
-  margin: 0 0 1rem;
-  max-width: 22rem;
-  color: #343434;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.help-modal-section {
-  margin: 0 0 0.35rem;
-  color: var(--color-primary);
-  font-size: 1.35rem;
-  line-height: 1.15;
-}
-
-.help-modal-copy {
-  margin: 0;
-  max-width: 22rem;
-  color: #343434;
-  font-size: 1rem;
-  line-height: 1.55;
-}
-
 .sidebar-footer-link {
   background: transparent;
   border-radius: 0.75rem;
@@ -829,6 +772,308 @@ input:focus, select:focus {
 .sidebar-subject-link,
 .sidebar-enrolled-subject {
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* =========================================
+   Sidebar: sticky, minimized (icons only), phone menu
+   State: src/components/shared/useSidebarState.js
+   ========================================= */
+
+/* The sidebar stays in view while the page scrolls. */
+.sidebar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sidebar);
+  flex-shrink: 0;
+  align-self: flex-start;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  transition: width 0.22s ease, padding 0.22s ease;
+}
+
+.sidebar-top {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.brand {
+  min-width: 0;
+}
+
+.sidebar-minimize-toggle,
+.sidebar-close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: #1f2430;
+}
+
+.sidebar-minimize-toggle:hover,
+.sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 1;
+}
+
+.sidebar-minimize-toggle svg,
+.sidebar-close svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.sidebar-close {
+  display: none;
+}
+
+.sidebar-link:focus-visible,
+.sidebar-minimize-toggle:focus-visible,
+.sidebar-close:focus-visible,
+.sidebar-subject-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sidebar-logout {
+  justify-content: center;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* ---- Minimized: icons only (wider than phones) ---- */
+@media (min-width: 761px) {
+  .sidebar.is-minimized {
+    width: 76px;
+    padding-inline: 0.7rem;
+  }
+
+  .sidebar.is-minimized .sidebar-top {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .sidebar.is-minimized .brand-name,
+  .sidebar.is-minimized .sidebar-section-label,
+  .sidebar.is-minimized .sidebar-subject-toggle,
+  .sidebar.is-minimized .sidebar-subject-list {
+    display: none;
+  }
+
+  /* Labels stay readable to screen readers; hovering shows them as tips. */
+  .sidebar.is-minimized .sidebar-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .sidebar.is-minimized .sidebar-link {
+    position: relative;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.7rem 0;
+  }
+
+  .sidebar.is-minimized .sidebar-icon-wrap {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .sidebar.is-minimized .sidebar-subject-row {
+    gap: 0;
+  }
+
+  /* Subject count becomes a small badge on the icon. */
+  .sidebar.is-minimized .sidebar-subject-count {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    min-width: 1.05rem;
+    height: 1.05rem;
+    padding: 0 0.2rem;
+    font-size: 0.6rem;
+  }
+
+  .sidebar.is-minimized .sidebar-link[data-tooltip]:hover::after,
+  .sidebar.is-minimized .sidebar-link[data-tooltip]:focus-visible::after {
+    content: attr(data-tooltip);
+    position: fixed;
+    left: 84px;
+    z-index: var(--z-popover);
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.4rem;
+    background: var(--color-text-locked);
+    color: var(--color-white);
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
+/* Pop-out subject list (minimized sidebar) */
+.sidebar-popout {
+  position: fixed;
+  z-index: var(--z-popover);
+  width: 260px;
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
+  background: var(--color-surface);
+  box-shadow: 0 12px 32px var(--shadow-dialog);
+}
+
+.sidebar-popout-all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.5rem;
+  color: var(--color-text-locked);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sidebar-popout-all span {
+  padding: 0 0.4rem;
+  border-radius: 0.35rem;
+  background: #5b7bc7;
+  color: #f5f7ff;
+  font-size: 0.7rem;
+}
+
+.sidebar-popout ul {
+  margin: 0.25rem 0 0;
+  padding: 0.25rem 0 0;
+  border-top: 1px solid var(--color-border-soft);
+  list-style: none;
+}
+
+.sidebar-popout li a {
+  display: flex;
+  flex-direction: column;
+  min-height: 2.75rem;
+  justify-content: center;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.5rem;
+  color: var(--color-text-locked);
+  text-decoration: none;
+}
+
+.sidebar-popout li a strong {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-popout li a span {
+  overflow: hidden;
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-popout a:hover,
+.sidebar-popout a:focus-visible,
+.sidebar-popout a.is-active {
+  background: var(--color-bg-selected);
+  outline: none;
+}
+
+/* ---- Phones: the sidebar becomes a slide-in menu ---- */
+@media (max-width: 760px) {
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: var(--z-sidebar-phone);
+    width: min(86vw, 320px);
+    height: 100dvh;
+    box-shadow: none;
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
+  }
+
+  .sidebar.is-open {
+    transform: none;
+    visibility: visible;
+    box-shadow: 0 0 40px rgba(24, 28, 34, 0.25);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar-minimize-toggle {
+    display: none;
+  }
+
+  .sidebar-close {
+    display: inline-flex;
+  }
+
+  .brand-name {
+    font-size: 1.8rem;
+  }
+
+  /* Bigger tap targets */
+  .sidebar-link {
+    min-height: 2.75rem;
+  }
+
+  .sidebar-subject-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  /* No hover on touch screens, so the remove button is always shown. */
+  .sidebar-subject-delete {
+    width: 2rem;
+    height: 2rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-sidebar-backdrop);
+    background: var(--color-overlay);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .sidebar-backdrop.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.sidebar-menu-open {
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar.is-open,
+  .sidebar-backdrop {
+    transition: none;
+  }
 }
 
 /* =========================================

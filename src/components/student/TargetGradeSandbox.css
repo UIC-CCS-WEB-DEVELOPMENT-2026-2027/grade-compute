@@ -651,6 +651,91 @@
     }
 }
 
+/* Narrow space (phones): each criterion in "Tell us what is left" becomes
+   a small card with its fields labelled, instead of a wide table. */
+@container (max-width: 560px) {
+    .sandbox-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+
+    .sandbox-table,
+    .sandbox-table tbody {
+        display: block;
+    }
+
+    .sandbox-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem 1rem;
+        padding: 0.9rem;
+        border-bottom: 1px solid var(--color-border-soft);
+    }
+
+    .sandbox-table tbody tr:last-child {
+        border-bottom: 0;
+    }
+
+    .sandbox-table tbody th,
+    .sandbox-table td {
+        padding: 0;
+        border-bottom: 0;
+    }
+
+    .sandbox-table tbody th {
+        grid-column: 1 / -1;
+    }
+
+    .sandbox-cell-scored::before,
+    .sandbox-cell-upcoming::before,
+    .sandbox-cell-expected::before,
+    .sandbox-need::before {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: var(--color-text-faint);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .sandbox-cell-scored::before {
+        content: "Scored so far";
+    }
+
+    .sandbox-cell-upcoming::before {
+        content: "Upcoming tasks";
+    }
+
+    .sandbox-cell-expected::before {
+        content: "Expected %";
+    }
+
+    .sandbox-need::before {
+        content: "You need";
+    }
+
+    .sandbox-table small {
+        white-space: normal;
+    }
+
+    .sandbox-number {
+        width: 5rem;
+        min-height: 2.75rem;
+    }
+
+    .sandbox-target-input input {
+        min-height: 2.75rem;
+    }
+
+    .sandbox-draft-input input {
+        min-height: 2.75rem;
+    }
+}
+
 /* Page heading above the sandbox (TargetGradeSandboxPage). */
 .sandbox-page-heading {
     margin-bottom: 1.25rem;

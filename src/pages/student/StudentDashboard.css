@@ -506,3 +506,26 @@
     padding: 22px 14px;
   }
 }
+/* Phones: Recent Updates rows stack the time under the message. */
+@media (max-width: 640px) {
+  .update-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    padding: 1rem;
+  }
+
+  .update-left {
+    align-items: flex-start;
+  }
+
+  .update-right {
+    justify-content: space-between;
+    padding-left: calc(36px + 1rem);
+  }
+
+  .updates-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}

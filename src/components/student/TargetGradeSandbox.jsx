@@ -333,7 +333,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                 <span className="sandbox-criterion-name">{criterion.path.join(" › ")}</span>
                                                 <small>{formatPercent(Math.round(criterion.weight * 10000))} of the term</small>
                                             </th>
-                                            <td>
+                                            <td className="sandbox-cell-scored">
                                                 {criterion.scoredCount === 0 ? (
                                                     <span className="sandbox-muted">None yet</span>
                                                 ) : (
@@ -343,7 +343,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                     </>
                                                 )}
                                             </td>
-                                            <td>
+                                            <td className="sandbox-cell-upcoming">
                                                 <input
                                                     className="sandbox-number"
                                                     type="number"
@@ -360,7 +360,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                     <small>+ {criterion.openTasks} added without a score</small>
                                                 )}
                                             </td>
-                                            <td>
+                                            <td className="sandbox-cell-expected">
                                                 <span className="sandbox-percent-input">
                                                     <input
                                                         className="sandbox-number"

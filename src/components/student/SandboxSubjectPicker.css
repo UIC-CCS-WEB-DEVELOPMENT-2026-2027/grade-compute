@@ -160,7 +160,19 @@
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.sandbox-picker-grade:hover {
+.sandbox-picker-option:hover,
+.sandbox-picker-option:focus-visible {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.sandbox-picker-option:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+.sandbox-picker-option:hover .sandbox-picker-grade,
+.sandbox-picker-option:focus-visible .sandbox-picker-grade {
     border-color: var(--color-primary);
     background: rgba(76, 140, 228, 0.06);
     color: var(--color-primary);
@@ -206,5 +218,12 @@
     .sandbox-picker-grade {
         min-width: 0;
         padding: 12px 14px;
+        font-size: 11px;
+    }
+
+    /* Let long subject names wrap instead of cutting them off. */
+    .sandbox-picker-name {
+        font-size: 15px;
+        white-space: normal;
     }
 }
