@@ -302,19 +302,32 @@
 /* ---- Footer ---- */
 .enrolled-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1.5rem;
     margin-top: 1rem;
-    padding-top: 1.25rem;
+    width: 100%;
+    padding: 1.25rem 1.5rem 0 0;
     border-top: 1px solid var(--color-border-soft);
     color: var(--color-muted);
-    font-size: 0.8rem;
+    font-size: 10px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+.enrolled-footer > span:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.enrolled-footer > span:last-child {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 @media (max-width: 640px) {
     .enrolled-subjects {
-        padding: 1.25rem 1rem;
+        padding: 1.25rem 1.5rem 1.25rem 1rem;
     }
 
     .enrolled-header,

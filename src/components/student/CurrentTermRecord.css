@@ -430,17 +430,47 @@
 /* GRADE BREAKDOWN */
 
 .breakdown-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     margin-top: 12px;
-    padding: 4px 0;
-    border: none;
-    background: transparent;
+    padding: 9px 14px;
+    border: 1px solid #d8e1ee;
+    border-radius: 8px;
+    background: #ffffff;
     color: #41669b;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
     cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.breakdown-button:hover,
+.breakdown-button:focus-visible {
+    border-color: #41649d;
+    background: #edf1fa;
+}
+
+.breakdown-button:hover {
+    box-shadow: 0 2px 6px rgba(64, 96, 147, 0.12);
+}
+
+.breakdown-button:focus-visible {
+    outline: 3px solid rgba(76, 140, 228, 0.36);
+    outline-offset: 2px;
+}
+
+.breakdown-button-icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    transition: transform 0.18s ease;
+}
+
+.breakdown-button[aria-expanded="true"] .breakdown-button-icon {
+    transform: rotate(90deg);
 }
 
 .official-breakdown {
