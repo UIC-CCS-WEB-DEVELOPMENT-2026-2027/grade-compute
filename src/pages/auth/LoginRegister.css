@@ -81,7 +81,7 @@
 .auth-input-wrap { position: relative; display: block; }
 .auth-input-wrap input { height: 45px; padding-right: 42px; }
 .visibility-button { position: absolute; top: 50%; right: 7px; display: grid; place-items: center; width: 26px; height: 28px; padding: 0; transform: translateY(-50%); border-radius: 3px; background: transparent; }
-.visibility-button img { display: block; }
+.visibility-button .visibility-icon { display: block; width: 18px; height: 18px; color: #5f7598; }
 .auth-page button:focus-visible { outline: 2px solid #4c8ce4; outline-offset: 3px; }
 .field-error { color: var(--auth-error); font-size: 11px; line-height: 15px; }
 .password-hints { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin: -5px 0 21px; padding: 0; list-style: none; font-size: 10px; line-height: 15px; }
@@ -130,7 +130,7 @@
   .auth-field { gap: 7px; margin-bottom: 22px; font-size: 14px; line-height: 20px; }
   .auth-field input, .auth-input-wrap input { height: 52px; padding-left: 12px; font-size: 14px; }
   .visibility-button { right: 9px; width: 32px; height: 36px; }
-  .visibility-button img { width: 20px; height: auto; }
+  .visibility-button .visibility-icon { width: 20px; height: 20px; }
   .field-error { font-size: 12px; line-height: 17px; }
   .password-hints { margin: -6px 0 21px; font-size: 11px; line-height: 17px; }
   .submit-button { min-height: 52px; margin-top: 4px; border-radius: 18px; font-size: 16px; }

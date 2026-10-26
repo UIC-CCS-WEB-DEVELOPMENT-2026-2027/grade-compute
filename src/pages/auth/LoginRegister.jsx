@@ -7,7 +7,6 @@ import sparkle from '../../assets/decorative-sparkle.svg';
 import sparkleSmall from '../../assets/decorative-sparkle-small.svg';
 import sparkleTiny from '../../assets/decorative-sparkle-tiny.svg';
 import targetStar from '../../assets/target-star.svg';
-import visibilityEye from '../../assets/visibility-eye.svg';
 import openTargetButton from '../../assets/open-target-button.svg';
 import openArrow from '../../assets/open-arrow.svg';
 import greenStatusDot from '../../assets/green-status-dot.svg';
@@ -142,7 +141,17 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
           className={error ? 'has-error' : undefined} aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined} />
         <button type="button" className="visibility-button" aria-label={(visible ? 'Hide ' : 'Show ') + (id === 'confirmPassword' ? 'confirmed password' : 'password')}
-          aria-pressed={visible} onClick={onToggle}><img src={visibilityEye} alt="" /></button>
+          title={visible ? 'Hide password' : 'Show password'} aria-controls={id} aria-pressed={visible} onClick={onToggle}>
+          <svg className="visibility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+            <circle cx="12" cy="12" r="3" />
+            {visible && <>
+              <path d="m3 3 18 18" stroke="white" strokeWidth="4" />
+              <path className="visibility-slash" d="m3 3 18 18" />
+            </>}
+          </svg>
+        </button>
       </div>
       <small id={`${id}-error`} className="field-error" role={error ? 'alert' : undefined} aria-hidden={!error}>{error || '\u00a0'}</small>
     </div>
