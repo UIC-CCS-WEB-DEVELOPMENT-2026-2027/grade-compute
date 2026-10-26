@@ -125,7 +125,7 @@ function AcademicPreview() {
       </div>
       <div className="preview-note">
         <span className="notification-badge" aria-hidden="true"><img src={notificationCheckBadge} alt="" /><img src={notificationCheck} alt="" /></span>
-        <div>Make Your Target Grade a Reality<small>Tap to see what score you need next</small></div>
+        <div>Make Your Target Grade a Reality</div>
       </div>
     </div>
   );
