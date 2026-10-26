@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import { getEnrolledSubjects } from "../../utils/subjects";
 import { toTermKey } from "../../utils/terms";
 import { getActiveStudentId, signOut } from "../../utils/session";
 import SandboxSubjectPicker from "../student/SandboxSubjectPicker";
+import useSidebarState, {
+    PHONE_MAX_WIDTH,
+    setSidebarMenuOpen,
+    setSidebarMinimized,
+} from "./useSidebarState";
+
+// Phones use the slide-in menu; minimizing only applies to wider screens.
+function isPhoneWidth() {
+    return window.matchMedia(`(max-width: ${PHONE_MAX_WIDTH}px)`).matches;
+}
 
 export default function Sidebar() {
     const location = useLocation();
@@ -16,6 +26,68 @@ export default function Sidebar() {
     const [isSubjectsOpen, setIsSubjectsOpen] = useState(() => {
         return location.pathname.includes("/student/subject");
     });
+    // minimized: icon-only sidebar. menuOpen: phone slide-in menu is open.
+    const { minimized, menuOpen } = useSidebarState();
+    // Pop-out subject list for the minimized sidebar: { top, left } or null.
+    const [subjectsPopout, setSubjectsPopout] = useState(null);
+    const closeButtonRef = useRef(null);
+    const popoutRef = useRef(null);
+
+    // Phone menu: Escape closes it, focus moves into it when it opens (and
+    // stays in it) and back to the ☰ button when it closes, and the page
+    // behind can't scroll.
+    useEffect(() => {
+        if (!menuOpen) return undefined;
+        closeButtonRef.current?.focus();
+        document.body.classList.add("sidebar-menu-open");
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setSidebarMenuOpen(false);
+                return;
+            }
+            // Keep Tab inside the open menu (the page behind is covered).
+            if (event.key !== "Tab") return;
+            const items = [...document.querySelectorAll(
+                "#app-sidebar a[href], #app-sidebar button:not([disabled])"
+            )].filter((item) => item.offsetParent !== null);
+            if (!items.length) return;
+            const first = items[0];
+            const last = items[items.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            document.body.classList.remove("sidebar-menu-open");
+            document.getElementById("sidebar-menu-button")?.focus();
+        };
+    }, [menuOpen]);
+
+    // Pop-out list: closes on Escape or a click outside it.
+    useEffect(() => {
+        if (!subjectsPopout) return undefined;
+        popoutRef.current?.querySelector("a")?.focus();
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") setSubjectsPopout(null);
+        };
+        const handlePointerDown = (event) => {
+            if (!popoutRef.current?.contains(event.target) && !event.target.closest?.(".sidebar-subject-link")) {
+                setSubjectsPopout(null);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("pointerdown", handlePointerDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("pointerdown", handlePointerDown);
+        };
+    }, [subjectsPopout]);
 
     useEffect(() => {
         const refreshDbData = () => setDbData(getDb());
@@ -117,7 +189,22 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className="sidebar">
+        <>
+        {/* Phone menu backdrop: tapping it closes the menu. */}
+        <div
+            className={`sidebar-backdrop ${menuOpen ? "is-visible" : ""}`}
+            aria-hidden="true"
+            onClick={() => setSidebarMenuOpen(false)}
+        />
+        <aside
+            id="app-sidebar"
+            className={`sidebar ${minimized ? "is-minimized" : ""} ${menuOpen ? "is-open" : ""}`}
+            aria-label="Main menu"
+            // On phones, picking any page closes the menu.
+            onClick={(event) => {
+                if (event.target.closest?.("a")) setSidebarMenuOpen(false);
+            }}
+        >
             <div className="sidebar-top">
                 <div className="brand" aria-label="CompUGrade">
                     <span className="brand-mark" aria-hidden="true">
@@ -143,6 +230,43 @@ export default function Sidebar() {
                         CompUGrade<span className="brand-name-dot">.</span>
                     </span>
                 </div>
+                {/* Wider screens: minimize to icons, or expand again. */}
+                <button
+                    type="button"
+                    className="sidebar-minimize-toggle"
+                    onClick={() => {
+                        setSubjectsPopout(null);
+                        setSidebarMinimized(!minimized);
+                    }}
+                    aria-label={minimized ? "Expand sidebar" : "Minimize sidebar"}
+                    aria-expanded={!minimized}
+                    aria-controls="app-sidebar"
+                    title={minimized ? "Expand sidebar" : "Minimize sidebar"}
+                >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M9.5 4.5v15" stroke="currentColor" strokeWidth="1.5" />
+                        <path
+                            d={minimized ? "M13 10l2 2-2 2" : "M16 10l-2 2 2 2"}
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
+                {/* Phones: close the slide-in menu. */}
+                <button
+                    type="button"
+                    ref={closeButtonRef}
+                    className="sidebar-close"
+                    onClick={() => setSidebarMenuOpen(false)}
+                    aria-label="Close menu"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                </button>
             </div>
 
             <nav className="sidebar-nav" aria-label="Sidebar navigation">
@@ -151,6 +275,7 @@ export default function Sidebar() {
                 <Link
                     to="/student/dashboard"
                     className={`sidebar-link ${dashboardActive ? "is-active" : ""}`}
+                    data-tooltip="Dashboard"
                 >
                     <span className="sidebar-icon-wrap" aria-hidden="true">
                         <svg
@@ -196,7 +321,7 @@ export default function Sidebar() {
                             />
                         </svg>
                     </span>
-                    <span>Dashboard</span>
+                    <span className="sidebar-label">Dashboard</span>
                 </Link>
 
                 <div
@@ -205,6 +330,21 @@ export default function Sidebar() {
                     <Link
                         to="/student/subject"
                         className={`sidebar-link sidebar-subject-link ${subjectsActive ? "is-active" : ""}`}
+                        data-tooltip="My Subjects"
+                        aria-haspopup={minimized ? "true" : undefined}
+                        aria-expanded={minimized ? Boolean(subjectsPopout) : undefined}
+                        // Minimized sidebar: open the pop-out subject list
+                        // instead of the page (the list links to the page).
+                        onClick={(event) => {
+                            if (!minimized || isPhoneWidth()) return;
+                            event.preventDefault();
+                            if (subjectsPopout) {
+                                setSubjectsPopout(null);
+                                return;
+                            }
+                            const rect = event.currentTarget.getBoundingClientRect();
+                            setSubjectsPopout({ top: rect.top, left: rect.right + 10 });
+                        }}
                     >
                         <span className="sidebar-icon-wrap" aria-hidden="true">
                             <svg
@@ -229,7 +369,7 @@ export default function Sidebar() {
                                 />
                             </svg>
                         </span>
-                        <span className="sidebar-subject-label">
+                        <span className="sidebar-subject-label sidebar-label">
                             My Subjects
                         </span>
                         <span className="sidebar-subject-count">
@@ -329,6 +469,7 @@ export default function Sidebar() {
                     className={`sidebar-link sidebar-link-button ${location.pathname.endsWith("/sandbox") ? "is-active" : ""}`}
                     onClick={() => setIsSandboxPickerOpen(true)}
                     aria-haspopup="dialog"
+                    data-tooltip="Target Grade Sandbox"
                 >
                     <span className="sidebar-icon-wrap" aria-hidden="true">
                         <svg
@@ -353,12 +494,13 @@ export default function Sidebar() {
                             <circle cx="12" cy="12" r="1" fill="currentColor" />
                         </svg>
                     </span>
-                    <span>Target Grade Sandbox</span>
+                    <span className="sidebar-label">Target Grade Sandbox</span>
                 </button>
 
                 <Link
                     to="/student/rules"
                     className={`sidebar-link ${location.pathname.startsWith("/student/rules") ? "is-active" : ""}`}
+                    data-tooltip="Grade Rules"
                 >
                     <span className="sidebar-icon-wrap" aria-hidden="true">
                         <svg
@@ -389,7 +531,7 @@ export default function Sidebar() {
                             />
                         </svg>
                     </span>
-                    <span>Grade Rules</span>
+                    <span className="sidebar-label">Grade Rules</span>
                 </Link>
             </nav>
 
@@ -397,6 +539,7 @@ export default function Sidebar() {
                 <Link
                     to="/settings"
                     className={`sidebar-link ${location.pathname.includes("/settings") ? "btn-primary" : ""}`}
+                    data-tooltip="Settings"
                 >
                     <span className="sidebar-icon-wrap" aria-hidden="true">
                         <svg
@@ -419,7 +562,7 @@ export default function Sidebar() {
                             />
                         </svg>
                     </span>
-                    <span>Settings</span>
+                    <span className="sidebar-label">Settings</span>
                 </Link>
 
                 {/* Help and Resources */}
@@ -427,6 +570,7 @@ export default function Sidebar() {
                     type="button"
                     onClick={() => setIsHelpOpen(true)}
                     className="sidebar-link sidebar-footer-link"
+                    data-tooltip="Help & Resources"
                 >
                     <span className="sidebar-icon-wrap" aria-hidden="true">
                         <svg
@@ -455,7 +599,7 @@ export default function Sidebar() {
                             />
                         </svg>
                     </span>
-                    <span>Help &amp; Resources</span>
+                    <span className="sidebar-label">Help &amp; Resources</span>
                 </button>
 
                 {isHelpOpen && (
@@ -523,10 +667,16 @@ export default function Sidebar() {
                 <Link
                     to="/"
                     onClick={signOut}
-                    className="btn-warning sidebar-link"
-                    style={{ marginTop: "auto", textAlign: "center" }}
+                    className="btn-warning sidebar-link sidebar-logout"
+                    data-tooltip="Logout"
                 >
-                    Logout
+                    <span className="sidebar-icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 4.5H17.5C18.6 4.5 19.5 5.4 19.5 6.5V17.5C19.5 18.6 18.6 19.5 17.5 19.5H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            <path d="M10.5 8L6.5 12L10.5 16M6.5 12H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </span>
+                    <span className="sidebar-label">Logout</span>
                 </Link>
             </div>
 
@@ -621,6 +771,41 @@ export default function Sidebar() {
                     </section>
                 </div>
             )}
+
+            {subjectsPopout && (
+                <div
+                    ref={popoutRef}
+                    className="sidebar-popout"
+                    role="dialog"
+                    aria-label="Your subjects"
+                    style={{ top: subjectsPopout.top, left: subjectsPopout.left }}
+                    onClick={(event) => {
+                        if (event.target.closest?.("a")) setSubjectsPopout(null);
+                    }}
+                >
+                    <Link to="/student/subject" className="sidebar-popout-all">
+                        My Subjects <span>{enrolledSubjects.length}</span>
+                    </Link>
+                    {enrolledSubjects.length > 0 ? (
+                        <ul>
+                            {enrolledSubjects.map((sub) => (
+                                <li key={sub.classId}>
+                                    <Link
+                                        to={`/student/subject/${sub.classId}`}
+                                        className={location.pathname === `/student/subject/${sub.classId}` ? "is-active" : ""}
+                                    >
+                                        <strong>{sub.subjectCode}</strong>
+                                        <span>{sub.subjectName}</span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="sidebar-empty-state">No subjects yet</p>
+                    )}
+                </div>
+            )}
         </aside>
+        </>
     );
 }

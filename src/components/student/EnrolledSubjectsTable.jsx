@@ -137,7 +137,7 @@ export default function EnrolledSubjectsTable({
                                 // The row is clickable with a mouse; the links
                                 // inside are what keyboards and screen readers use.
                                 <tr key={row.classId} onClick={() => navigate(detailPath)}>
-                                    <td>
+                                    <td className="enrolled-cell-subject">
                                         <Link
                                             className="enrolled-subject"
                                             to={detailPath}
@@ -153,7 +153,7 @@ export default function EnrolledSubjectsTable({
                                             </span>
                                         </Link>
                                     </td>
-                                    <td>
+                                    <td className="enrolled-cell-official">
                                         <span className="enrolled-grade-num">
                                             {formatGrade(row.officialGrade)}
                                         </span>
@@ -161,7 +161,7 @@ export default function EnrolledSubjectsTable({
                                             {row.officialGrade === null ? "Not posted yet" : "Posted by professor"}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td className="enrolled-cell-expected">
                                         <span className="enrolled-grade-num expected">
                                             {formatGrade(row.expectedGrade)}
                                         </span>
@@ -169,7 +169,7 @@ export default function EnrolledSubjectsTable({
                                             {row.expectedGrade === null ? "No scores yet" : "With your scores"}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td className="enrolled-cell-status">
                                         <span className={`enrolled-status ${row.status}`}>
                                             {STATUS_LABELS[row.status]}
                                         </span>

@@ -615,3 +615,25 @@
 .history-dot.is-ghost:hover .history-dot-mark {
     opacity: 0.95;
 }
+
+/* The table view scrolls sideways inside the card on narrow screens. */
+.history-table {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+    .history-toggle,
+    .history-link,
+    .history-scope button,
+    .history-chip,
+    .history-table summary,
+    .history-table-link {
+        min-height: 2.75rem;
+    }
+
+    .history-link {
+        display: inline-flex;
+        align-items: center;
+    }
+}
