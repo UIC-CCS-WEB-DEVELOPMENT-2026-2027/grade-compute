@@ -99,6 +99,21 @@
     font-size: 14px;
 }
 
+.rules-delete-note {
+    margin: 14px 0 20px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--color-primary);
+    border-radius: 0 6px 6px 0;
+    background: var(--color-primary-soft);
+    color: var(--color-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.rules-delete-note strong {
+    color: var(--color-text-locked);
+}
+
 .rules-empty {
     max-width: 60ch;
     color: var(--color-muted);
@@ -120,11 +135,15 @@
     border: 1px solid var(--color-border);
     border-radius: 10px;
     background: var(--color-surface);
+    box-shadow: 0 1px 2px rgba(37, 54, 77, 0.04);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .rule-card:hover,
 .rule-card:focus-within {
     border-color: var(--color-primary);
+    box-shadow: 0 10px 24px rgba(49, 84, 134, 0.12);
+    transform: translateY(-3px);
 }
 
 .rule-card-thumb {
@@ -137,6 +156,11 @@
     padding: 18px 20px;
     border-bottom: 1px solid var(--color-border);
     background: var(--color-bg-main);
+    transition: background-color 0.18s ease;
+}
+
+.rule-card:hover .rule-card-thumb {
+    background: var(--color-primary-soft);
 }
 
 .rule-card-thumb.is-table {
@@ -161,6 +185,11 @@
 .rule-card-link {
     color: var(--color-text-locked);
     text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.rule-card:hover .rule-card-link {
+    color: var(--color-primary);
 }
 
 /* The link covers the whole card, so clicking anywhere opens the rule. */
@@ -189,11 +218,20 @@
 }
 
 .rule-card-tags li {
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--color-muted);
     font-size: 12px;
+}
+
+.rule-card-tags li::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    content: "";
+    flex: 0 0 auto;
 }
 
 .rule-card-schools {
@@ -222,6 +260,21 @@
     font-size: 13px;
 }
 
+.rule-card-usage {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
 .rule-card-actions {
     position: relative;
     z-index: 1;
@@ -236,6 +289,40 @@
     background: var(--color-surface);
     color: var(--color-text-locked);
     font-size: 13px;
+    transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.rule-card-actions button:hover,
+.rule-card-actions button:focus-visible {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.rule-card-actions button:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+.rule-card-actions .is-danger:hover,
+.rule-card-actions .is-danger:focus-visible {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-soft);
+    color: var(--color-warning-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rule-card,
+    .rule-card-thumb,
+    .rule-card-link,
+    .rule-card-actions button {
+        transition: none;
+    }
+
+    .rule-card:hover,
+    .rule-card:focus-within {
+        transform: none;
+    }
 }
 
 .rule-card-actions .is-danger,

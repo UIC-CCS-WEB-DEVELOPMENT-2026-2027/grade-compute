@@ -971,7 +971,11 @@ export function updateRule(db, ruleId, input) {
         return { ok: false, db, rule: null, errors: prepared.errors, error: firstError(prepared.errors) };
     }
 
-    const rule = { ...existing, ...prepared.fields };
+    const rule = {
+        ...existing,
+        ...prepared.fields,
+        ...(isCopiedRule(existing) ? { isCopy: true } : {}),
+    };
     delete rule.hierarchy; // old format, replaced by criteria
     return {
         ok: true,
@@ -993,8 +997,18 @@ export function duplicateRule(db, ruleId) {
         ...JSON.parse(JSON.stringify(original)),
         id: nextId(rules, "CR"),
         ruleName: getCopyName(db, original.ruleName),
+        copiedFromRuleId: original.id,
+        isCopy: true,
     };
     return { ok: true, db: { ...db, computationRules: [...rules, rule] }, rule, error: "" };
+}
+
+export function isCopiedRule(rule) {
+    return Boolean(
+        rule?.isCopy
+        || rule?.copiedFromRuleId
+        || /\s\(Copy(?:\s\d+)?\)$/i.test(rule?.ruleName ?? "")
+    );
 }
 
 // Deletes a rule. If anything still uses it, replacementRuleId is required,

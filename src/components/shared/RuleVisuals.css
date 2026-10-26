@@ -77,7 +77,15 @@
 }
 
 .rule-legend-stacked {
+    min-width: min(100%, 160px);
     flex-direction: column;
+}
+
+.rule-legend-stacked li {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 1fr) auto;
+    width: 100%;
+    column-gap: 6px;
 }
 
 /* ---- Pie chart ---------------------------------------------------------- */
@@ -98,6 +106,18 @@
     color: var(--color-text-locked);
     font-size: 14px;
     font-variant-numeric: tabular-nums;
+}
+
+.rule-table:not(.is-compact) {
+    table-layout: fixed;
+}
+
+.rule-table:not(.is-compact) th:first-child {
+    width: 56%;
+}
+
+.rule-table:not(.is-compact) th:not(:first-child) {
+    width: 22%;
 }
 
 .rule-table caption {
@@ -129,9 +149,41 @@
     gap: 8px;
 }
 
-.rule-table tr.is-parent th,
-.rule-table tr.is-parent td {
-    font-weight: 600;
+.rule-table:not(.is-compact) tbody th span {
+    position: relative;
+    padding-left: 18px;
+}
+
+.rule-table:not(.is-compact) tbody th span > i {
+    position: absolute;
+    left: 0;
+}
+
+.rule-table tbody tr th,
+.rule-table tbody tr td {
+    transition: background-color 0.16s ease;
+}
+
+.rule-table tbody tr:hover th,
+.rule-table tbody tr:hover td {
+    background: var(--color-primary-soft);
+}
+
+.rule-table tbody tr:hover i {
+    box-shadow: 0 0 0 4px var(--color-surface);
+    transform: scale(1.15);
+}
+
+.rule-table i {
+    transition: box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rule-table tbody tr th,
+    .rule-table tbody tr td,
+    .rule-table i {
+        transition: none;
+    }
 }
 
 .rule-table.is-compact {

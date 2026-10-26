@@ -41,7 +41,7 @@ export default function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, o
             </div>
 
             <footer className="rule-card-footer">
-                <span>
+                <span className="rule-card-usage">
                     {subjectCount === 0
                         ? "Not used by any subject"
                         : `Used by ${subjectCount} subject${subjectCount === 1 ? "" : "s"}`}

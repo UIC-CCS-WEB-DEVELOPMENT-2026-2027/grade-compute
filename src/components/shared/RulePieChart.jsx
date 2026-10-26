@@ -55,7 +55,7 @@ export default function RulePieChart({ tree, size = 220, showLegend = false }) {
             {showLegend && (
                 <ul className="rule-legend rule-legend-stacked" aria-hidden="true">
                     {rows.map((row) => (
-                        <li key={row.id} style={{ paddingLeft: `${(row.depth - 1) * 16}px` }}>
+                        <li key={row.id}>
                             <i style={{ backgroundColor: row.color }} />
                             <span>{row.name}</span>
                             <strong>{formatPercent(row.effectiveShare)}</strong>

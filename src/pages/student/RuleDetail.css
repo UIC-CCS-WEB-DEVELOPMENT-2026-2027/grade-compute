@@ -19,6 +19,51 @@
     text-decoration: underline;
 }
 
+.rule-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 13px 7px 9px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.rule-back-button span {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-surface);
+    line-height: 1;
+}
+
+.rule-back-button:hover,
+.rule-back-button:focus-visible {
+    border-color: var(--color-primary);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.rule-back-button:hover span,
+.rule-back-button:focus-visible span {
+    background: var(--color-primary-soft);
+}
+
+.rule-back-button:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
 .rule-detail-heading {
     display: flex;
     flex-wrap: wrap;
@@ -43,6 +88,18 @@
 .rule-detail-tools {
     display: flex;
     gap: 8px;
+}
+
+.rule-save-success {
+    margin: -12px 0 0;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 6px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* ---- Sections ----------------------------------------------------------- */
@@ -90,6 +147,16 @@
     font-size: 13px;
 }
 
+.rule-readonly-value {
+    min-height: 38px;
+    padding: 9px 12px;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 6px;
+    background: var(--color-surface-soft);
+    color: var(--color-text-locked);
+    line-height: 1.4;
+}
+
 .rule-field legend {
     margin-bottom: 6px;
     padding: 0;
@@ -121,6 +188,12 @@
     color: var(--color-text-locked);
     font-size: 14px;
     cursor: pointer;
+}
+
+.rule-tag-option.is-readonly {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    cursor: default;
 }
 
 .rule-tag-option input {
@@ -174,8 +247,7 @@
 /* ---- Sticky save bar ---------------------------------------------------- */
 
 .rule-savebar {
-    position: sticky;
-    bottom: 0;
+    position: static;
     z-index: 3;
     display: flex;
     flex-wrap: wrap;
@@ -207,4 +279,156 @@
 .rule-savebar button:disabled {
     cursor: not-allowed;
     opacity: 0.45;
+}
+
+/* ---- Affected-subject confirmation ------------------------------------- */
+
+.app-dialog.rule-impact-dialog {
+    width: min(700px, calc(100vw - 32px));
+    padding: 24px 30px;
+    border-color: #f1e7b8;
+    border-radius: 12px;
+}
+
+.rule-impact-dialog > h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    line-height: 1.15;
+}
+
+.rule-impact-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+    color: var(--color-primary);
+    font-family: "General Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.rule-impact-eyebrow::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    content: "";
+}
+
+.rule-impact-dialog .app-dialog-body {
+    gap: 14px;
+}
+
+.rule-impact-description {
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.rule-impact-dialog .rule-impact-subjects {
+    display: grid;
+    gap: 10px;
+    max-height: min(40vh, 300px);
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.rule-impact-dialog .rule-impact-subjects li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 72px;
+    padding: 12px 16px;
+    border: 1px solid #f1e7b8;
+    border-radius: 12px;
+    background: #fffdf5;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.rule-impact-dialog .rule-impact-subjects li:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface);
+}
+
+.rule-impact-code {
+    color: var(--color-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.rule-impact-name {
+    color: var(--color-text-locked);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.rule-impact-note {
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.rule-impact-dialog .app-dialog-actions button {
+    min-height: 42px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.rule-impact-dialog .app-dialog-actions .rule-impact-cancel,
+.rule-impact-dialog .app-dialog-actions .rule-impact-new {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-muted);
+}
+
+.rule-impact-dialog .app-dialog-actions .rule-impact-cancel:hover,
+.rule-impact-dialog .app-dialog-actions .rule-impact-new:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.rule-impact-dialog .app-dialog-actions .rule-impact-confirm {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.rule-impact-dialog .app-dialog-actions .rule-impact-confirm:hover {
+    box-shadow: 0 4px 12px rgba(49, 84, 134, 0.2);
+}
+
+.rule-impact-dialog .app-dialog-actions button:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rule-impact-dialog .rule-impact-subjects li,
+    .rule-impact-dialog .app-dialog-actions button {
+        transition: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-dialog.rule-impact-dialog {
+        padding: 22px 18px;
+    }
+
+    .rule-impact-dialog > h2 {
+        font-size: 24px;
+    }
+
+    .rule-impact-dialog .app-dialog-actions {
+        justify-content: stretch;
+    }
+
+    .rule-impact-dialog .app-dialog-actions button {
+        flex: 1 1 100%;
+    }
 }

@@ -23,7 +23,9 @@ export default function RuleHierarchyTable({ tree, compact = false }) {
                 {rows.map((row) => (
                     <tr key={row.id} className={row.hasChildren ? "is-parent" : ""}>
                         <th scope="row">
-                            <span style={{ paddingLeft: `${(row.depth - 1) * (compact ? 12 : 20)}px` }}>
+                            <span style={compact ? {
+                                paddingLeft: `${(row.depth - 1) * 12}px`,
+                            } : undefined}>
                                 <i style={{ backgroundColor: row.color }} aria-hidden="true" />
                                 {row.name}
                             </span>
