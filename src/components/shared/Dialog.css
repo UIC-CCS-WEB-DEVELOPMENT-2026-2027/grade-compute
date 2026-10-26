@@ -65,3 +65,136 @@
     background: var(--color-surface);
     color: var(--color-text-locked);
 }
+
+.app-dialog.rule-delete-dialog {
+    width: min(700px, calc(100vw - 32px));
+    padding: 24px 30px;
+    border-color: #f1e7b8;
+    border-radius: 12px;
+}
+
+.rule-delete-dialog > h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    line-height: 1.15;
+}
+
+.rule-delete-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+    color: var(--color-primary);
+    font-family: "General Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.rule-delete-eyebrow::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-warning);
+    content: "";
+}
+
+.rule-delete-dialog .app-dialog-body {
+    gap: 14px;
+}
+
+.rule-delete-dialog .rule-delete-subjects {
+    display: grid;
+    gap: 10px;
+    max-height: min(40vh, 300px);
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.rule-delete-dialog .rule-delete-subjects li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 72px;
+    padding: 12px 16px;
+    border: 1px solid #f1e7b8;
+    border-radius: 12px;
+    background: #fffdf5;
+}
+
+.rule-delete-code {
+    color: var(--color-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.rule-delete-name {
+    color: var(--color-text-locked);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.rule-delete-dialog .app-dialog-actions button {
+    min-height: 42px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.rule-delete-dialog .app-dialog-actions .rule-delete-cancel {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-muted);
+}
+
+.rule-delete-dialog .app-dialog-actions .rule-delete-cancel:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.rule-delete-dialog .app-dialog-actions .rule-delete-confirm {
+    border: 1px solid var(--color-warning);
+    background: var(--color-warning);
+    color: var(--color-white);
+}
+
+.rule-delete-dialog .app-dialog-actions .rule-delete-confirm:hover {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-strong);
+    box-shadow: 0 4px 12px rgba(201, 93, 80, 0.2);
+}
+
+.rule-delete-dialog .app-dialog-actions button:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rule-delete-dialog .app-dialog-actions button {
+        transition: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-dialog.rule-delete-dialog {
+        padding: 22px 18px;
+    }
+
+    .rule-delete-dialog > h2 {
+        font-size: 24px;
+    }
+
+    .rule-delete-dialog .app-dialog-actions {
+        justify-content: stretch;
+    }
+
+    .rule-delete-dialog .app-dialog-actions button {
+        flex: 1 1 100%;
+    }
+}

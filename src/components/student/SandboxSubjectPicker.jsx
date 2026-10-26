@@ -22,7 +22,13 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
 
     return (
         <Dialog
-            title="Which subject do you want to plan?"
+            title={
+                <>
+                    <span className="sandbox-picker-eyebrow">Target Grade Sandbox</span>
+                    Which subject do you want to plan?
+                </>
+            }
+            className="sandbox-picker-dialog"
             onClose={onClose}
             actions={
                 <button type="button" className="sandbox-picker-cancel" onClick={onClose}>
@@ -30,7 +36,9 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                 </button>
             }
         >
-            <p>The sandbox shows the score you need on your remaining tasks to reach your target.</p>
+            <p className="sandbox-picker-description">
+                The sandbox shows the score you need on your remaining tasks to reach your target.
+            </p>
             {ordered.length === 0 ? (
                 <p>
                     You have no subjects yet. <Link to="/student/subject" onClick={onClose}>Add a subject</Link> first.
@@ -39,12 +47,8 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                 <ul className="sandbox-picker-list">
                     {ordered.map((row) => (
                         <li key={row.classId}>
-                            <Link
-                                className="sandbox-picker-option"
-                                to={`/student/subject/${row.classId}/sandbox${query}`}
-                                onClick={onClose}
-                            >
-                                <span className="sandbox-picker-text">
+                            <div className="sandbox-picker-option">
+                                <div className="sandbox-picker-text">
                                     <span className="sandbox-picker-code">
                                         {row.subjectCode}
                                         {row.classId === currentClassId && (
@@ -52,10 +56,15 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                                         )}
                                     </span>
                                     <span className="sandbox-picker-name">{row.subjectName}</span>
-                                </span>
-                                <span className="sandbox-picker-grade">{formatGrade(row.expectedGrade)}</span>
-                                <span className="sandbox-picker-arrow" aria-hidden="true">→</span>
-                            </Link>
+                                </div>
+                                <Link
+                                    className="sandbox-picker-grade"
+                                    to={`/student/subject/${row.classId}/sandbox${query}`}
+                                    onClick={onClose}
+                                >
+                                    {formatGrade(row.expectedGrade)}
+                                </Link>
+                            </div>
                         </li>
                     ))}
                 </ul>

@@ -217,7 +217,7 @@ export default function AddSubjectForm({
                         </span>
                     )}
                     <Link className="subject-request-rule-link" to="/student/rules">
-                        {rules.length > 0 ? "View or create grading rules" : "Go to Grade Rules"}
+                        {rules.length > 0 ? "View or create grading rules" : "Create a grading rule"}
                     </Link>
                 </label>
             </div>

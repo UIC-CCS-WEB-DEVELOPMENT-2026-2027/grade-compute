@@ -28,6 +28,7 @@
 /* GRADE WEIGHT */
 
 .grade-weight {
+    position: relative;
     min-height: 76px;
     padding: 16px 20px;
     box-sizing: border-box;
@@ -77,8 +78,11 @@
 }
 
 .weight-plus {
+    position: absolute;
+    left: 50%;
     color: #91a3ba;
     font-size: 19px;
+    transform: translateX(-50%);
 }
 
 .exams-group {
@@ -430,17 +434,43 @@
 /* GRADE BREAKDOWN */
 
 .breakdown-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     margin-top: 12px;
-    padding: 4px 0;
-    border: none;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 4px;
     background: transparent;
     color: #41669b;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
     cursor: pointer;
+    transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.breakdown-button:hover,
+.breakdown-button:focus-visible {
+    background: #edf1fa;
+    color: #315486;
+}
+
+.breakdown-button:focus-visible {
+    outline: 3px solid rgba(76, 140, 228, 0.36);
+    outline-offset: 3px;
+}
+
+.breakdown-button-icon {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+    transition: transform 0.18s ease;
+}
+
+.breakdown-button[aria-expanded="true"] .breakdown-button-icon {
+    transform: rotate(90deg);
 }
 
 .official-breakdown {

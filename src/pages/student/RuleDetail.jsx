@@ -2,8 +2,8 @@
 // View/edit page for one grade computation rule, and the "New rule" page
 // (grade-rules-spec.txt, PART 4-8). Routes: /student/rules/new and
 // /student/rules/:ruleId.
-import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PillEditor from "../../components/shared/PillEditor";
@@ -22,6 +22,7 @@ import {
     getCopyName,
     getRuleChangeImpact,
     getRuleUsage,
+    isCopiedRule,
     ruleToTree,
     updateRule,
     validateRuleDetails,
@@ -46,6 +47,7 @@ export default function RuleDetailPage({ isNew = false }) {
 
 function RuleDetail({ ruleId }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const isNew = ruleId === null;
     const [dbData, setDbData] = useState(() => getDb());
     const rule = isNew ? null : dbData?.computationRules?.find((item) => item.id === ruleId);
@@ -56,9 +58,16 @@ function RuleDetail({ ruleId }) {
     const [schoolInput, setSchoolInput] = useState("");
     const [view, setView] = useState("pie");
     const [errors, setErrors] = useState({});
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState(() => location.state?.notice ?? "");
+    const [isEditing, setIsEditing] = useState(isNew);
     const [pendingImpact, setPendingImpact] = useState(null);
     const [showDelete, setShowDelete] = useState(false);
+
+    useEffect(() => {
+        if (location.state?.notice) {
+            navigate(location.pathname, { replace: true, state: null });
+        }
+    }, [location.pathname, location.state, navigate]);
 
     if (!isNew && !rule) {
         return (
@@ -76,7 +85,8 @@ function RuleDetail({ ruleId }) {
         );
     }
 
-    const isDirty = isNew || JSON.stringify({ details, tree }) !== saved;
+    const hasEdits = JSON.stringify({ details, tree }) !== saved;
+    const isDirty = isNew || hasEdits;
     const usage = isNew ? null : getRuleUsage(dbData, rule.id);
 
     function commit(updatedDb) {
@@ -103,14 +113,19 @@ function RuleDetail({ ruleId }) {
         return true;
     }
 
-    function saveNewRule(ruleName) {
+    function saveNewRule(ruleName, successNotice = "") {
         const result = createRule(dbData, { ...details, ruleName, tree });
         if (!result.ok) {
             setErrors(result.errors);
             setStatus(result.error);
             return;
         }
-        if (commit(result.db)) navigate(`/student/rules/${result.rule.id}`, { replace: isNew });
+        if (commit(result.db)) {
+            navigate(`/student/rules/${result.rule.id}`, {
+                replace: isNew,
+                state: successNotice ? { notice: successNotice } : null,
+            });
+        }
     }
 
     function applyUpdate() {
@@ -126,6 +141,7 @@ function RuleDetail({ ruleId }) {
             setDetails(savedDetails);
             setSaved(JSON.stringify({ details: savedDetails, tree }));
             setStatus("Changes saved.");
+            setIsEditing(false);
         }
     }
 
@@ -137,8 +153,8 @@ function RuleDetail({ ruleId }) {
             return;
         }
         const impact = getRuleChangeImpact(dbData, rule.id, tree);
-        if (impact.classes.length > 0) {
-            setPendingImpact(impact);
+        if (impact.classes.length > 0 || isCopy) {
+            setPendingImpact({ ...impact, isCopy });
             return;
         }
         applyUpdate();
@@ -148,7 +164,10 @@ function RuleDetail({ ruleId }) {
         setPendingImpact(null);
         setStatus("");
         const sameName = details.ruleName.trim().toLowerCase() === rule.ruleName.toLowerCase();
-        saveNewRule(sameName ? getCopyName(dbData, rule.ruleName) : details.ruleName);
+        saveNewRule(
+            sameName ? getCopyName(dbData, rule.ruleName) : details.ruleName,
+            "Your changes were successfully saved as a new rule."
+        );
     }
 
     function handleDuplicate() {
@@ -162,6 +181,16 @@ function RuleDetail({ ruleId }) {
         setTree(original.tree);
         setErrors({});
         setStatus("Changes discarded.");
+        setIsEditing(false);
+    }
+
+    function cancelEditing() {
+        if (hasEdits) {
+            handleDiscard();
+            return;
+        }
+        setStatus("");
+        setIsEditing(false);
     }
 
     function toggleTag(tag) {
@@ -197,6 +226,7 @@ function RuleDetail({ ruleId }) {
     }
 
     const subjectCount = usage?.classes.length ?? 0;
+    const isCopy = !isNew && isCopiedRule(rule);
 
     return (
         <div className="rules-layout">
@@ -204,7 +234,14 @@ function RuleDetail({ ruleId }) {
             <div className="rules-main">
                 <Header />
                 <main className="rules-content rule-detail">
-                    <Link className="rule-back" to="/student/rules">← All rules</Link>
+                    <Link className="rule-back rule-back-button" to="/student/rules">
+                        <span aria-hidden="true">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
+                            </svg>
+                        </span>
+                        All rules
+                    </Link>
 
                     <header className="rule-detail-heading">
                         <div>
@@ -219,6 +256,26 @@ function RuleDetail({ ruleId }) {
                         </div>
                         {!isNew && (
                             <div className="rule-detail-tools">
+                                {isEditing ? (
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        onClick={cancelEditing}
+                                    >
+                                        Cancel editing
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn-primary"
+                                        onClick={() => {
+                                            setStatus("");
+                                            setIsEditing(true);
+                                        }}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
                                 <button type="button" className="btn-secondary" onClick={handleDuplicate}>
                                     Duplicate
                                 </button>
@@ -228,21 +285,30 @@ function RuleDetail({ ruleId }) {
                             </div>
                         )}
                     </header>
+                    {status && !hasEdits && (
+                        <p className="rule-save-success" role="status">
+                            {status}
+                        </p>
+                    )}
 
                     <section className="rule-section" aria-labelledby="rule-details-title">
                         <h2 id="rule-details-title">Details</h2>
                         <div className="rule-details-grid">
                             <label className="rule-field">
                                 <span>Rule name</span>
-                                <input
-                                    value={details.ruleName}
-                                    onChange={(event) =>
-                                        setDetails((current) => ({ ...current, ruleName: event.target.value }))
-                                    }
-                                    placeholder="e.g. Standard IT Rule (70/30)"
-                                    aria-invalid={Boolean(errors.ruleName)}
-                                    aria-describedby={errors.ruleName ? "rule-name-error" : undefined}
-                                />
+                                {isEditing ? (
+                                    <input
+                                        value={details.ruleName}
+                                        onChange={(event) =>
+                                            setDetails((current) => ({ ...current, ruleName: event.target.value }))
+                                        }
+                                        placeholder="e.g. Standard IT Rule (70/30)"
+                                        aria-invalid={Boolean(errors.ruleName)}
+                                        aria-describedby={errors.ruleName ? "rule-name-error" : undefined}
+                                    />
+                                ) : (
+                                    <span className="rule-readonly-value">{details.ruleName}</span>
+                                )}
                                 {errors.ruleName && (
                                     <small id="rule-name-error" className="rule-field-error">{errors.ruleName}</small>
                                 )}
@@ -251,61 +317,77 @@ function RuleDetail({ ruleId }) {
                             <fieldset className="rule-field">
                                 <legend>Tags</legend>
                                 <div className="rule-tag-options">
-                                    {DEFAULT_TAGS.map((tag) => (
-                                        <label key={tag} className="rule-tag-option">
-                                            <input
-                                                type="checkbox"
-                                                checked={details.tags.includes(tag)}
-                                                onChange={() => toggleTag(tag)}
-                                            />
-                                            {tag}
-                                        </label>
-                                    ))}
+                                    {isEditing
+                                        ? DEFAULT_TAGS.map((tag) => (
+                                            <label key={tag} className="rule-tag-option">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={details.tags.includes(tag)}
+                                                    onChange={() => toggleTag(tag)}
+                                                />
+                                                {tag}
+                                            </label>
+                                        ))
+                                        : details.tags.length > 0
+                                            ? details.tags.map((tag) => (
+                                                <span key={tag} className="rule-tag-option is-readonly">{tag}</span>
+                                            ))
+                                            : <span className="rule-readonly-value">No tags</span>}
                                 </div>
                             </fieldset>
 
                             <div className="rule-field rule-schools">
-                                <label htmlFor="rule-school-input">Schools that use this rule</label>
+                                <span>Schools that use this rule</span>
                                 {details.schools.length > 0 && (
                                     <ul>
                                         {details.schools.map((school) => (
                                             <li key={school}>
                                                 {school}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeSchool(school)}
-                                                    aria-label={`Remove ${school}`}
-                                                >
-                                                    ×
-                                                </button>
+                                                {isEditing && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeSchool(school)}
+                                                        aria-label={`Remove ${school}`}
+                                                    >
+                                                        ×
+                                                    </button>
+                                                )}
                                             </li>
                                         ))}
                                     </ul>
                                 )}
-                                <div className="rule-school-add">
-                                    <input
-                                        id="rule-school-input"
-                                        value={schoolInput}
-                                        onChange={(event) => setSchoolInput(event.target.value)}
-                                        onKeyDown={(event) => {
-                                            if (event.key === "Enter") {
-                                                event.preventDefault();
-                                                addSchool();
-                                            }
-                                        }}
-                                        placeholder="School name"
-                                    />
-                                    <button type="button" className="btn-secondary" onClick={addSchool}>
-                                        Add school
-                                    </button>
-                                </div>
+                                {isEditing
+                                    ? (
+                                        <div className="rule-school-add">
+                                            <input
+                                                id="rule-school-input"
+                                                value={schoolInput}
+                                                onChange={(event) => setSchoolInput(event.target.value)}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter") {
+                                                        event.preventDefault();
+                                                        addSchool();
+                                                    }
+                                                }}
+                                                placeholder="School name"
+                                            />
+                                            <button type="button" className="btn-secondary" onClick={addSchool}>
+                                                Add school
+                                            </button>
+                                        </div>
+                                    )
+                                    : details.schools.length === 0 && (
+                                        <span className="rule-readonly-value">No schools listed</span>
+                                    )}
                             </div>
                         </div>
                     </section>
 
                     <section className="rule-section" aria-labelledby="rule-criteria-title">
                         <h2 id="rule-criteria-title">Criteria</h2>
-                        <PillEditor tree={tree} onChange={handleTreeChange} structureLocked={false} />
+                        {isEditing
+                            ? <PillEditor tree={tree} onChange={handleTreeChange} structureLocked={false} />
+                            : <RuleHierarchyTable tree={tree} />}
                         {errors.tree && <p className="rule-field-error" role="alert">{errors.tree}</p>}
                         <RuleFormula tree={tree} />
                     </section>
@@ -331,67 +413,98 @@ function RuleDetail({ ruleId }) {
                             : <RuleHierarchyTable tree={tree} />}
                     </section>
 
-                    <div className="rule-savebar">
-                        <p role="status">{status || (isDirty && !isNew ? "You have unsaved changes." : "")}</p>
-                        <div>
-                            {!isNew && isDirty && (
-                                <button type="button" className="btn-secondary" onClick={handleDiscard}>
-                                    Discard changes
-                                </button>
-                            )}
-                            {!isNew && (
+                    {hasEdits && (
+                        <div className="rule-savebar">
+                            <p role="status">{status || (!isNew ? "You have unsaved changes." : "")}</p>
+                            <div>
+                                {!isNew && (
+                                    <button type="button" className="btn-secondary" onClick={handleDiscard}>
+                                        Discard changes
+                                    </button>
+                                )}
+                                {!isNew && (
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        onClick={() => validate() && handleSaveAsNew()}
+                                    >
+                                        Save as new rule
+                                    </button>
+                                )}
                                 <button
                                     type="button"
-                                    className="btn-secondary"
-                                    onClick={() => validate() && handleSaveAsNew()}
+                                    className="btn-primary"
+                                    onClick={handleSave}
+                                    disabled={!isDirty}
                                 >
-                                    Save as new rule
+                                    {isNew ? "Create rule" : "Save changes"}
                                 </button>
-                            )}
-                            <button
-                                type="button"
-                                className="btn-primary"
-                                onClick={handleSave}
-                                disabled={!isDirty}
-                            >
-                                {isNew ? "Create rule" : "Save changes"}
-                            </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </main>
             </div>
 
             {pendingImpact && (
                 <Dialog
-                    title="Update this rule for every subject?"
+                    title={
+                        <>
+                            <span className="rule-impact-eyebrow">
+                                {pendingImpact.classes.length > 0 ? "Rule update" : "Copied rule"}
+                            </span>
+                            {pendingImpact.classes.length > 0
+                                ? "Update this rule for every subject?"
+                                : "Save changes to this copy?"}
+                        </>
+                    }
+                    className="rule-impact-dialog"
                     onClose={() => setPendingImpact(null)}
                     actions={
                         <>
-                            <button type="button" className="btn-secondary" onClick={() => setPendingImpact(null)}>
+                            <button type="button" className="rule-impact-cancel" onClick={() => setPendingImpact(null)}>
                                 Cancel
                             </button>
-                            <button type="button" className="btn-secondary" onClick={handleSaveAsNew}>
-                                Save as new rule
-                            </button>
-                            <button type="button" className="btn-primary" onClick={applyUpdate}>
-                                Update anyway
-                            </button>
+                            {pendingImpact.classes.length > 0 ? (
+                                <>
+                                    <button type="button" className="rule-impact-new" onClick={handleSaveAsNew}>
+                                        Save as new rule
+                                    </button>
+                                    <button type="button" className="rule-impact-confirm" onClick={applyUpdate}>
+                                        Update anyway
+                                    </button>
+                                </>
+                            ) : (
+                                <button type="button" className="rule-impact-confirm" onClick={applyUpdate}>
+                                    Save changes
+                                </button>
+                            )}
                         </>
                     }
                 >
-                    <p>
-                        This rule is used by {pendingImpact.classes.length} subject
-                        {pendingImpact.classes.length === 1 ? "" : "s"}. Their grades will be
-                        recalculated with the new rule:
-                    </p>
-                    <ul>
-                        {pendingImpact.classes.map((item) => (
-                            <li key={item.classId}>
-                                {item.subjectCode} {item.subjectName}
-                                {item.programSection && ` (${item.programSection})`}
-                            </li>
-                        ))}
-                    </ul>
+                    {pendingImpact.classes.length > 0 ? (
+                        <>
+                            <p className="rule-impact-description">
+                                This rule is used by {pendingImpact.classes.length} subject
+                                {pendingImpact.classes.length === 1 ? "" : "s"}. Updating it recalculates
+                                their grades using the new rule:
+                            </p>
+                            <ul className="rule-impact-subjects">
+                                {pendingImpact.classes.map((item) => (
+                                    <li key={item.classId}>
+                                        <span className="rule-impact-code">{item.subjectCode}</span>
+                                        <span className="rule-impact-name">
+                                            {item.subjectName}
+                                            {item.programSection && ` (${item.programSection})`}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    ) : (
+                        <p className="rule-impact-description">
+                            Saving updates this copy only. The original rule will stay unchanged.
+                        </p>
+                    )}
                     {pendingImpact.lostTaskCount > 0 && (
                         <p className="app-dialog-warning">
                             {pendingImpact.lostTaskCount} recorded task
@@ -401,7 +514,11 @@ function RuleDetail({ ruleId }) {
                             The tasks stay saved.
                         </p>
                     )}
-                    <p>To keep these subjects unchanged, save your edits as a new rule instead.</p>
+                    {pendingImpact.classes.length > 0 && (
+                        <p className="rule-impact-note">
+                            To keep these subjects unchanged, save your edits as a new rule instead.
+                        </p>
+                    )}
                 </Dialog>
             )}
 

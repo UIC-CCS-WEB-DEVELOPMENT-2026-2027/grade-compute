@@ -4,7 +4,7 @@
 import { useEffect, useId, useRef } from "react";
 import "./Dialog.css";
 
-export default function Dialog({ title, onClose, children, actions }) {
+export default function Dialog({ title, onClose, children, actions, className = "" }) {
     const dialogRef = useRef(null);
     const titleId = useId();
 
@@ -19,7 +19,7 @@ export default function Dialog({ title, onClose, children, actions }) {
     return (
         <dialog
             ref={dialogRef}
-            className="app-dialog"
+            className={`app-dialog ${className}`.trim()}
             aria-labelledby={titleId}
             onCancel={(event) => {
                 event.preventDefault();

@@ -61,7 +61,7 @@ export default function SubjectGradeHistory({ classId, termKey }) {
                             {showPlan ? "Hide plan" : "Show plan"}
                         </button>
                     )}
-                    <Link className="history-link" to={sandboxLink}>Plan in sandbox →</Link>
+                    <Link className="history-link" to={sandboxLink}>Plan in sandbox</Link>
                 </div>
             </div>
 

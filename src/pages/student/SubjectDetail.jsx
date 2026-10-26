@@ -240,19 +240,6 @@ function SubjectDetail() {
             <TermNavigation
                 termKey={termKey}
                 onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
-                action={
-                    <Link
-                        className="term-nav-link"
-                        to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
-                    >
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
-                            <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
-                            <circle cx="12" cy="12" r="1" fill="currentColor" />
-                        </svg>
-                        Target grade sandbox
-                    </Link>
-                }
                 note="Official scores and draft notes are separate for each term."
             />
 
@@ -281,6 +268,17 @@ function SubjectDetail() {
                             <span>{classItem.units ?? 3} units</span>
                         </div>
                     </div>
+                    <Link
+                        className="term-nav-link subject-sandbox-link"
+                        to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+                            <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
+                            <circle cx="12" cy="12" r="1" fill="currentColor" />
+                        </svg>
+                        Target grade sandbox
+                    </Link>
                 </div>
 
                 {/* Official Grade Summary */}

@@ -15,10 +15,16 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
     if (otherRules.length === 0) {
         return (
             <Dialog
-                title="This rule can't be deleted"
+                title={
+                    <>
+                        <span className="rule-delete-eyebrow">Delete rule</span>
+                        This rule can&apos;t be deleted
+                    </>
+                }
+                className="rule-delete-dialog"
                 onClose={onClose}
                 actions={
-                    <button type="button" className="btn-primary" onClick={onClose}>
+                    <button type="button" className="rule-delete-cancel" onClick={onClose}>
                         Close
                     </button>
                 }
@@ -47,14 +53,20 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
 
     return (
         <Dialog
-            title={`Delete ${rule.ruleName}?`}
+            title={
+                <>
+                    <span className="rule-delete-eyebrow">Delete rule</span>
+                    Delete {rule.ruleName}?
+                </>
+            }
+            className="rule-delete-dialog"
             onClose={onClose}
             actions={
                 <>
-                    <button type="button" className="btn-secondary" onClick={onClose}>
+                    <button type="button" className="rule-delete-cancel" onClick={onClose}>
                         Cancel
                     </button>
-                    <button type="button" className="btn-warning" onClick={confirmDelete}>
+                    <button type="button" className="rule-delete-confirm" onClick={confirmDelete}>
                         Delete rule
                     </button>
                 </>
@@ -67,11 +79,14 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                             <p>
                                 {subjectCount === 1 ? "1 subject uses" : `${subjectCount} subjects use`} this rule:
                             </p>
-                            <ul>
+                            <ul className="rule-delete-subjects">
                                 {usage.classes.map((item) => (
                                     <li key={item.classId}>
-                                        {item.subjectCode} {item.subjectName}
-                                        {item.programSection && ` (${item.programSection})`}
+                                        <span className="rule-delete-code">{item.subjectCode}</span>
+                                        <span className="rule-delete-name">
+                                            {item.subjectName}
+                                            {item.programSection && ` (${item.programSection})`}
+                                        </span>
                                     </li>
                                 ))}
                             </ul>

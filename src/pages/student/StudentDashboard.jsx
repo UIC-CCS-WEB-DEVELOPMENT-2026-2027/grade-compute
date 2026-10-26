@@ -39,19 +39,16 @@ export default function StudentDashboard() {
                 {/* --- STUDENT OVERVIEW BANNER --- */}
                 <div className="overview-banner">
                     <div className="overview-text">
-                        <span className="overview-label">
-                            YOUR LEARNING JOURNEY
-                        </span>
                         <h1 className="overview-title">Student Overview</h1>
                         <p className="overview-subtitle">
-                            Your subjects, your progress, your next step.
+                            Your subjects, progress, and next step.
                         </p>
                     </div>
 
                     <div className="semester-badge">
                         <span className="badge-dot">•</span>
                         <span className="badge-term">{semester.semester}</span>
-                        <span className="badge-divider">|</span>
+                        <span className="badge-divider">·</span>
                         <span className="badge-year">{semester.academicYear}</span>
                     </div>
                 </div>
@@ -62,6 +59,7 @@ export default function StudentDashboard() {
                 {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
                 <EnrolledSubjectsTable
                     subjects={subjects}
+                    subtitle={`Your subjects for ${semester.semester}, ${semester.academicYear}.`}
                     studentId={studentId}
                     initialSection={student?.programSection ?? ""}
                 />
@@ -76,7 +74,8 @@ export default function StudentDashboard() {
                             </p>
                         </div>
                         <div className="grade-activity-indicator">
-                            <span className="blue-dot">•</span> Grade activity
+                            <span className="grade-activity-dot" aria-hidden="true" />
+                            Grade activity
                         </div>
                     </div>
 
@@ -153,16 +152,9 @@ export default function StudentDashboard() {
                         </div>
                     </div>
 
-                    {/* Page Disclaimer & Footer Branding */}
-                    <div className="dashboard-page-footer">
-                        <p className="disclaimer-text">
-                            Sample student workspace · Grades shown are
-                            demonstration data.
-                        </p>
-                        <PageFooter className="shared-page-footer--dashboard" />
-                    </div>
                 </div>
             </main>
+            <PageFooter />
             </div>
         </div>
     );

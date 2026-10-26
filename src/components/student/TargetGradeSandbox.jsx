@@ -285,7 +285,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* The plan as a chart: always shown. */}
-                    <section className="sandbox-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
+                    <section className="sandbox-card sandbox-chart-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
                         <h2 className="sandbox-step" id="sandbox-chart-title">Your plan on a chart</h2>
                         <p className="sandbox-help">
                             Solid line: your {termLabel} grade so far. Dotted line: each remaining task at the
@@ -306,7 +306,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* Step 2: remaining tasks per criterion */}
-                    <section className="sandbox-card" aria-labelledby="sandbox-step-remaining">
+                    <section className="sandbox-card sandbox-remaining-card" aria-labelledby="sandbox-step-remaining">
                         <h2 className="sandbox-step" id="sandbox-step-remaining">
                             <span aria-hidden="true">2</span> Tell us what is left
                         </h2>
@@ -409,7 +409,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* Step 3: try draft scores on tasks already added */}
-                    <section className="sandbox-card" aria-labelledby="sandbox-step-drafts">
+                    <section className="sandbox-card sandbox-drafts-card" aria-labelledby="sandbox-step-drafts">
                         <h2 className="sandbox-step" id="sandbox-step-drafts">
                             <span aria-hidden="true">3</span> Try draft scores (optional)
                         </h2>

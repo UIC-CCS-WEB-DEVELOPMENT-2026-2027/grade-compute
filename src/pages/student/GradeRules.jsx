@@ -123,6 +123,11 @@ export default function GradeRules() {
                         {message}
                     </p>
 
+                    <aside className="rules-delete-note">
+                        <strong>Before deleting a rule:</strong> At least one rule must remain.
+                        If subjects use the rule, choose a replacement rule for them.
+                    </aside>
+
                     {visibleRules.length > 0 ? (
                         <div className="rules-grid">
                             {visibleRules.map((rule) => (

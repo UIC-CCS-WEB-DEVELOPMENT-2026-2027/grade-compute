@@ -433,9 +433,6 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 >
                     {showAddTask ? "Close" : "+ Add Custom Task"}
                 </button>
-                <p className="records-privacy">
-                    ⓘ Self-reported scores and custom tasks are private notes for this term. They do not change official records or the target calculator’s formula.
-                </p>
             </div>
 
             <button
@@ -444,11 +441,21 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 onClick={() => setShowBreakdown((shown) => !shown)}
                 aria-expanded={showBreakdown}
             >
-                <span>{showBreakdown ? "▼" : "▶"}</span>
+                <svg
+                    className="breakdown-button-icon"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path d="m6 3.5 4.5 4.5L6 12.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 {showBreakdown
                     ? "Hide Official Grade Breakdown"
                     : "View Complete Official Grade Breakdown"}
             </button>
+            <p className="records-privacy">
+                    ⓘ Sandbox edits cannot change these records.
+            </p>
 
             {showBreakdown && (
                 <div className="official-breakdown">
@@ -505,9 +512,6 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     })}
                 </div>
             )}
-            <p className="sandbox-notice">
-                ⓘ Sandbox edits cannot change these records.
-            </p>
         </section>
     );
 }
