@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
 import { getEnrolledSubjects } from "../../utils/subjects";
@@ -65,7 +66,11 @@ export default function Sidebar() {
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
             document.body.classList.remove("sidebar-menu-open");
-            document.getElementById("sidebar-menu-button")?.focus();
+            // Return focus to ☰ unless a dialog opened from the menu has it.
+            const focused = document.activeElement;
+            if (!focused || focused === document.body || focused.closest("#app-sidebar")) {
+                document.getElementById("sidebar-menu-button")?.focus();
+            }
         };
     }, [menuOpen]);
 
@@ -190,12 +195,17 @@ export default function Sidebar() {
 
     return (
         <>
-        {/* Phone menu backdrop: tapping it closes the menu. */}
-        <div
-            className={`sidebar-backdrop ${menuOpen ? "is-visible" : ""}`}
-            aria-hidden="true"
-            onClick={() => setSidebarMenuOpen(false)}
-        />
+        {/* Phone menu backdrop: tapping it closes the menu. Popups below are
+            rendered on <body> (createPortal) so they always sit above the
+            page and the sidebar; see the z-index scale in index.css. */}
+        {createPortal(
+            <div
+                className={`sidebar-backdrop ${menuOpen ? "is-visible" : ""}`}
+                aria-hidden="true"
+                onClick={() => setSidebarMenuOpen(false)}
+            />,
+            document.body
+        )}
         <aside
             id="app-sidebar"
             className={`sidebar ${minimized ? "is-minimized" : ""} ${menuOpen ? "is-open" : ""}`}
@@ -435,6 +445,7 @@ export default function Sidebar() {
                                             onClick={(event) => {
                                                 event.preventDefault();
                                                 event.stopPropagation();
+                                                setSidebarMenuOpen(false);
                                                 setSubjectToRemove(sub);
                                             }}
                                         >
@@ -568,7 +579,10 @@ export default function Sidebar() {
                 {/* Help and Resources */}
                 <button
                     type="button"
-                    onClick={() => setIsHelpOpen(true)}
+                    onClick={() => {
+                        setSidebarMenuOpen(false);
+                        setIsHelpOpen(true);
+                    }}
                     className="sidebar-link sidebar-footer-link"
                     data-tooltip="Help & Resources"
                 >
@@ -602,14 +616,14 @@ export default function Sidebar() {
                     <span className="sidebar-label">Help &amp; Resources</span>
                 </button>
 
-                {isHelpOpen && (
+                {isHelpOpen && createPortal(
                     <div
                         role="presentation"
                         onClick={() => setIsHelpOpen(false)}
                         style={{
                             position: "fixed",
                             inset: 0,
-                            zIndex: 10,
+                            zIndex: "var(--z-modal)",
                             display: "grid",
                             placeItems: "center",
                             background: "rgba(33, 45, 59, 0.34)",
@@ -634,6 +648,7 @@ export default function Sidebar() {
                             <button
                                 type="button"
                                 aria-label="Close help and resources"
+                                autoFocus
                                 onClick={() => setIsHelpOpen(false)}
                                 style={{
                                     position: "absolute",
@@ -660,7 +675,8 @@ export default function Sidebar() {
                                 Export your gradebook anytime as a CSV.
                             </p>
                         </section>
-                    </div>
+                    </div>,
+                    document.body
                 )}
 
                 {/* Pushes the logout button to the bottom */}
@@ -704,7 +720,7 @@ export default function Sidebar() {
                 />
             )}
 
-            {subjectToRemove && (
+            {subjectToRemove && createPortal(
                 <div
                     className="subject-remove-backdrop"
                     role="presentation"
@@ -769,10 +785,11 @@ export default function Sidebar() {
                             </button>
                         </div>
                     </section>
-                </div>
+                </div>,
+                document.body
             )}
 
-            {subjectsPopout && (
+            {subjectsPopout && createPortal(
                 <div
                     ref={popoutRef}
                     className="sidebar-popout"
@@ -803,7 +820,8 @@ export default function Sidebar() {
                     ) : (
                         <p className="sidebar-empty-state">No subjects yet</p>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
         </aside>
         </>

@@ -21,6 +21,17 @@
 }
 
 :root {
+  /* Layer order (z-index), lowest to highest. Popups that must cover the
+     page are rendered on <body> so these values compare directly. */
+  --z-raised: 1;            /* small lifts inside a card */
+  --z-chart-tooltip: 10;    /* chart and card hover tips */
+  --z-header: 20;           /* sticky header on phones */
+  --z-sidebar: 30;          /* sidebar (and its icon tips) above the page */
+  --z-sidebar-backdrop: 35; /* phone menu backdrop */
+  --z-sidebar-phone: 40;    /* phone slide-in menu */
+  --z-popover: 60;          /* pop-out subject list */
+  --z-modal: 100;           /* Help, Remove subject */
+
   /* CompUGrade Design System Colors */
   --color-primary: #406093;       /* Deep Blue: Main UI, headers, active states */
   --color-accent: #4C8CE4;        /* Bright Blue: Student-reported inputs, self-generated tasks */
@@ -625,7 +636,7 @@ input:focus, select:focus {
 
 .subject-remove-backdrop {
   position: fixed;
-  z-index: 1000;
+  z-index: var(--z-modal);
   inset: 0;
   display: flex;
   align-items: center;
@@ -772,6 +783,7 @@ input:focus, select:focus {
 .sidebar {
   position: sticky;
   top: 0;
+  z-index: var(--z-sidebar);
   flex-shrink: 0;
   align-self: flex-start;
   height: 100vh;
@@ -901,7 +913,7 @@ input:focus, select:focus {
     content: attr(data-tooltip);
     position: fixed;
     left: 84px;
-    z-index: 50;
+    z-index: var(--z-popover);
     padding: 0.35rem 0.6rem;
     border-radius: 0.4rem;
     background: var(--color-text-locked);
@@ -916,7 +928,7 @@ input:focus, select:focus {
 /* Pop-out subject list (minimized sidebar) */
 .sidebar-popout {
   position: fixed;
-  z-index: 60;
+  z-index: var(--z-popover);
   width: 260px;
   max-height: min(70vh, 420px);
   overflow-y: auto;
@@ -989,7 +1001,7 @@ input:focus, select:focus {
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    z-index: 40;
+    z-index: var(--z-sidebar-phone);
     width: min(86vw, 320px);
     height: 100dvh;
     box-shadow: none;
@@ -1039,7 +1051,7 @@ input:focus, select:focus {
     display: block;
     position: fixed;
     inset: 0;
-    z-index: 35;
+    z-index: var(--z-sidebar-backdrop);
     background: var(--color-overlay);
     opacity: 0;
     pointer-events: none;

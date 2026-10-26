@@ -592,7 +592,7 @@
 /* Tooltip for the one point under the pointer (usePointHover.js) */
 .history-tooltip-float {
     position: absolute;
-    z-index: 5;
+    z-index: var(--z-chart-tooltip);
     width: max-content;
     pointer-events: none;
 }
