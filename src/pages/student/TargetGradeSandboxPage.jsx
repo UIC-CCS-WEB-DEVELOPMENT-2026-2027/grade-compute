@@ -39,20 +39,15 @@ export default function TargetGradeSandboxPage() {
                 <main className="student-dashboard">
                     {classItem && subject && hasStudentRecord ? (
                         <>
-                            <TermNavigation
-                                className="sandbox-term-navigation"
-                                termKey={termKey}
-                                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
-                                action={
-                                    <Link
-                                        className="term-nav-link"
-                                        to={`/student/subject/${classItem.id}?term=${termKey}`}
-                                    >
-                                        Back to subject
-                                    </Link>
-                                }
-                                note="Private planning space. Official records stay untouched."
-                            />
+                            <div className="sandbox-back-row">
+                                <Link
+                                    className="term-nav-link sandbox-back-link"
+                                    to={`/student/subject/${classItem.id}?term=${termKey}`}
+                                >
+                                    <span aria-hidden="true">←</span>
+                                    Back
+                                </Link>
+                            </div>
 
                             <section className="subject-overview sandbox-page-heading">
                                 <div className="subject-semester">
@@ -60,6 +55,12 @@ export default function TargetGradeSandboxPage() {
                                 </div>
                                 <div className="subject-title-row">
                                     <h1>{subject.subjectCode} - {subject.subjectName}</h1>
+                                    <TermNavigation
+                                        className="sandbox-term-navigation"
+                                        termKey={termKey}
+                                        onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                                        note="Private planning space. Official records stay untouched."
+                                    />
                                 </div>
                             </section>
 

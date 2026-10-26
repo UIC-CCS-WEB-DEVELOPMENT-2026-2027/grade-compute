@@ -305,27 +305,30 @@
 }
 
 .sandbox-target > small {
-    color: var(--color-muted);
-    font-size: 0.72rem;
+    color: #8a7b3f;
+    font-size: 7px;
+    font-weight: 400;
 }
 
 .sandbox-target-input {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 4px;
     color: var(--color-highlight-strong);
+    font-size: 12px;
     font-weight: 700;
 }
 
 .sandbox-target-input input {
-    width: 6.5rem;
-    padding: 0.45rem 0.6rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    box-sizing: border-box;
+    width: 60px;
+    padding: 5px 6px;
+    border: 1px solid var(--color-highlight-strong);
+    border-radius: 7px;
     background: var(--color-surface);
     color: var(--color-primary);
-    font-family: var(--font-heading);
-    font-size: 1.6rem;
+    font-family: var(--font-body);
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -654,11 +657,23 @@
 }
 
 .sandbox-page-heading .subject-title-row {
+    width: 100%;
+    align-items: flex-start;
+    gap: clamp(24px, 5vw, 64px);
     margin-bottom: 0;
 }
 
 .sandbox-page-heading h1 {
+    flex: 1 1 auto;
+    min-width: 0;
     margin: 0;
+}
+
+@media (max-width: 760px) {
+    .sandbox-page-heading .subject-title-row {
+        flex-wrap: wrap;
+        row-gap: 16px;
+    }
 }
 
 /* A draft row picked from the chart (utils/focusTask.js) */
