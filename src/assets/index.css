@@ -751,6 +751,74 @@ input:focus, select:focus {
   gap: 0.5rem;
 }
 
+.help-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(38, 45, 54, 0.28);
+  backdrop-filter: none;
+}
+
+.help-modal-card {
+  position: relative;
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.5rem 1.6rem 1.45rem;
+  border: 1px solid #f1e7b8;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: 0 1.2rem 2.8rem rgba(27, 35, 46, 0.15);
+}
+
+.help-modal-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.8rem;
+  padding: 0.2rem 0.45rem;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.help-modal-close:hover {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.help-modal-title {
+  margin: 0 0 0.9rem;
+  color: var(--color-primary);
+  font-size: clamp(1.8rem, 1.5rem + 0.8vw, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+
+.help-modal-lead {
+  margin: 0 0 1rem;
+  max-width: 22rem;
+  color: #343434;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.help-modal-section {
+  margin: 0 0 0.35rem;
+  color: var(--color-primary);
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.help-modal-copy {
+  margin: 0;
+  max-width: 22rem;
+  color: #343434;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
 .sidebar-footer-link {
   background: transparent;
   border-radius: 0.75rem;
