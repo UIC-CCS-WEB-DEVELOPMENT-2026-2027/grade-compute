@@ -1,0 +1,148 @@
+/* src/components/shared/RuleVisuals.css
+   Bar, pie chart, and table views of a grade computation rule. */
+
+.rule-visually-hidden {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* ---- Flattened bar (echoes the pill editor) ----------------------------- */
+
+.rule-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.rule-bar-track {
+    display: flex;
+    gap: 4px;
+    height: 28px;
+}
+
+/* Same look as the editor: segments with gaps, rounded outer ends. */
+.rule-bar-track span {
+    flex-basis: 0;
+    min-width: 6px;
+    border-radius: 4px;
+}
+
+.rule-bar-track span:first-child {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+}
+
+.rule-bar-track span:last-child {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+/* ---- Legend ------------------------------------------------------------- */
+
+.rule-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-locked);
+    font-size: 13px;
+}
+
+.rule-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rule-legend i,
+.rule-table i {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.rule-legend strong {
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+    color: var(--color-muted);
+}
+
+.rule-legend-stacked {
+    flex-direction: column;
+}
+
+/* ---- Pie chart ---------------------------------------------------------- */
+
+.rule-pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin: 0;
+}
+
+/* ---- Hierarchy table ---------------------------------------------------- */
+
+.rule-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--color-text-locked);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.rule-table caption {
+    margin-bottom: 8px;
+    color: var(--color-muted);
+    text-align: left;
+}
+
+.rule-table th,
+.rule-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: right;
+    font-weight: 400;
+}
+
+.rule-table th:first-child {
+    text-align: left;
+}
+
+.rule-table thead th {
+    color: var(--color-muted);
+    font-size: 12px;
+}
+
+.rule-table tbody th span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rule-table tr.is-parent th,
+.rule-table tr.is-parent td {
+    font-weight: 600;
+}
+
+.rule-table.is-compact {
+    font-size: 12px;
+}
+
+.rule-table.is-compact th,
+.rule-table.is-compact td {
+    padding: 3px 6px;
+}
+
+.rule-table.is-compact thead th {
+    font-size: 11px;
+}

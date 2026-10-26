@@ -1,0 +1,491 @@
+/* src/pages/student/StudentDashboard.css */
+
+/* ==========================================================================
+   SECTION 1: PAGE LAYOUT & MAIN CONTAINER
+   ========================================================================== */
+/* Ensure content wrapper fills space without top margin/padding */
+.dashboard-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #f8fafc;
+}
+/* Remove extra margins from header container */
+.dashboard-content-wrapper > header,
+.header-container {
+  width: 100%;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
+}
+
+.dashboard-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f8fafc;
+}
+
+/* The sidebar keeps its width instead of being squeezed by the content. */
+.dashboard-page > .sidebar {
+  flex-shrink: 0;
+}
+
+/* Everything right of the sidebar: takes all the remaining width. */
+.dashboard-shell {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dashboard-main {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 2rem clamp(1.25rem, 4vw, 4rem);
+}
+
+/* ==========================================================================
+   SECTION 2: STUDENT OVERVIEW BANNER
+   ========================================================================== */
+.overview-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.overview-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.overview-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.25rem 0 0.2rem 0;
+  line-height: 1;
+}
+
+.overview-subtitle {
+  color: #64748b;
+  font-size: 0.925rem;
+  margin: 0;
+}
+
+.semester-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  background-color: #ffffff;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.badge-dot {
+  color: #2563eb;
+  font-size: 1.2rem;
+  line-height: 0;
+}
+
+.badge-divider {
+  color: #cbd5e1;
+}
+
+
+/* ==========================================================================
+   SECTION 3: FOCUS SUBJECTS SECTION & CARDS GRID
+   ========================================================================== */
+.focus-section {
+  margin-bottom: 2.5rem;
+}
+
+.focus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.focus-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.focus-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.passing-grade-label {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.grade-val {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.subject-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Added Class: Replaces inline style for card wrappers */
+.subject-card-clickable {
+  cursor: pointer;
+}
+
+.focus-card {
+  background-color: #fafaf9;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.focus-card.card-needs-attention {
+  border-top: 3px solid #ef4444;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Status Badges */
+.status-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-alert {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.status-warning {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.status-success {
+  background-color: #f0f9ff;
+  color: #0284c7;
+}
+
+/* Subject Information */
+.subject-code {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.subject-name {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.2rem 0 0 0;
+  line-height: 1.1;
+}
+
+/* Grade Display & Progress Bars */
+.grade-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.grade-number {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.grade-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.progress-bar-fill.fill-72 {
+  width: 72%;
+  background-color: #ef4444;
+}
+
+.progress-bar-fill.fill-78 {
+  width: 78%;
+  background-color: #1e3a8a;
+}
+
+.progress-bar-fill.fill-86 {
+  width: 86%;
+  background-color: #1e3a8a;
+}
+
+.progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.text-alert {
+  color: #dc2626;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.card-footer:hover {
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   SECTION 3.5: Target Line
+   ========================================================================== */
+
+/* Green Target Line Marker styling */
+.progress-bar-track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: visible;
+  margin-bottom: 0.5rem;
+}
+
+
+.target-line-marker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background-color: #22c55e; /* Green line indicator */
+  z-index: 3;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+  transition: left 0.3s ease;
+}
+
+/* ==========================================================================
+   SECTION 4: ENROLLED SUBJECTS TABLE SECTION
+   Moved to src/components/student/EnrolledSubjectsTable.css
+   ========================================================================== */
+
+/* ==========================================================================
+   SECTION 5: RECENT UPDATES SECTION
+   ========================================================================== */
+.recent-updates-section {
+  margin-top: 2.5rem;
+}
+
+.updates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.updates-title {
+  font-family: 'Khand', sans-serif, system-ui;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1;
+}
+
+.updates-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.35rem 0 0 0;
+}
+
+.grade-activity-indicator {
+  font-size: 0.825rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.blue-dot {
+  color: #2563eb;
+  font-size: 1rem;
+}
+
+.updates-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.update-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer; /* Added property: replaces inline style */
+  transition: background-color 0.15s ease;
+}
+
+.update-row:last-child {
+  border-bottom: none;
+}
+
+.update-row:hover {
+  background-color: #fafaf9;
+}
+
+.update-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.check-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.update-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.update-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.update-subtext {
+  margin: 0;
+  font-size: 0.775rem;
+  color: #64748b;
+}
+
+.dot-sep {
+  color: #cbd5e1;
+  margin: 0 0.2rem;
+}
+
+.update-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.update-time {
+  font-size: 0.775rem;
+  color: #94a3b8;
+}
+
+.update-arrow {
+  color: #2563eb;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+
+/* ==========================================================================
+   SECTION 6: FOOTER DISCLAIMER & BRANDING
+   ========================================================================== */
+.dashboard-page-footer {
+  margin-top: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.disclaimer-text {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  margin: 0 0 2rem 0;
+}
+
+.branding-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.775rem;
+  color: #94a3b8;
+}

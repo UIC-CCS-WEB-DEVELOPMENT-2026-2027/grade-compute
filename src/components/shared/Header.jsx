@@ -1,4 +1,6 @@
 import './Header.css';
+import { getDb } from '../../utils/db';
+import { getActiveUser } from '../../utils/session';
 
 function BellIcon() {
   return (
@@ -17,12 +19,42 @@ function ChevronDownIcon() {
   );
 }
 
-export default function Header() {
+function getInitials(name) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+export default function Header({
+  title,
+  subtitle = 'A little progress, every day.',
+  user,
+}) {
+  const dbData = getDb();
+  const activeUser = getActiveUser(dbData);
+  const profile = user ?? activeUser ?? {
+    name: 'Student',
+    role: 'student',
+    programSection: '',
+  };
+  const name = profile.name || 'Student';
+  const role = profile.role
+    ? `${profile.role[0].toUpperCase()}${profile.role.slice(1)}`
+    : 'Student';
+  const profileDescription = profile.programSection
+    ? `${role} · ${profile.programSection}`
+    : `${role} · CompUGrade`;
+  const welcomeTitle = title ?? `Welcome back, ${name.split(/\s+/)[0]}!`;
+
   return (
     <header className="app-header">
       <div className="app-header__welcome">
-        <h1>Welcome back, Juan!</h1>
-        <p>A little progress, every day.</p>
+        <h1>{welcomeTitle}</h1>
+        {subtitle !== null && <p>{subtitle}</p>}
       </div>
 
       <div className="app-header__account">
@@ -31,11 +63,11 @@ export default function Header() {
           <span className="app-header__notification-dot" />
         </button>
 
-        <div className="app-header__avatar" aria-hidden="true">JD</div>
+        <div className="app-header__avatar" aria-hidden="true">{getInitials(name)}</div>
 
         <div className="app-header__profile">
-          <strong>Juan Dela Cruz</strong>
-          <span>Student · BS Information Technology</span>
+          <strong>{name}</strong>
+          <span>{profileDescription}</span>
         </div>
 
         <button className="app-header__profile-toggle" type="button" aria-label="Open profile menu">
