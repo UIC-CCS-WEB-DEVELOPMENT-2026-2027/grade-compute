@@ -342,6 +342,18 @@
     gap: 1rem;
 }
 
+.sandbox-gauges .grade-gauge {
+    flex: 0 1 96px;
+    width: 96px;
+}
+
+.sandbox-gauges .grade-gauge-label {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+}
+
 /* Step 2 */
 .sandbox-table-scroll {
     overflow-x: auto;
@@ -611,6 +623,18 @@
 
     .sandbox-result-column {
         position: static;
+    }
+}
+
+@container (max-width: 520px) {
+    .sandbox-summary {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+    }
+
+    .sandbox-gauges {
+        justify-content: flex-start;
+        width: 100%;
     }
 }
 

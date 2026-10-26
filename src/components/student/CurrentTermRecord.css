@@ -28,6 +28,7 @@
 /* GRADE WEIGHT */
 
 .grade-weight {
+    position: relative;
     min-height: 76px;
     padding: 16px 20px;
     box-sizing: border-box;
@@ -77,8 +78,11 @@
 }
 
 .weight-plus {
+    position: absolute;
+    left: 50%;
     color: #91a3ba;
     font-size: 19px;
+    transform: translateX(-50%);
 }
 
 .exams-group {
@@ -432,40 +436,36 @@
 .breakdown-button {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
     margin-top: 12px;
-    padding: 9px 14px;
-    border: 1px solid #d8e1ee;
-    border-radius: 8px;
-    background: #ffffff;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
     color: #41669b;
     font-family: inherit;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1.4;
     cursor: pointer;
-    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: color 0.18s ease, background-color 0.18s ease;
 }
 
 .breakdown-button:hover,
 .breakdown-button:focus-visible {
-    border-color: #41649d;
     background: #edf1fa;
-}
-
-.breakdown-button:hover {
-    box-shadow: 0 2px 6px rgba(64, 96, 147, 0.12);
+    color: #315486;
 }
 
 .breakdown-button:focus-visible {
     outline: 3px solid rgba(76, 140, 228, 0.36);
-    outline-offset: 2px;
+    outline-offset: 3px;
 }
 
 .breakdown-button-icon {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
     transition: transform 0.18s ease;
 }
 
