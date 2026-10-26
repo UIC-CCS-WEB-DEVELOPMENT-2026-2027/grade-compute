@@ -3,7 +3,7 @@ import DraftInput from "../shared/DraftInput";
 import { getDb, saveDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
 import { toTaskList, withStudentScore } from "../../utils/grades";
-import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
+import { formatPercent, getRuleLeaves, ruleToTree } from "../../utils/rules";
 import "./CurrentTermRecord.css";
 
 
@@ -209,17 +209,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     }
 
     // Top-level criteria for the weight summary, e.g. "70% Classwork (70% AT + 30% TLA)".
-    const summaryRows = getHierarchyRows(ruleToTree(rule));
-    const topLevel = summaryRows
-        .map((row, index) => ({ row, index }))
-        .filter(({ row }) => row.depth === 1)
-        .map(({ row, index }) => {
-            const children = [];
-            for (let next = index + 1; next < summaryRows.length && summaryRows[next].depth > 1; next += 1) {
-                if (summaryRows[next].depth === 2) children.push(summaryRows[next]);
-            }
-            return { ...row, children };
-        });
+    const topLevel = ruleToTree(rule).children ?? [];
 
     return (
         <section className="current-term-records">
@@ -235,13 +225,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     <div className="weight-group-wrap" key={group.id}>
                         {index > 0 && <span className="weight-plus">+</span>}
                         <div className="weight-group">
-                            <strong>{formatPercent(group.shareOfParent)}</strong>
+                            <strong>{formatPercent(group.share)}</strong>
                             <div>
                                 <span>{group.name}</span>
                                 <small>
-                                    {group.children.length
+                                    {group.children?.length
                                         ? group.children
-                                            .map((child) => `${formatPercent(child.shareOfParent)} ${child.name}`)
+                                            .map((child) => `${formatPercent(child.share)} ${child.name}`)
                                             .join(" + ")
                                         : `${term} tasks`}
                                 </small>

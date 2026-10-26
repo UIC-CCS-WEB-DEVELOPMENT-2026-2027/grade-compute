@@ -5,7 +5,7 @@
 import { buildRuleMath, ruleToTree, TERM_KEYS } from "./rules.js";
 import { toTaskList } from "./grades.js";
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 // Version 2 (flexible criteria):
 // - Rules store a "criteria" tree instead of the fixed "hierarchy" object,
@@ -55,6 +55,49 @@ function migrateToV2(db) {
     return { ...db, schemaVersion: 2, computationRules, classes };
 }
 
+function migrateStandardRuleCopyWeights(db) {
+    const computationRules = (db.computationRules ?? []).map((rule) => {
+        if (rule.ruleName !== "Standard IT Rule (70/30) (Copy)") return rule;
+
+        const tree = ruleToTree(rule);
+        const classwork = tree.children?.find((criterion) => criterion.name === "Classwork");
+        const exam = tree.children?.find((criterion) => criterion.name === "Exam");
+        const at = classwork?.children?.find((criterion) => criterion.name === "AT");
+        const tla = classwork?.children?.find((criterion) => criterion.name === "TLA");
+        if (
+            !classwork
+            || !exam
+            || !at
+            || !tla
+            || tree.children.length !== 2
+            || classwork.children.length !== 2
+        ) return rule;
+
+        const updatedTree = {
+            ...tree,
+            children: tree.children.map((criterion) => {
+                if (criterion.id === classwork.id) {
+                    return {
+                        ...criterion,
+                        share: 7000,
+                        children: criterion.children.map((child) => ({
+                            ...child,
+                            share: child.id === at.id ? 7000 : child.id === tla.id ? 3000 : child.share,
+                        })),
+                    };
+                }
+                return { ...criterion, share: 3000 };
+            }),
+        };
+        const math = buildRuleMath(updatedTree);
+        return math.ok
+            ? { ...rule, criteria: math.criteria, effectiveMultipliers: math.effectiveMultipliers }
+            : rule;
+    });
+
+    return { ...db, schemaVersion: 3, computationRules };
+}
+
 export function needsMigration(db) {
     return Boolean(db) && typeof db === "object" && (db.schemaVersion ?? 1) < SCHEMA_VERSION;
 }
@@ -63,5 +106,6 @@ export function migrateDb(db) {
     if (!needsMigration(db)) return db;
     let upgraded = db;
     if ((upgraded.schemaVersion ?? 1) < 2) upgraded = migrateToV2(upgraded);
+    if (upgraded.schemaVersion < 3) upgraded = migrateStandardRuleCopyWeights(upgraded);
     return upgraded;
 }
