@@ -619,7 +619,6 @@ export default function Sidebar() {
                 {isHelpOpen && createPortal(
                     <div
                         role="presentation"
-                        className="help-modal-backdrop"
                         onClick={() => setIsHelpOpen(false)}
                         style={{
                             position: "fixed",
@@ -635,27 +634,42 @@ export default function Sidebar() {
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="help-modal-title"
-                            className="help-modal-card"
                             onClick={(event) => event.stopPropagation()}
+                            style={{
+                                position: "relative",
+                                width: "min(20rem, calc(100vw - 2rem))",
+                                padding: "1.65rem 1.35rem 1.55rem",
+                                borderRadius: "0.35rem",
+                                background: "var(--color-surface)",
+                                boxShadow:
+                                    "0 1rem 2.5rem rgba(38, 50, 65, 0.18)",
+                            }}
                         >
                             <button
                                 type="button"
                                 aria-label="Close help and resources"
-                                className="help-modal-close"
                                 autoFocus
                                 onClick={() => setIsHelpOpen(false)}
+                                style={{
+                                    position: "absolute",
+                                    top: "0.7rem",
+                                    right: "0.55rem",
+                                    padding: "0.25rem",
+                                    background: "transparent",
+                                    color: "var(--color-muted)",
+                                    fontSize: "1.25rem",
+                                    lineHeight: 1,
+                                }}
                             >
                                 ×
                             </button>
-                            <h2 id="help-modal-title" className="help-modal-title">
-                                Help &amp; resources
-                            </h2>
-                            <p className="help-modal-lead">
+                            <h2 id="help-modal-title">Help &amp; resources</h2>
+                            <p>
                                 CompuGrade helps you track courses and
                                 understand your progress.
                             </p>
-                            <h3 className="help-modal-section">Getting started</h3>
-                            <p className="help-modal-copy">
+                            <h3>Getting started</h3>
+                            <p>
                                 Add your courses, review your grades, and use
                                 the grade simulator to explore future outcomes.
                                 Export your gradebook anytime as a CSV.
