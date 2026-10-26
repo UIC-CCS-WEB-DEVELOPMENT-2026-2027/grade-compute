@@ -237,3 +237,185 @@
   .hero-content h1 { font-size: 36px; }
   .preview-scene { zoom: .82; }
 }
+
+/* Authentication motion uses transforms so feedback never changes form spacing. */
+.auth-page .auth-brand,
+.auth-page .hero-content,
+.auth-page .auth-form-area {
+  animation: auth-enter 540ms cubic-bezier(.2, .7, .2, 1) both;
+}
+.auth-page .hero-content { animation-delay: 80ms; }
+.auth-page .auth-form-area { animation-delay: 120ms; }
+.auth-page .auth-intro,
+.auth-page form {
+  animation: auth-content-enter 300ms ease-out both;
+}
+.auth-page form { animation-delay: 50ms; }
+.auth-page .bar {
+  transform-origin: center bottom;
+  animation: auth-bar-grow 1100ms var(--bar-delay, 180ms) cubic-bezier(.2, .7, .2, 1) both;
+}
+.auth-page .bar-item:nth-child(1) { --bar-delay: 180ms; }
+.auth-page .bar-item:nth-child(2) { --bar-delay: 300ms; }
+.auth-page .bar-item:nth-child(3) { --bar-delay: 420ms; }
+.auth-page .bar-item:nth-child(4) { --bar-delay: 540ms; }
+.auth-page .bar-item:nth-child(5) { --bar-delay: 660ms; }
+.auth-page .preview-note { animation: auth-note-enter 650ms 650ms ease-out both; }
+.auth-page .sparkle { animation: auth-sparkle 3s ease-in-out 2; }
+.auth-page .sparkle-two { animation-delay: 350ms; }
+.auth-page .sparkle-three { animation-delay: 700ms; }
+.auth-page .sparkle-four { animation-delay: 1050ms; }
+.auth-page .auth-tabs button {
+  position: relative;
+  border-bottom-color: transparent;
+  transition: color 180ms ease;
+}
+.auth-page .auth-tabs button::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--auth-primary);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms ease;
+}
+.auth-page .auth-tabs button.active::after { transform: scaleX(1); }
+.auth-page .auth-field input {
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+.auth-page .account-type {
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.auth-page .submit-button {
+  transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.auth-page .visibility-button {
+  transition: background-color 180ms ease;
+}
+.auth-page .switch-copy button {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 180ms ease, text-decoration-color 180ms ease;
+}
+.auth-page .password-hints li { transition: color 180ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .auth-page .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px #40609030;
+  }
+  .auth-page .account-type:hover { border-color: var(--auth-primary); background-color: #f5f8fd; }
+  .auth-page .account-type.selected:hover { background-color: #eef3fb; }
+  .auth-page .visibility-button:hover { background-color: #eef3fb; }
+  .auth-page .switch-copy button:hover { text-decoration-color: currentColor; }
+}
+.auth-page .submit-button:active { transform: translateY(0) scale(.99); box-shadow: none; }
+@keyframes auth-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes auth-content-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes auth-bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes auth-note-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes auth-sparkle {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-4px) rotate(8deg); }
+}
+@keyframes auth-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Keep gentle fades and color feedback without spatial movement. */
+@media (prefers-reduced-motion: reduce) {
+  .auth-page *,
+  .auth-page *::before,
+  .auth-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .auth-page .auth-brand,
+  .auth-page .hero-content,
+  .auth-page .auth-intro,
+  .auth-page form {
+    animation: auth-fade-in 240ms ease-out both !important;
+  }
+  .auth-page .auth-tabs button,
+  .auth-page .auth-field input,
+  .auth-page .account-type,
+  .auth-page .submit-button,
+  .auth-page .visibility-button,
+  .auth-page .switch-copy button,
+  .auth-page .password-hints li {
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease !important;
+  }
+  .auth-page .submit-button:hover,
+  .auth-page .submit-button:active { transform: none; }
+}
+
+/* Hero-only ambient effects stay behind the content and never affect layout. */
+.auth-page .auth-hero { isolation: isolate; }
+.auth-page .auth-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    radial-gradient(ellipse at 75% 28%, #ffffff 0%, #ffffff00 58%),
+    radial-gradient(ellipse at 15% 80%, #ffd76d 0%, #ffd76d00 60%);
+  animation: auth-hero-glow 7s ease-in-out infinite;
+}
+.auth-page .auth-hero .preview-scene {
+  animation: auth-hero-float 6s 800ms ease-in-out infinite;
+}
+.auth-page .auth-hero .sparkle { animation-duration: 5s; animation-iteration-count: infinite; }
+@keyframes auth-hero-glow {
+  0%, 100% { opacity: .12; }
+  50% { opacity: .7; }
+}
+@keyframes auth-hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Opacity changes preserve an ambient effect without moving the artwork. */
+  .auth-page .auth-hero::before { animation: auth-hero-glow 7s ease-in-out infinite !important; }
+}
+
+/* Separate hover growth from the load animation so both can run together. */
+.auth-page .auth-hero .bars { margin-top: 12px; }
+.auth-page .auth-hero .bar-item small { top: -23px; }
+.auth-page .auth-hero .bar-hover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center bottom;
+  transition: transform 850ms cubic-bezier(.2, .7, .2, 1), filter 650ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .auth-page .auth-hero .bar-column:hover .bar-hover {
+    transform: scaleY(1.08);
+    filter: brightness(1.12) saturate(1.15);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The explicitly requested chart effect remains active; other movement stays reduced. */
+  .auth-page .auth-hero .bar {
+    animation: auth-bar-grow 1100ms var(--bar-delay, 180ms) cubic-bezier(.2, .7, .2, 1) both !important;
+  }
+  .auth-page .auth-hero .bar-hover {
+    transition: transform 850ms cubic-bezier(.2, .7, .2, 1), filter 650ms ease !important;
+  }
+}

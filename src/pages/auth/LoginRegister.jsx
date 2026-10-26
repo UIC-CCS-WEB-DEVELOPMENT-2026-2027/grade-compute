@@ -116,7 +116,7 @@ function AcademicPreview() {
         <div className="bars" aria-hidden="true">
           {previewScores.map(({ value, height, label }) => (
             <div className="bar-item" key={label}>
-              <div className="bar-column" style={{ '--bar-height': `${height}px` }}><small>{value}%</small><i className="bar" /></div>
+              <div className="bar-column" style={{ '--bar-height': `${height}px` }}><small>{value}%</small><span className="bar-hover"><i className="bar" /></span></div>
               <span>{label}</span>
             </div>
           ))}
@@ -281,12 +281,12 @@ export default function LoginRegister() {
             <button type="button" className={!isRegister ? 'active' : ''} aria-pressed={!isRegister} onClick={() => changeAuthMode('login')}>Log In</button>
             <button type="button" className={isRegister ? 'active' : ''} aria-pressed={isRegister} onClick={() => changeAuthMode('register')}>Create Account</button>
           </div>
-          <div className="auth-intro">
+          <div className="auth-intro" key={`intro-${activeTab}`}>
             <p className="form-eyebrow">{isRegister ? 'YOUR NEXT CHAPTER STARTS HERE' : 'GOOD TO SEE YOU AGAIN'}</p>
             <h2 id="auth-title">{isRegister ? 'Create your account.' : 'Welcome back.'}</h2>
             <p className="form-subtitle">{isRegister ? 'Set your goals. Build a stronger semester.' : 'Your grades, goals, and next steps are waiting.'}</p>
           </div>
-          <form onSubmit={handleSubmit} noValidate>
+          <form key={activeTab} onSubmit={handleSubmit} noValidate>
             {isRegister && <fieldset className="account-types">
               <legend className="sr-only">Account type</legend>
               {['student', 'professor'].map((role) => <label key={role} className={`account-type${registrationRole === role ? ' selected' : ''}`}>
