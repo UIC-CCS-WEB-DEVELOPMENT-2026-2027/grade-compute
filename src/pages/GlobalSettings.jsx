@@ -15,6 +15,7 @@ import {
 import SettingRow from '../components/SettingRow';
 import SelectSetting from '../components/SelectSetting';
 import ToggleSetting from '../components/ToggleSetting';
+import visibilityEye from '../assets/visibility-eye.svg';
 import './GlobalSettings.css';
 
 const sidebarItems = [
@@ -81,6 +82,14 @@ function GlobalSettings({ onLogout }) {
     assignments: true,
   });
   const [defaultLandingPage, setDefaultLandingPage] = useState('Profile');
+
+  const passwordRuleChecks = [
+    /[A-Z]/.test(passwordForm.next),
+    /\d/.test(passwordForm.next),
+    passwordForm.next.length >= 8,
+  ];
+  const passwordStrength = passwordRuleChecks.filter(Boolean).length;
+
   useEffect(() => {
     setPasswordIsSet(hasLocalPassword());
   }, []);
@@ -88,6 +97,22 @@ function GlobalSettings({ onLogout }) {
   useEffect(() => {
     saveLocalAccount(profile);
   }, [profile]);
+
+  useEffect(() => {
+    if (!showLogoutConfirm) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setShowLogoutConfirm(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showLogoutConfirm]);
 
   const updateStatus = (message) => {
     setStatusMessage(message);
@@ -160,11 +185,32 @@ function GlobalSettings({ onLogout }) {
     setVisiblePasswords((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const continuePasswordChange = async (event) => {
+  const continuePasswordSetup = async (event) => {
     event.preventDefault();
     setSecurityError('');
+
+    if (passwordIsSet && !passwordForm.current) {
+      setSecurityError('Enter your current password to continue.');
+      return;
+    }
+    if (!passwordForm.next) {
+      setSecurityError('Enter a new password to continue.');
+      return;
+    }
+    if (!/[A-Z]/.test(passwordForm.next)) {
+      setSecurityError('Your new password must include at least one uppercase letter.');
+      return;
+    }
+    if (!/\d/.test(passwordForm.next)) {
+      setSecurityError('Your new password must include at least one number.');
+      return;
+    }
     if (passwordForm.next.length < 8) {
       setSecurityError('Your new password must be at least 8 characters.');
+      return;
+    }
+    if (!passwordForm.confirm) {
+      setSecurityError('Confirm your new password to continue.');
       return;
     }
     if (passwordForm.next !== passwordForm.confirm) {
@@ -173,31 +219,23 @@ function GlobalSettings({ onLogout }) {
     }
 
     try {
-      if (passwordIsSet && await verifyLocalPassword(passwordForm.next)) {
-        setSecurityError('Your new password must be different from your current password.');
-        return;
+      if (passwordIsSet) {
+        setCurrentPasswordStatus('checking');
+        const isCurrentPasswordValid = await verifyLocalPassword(passwordForm.current);
+        setCurrentPasswordStatus(isCurrentPasswordValid ? 'valid' : 'invalid');
+        if (!isCurrentPasswordValid) {
+          setSecurityError('Current password is incorrect.');
+          return;
+        }
+        if (await verifyLocalPassword(passwordForm.next)) {
+          setSecurityError('Your new password must be different from your current password.');
+          return;
+        }
       }
       setPasswordStep('verification');
     } catch {
-      setSecurityError('Could not validate your new password. Please try again.');
-    }
-  };
-
-  const continueFromCurrentPassword = async (event) => {
-    event.preventDefault();
-    setSecurityError('');
-    setCurrentPasswordStatus('checking');
-    try {
-      const isValid = await verifyLocalPassword(passwordForm.current);
-      setCurrentPasswordStatus(isValid ? 'valid' : 'invalid');
-      if (!isValid) {
-        setSecurityError('Current password is incorrect.');
-        return;
-      }
-      setPasswordStep('new');
-    } catch {
       setCurrentPasswordStatus('error');
-      setSecurityError('Could not verify your current password. Please try again.');
+      setSecurityError('Could not validate your password. Please try again.');
     }
   };
 
@@ -535,56 +573,117 @@ function GlobalSettings({ onLogout }) {
 
           {securityView === 'password' && (
             <>
-              <h3 className="security-subtitle">Password</h3>
-              {passwordStep === 'current' && (
-                <form className="password-form" onSubmit={continueFromCurrentPassword}>
-                  <p className="password-form-heading">Confirm your current password to continue.</p>
-                  <div className="field password-field">
-                    <label htmlFor="current-password">Current password</label>
-                    <input
-                      id="current-password"
-                      type={visiblePasswords.current ? 'text' : 'password'}
-                      autoComplete="current-password"
-                      value={passwordForm.current}
-                      onChange={(event) => {
-                        setPasswordForm((prev) => ({ ...prev, current: event.target.value }));
-                        setCurrentPasswordStatus('idle');
-                      }}
-                      onBlur={validateCurrentPassword}
-                      required
-                    />
-                    <button type="button" className="password-visibility" onClick={() => togglePasswordVisibility('current')}>
-                      {visiblePasswords.current ? 'Hide' : 'Show'}
-                    </button>
+              {(passwordStep === 'current' || passwordStep === 'new') && (
+                <form className="password-form password-change-form" onSubmit={continuePasswordSetup} noValidate>
+                  <div className="password-change-heading">
+                    <span className="password-lock-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <rect x="5" y="10" width="14" height="11" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+                        <path d="M8 10V7a4 4 0 1 1 8 0v3M12 14v3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <div>
+                      <h3>Change Password</h3>
+                      <p>Update your password for enhanced account security.</p>
+                    </div>
                   </div>
-                  {currentPasswordStatus === 'valid' && <p className="password-validation valid">Current password is correct.</p>}
-                  {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                  <button type="submit" className="primary-button password-submit">Continue</button>
-                </form>
-              )}
 
-              {passwordStep === 'new' && (
-                <form className="password-form" onSubmit={continuePasswordChange}>
-                  <p className="password-form-heading">Choose a new password</p>
-                  {['next', 'confirm'].map((field) => (
-                    <div className="field password-field" key={field}>
-                      <label htmlFor={`${field}-password`}>{field === 'next' ? 'New password' : 'Confirm new password'}</label>
+                  {passwordIsSet && (
+                    <div className="field password-field">
+                      <label htmlFor="current-password">Current Password <span aria-hidden="true">*</span></label>
                       <input
-                        id={`${field}-password`}
-                        type={visiblePasswords[field] ? 'text' : 'password'}
-                        autoComplete="new-password"
-                        value={passwordForm[field]}
-                        minLength={8}
-                        onChange={(event) => setPasswordForm((prev) => ({ ...prev, [field]: event.target.value }))}
+                        id="current-password"
+                        type={visiblePasswords.current ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        value={passwordForm.current}
+                        onChange={(event) => {
+                          setPasswordForm((prev) => ({ ...prev, current: event.target.value }));
+                          setCurrentPasswordStatus('idle');
+                          setSecurityError('');
+                        }}
+                        onBlur={validateCurrentPassword}
                         required
                       />
-                      <button type="button" className="password-visibility" onClick={() => togglePasswordVisibility(field)}>
-                        {visiblePasswords[field] ? 'Hide' : 'Show'}
+                      <button type="button" className="password-visibility" aria-label={visiblePasswords.current ? 'Hide current password' : 'Show current password'} aria-pressed={visiblePasswords.current} onClick={() => togglePasswordVisibility('current')}>
+                        <img src={visibilityEye} alt="" />
                       </button>
+                      {currentPasswordStatus === 'invalid' && <span className="password-field-error">Current password is incorrect.</span>}
                     </div>
-                  ))}
+                  )}
+
+                  <div className="field password-field">
+                    <label htmlFor="next-password">New Password <span aria-hidden="true">*</span></label>
+                    <input
+                      id="next-password"
+                      type={visiblePasswords.next ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      value={passwordForm.next}
+                      aria-describedby="new-password-guidance"
+                      onChange={(event) => {
+                        setPasswordForm((prev) => ({ ...prev, next: event.target.value }));
+                        setSecurityError('');
+                      }}
+                      required
+                    />
+                    <button type="button" className="password-visibility" aria-label={visiblePasswords.next ? 'Hide new password' : 'Show new password'} aria-pressed={visiblePasswords.next} onClick={() => togglePasswordVisibility('next')}>
+                      <img src={visibilityEye} alt="" />
+                    </button>
+                  </div>
+
+                  <div className="field password-field password-confirm-field">
+                    <div className="password-label-row">
+                      <label htmlFor="confirm-password">Confirm New Password <span aria-hidden="true">*</span></label>
+                      {passwordForm.confirm && (
+                        <button
+                          type="button"
+                          className="password-clear"
+                          onClick={() => {
+                            setPasswordForm((prev) => ({ ...prev, confirm: '' }));
+                            setSecurityError('');
+                          }}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      id="confirm-password"
+                      type={visiblePasswords.confirm ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      value={passwordForm.confirm}
+                      onChange={(event) => {
+                        setPasswordForm((prev) => ({ ...prev, confirm: event.target.value }));
+                        setSecurityError('');
+                      }}
+                      required
+                    />
+                    <button type="button" className="password-visibility" aria-label={visiblePasswords.confirm ? 'Hide confirmation password' : 'Show confirmation password'} aria-pressed={visiblePasswords.confirm} onClick={() => togglePasswordVisibility('confirm')}>
+                      <img src={visibilityEye} alt="" />
+                    </button>
+                  </div>
+
+                  <div className={`password-strength strength-${passwordStrength}`} id="new-password-guidance" aria-live="polite">
+                    <div className="password-strength-meter" aria-hidden="true">
+                      {passwordRuleChecks.map((isMet, index) => (
+                        <span key={index} className={isMet ? 'is-filled' : ''} />
+                      ))}
+                    </div>
+                    <p className="password-strength-label">
+                      {passwordForm.next.length === 0
+                        ? 'Password must contain:'
+                        : passwordStrength === passwordRuleChecks.length
+                          ? 'Strong password'
+                          : 'Weak password. Must contain:'}
+                    </p>
+                    <ul className="password-requirements">
+                      <li className={passwordRuleChecks[0] ? 'is-met' : ''}>At least 1 uppercase</li>
+                      <li className={passwordRuleChecks[1] ? 'is-met' : ''}>At least 1 number</li>
+                      <li className={passwordRuleChecks[2] ? 'is-met' : ''}>At least 8 characters</li>
+                    </ul>
+                  </div>
+
                   {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                  <button type="submit" className="primary-button password-submit">Continue to verification</button>
+                  <button type="submit" className="primary-button password-submit">Continue</button>
                 </form>
               )}
 
@@ -936,7 +1035,7 @@ function GlobalSettings({ onLogout }) {
         </button>
       </div>
 
-      <div className="danger-box destructive">
+      <div className="danger-box destructive logout-box">
         <div>
           <h4>Log out</h4>
           <p>Sign out of your CompuGrade account.</p>
@@ -947,16 +1046,60 @@ function GlobalSettings({ onLogout }) {
       </div>
 
       {showLogoutConfirm && (
-        <div className="delete-confirmation">
-          <p>Are you sure you want to log out?</p>
-          <div className="confirm-actions">
-            <button type="button" className="secondary-button" onClick={() => setShowLogoutConfirm(false)}>
-              Cancel
+        <div
+          className="logout-modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowLogoutConfirm(false);
+          }}
+        >
+          <section
+            className="logout-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="logout-modal-title"
+            aria-describedby="logout-modal-description"
+          >
+            <button
+              type="button"
+              className="logout-modal-close"
+              aria-label="Close log out confirmation"
+              onClick={() => setShowLogoutConfirm(false)}
+            >
+              ×
             </button>
-            <button type="button" className="danger-button" onClick={confirmLogout}>
-              Log Out
-            </button>
-          </div>
+            <div className="logout-modal-illustration" aria-hidden="true">
+              <svg viewBox="0 0 120 104" fill="none">
+                <path d="M22 88h76" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                <path d="M34 85V21a7 7 0 0 1 7-7h34v71" fill="currentColor" fillOpacity=".13" />
+                <path d="M34 85V21a7 7 0 0 1 7-7h34v71" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+                <path d="M46 85V25h29v60" fill="currentColor" fillOpacity=".1" />
+                <path d="M46 85V25h29v60" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
+                <circle cx="68" cy="55" r="2.5" fill="currentColor" />
+                <path d="M62 48h36m-9-9 9 9-9 9" stroke="#E9C936" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M18 82c4-7 9-8 14-7-3 5-7 8-14 7Zm70 0c4-7 9-8 14-7-3 5-7 8-14 7Z" fill="#E9C936" />
+                <circle cx="91" cy="23" r="3" fill="#E9C936" />
+                <circle cx="100" cy="31" r="2" fill="currentColor" />
+              </svg>
+            </div>
+            <h2 id="logout-modal-title">Are you logging out?</h2>
+            <p id="logout-modal-description">
+              You can always sign back in to your CompUGrade account whenever you&apos;re ready.
+            </p>
+            <div className="logout-modal-actions">
+              <button
+                type="button"
+                className="logout-modal-cancel"
+                onClick={() => setShowLogoutConfirm(false)}
+                autoFocus
+              >
+                Cancel
+              </button>
+              <button type="button" className="logout-modal-confirm" onClick={confirmLogout}>
+                Log out
+              </button>
+            </div>
+          </section>
         </div>
       )}
     </div>
@@ -985,8 +1128,22 @@ function GlobalSettings({ onLogout }) {
     <div className={darkMode ? 'global-settings dark' : 'global-settings'}>
       <aside className="sidebar">
         <div className="brand-row">
-          <div className="brand-icon" aria-hidden="true">C</div>
-          <div className="brand-name">CompuGrade</div>
+          <div className="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
+                stroke="currentColor"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M10 8H14M10 11H14M10 14H12.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+          <div className="brand-name">CompUGrade<span className="brand-name-dot">.</span></div>
         </div>
 
         <div className="workspace-box">

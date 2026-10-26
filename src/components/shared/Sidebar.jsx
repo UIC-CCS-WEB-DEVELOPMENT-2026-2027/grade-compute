@@ -461,46 +461,41 @@ export default function Sidebar() {
                 {isHelpOpen && (
                     <div
                         role="presentation"
+                        className="help-modal-backdrop"
                         onClick={() => setIsHelpOpen(false)}
-                        style={{
-                            position: "fixed",
-                            inset: 0,
-                            zIndex: 10,
-                            display: "grid",
-                            placeItems: "center",
-                            background: "rgba(33, 45, 59, 0.34)",
-                            backdropFilter: "blur(5px)",
-                        }}
                     >
                         <section
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="help-modal-title"
+                            className="help-modal-card"
                             onClick={(event) => event.stopPropagation()}
-                            style={{
-                                position: "relative",
-                                width: "min(20rem, calc(100vw - 2rem))",
-                                padding: "1.65rem 1.35rem 1.55rem",
-                                borderRadius: "0.35rem",
-                                background: "var(--color-surface)",
-                                boxShadow:
-                                    "0 1rem 2.5rem rgba(38, 50, 65, 0.18)",
-                            }}
                         >
+                            <div className="help-modal-brand" aria-label="CompuGrade">
+                                <span className="help-modal-brand-mark" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path
+                                            d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.4"
+                                        />
+                                        <path
+                                            d="M10 8H14M10 11H14M10 14H12.5"
+                                            stroke="currentColor"
+                                            strokeWidth="1.4"
+                                            strokeLinecap="round"
+                                        />
+                                    </svg>
+                                </span>
+                                <span className="help-modal-brand-name">
+                                    CompUGrade<span className="help-modal-brand-dot">.</span>
+                                </span>
+                            </div>
                             <button
                                 type="button"
                                 aria-label="Close help and resources"
                                 onClick={() => setIsHelpOpen(false)}
-                                style={{
-                                    position: "absolute",
-                                    top: "0.7rem",
-                                    right: "0.55rem",
-                                    padding: "0.25rem",
-                                    background: "transparent",
-                                    color: "var(--color-muted)",
-                                    fontSize: "1.25rem",
-                                    lineHeight: 1,
-                                }}
+                                className="help-modal-close"
                             >
                                 ×
                             </button>
