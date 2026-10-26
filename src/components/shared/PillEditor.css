@@ -1,0 +1,408 @@
+/* src/components/shared/PillEditor.css
+   Pill editor for grade computation rules. Uses only tokens from index.css,
+   including --color-criteria-1 to --color-criteria-8. */
+
+.pill-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* ---- One level ---------------------------------------------------------- */
+
+.pill-level {
+    padding-left: calc(var(--pill-depth, 0) * 32px);
+}
+
+.pill-level + .pill-level {
+    padding-top: 22px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px 20px;
+}
+
+.pill-track {
+    display: flex;
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.pill-criterion {
+    display: flex;
+    flex-basis: 0;
+    flex-direction: column;
+    min-width: 64px;
+}
+
+/* ---- Names above the pill ----------------------------------------------- */
+
+.pill-name-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 34px;
+    padding: 0 12px 6px;
+}
+
+.pill-name {
+    overflow: hidden;
+    min-width: 0;
+    color: var(--color-text-locked);
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pill-name-button {
+    padding: 0;
+    border: 0;
+    border-bottom: 2px dotted var(--color-muted);
+    border-radius: 0;
+    background: none;
+    cursor: help;
+}
+
+.pill-name-button:hover,
+.pill-name-button.is-previewing {
+    border-bottom-style: solid;
+    border-bottom-color: var(--color-primary);
+    color: var(--color-primary);
+    opacity: 1;
+}
+
+.pill-name-input {
+    width: 100%;
+    max-width: 180px;
+    padding: 2px 6px;
+    font-family: var(--font-heading);
+    font-size: 18px;
+}
+
+.pill-icon-button {
+    display: inline-grid;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1;
+}
+
+.pill-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.pill-add-button {
+    border-color: var(--color-text-locked);
+    color: var(--color-text-locked);
+}
+
+/* ---- The pill itself: a segmented slider ------------------------------- */
+
+.pill-row {
+    --pill-height: 52px;
+    --pill-gap: 18px;            /* space between sections, where the handle sits */
+    --pill-handle-width: 8px;
+}
+
+.pill-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--pill-height);
+    margin: 0 calc(var(--pill-gap) / 2);
+    border-radius: 8px;
+    background-color: var(--pill-color);
+    color: var(--pill-on);
+    transition: background-color 0.2s ease;
+}
+
+.pill-criterion:first-child .pill-bar {
+    margin-left: 0;
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+}
+
+.pill-criterion:last-child .pill-bar {
+    margin-right: 0;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.pill-level:not(.is-dragging) .pill-criterion {
+    transition: flex-grow 0.25s ease;
+}
+
+/* Dots: one per full 10% of the level, pressed into the bar. */
+.pill-dots {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-evenly;
+    min-width: 0;
+    padding: 0 14px;
+    pointer-events: none;
+}
+
+.pill-dots i {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--pill-on);
+    box-shadow: inset 0 1.5px 2px color-mix(in srgb, var(--color-text-locked) 45%, transparent);
+    opacity: 0.6;
+}
+
+/* Handle: a thick rounded line standing in the gap. The invisible ::before
+   gives it a wide grab area for fingers and mice. */
+.pill-handle {
+    position: absolute;
+    z-index: 2;
+    top: -14px;
+    bottom: -14px;
+    right: calc((var(--pill-gap) / 2 + var(--pill-handle-width) / 2) * -1);
+    width: var(--pill-handle-width);
+    border-radius: 999px;
+    background: var(--color-primary);
+    cursor: ew-resize;
+    touch-action: none;
+    transition: width 0.15s ease, right 0.15s ease, background-color 0.15s ease;
+}
+
+.pill-handle::before {
+    content: "";
+    position: absolute;
+    inset: -6px -16px;
+}
+
+.pill-handle:hover {
+    background: var(--color-accent);
+}
+
+.pill-handle:focus-visible {
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 3px;
+}
+
+/* While dragging, the handle narrows like the reference slider. */
+.is-dragging .pill-handle:active {
+    --pill-handle-width: 4px;
+    background: var(--color-accent);
+}
+
+/* Typed percentage, under each section */
+.pill-percent {
+    display: inline-flex;
+    align-self: center;
+    align-items: baseline;
+    max-width: calc(100% - 8px);
+    margin-top: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+    cursor: text;
+}
+
+.pill-percent input {
+    width: 4.5ch;
+    min-width: 1ch;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Browsers that support it size the box to the number, so "%" sits right after it. */
+@supports (field-sizing: content) {
+    .pill-percent input {
+        width: auto;
+        field-sizing: content;
+    }
+}
+
+.pill-percent span {
+    margin-left: 1px;
+    color: var(--color-muted);
+    font-size: 15px;
+}
+
+.pill-percent:hover {
+    border-color: var(--color-primary);
+}
+
+.pill-percent:focus-within {
+    border-color: var(--color-primary);
+    outline: 3px solid var(--color-focus-ring);
+    outline-offset: 1px;
+}
+
+/* ---- "= Grade" label ---------------------------------------------------- */
+
+.pill-total {
+    margin: 0 0 54px;
+    color: var(--color-text-locked);
+    font-family: var(--font-heading);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* ---- Hover preview (view-only) ------------------------------------------ */
+
+.pill-bar.is-previewing {
+    background: transparent;
+}
+
+.pill-preview {
+    display: flex;
+    align-self: stretch;
+    gap: 4px;
+    width: 100%;
+}
+
+.pill-preview-part {
+    display: flex;
+    flex-basis: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 0 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.pill-criterion:first-child .pill-preview-part:first-child {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+}
+
+.pill-criterion:last-child .pill-preview-part:last-child {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.pill-preview-part span,
+.pill-preview-part strong {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pill-preview-part strong {
+    font-weight: 600;
+}
+
+/* ---- Warning, split controls, hint -------------------------------------- */
+
+.pill-warning {
+    min-height: 1.4em;
+    margin: 10px 0 0;
+    color: var(--color-warning-strong);
+    font-size: 14px;
+}
+
+.pill-warning:empty {
+    margin-top: 0;
+}
+
+.pill-manage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+    font-size: 14px;
+}
+
+.pill-chip i {
+    width: 10px;
+    height: 10px;
+    margin-right: 2px;
+    border-radius: 50%;
+}
+
+.pill-chip > span {
+    margin-right: 4px;
+}
+
+.pill-text-button {
+    height: 24px;
+    padding: 0 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: 13px;
+}
+
+.pill-hint {
+    max-width: 70ch;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+
+@media (max-width: 640px) {
+    .pill-level {
+        padding-left: calc(var(--pill-depth, 0) * 14px);
+    }
+
+    .pill-row {
+        --pill-gap: 16px;
+    }
+
+    .pill-name {
+        font-size: 18px;
+    }
+
+    .pill-total {
+        margin-bottom: 0;
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pill-level .pill-criterion,
+    .pill-bar,
+    .pill-handle {
+        transition: none;
+    }
+}

@@ -1,0 +1,129 @@
+/* src/components/student/AddSubjectForm.css */
+/* The New Subject Request form. Shown inside EnrolledSubjectsTable on the
+   Dashboard and My Subjects pages, so it uses the table's type scale. */
+
+.subject-request-form {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface-soft);
+}
+
+.subject-request-form h2 {
+    margin: 0;
+    color: var(--color-text-locked);
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    line-height: 1.1;
+}
+
+.subject-request-form > p {
+    margin: 0.3rem 0 1rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+}
+
+.subject-request-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.subject-request-fields label {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+}
+
+.subject-request-fields input,
+.subject-request-fields select {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+    font-size: 0.875rem;
+}
+
+.subject-request-fields input:focus,
+.subject-request-fields select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.subject-request-fields input[aria-invalid="true"],
+.subject-request-fields select[aria-invalid="true"] {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-soft);
+}
+
+.subject-request-rule-formula {
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.subject-request-rule-link {
+    color: var(--color-primary);
+    font-size: 0.75rem;
+}
+
+.subject-field-error {
+    color: var(--color-warning-strong);
+    font-size: 0.75rem;
+    line-height: 1.35;
+}
+
+.subject-request-error {
+    margin: 0 0 0.85rem;
+    color: var(--color-warning-strong);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.subject-request-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subject-request-submit,
+.subject-request-cancel {
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.subject-request-submit {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.subject-request-submit:hover {
+    background: var(--color-criteria-5);
+}
+
+.subject-request-cancel {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-muted);
+}
+
+.subject-request-cancel:hover {
+    background: var(--color-surface-hover);
+}
+
+@media (max-width: 640px) {
+    .subject-request-fields {
+        grid-template-columns: 1fr;
+    }
+}

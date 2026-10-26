@@ -1,0 +1,472 @@
+/* src/components/student/TargetGradeSandbox.css */
+/* Target Grade Sandbox page. The result card is the answer to "what do I
+   need?", so it is the most prominent element: colored, large, and sticky
+   beside the inputs on wide screens (first on phones). Gauge styles
+   (grade-gauge-*) come from SubjectDetail.css. */
+
+.sandbox {
+    /* Layout follows the space next to the sidebar, not the window width. */
+    container-type: inline-size;
+    color: var(--color-text-locked);
+}
+
+.sandbox-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.sandbox-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
+    grid-template-areas: "inputs result";
+    align-items: start;
+    gap: 1.5rem;
+}
+
+.sandbox-inputs {
+    grid-area: inputs;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.sandbox-result-column {
+    grid-area: result;
+    position: sticky;
+    top: 1rem;
+}
+
+/* ---- Result card ---- */
+.sandbox-result {
+    --result-bg: var(--color-primary);
+    --result-text: var(--color-white);
+    --result-muted: var(--color-surface-overlay);
+    --result-line: var(--color-surface-overlay-soft);
+    padding: 1.4rem 1.4rem 1.2rem;
+    border-radius: 14px;
+    background: var(--result-bg);
+    color: var(--result-text);
+    box-shadow: 0 12px 28px var(--shadow-hover-strong);
+}
+
+.sandbox-result--impossible {
+    --result-bg: var(--color-warning-soft);
+    --result-text: var(--color-text-locked);
+    --result-muted: var(--color-warning-strong);
+    --result-line: var(--color-warning-border);
+    border: 1px solid var(--color-warning-border);
+}
+
+.sandbox-result--reached {
+    --result-bg: var(--color-success);
+}
+
+.sandbox-result--empty {
+    --result-bg: var(--color-surface-muted);
+    --result-text: var(--color-text-locked);
+    --result-muted: var(--color-muted);
+    --result-line: var(--color-border);
+    box-shadow: none;
+}
+
+.sandbox-result p {
+    margin: 0;
+}
+
+.sandbox-result-label {
+    color: var(--result-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.sandbox-result-value {
+    margin-top: 0.35rem !important;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 4.25rem);
+    font-weight: 700;
+    line-height: 0.95;
+    font-variant-numeric: tabular-nums;
+}
+
+.sandbox-result-unit {
+    margin-top: 0.2rem !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.sandbox-result-message {
+    margin-top: 0.75rem !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.sandbox-result-list {
+    margin: 0.9rem 0 0;
+    padding: 0.75rem 0 0;
+    border-top: 1px solid var(--result-line);
+    list-style: none;
+    font-size: 0.8rem;
+}
+
+.sandbox-result-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.2rem 0;
+}
+
+.sandbox-result-list li span:last-child {
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.sandbox-result-projection {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-top: 0.9rem !important;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--result-line);
+    font-size: 0.8rem;
+}
+
+.sandbox-result-projection strong {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+/* ---- Input cards ---- */
+.sandbox-card {
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+}
+
+.sandbox-step {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+    color: var(--color-text-locked);
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    line-height: 1.1;
+}
+
+.sandbox-step > span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: 0 0 1.6rem;
+    border-radius: 50%;
+    background: var(--color-bg-selected);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.sandbox-help {
+    margin: 0.4rem 0 0.9rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.sandbox-muted {
+    color: var(--color-text-faint);
+    font-size: 0.8rem;
+}
+
+.sandbox-error {
+    margin: 0.5rem 0 0;
+    color: var(--color-warning-strong);
+    font-size: 0.78rem;
+}
+
+.sandbox-empty {
+    color: var(--color-muted);
+}
+
+/* Step 1 */
+.sandbox-summary {
+    display: grid;
+    grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.sandbox-target {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.sandbox-target > small {
+    color: var(--color-muted);
+    font-size: 0.72rem;
+}
+
+.sandbox-target-input {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-highlight-strong);
+    font-weight: 700;
+}
+
+.sandbox-target-input input {
+    width: 6.5rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.sandbox-target-input input[aria-invalid="true"] {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-soft);
+}
+
+.sandbox-gauges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+/* Step 2 */
+.sandbox-table-scroll {
+    overflow-x: auto;
+}
+
+.sandbox-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.82rem;
+}
+
+.sandbox-table thead th {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border-soft);
+    color: var(--color-text-faint);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.sandbox-table tbody th,
+.sandbox-table td {
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid var(--color-border-soft);
+    font-weight: 400;
+    vertical-align: middle;
+}
+
+.sandbox-table small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--color-text-faint);
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.sandbox-table tr.is-not-counted th,
+.sandbox-table tr.is-not-counted td:not(:nth-child(3)):not(:nth-child(4)) {
+    opacity: 0.6;
+}
+
+.sandbox-criterion-name {
+    font-weight: 600;
+}
+
+.sandbox-number {
+    width: 4.5rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text-locked);
+    font-size: 0.85rem;
+}
+
+.sandbox-number:focus,
+.sandbox-target-input input:focus,
+.sandbox-draft-input input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.sandbox-percent-input {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-muted);
+}
+
+.sandbox-need strong {
+    color: var(--color-primary);
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+/* Step 3 */
+.sandbox-draft-group + .sandbox-draft-group {
+    margin-top: 0.9rem;
+}
+
+.sandbox-draft-group h3 {
+    margin: 0 0 0.35rem;
+    color: var(--color-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.sandbox-draft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    font-size: 0.85rem;
+}
+
+.sandbox-draft-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.sandbox-draft-name small,
+.sandbox-draft-locked small {
+    display: block;
+    color: var(--color-text-faint);
+    font-size: 0.7rem;
+}
+
+.sandbox-draft-locked {
+    color: var(--color-text-locked);
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.sandbox-draft-input {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+}
+
+/* Student-entered values use the accent color (css-styling-guide.txt). */
+.sandbox-draft-input input {
+    width: 5rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+.sandbox-draft-input input::placeholder {
+    color: var(--color-text-faint);
+}
+
+.sandbox-draft-input input[aria-invalid="true"] {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-soft);
+}
+
+.sandbox-how summary {
+    color: var(--color-text-locked);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sandbox-how p {
+    margin: 0.6rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+
+/* ---- Narrow space: result first, then the steps ---- */
+@container (max-width: 860px) {
+    .sandbox-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "result"
+            "inputs";
+    }
+
+    .sandbox-result-column {
+        position: static;
+    }
+}
+
+@container (max-width: 560px) {
+    .sandbox-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .sandbox-card {
+        padding: 1rem;
+    }
+}
+
+/* Page heading above the sandbox (TargetGradeSandboxPage). */
+.sandbox-page-heading {
+    margin-bottom: 1.25rem;
+}
+
+.sandbox-page-heading .subject-title-row {
+    margin-bottom: 0;
+}
+
+.sandbox-page-heading h1 {
+    margin: 0;
+}
+
+/* A draft row picked from the chart (utils/focusTask.js) */
+.sandbox-draft.is-highlighted {
+    animation: sandbox-draft-highlight 2.4s ease-out;
+}
+
+@keyframes sandbox-draft-highlight {
+    0%,
+    35% {
+        background: var(--color-highlight-soft);
+    }
+
+    100% {
+        background: transparent;
+    }
+}

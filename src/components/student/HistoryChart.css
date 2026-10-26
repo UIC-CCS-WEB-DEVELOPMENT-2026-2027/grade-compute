@@ -1,0 +1,404 @@
+/* src/components/student/HistoryChart.css */
+/* History charts: Subject Detail, Dashboard (all subjects) and the sandbox. */
+
+/* ---- Section wrapper (Subject Detail and Dashboard) ---------------------- */
+
+.history-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 28px;
+    padding: 22px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+}
+
+.history-section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.history-section-heading h2 {
+    margin: 0;
+    color: var(--color-text-locked);
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    line-height: 1.1;
+}
+
+.history-section-heading p {
+    max-width: 62ch;
+    margin: 4px 0 0;
+    color: var(--color-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.history-section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Toggle buttons (Show plan / Show chart) and the term switch */
+.history-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.history-toggle[aria-pressed="true"] {
+    border-color: var(--color-primary);
+    background: var(--color-bg-selected);
+    color: var(--color-primary);
+}
+
+.history-link {
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.history-scope {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface-soft);
+}
+
+.history-scope button {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 12px;
+}
+
+.history-scope button[aria-pressed="true"] {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.history-note {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.history-note strong {
+    color: var(--color-text-locked);
+}
+
+.history-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---- Chart -------------------------------------------------------------- */
+
+.history-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-plot {
+    position: relative;
+    min-width: 0;
+    padding: 8px 4px 0 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+}
+
+.history-summary {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.history-summary strong {
+    color: var(--color-text-locked);
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+}
+
+.history-summary .is-above {
+    color: var(--color-success);
+}
+
+.history-summary .is-below {
+    color: var(--color-warning-strong);
+}
+
+.history-empty {
+    margin: 0;
+    padding: 28px 20px;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: 10px;
+    color: var(--color-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ---- Legend ------------------------------------------------------------- */
+
+.history-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 12px;
+}
+
+.history-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.history-legend i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.history-legend .is-official {
+    background: var(--color-text-locked);
+}
+
+.history-legend .is-self {
+    border: 2.5px solid var(--color-accent);
+    background: var(--color-surface);
+}
+
+.history-legend .is-line {
+    width: 18px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-primary);
+}
+
+.history-legend .is-target {
+    width: 18px;
+    height: 0;
+    border-top: 2px dashed var(--color-text-locked);
+    border-radius: 0;
+}
+
+/* ---- Subject filter chips ----------------------------------------------- */
+
+.history-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.history-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.history-chip-all {
+    color: var(--color-primary);
+}
+
+.history-chip i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    opacity: 0.35;
+}
+
+.history-chip small {
+    color: var(--color-muted);
+    font-size: 11px;
+}
+
+.history-chip[aria-pressed="true"] {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-text-locked);
+}
+
+.history-chip[aria-pressed="true"] i {
+    opacity: 1;
+}
+
+/* ---- Tooltip ------------------------------------------------------------ */
+
+.history-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 260px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    box-shadow: 0 8px 24px var(--shadow-hover-strong);
+    color: var(--color-text-locked);
+    font-size: 12px;
+}
+
+.history-tooltip p {
+    margin: 2px 0 0;
+    color: var(--color-muted);
+}
+
+.history-tooltip .history-tooltip-task {
+    color: var(--color-text-locked);
+    font-weight: 600;
+}
+
+.history-tooltip-series {
+    font-size: 13px;
+}
+
+/* ---- Data table --------------------------------------------------------- */
+
+.history-table summary {
+    color: var(--color-primary);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.history-table table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.history-table caption {
+    padding: 4px 0;
+    color: var(--color-text-locked);
+    font-weight: 600;
+    text-align: left;
+}
+
+.history-table th,
+.history-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+}
+
+.history-table th {
+    color: var(--color-muted);
+    font-weight: 400;
+}
+
+/* ---- Additions: overwritten entries, plan, passing line, clicks -------- */
+
+.history-legend .is-ghost {
+    border: 2px dashed var(--color-accent);
+    background: var(--color-surface);
+    opacity: 0.6;
+}
+
+.history-legend .is-plan {
+    width: 18px;
+    height: 0;
+    border-top: 2px dashed var(--color-text-faint);
+    border-radius: 0;
+}
+
+.history-legend .is-passing {
+    width: 18px;
+    height: 0;
+    border-top: 2px dotted var(--color-warning-strong);
+    border-radius: 0;
+}
+
+.history-dot.is-clickable {
+    cursor: pointer;
+}
+
+.history-tooltip .history-tooltip-replaced {
+    color: var(--color-accent);
+}
+
+.history-table .is-plan-row td {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.history-table-link {
+    padding: 2px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: 11px;
+}
+
+@media (max-width: 640px) {
+    .history-section {
+        padding: 16px 12px;
+    }
+}
+
+.history-legend .is-reached {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--color-success);
+    background: transparent;
+}
+
+/* Tooltip for the one point under the pointer (usePointHover.js) */
+.history-tooltip-float {
+    position: absolute;
+    z-index: 5;
+    width: max-content;
+    pointer-events: none;
+}
+
+/* Dots grow when hovered (CSS only, so the chart isn't redrawn). */
+.history-dot-mark {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.history-dot:hover .history-dot-mark {
+    transform: scale(1.4);
+}
+
+.history-dot.is-ghost .history-dot-mark {
+    opacity: 0.55;
+}
+
+.history-dot.is-ghost:hover .history-dot-mark {
+    opacity: 0.95;
+}

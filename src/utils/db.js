@@ -1,7 +1,9 @@
 // src/utils/db.js
 import mockData from './db.json';
+import { migrateDb, needsMigration } from './migrations.js';
 
 const DB_KEY = 'compugrade_db';
+export const DB_UPDATED_EVENT = 'compugrade-db-updated';
 
 /**
  * Injects the db.json data into the browser's local storage 
@@ -12,7 +14,9 @@ export const initializeDatabase = () => {
   if (!existingData) {
     localStorage.setItem(DB_KEY, JSON.stringify(mockData));
     console.log('Database initialized from db.json');
+    return;
   }
+  getDb(); // upgrades data saved in an older format
 };
 
 /**
@@ -21,7 +25,15 @@ export const initializeDatabase = () => {
  */
 export const getDb = () => {
   const data = localStorage.getItem(DB_KEY);
-  return data ? JSON.parse(data) : null;
+  if (!data) return null;
+
+  const parsed = JSON.parse(data);
+  if (!needsMigration(parsed)) return parsed;
+
+  // Data saved in an older format: upgrade it once and save it back.
+  const upgraded = migrateDb(parsed);
+  localStorage.setItem(DB_KEY, JSON.stringify(upgraded));
+  return upgraded;
 };
 
 /**
@@ -30,6 +42,7 @@ export const getDb = () => {
  */
 export const saveDb = (updatedData) => {
   localStorage.setItem(DB_KEY, JSON.stringify(updatedData));
+  window.dispatchEvent(new Event(DB_UPDATED_EVENT));
 };
 
 /**
