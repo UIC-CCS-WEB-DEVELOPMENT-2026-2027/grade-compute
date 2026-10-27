@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   hasLocalPassword,
   loadLocalAccount,
@@ -13,7 +14,6 @@ import {
   verifyPrototypeChallenge,
 } from '../utils/prototypeVerification';
 import SettingRow from '../components/SettingRow';
-import SelectSetting from '../components/SelectSetting';
 import ToggleSetting from '../components/ToggleSetting';
 import './GlobalSettings.css';
 
@@ -22,9 +22,9 @@ const sidebarItems = [
   { label: 'Account', icon: 'account' },
   { label: 'Security', icon: 'security' },
   { label: 'Notifications', icon: 'notifications' },
-  { label: 'Appearance', icon: 'appearance' },
   { label: 'Account Actions', icon: 'actions' },
 ];
+const legacySettingsThemeStorageKey = 'compugrade-settings-theme';
 
 function SettingsIcon({ name }) {
   const iconPaths = {
@@ -33,13 +33,12 @@ function SettingsIcon({ name }) {
     security: <><path d="M12 3.5 19 6v5.2c0 4.4-3 7.6-7 9.3-4-1.7-7-4.9-7-9.3V6l7-2.5Z" /><path d="m9.5 12 1.7 1.7 3.5-3.7" /></>,
     privacy: <><path d="M3.5 12s3-5 8.5-5 8.5 5 8.5 5-3 5-8.5 5-8.5-5-8.5-5Z" /><circle cx="12" cy="12" r="2" /><path d="m4 4 16 16" /></>,
     notifications: <><path d="M18 9a6 6 0 0 0-12 0c0 7-2.5 7-2.5 9h17C20.5 16 18 16 18 9ZM10 21h4" /></>,
-    appearance: <><circle cx="12" cy="12" r="3.5" /><path d="M12 2.5v2M12 19.5v2M4.7 4.7l1.4 1.4m11.8 11.8 1.4 1.4M2.5 12h2m15 0h2M4.7 19.3l1.4-1.4M17.9 6.1l1.4-1.4" /></>,
     actions: <><path d="M5 7h14M5 12h14M5 17h14" /><circle cx="9" cy="7" r="1.5" /><circle cx="15" cy="12" r="1.5" /><circle cx="11" cy="17" r="1.5" /></>,
   };
 
   return (
     <svg
-      className="nav-icon"
+      className="settings-nav-icon"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -55,14 +54,14 @@ function SettingsIcon({ name }) {
 
 function GlobalSettings({ onLogout }) {
   const [activeSection, setActiveSection] = useState('Profile');
-  const [darkMode, setDarkMode] = useState(false);
   const [profile, setProfile] = useState(loadLocalAccount);
+  const [isAccountEditing, setIsAccountEditing] = useState(true);
   const [selectedImage, setSelectedImage] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ current: '', next: '', confirm: '' });
+  const [passwordFieldErrors, setPasswordFieldErrors] = useState({});
   const [visiblePasswords, setVisiblePasswords] = useState({});
-  const [currentPasswordStatus, setCurrentPasswordStatus] = useState('idle');
   const [passwordIsSet, setPasswordIsSet] = useState(false);
   const [securityView, setSecurityView] = useState('overview');
   const [passwordStep, setPasswordStep] = useState('current');
@@ -80,9 +79,12 @@ function GlobalSettings({ onLogout }) {
     system: true,
     assignments: true,
   });
-  const [defaultLandingPage, setDefaultLandingPage] = useState('Profile');
   useEffect(() => {
     setPasswordIsSet(hasLocalPassword());
+  }, []);
+
+  useEffect(() => {
+    localStorage.removeItem(legacySettingsThemeStorageKey);
   }, []);
 
   useEffect(() => {
@@ -128,32 +130,12 @@ function GlobalSettings({ onLogout }) {
 
   const saveAccountChanges = () => {
     saveLocalAccount(profile);
+    setIsAccountEditing(false);
     updateStatus('Account details updated.');
   };
 
   const toggleNotification = (key) => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handlePasswordInput = (event) => {
-    const { name, value } = event.target;
-    setPasswordForm((prev) => ({ ...prev, [name]: value }));
-    if (name === 'current') setCurrentPasswordStatus('idle');
-  };
-
-  const validateCurrentPassword = async () => {
-    if (!passwordForm.current) {
-      setCurrentPasswordStatus('idle');
-      return;
-    }
-
-    setCurrentPasswordStatus('checking');
-    try {
-      const isValid = await verifyLocalPassword(passwordForm.current);
-      setCurrentPasswordStatus(isValid ? 'valid' : 'invalid');
-    } catch {
-      setCurrentPasswordStatus('error');
-    }
   };
 
   const togglePasswordVisibility = (field) => {
@@ -163,8 +145,37 @@ function GlobalSettings({ onLogout }) {
   const continuePasswordChange = async (event) => {
     event.preventDefault();
     setSecurityError('');
+    const requiredFields = passwordIsSet
+      ? ['current', 'next', 'confirm']
+      : ['next', 'confirm'];
+    const emptyFields = requiredFields.filter((field) => !passwordForm[field]);
+    if (emptyFields.length) {
+      setPasswordFieldErrors(Object.fromEntries(
+        emptyFields.map((field) => [field, 'Please fill out this field.']),
+      ));
+      return;
+    }
+    setPasswordFieldErrors({});
+
+    if (passwordIsSet) {
+      try {
+        const isCurrentPasswordValid = await verifyLocalPassword(passwordForm.current);
+        if (!isCurrentPasswordValid) {
+          setSecurityError('Current password is incorrect.');
+          return;
+        }
+      } catch {
+        setSecurityError('Could not verify your current password. Please try again.');
+        return;
+      }
+    }
+
     if (passwordForm.next.length < 8) {
       setSecurityError('Your new password must be at least 8 characters.');
+      return;
+    }
+    if (!/[A-Z]/.test(passwordForm.next) || !/\d/.test(passwordForm.next)) {
+      setSecurityError('Your new password must include at least one uppercase letter and one number.');
       return;
     }
     if (passwordForm.next !== passwordForm.confirm) {
@@ -180,24 +191,6 @@ function GlobalSettings({ onLogout }) {
       setPasswordStep('verification');
     } catch {
       setSecurityError('Could not validate your new password. Please try again.');
-    }
-  };
-
-  const continueFromCurrentPassword = async (event) => {
-    event.preventDefault();
-    setSecurityError('');
-    setCurrentPasswordStatus('checking');
-    try {
-      const isValid = await verifyLocalPassword(passwordForm.current);
-      setCurrentPasswordStatus(isValid ? 'valid' : 'invalid');
-      if (!isValid) {
-        setSecurityError('Current password is incorrect.');
-        return;
-      }
-      setPasswordStep('new');
-    } catch {
-      setCurrentPasswordStatus('error');
-      setSecurityError('Could not verify your current password. Please try again.');
     }
   };
 
@@ -234,7 +227,6 @@ function GlobalSettings({ onLogout }) {
       setVerificationFeedback('Your password was changed successfully.');
       setPasswordForm({ current: '', next: '', confirm: '' });
       setVisiblePasswords({});
-      setCurrentPasswordStatus('idle');
       setVerificationChallenge(null);
     } catch {
       setSecurityError('The password could not be updated. Please try again.');
@@ -243,13 +235,13 @@ function GlobalSettings({ onLogout }) {
 
   const beginPasswordFlow = () => {
     setSecurityView('password');
-    setPasswordStep(passwordIsSet ? 'current' : 'new');
+    setPasswordStep('new');
     setPasswordForm({ current: '', next: '', confirm: '' });
+    setPasswordFieldErrors({});
     setVisiblePasswords({});
     setSecurityError('');
     setVerificationFeedback('');
     setVerificationChallenge(null);
-    setCurrentPasswordStatus('idle');
   };
 
   const startTwoFactorEnable = () => {
@@ -330,6 +322,12 @@ function GlobalSettings({ onLogout }) {
     .slice(0, 2)
     .join('')
     .toUpperCase();
+  const passwordRequirements = [
+    { label: 'At least 1 uppercase', met: /[A-Z]/.test(passwordForm.next) },
+    { label: 'At least 1 number', met: /\d/.test(passwordForm.next) },
+    { label: 'At least 8 characters', met: passwordForm.next.length >= 8 },
+  ];
+  const passwordStrength = passwordRequirements.filter(({ met }) => met).length;
 
   const renderProfileSection = () => (
     <div className="settings-panel" onClick={handleSettingRowClick}>
@@ -391,10 +389,20 @@ function GlobalSettings({ onLogout }) {
 
         <div className="photo-controls">
           <label className="upload-button">
-            <input type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleImageSelect} />
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              onChange={handleImageSelect}
+              disabled={!isAccountEditing}
+            />
             Choose photo
           </label>
-          <button type="button" className="secondary-button" onClick={saveProfilePicture}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={saveProfilePicture}
+            disabled={!isAccountEditing}
+          >
             Save photo
           </button>
         </div>
@@ -408,6 +416,7 @@ function GlobalSettings({ onLogout }) {
             name="fullName"
             value={profile.fullName}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -418,6 +427,7 @@ function GlobalSettings({ onLogout }) {
             name="studentId"
             value={profile.studentId}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -428,6 +438,7 @@ function GlobalSettings({ onLogout }) {
             name="program"
             value={profile.program}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -438,6 +449,7 @@ function GlobalSettings({ onLogout }) {
             name="yearLevel"
             value={profile.yearLevel}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -448,6 +460,7 @@ function GlobalSettings({ onLogout }) {
             rows="4"
             value={profile.bio}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -458,6 +471,7 @@ function GlobalSettings({ onLogout }) {
             name="email"
             value={profile.email}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
@@ -468,15 +482,26 @@ function GlobalSettings({ onLogout }) {
             name="username"
             value={profile.username}
             onChange={handleAccountInput}
+            disabled={!isAccountEditing}
           />
         </label>
 
       </div>
 
       <div className="action-row">
-        <button type="button" className="primary-button" onClick={saveAccountChanges}>
-          Save changes
-        </button>
+        {isAccountEditing ? (
+          <button type="button" className="primary-button" onClick={saveAccountChanges}>
+            Save changes
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setIsAccountEditing(true)}
+          >
+            Edit again
+          </button>
+        )}
       </div>
     </div>
   );
@@ -535,54 +560,99 @@ function GlobalSettings({ onLogout }) {
 
           {securityView === 'password' && (
             <>
-              <h3 className="security-subtitle">Password</h3>
-              {passwordStep === 'current' && (
-                <form className="password-form" onSubmit={continueFromCurrentPassword}>
-                  <p className="password-form-heading">Confirm your current password to continue.</p>
-                  <div className="field password-field">
-                    <label htmlFor="current-password">Current password</label>
-                    <input
-                      id="current-password"
-                      type={visiblePasswords.current ? 'text' : 'password'}
-                      autoComplete="current-password"
-                      value={passwordForm.current}
-                      onChange={(event) => {
-                        setPasswordForm((prev) => ({ ...prev, current: event.target.value }));
-                        setCurrentPasswordStatus('idle');
-                      }}
-                      onBlur={validateCurrentPassword}
-                      required
-                    />
-                    <button type="button" className="password-visibility" onClick={() => togglePasswordVisibility('current')}>
-                      {visiblePasswords.current ? 'Hide' : 'Show'}
-                    </button>
-                  </div>
-                  {currentPasswordStatus === 'valid' && <p className="password-validation valid">Current password is correct.</p>}
-                  {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                  <button type="submit" className="primary-button password-submit">Continue</button>
-                </form>
-              )}
-
               {passwordStep === 'new' && (
-                <form className="password-form" onSubmit={continuePasswordChange}>
-                  <p className="password-form-heading">Choose a new password</p>
-                  {['next', 'confirm'].map((field) => (
+                <form className="password-form" onSubmit={continuePasswordChange} noValidate>
+                  <div className="password-change-heading">
+                    <span className="password-lock-icon" aria-hidden="true">
+                      <SettingsIcon name="security" />
+                    </span>
+                    <div>
+                      <h3>Change Password</h3>
+                      <p>Update password for enhanced account security.</p>
+                    </div>
+                  </div>
+                  {(passwordIsSet ? ['current', 'next', 'confirm'] : ['next', 'confirm']).map((field) => (
                     <div className="field password-field" key={field}>
-                      <label htmlFor={`${field}-password`}>{field === 'next' ? 'New password' : 'Confirm new password'}</label>
+                      <div className="password-label-row">
+                        <label htmlFor={`${field}-password`}>
+                          {field === 'current'
+                            ? 'Current Password'
+                            : field === 'next' ? 'New Password' : 'Confirm New Password'}
+                          <span aria-hidden="true"> *</span>
+                        </label>
+                        {field === 'confirm' && passwordForm.confirm && (
+                          <button
+                            type="button"
+                            className="password-clear"
+                            onClick={() => {
+                              setPasswordForm((prev) => ({ ...prev, confirm: '' }));
+                              setPasswordFieldErrors((prev) => {
+                                const nextErrors = { ...prev };
+                                delete nextErrors.confirm;
+                                return nextErrors;
+                              });
+                              setSecurityError('');
+                            }}
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
                       <input
                         id={`${field}-password`}
                         type={visiblePasswords[field] ? 'text' : 'password'}
-                        autoComplete="new-password"
+                        autoComplete={field === 'current' ? 'current-password' : 'new-password'}
                         value={passwordForm[field]}
-                        minLength={8}
-                        onChange={(event) => setPasswordForm((prev) => ({ ...prev, [field]: event.target.value }))}
+                        minLength={field === 'next' ? 8 : undefined}
+                        aria-invalid={Boolean(passwordFieldErrors[field])}
+                        aria-describedby={passwordFieldErrors[field] ? `${field}-password-error` : undefined}
+                        onChange={(event) => {
+                          setPasswordForm((prev) => ({ ...prev, [field]: event.target.value }));
+                          setPasswordFieldErrors((prev) => {
+                            if (!prev[field]) return prev;
+                            const nextErrors = { ...prev };
+                            delete nextErrors[field];
+                            return nextErrors;
+                          });
+                          setSecurityError('');
+                        }}
                         required
                       />
                       <button type="button" className="password-visibility" onClick={() => togglePasswordVisibility(field)}>
                         {visiblePasswords[field] ? 'Hide' : 'Show'}
                       </button>
+                      {passwordFieldErrors[field] && (
+                        <span className="password-field-error" id={`${field}-password-error`} role="alert">
+                          {passwordFieldErrors[field]}
+                        </span>
+                      )}
                     </div>
                   ))}
+                  <div className="password-strength" aria-live="polite">
+                    <div
+                      className={`password-strength-meter strength-${passwordStrength}`}
+                      role="img"
+                      aria-label={`Password requirements met: ${passwordStrength} of 3`}
+                    >
+                      {passwordRequirements.map(({ label, met }, index) => (
+                        <span
+                          key={label}
+                          className={index < passwordStrength ? 'is-filled' : ''}
+                        />
+                      ))}
+                    </div>
+                    <p className="password-strength-label">
+                      {passwordStrength === 3 ? 'Strong password.' : 'Weak password. Must contain:'}
+                    </p>
+                    <ul className="password-requirements">
+                      {passwordRequirements.map(({ label, met }) => (
+                        <li key={label} className={met ? 'is-met' : ''}>
+                          <span aria-hidden="true">{met ? '✓' : '×'}</span>
+                          {label}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   {securityError && <p className="security-error" role="alert">{securityError}</p>}
                   <button type="submit" className="primary-button password-submit">Continue to verification</button>
                 </form>
@@ -890,30 +960,6 @@ function GlobalSettings({ onLogout }) {
     </div>
   );
 
-  const renderAppearanceSection = () => (
-    <div className="settings-panel" onClick={handleSettingRowClick}>
-      <SettingRow
-        title="Interface theme"
-        description="Switch between light and dark interface mode for your viewing preference."
-      >
-        <ToggleSetting
-          label="Interface theme"
-          enabled={darkMode}
-          enabledLabel="Dark"
-          disabledLabel="Light"
-          onToggle={() => setDarkMode((prev) => !prev)}
-        />
-      </SettingRow>
-      <SelectSetting
-        title="Default landing page"
-        description="Choose which settings section to open by default."
-        value={defaultLandingPage}
-        options={sidebarItems.map(({ label }) => ({ label, value: label }))}
-        onChange={(event) => setDefaultLandingPage(event.target.value)}
-      />
-    </div>
-  );
-
   const renderActionsSection = () => (
     <div className="settings-panel">
       <div className="danger-box">
@@ -972,8 +1018,6 @@ function GlobalSettings({ onLogout }) {
         return renderSecuritySection();
       case 'Notifications':
         return renderNotificationsSection();
-      case 'Appearance':
-        return renderAppearanceSection();
       case 'Account Actions':
         return renderActionsSection();
       default:
@@ -982,25 +1026,50 @@ function GlobalSettings({ onLogout }) {
   };
 
   return (
-    <div className={darkMode ? 'global-settings dark' : 'global-settings'}>
-      <aside className="sidebar">
-        <div className="brand-row">
-          <div className="brand-icon" aria-hidden="true">C</div>
-          <div className="brand-name">CompuGrade</div>
+    <div className="global-settings">
+      <aside className="settings-sidebar">
+        <Link className="back-button" to="/student/dashboard">
+          <span className="back-button__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+            </svg>
+          </span>
+          <span>Back</span>
+        </Link>
+
+        <div className="brand" aria-label="CompUGrade">
+          <span className="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
+                stroke="currentColor"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M10 8H14M10 11H14M10 14H12.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+          <span className="brand-name">
+            CompUGrade<span className="brand-name-dot">.</span>
+          </span>
         </div>
 
-        <div className="workspace-box">
+        <div className="settings-workspace-box">
           <span>Workspace</span>
           <strong>Student</strong>
         </div>
 
-        <nav className="menu" aria-label="Global settings navigation">
-          <p className="menu-label">SETTINGS</p>
+        <nav className="settings-menu" aria-label="Global settings navigation">
+          <p className="settings-menu-label">SETTINGS</p>
           {sidebarItems.map(({ label, icon }) => (
             <button
               key={label}
               type="button"
-              className={activeSection === label ? 'nav-item active' : 'nav-item'}
+              className={activeSection === label ? 'settings-nav-item active' : 'settings-nav-item'}
               onClick={() => setActiveSection(label)}
               aria-current={activeSection === label ? 'page' : undefined}
             >
@@ -1010,8 +1079,8 @@ function GlobalSettings({ onLogout }) {
           ))}
         </nav>
 
-        <button type="button" className="help-button" onClick={() => setHelpDialog('support')}>
-          <span className="help-mark" aria-hidden="true">?</span>
+        <button type="button" className="settings-help-button" onClick={() => setHelpDialog('support')}>
+          <span className="settings-help-mark" aria-hidden="true">?</span>
           <span>Help &amp; Resources</span>
         </button>
       </aside>
@@ -1036,7 +1105,6 @@ function GlobalSettings({ onLogout }) {
             {activeSection === 'Account' && 'Manage your personal account information and profile picture settings.'}
             {activeSection === 'Security' && 'Protect your account with password, verification, and session controls.'}
             {activeSection === 'Notifications' && 'Choose which alerts and updates you want to receive.'}
-            {activeSection === 'Appearance' && 'Choose the look and feel that works best for you.'}
             {activeSection === 'Account Actions' && 'Review account data and take higher-risk actions carefully.'}
           </p>
 

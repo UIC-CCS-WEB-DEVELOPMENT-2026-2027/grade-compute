@@ -4,7 +4,7 @@ const legacyPasswordStorageKey = 'compugrade-password';
 const passwordIterations = 120000;
 
 export const defaultAccount = {
-  fullName: 'Juan Dela Cruz',
+  fullName: 'Ysa Ang',
   username: 'juandelacruz',
   email: 'juan.delacruz@university.edu',
   emailVerified: true,
@@ -12,8 +12,8 @@ export const defaultAccount = {
   phoneVerified: false,
   studentId: '2026-0004',
   program: 'BS Information Technology',
-  yearLevel: '1st Year',
-  bio: 'Student focused on building practical tech skills and improving academic performance.',
+  yearLevel: '2nd Year',
+  bio: 'pangit',
   profilePicture: '',
   twoFactorEnabled: false,
   verificationMethods: { email: true, phone: false },
@@ -41,6 +41,12 @@ export const defaultAccount = {
   ],
 };
 
+const previousDefaultProfile = {
+  fullName: 'Juan Dela Cruz',
+  yearLevel: '1st Year',
+  bio: 'Student focused on building practical tech skills and improving academic performance.',
+};
+
 function toBase64(bytes) {
   return btoa(String.fromCharCode(...new Uint8Array(bytes)));
 }
@@ -66,6 +72,11 @@ function readStoredAccount() {
 
 function normalizeAccount(account) {
   const normalized = { ...defaultAccount, ...account };
+  for (const [field, previousValue] of Object.entries(previousDefaultProfile)) {
+    if (account?.[field] === previousValue) {
+      normalized[field] = defaultAccount[field];
+    }
+  }
   normalized.verificationMethods = {
     ...defaultAccount.verificationMethods,
     ...account?.verificationMethods,
