@@ -67,18 +67,18 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 | Item | Value |
 | --- | --- |
-| Language | _to fill: JavaScript or TypeScript — keep whichever exists, do not migrate_ |
-| Package manager | _to fill: npm / pnpm / yarn / bun — use only this one_ |
-| Dev server | _to fill_ |
-| Build | _to fill_ |
-| Lint | _to fill_ |
-| Format | _to fill_ |
-| Test | _to fill_ |
-| Router | _to fill_ |
-| State management | _to fill_ |
-| Data storage / backend | _to fill_ |
-| Tailwind version | _to fill_ |
-| Global stylesheet | _to fill: one file, normally `src/index.css`_ |
+| Language | JavaScript (JSX, ES modules). Do not migrate to TypeScript |
+| Package manager | npm (`package-lock.json`). Use only npm |
+| Dev server | `npm run dev` (Vite, `http://localhost:5173`) |
+| Build | `npm run build` (Vite, output in `dist/`) |
+| Lint | `npm run lint` (ESLint 10 flat config, `eslint.config.js`). Fails with 2 errors at the Phase 0 baseline; see `docs/AUDIT.md` §2 |
+| Format | None yet. Prettier is added in Phase 2 |
+| Test | None yet. Vitest and React Testing Library are added in Phase 2 |
+| Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `src/App.jsx` |
+| State management | React local state per component. A `compugrade-db-updated` window event (from `saveDb`) tells other components to re-read. The sidebar uses a `useSyncExternalStore` module store. No state library |
+| Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`), seeded from `src/utils/db.json` through `src/utils/db.js` |
+| Tailwind version | Not installed yet. Tailwind v4 is planned for Phase 4 |
+| Global stylesheet | `src/assets/index.css`. Phase 0 also found 19 per-component and per-page CSS files, which are to be merged into it |
 
 **Approved dependencies for this job:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library, Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
 
