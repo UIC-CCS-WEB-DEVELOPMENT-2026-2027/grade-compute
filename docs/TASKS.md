@@ -622,7 +622,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - **Login (`pages/auth/LoginRegister.jsx`)**
   - [x] **T7.L1** Log In / Create Account → `Tabs`. Role choice → `RadioGroup`. Check: A7, A10, A11.
   - [x] **T7.L2** Fields → `Field` / `Input` / `InputGroup` (eye toggle) / `FieldError`. Messages → `Alert`. Submit → `Button`. Check: A1–A13, A18.
-  - [ ] **T7.L3a** Hero and academic preview → utilities and tokens (`display` role, D2). Logo and name untouched. Delete `LoginRegister.css`.
+  - [x] **T7.L3a** Hero and academic preview → utilities and tokens (`display` role, D2). Logo and name untouched. Delete `LoginRegister.css`.
+    - **As done:**
+      - The login brand (icon tile, name, dot) keeps its exact values in `.auth-brand-*` rules in `index.css`, like the sidebar brand.
+      - The motion moved to tokens in `index.css` (`animate-auth-*`, `ease-auth`, and an `animate-delay-*` utility); reduced motion still fades instead of moving, and the bars still grow.
+      - Hex colours became tokens: the "On Track" pill uses `success`, the bars use `self-reported`/`primary` shades, the shadows use the shadow tokens.
+      - Breakpoints: 760/761 → `md`, 1200 → `xl`. The columns are 7/12 and 5/12 (were 57.29%). The page has a minimum height instead of a fixed one, so very short screens scroll; the old height-based squeezing (max-height 650/540) is gone (Phase 8 may revisit).
+      - Text uses the roles: the hero heading `display`, the form heading `section-title`, the preview labels `caption`, the rest `small`.
 - **Dashboard**
   - [ ] **T7.D1** Page shell, overview header, semester badge (`Badge`). Check: C1.
   - [ ] **T7.D2 ⚠ AllSubjectsHistory.**

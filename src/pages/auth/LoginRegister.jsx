@@ -35,65 +35,102 @@ import notificationCheckBadge from "@/assets/notification-check-badge.svg";
 import notificationCheck from "@/assets/notification-check.svg";
 import dottedHeaderDivider from "@/assets/dotted-header-divider.svg";
 import chartLowerRule from "@/assets/chart-lower-rule.svg";
-import "./LoginRegister.css";
+import { cn } from "@/lib/utils";
 
 const previewScores = [
-    { value: 84, height: 24, label: "Quiz 1" },
-    { value: 88, height: 41, label: "Lab 1" },
-    { value: 91, height: 54, label: "Quiz 2" },
-    { value: 93, height: 72, label: "Midterm" },
-    { value: 95, height: 89, label: "Target" },
+    { value: 84, height: 24, label: "Quiz 1", bar: "from-self-reported/40 to-self-reported/30" },
+    { value: 88, height: 41, label: "Lab 1", bar: "from-self-reported/70 to-self-reported/55" },
+    { value: 91, height: 54, label: "Quiz 2", bar: "from-self-reported to-self-reported/80" },
+    { value: 93, height: 72, label: "Midterm", bar: "from-primary to-self-reported" },
+    {
+        value: 95,
+        height: 89,
+        label: "Target",
+        bar: "from-self-reported-foreground to-primary shadow-card",
+    },
 ];
 
 function AcademicPreview() {
     return (
         <div
-            className="preview-scene"
+            className="relative mt-2 ml-6 w-full max-w-114 pb-7 animate-auth-float motion-reduce:animate-none max-xl:ml-3"
             aria-label="Example grade progress, from 84 percent to a 95 percent target"
         >
-            <div className="preview-card">
-                <div className="preview-header">
-                    <span className="preview-cap">
-                        <img src={graduationCap} alt="" />
+            <div className="relative min-h-63 w-full -rotate-6 rounded-lg border border-border bg-card px-4 pt-4 pb-7 shadow-hover">
+                <div className="flex items-center gap-2">
+                    <span className="grid size-7 place-items-center rounded-md bg-secondary">
+                        <img className="block" src={graduationCap} alt="" />
                     </span>
-                    <div>
-                        <small>YOU'RE VERY ON TRACK</small>
-                        <span>A plan for your Q1 target</span>
+                    <div className="grid flex-1 gap-px">
+                        <small className="type-caption text-primary">YOU'RE VERY ON TRACK</small>
+                        <span className="type-caption font-normal text-muted-foreground">
+                            A plan for your Q1 target
+                        </span>
                     </div>
-                    <span className="preview-arrow" aria-hidden="true">
-                        <img src={openTargetButton} alt="" />
-                        <img src={openArrow} alt="" />
+                    <span className="relative grid size-6 place-items-center" aria-hidden="true">
+                        <img className="absolute inset-0" src={openTargetButton} alt="" />
+                        <img className="relative" src={openArrow} alt="" />
                     </span>
                 </div>
-                <img className="preview-divider" src={dottedHeaderDivider} alt="" />
-                <div className="target-row">
-                    <span>My grade target</span>
-                    <em>
+                <img className="mt-3 mb-2 block max-w-full" src={dottedHeaderDivider} alt="" />
+                <div className="flex items-center gap-3">
+                    <span className="type-caption font-normal text-muted-foreground">
+                        My grade target
+                    </span>
+                    <em className="flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-1.5 py-0.5 type-caption not-italic text-success">
                         <img src={greenStatusDot} alt="" /> On Track
                     </em>
-                    <strong>
+                    <strong className="ml-auto flex items-center gap-1 font-heading text-xl leading-6 font-semibold text-primary">
                         96% <img src={targetStar} alt="" />
                     </strong>
                 </div>
-                <div className="bars" aria-hidden="true">
-                    {previewScores.map(({ value, height, label }) => (
-                        <div className="bar-item" key={label}>
-                            <div className="bar-column" style={{ "--bar-height": `${height}px` }}>
-                                <small>{value}%</small>
-                                <span className="bar-hover">
-                                    <i className="bar" />
+                <div
+                    className="relative mt-3 flex h-32 items-end gap-4 px-3 pt-1"
+                    aria-hidden="true"
+                >
+                    {previewScores.map(({ value, height, label, bar }, index) => (
+                        <div
+                            className="flex h-full min-w-0 flex-1 flex-col items-center justify-end"
+                            key={label}
+                        >
+                            <div
+                                className="group/bar relative mb-2 h-(--bar-height) w-full"
+                                style={{
+                                    "--bar-height": `${height}px`,
+                                    "--bar-delay": `${180 + index * 120}ms`,
+                                }}
+                            >
+                                <small className="absolute -top-6 left-0 w-full text-center type-caption font-normal text-muted-foreground">
+                                    {value}%
+                                </small>
+                                <span className="block size-full origin-bottom transition-[transform,filter] duration-850 ease-auth group-hover/bar:scale-y-108 group-hover/bar:brightness-112 group-hover/bar:saturate-115">
+                                    <i
+                                        className={cn(
+                                            "block size-full origin-bottom animate-auth-bar-grow rounded-t-md bg-linear-to-b",
+                                            bar,
+                                        )}
+                                    />
                                 </span>
                             </div>
-                            <span>{label}</span>
+                            <span className="type-caption font-normal text-muted-foreground">
+                                {label}
+                            </span>
                         </div>
                     ))}
-                    <img className="chart-rule" src={chartLowerRule} alt="" />
+                    <img
+                        className="absolute bottom-5 left-0 max-w-full"
+                        src={chartLowerRule}
+                        alt=""
+                    />
                 </div>
             </div>
-            <div className="preview-note">
-                <span className="notification-badge" aria-hidden="true">
-                    <img src={notificationCheckBadge} alt="" />
-                    <img src={notificationCheck} alt="" />
+            <div className="absolute -right-24 bottom-0 flex animate-auth-note-enter items-center gap-1.5 rounded-md border border-primary bg-card px-2.5 py-2 type-caption font-normal text-muted-foreground shadow-card motion-reduce:animate-none max-xl:-right-6">
+                <span
+                    className="relative grid size-5.5 shrink-0 place-items-center"
+                    aria-hidden="true"
+                >
+                    <img className="absolute inset-0" src={notificationCheckBadge} alt="" />
+                    <img className="relative" src={notificationCheck} alt="" />
                 </span>
                 <div>Make Your Target Grade a Reality</div>
             </div>
@@ -332,45 +369,74 @@ export function LoginRegister() {
         navigate(destination, { replace: true });
     };
     return (
-        <main className={`auth-page${isRegister ? " is-register" : ""}`}>
-            <section className="auth-hero" aria-label="About CompUGrade">
-                <header className="auth-brand">
-                    <span className="brand-icon">
+        <main className="flex min-h-svh flex-col bg-card font-sans text-foreground md:grid md:grid-cols-12">
+            <section
+                className="relative isolate flex min-w-0 flex-col bg-highlight px-6 py-3 max-md:min-h-20 md:col-span-7 md:overflow-hidden md:px-7 md:py-6 xl:px-11"
+                aria-label="About CompUGrade"
+            >
+                <header className="flex w-fit shrink-0 animate-auth-enter items-center gap-1.5 motion-reduce:animate-auth-fade-in">
+                    <span className="auth-brand-icon">
                         <img src={documentIcon} alt="" />
                     </span>
-                    <strong>
+                    <strong className="auth-brand-name">
                         CompUGrade
-                        <span className="brand-dot" aria-hidden="true">
+                        <span className="auth-brand-dot" aria-hidden="true">
                             .
                         </span>
                     </strong>
                 </header>
-                <div className="hero-content">
-                    <p className="eyebrow">A CLEARER PATH TO HIGH POTENTIAL</p>
-                    <h1>
+                <div className="relative mt-10 mb-10 ml-5 max-w-140 animate-auth-enter animate-delay-80 motion-reduce:animate-auth-fade-in max-md:hidden xl:ml-22">
+                    <p className="m-0 type-caption tracking-wider text-muted-foreground">
+                        A CLEARER PATH TO HIGH POTENTIAL
+                    </p>
+                    <h1 className="m-0 type-display tracking-tight text-foreground">
                         Calculate grades and achieve
-                        <br className="desktop-heading-break" /> grade targets
+                        <br className="max-xl:hidden" /> grade targets
                     </h1>
-                    <div className="hero-points">
+                    <div className="mt-2.5 flex flex-wrap gap-2 type-small text-muted-foreground xl:gap-3">
                         <span>• Track your progress</span>
                         <span>• Simulate your targets</span>
                         <span>• Learn with confidence</span>
                     </div>
                     <AcademicPreview />
                 </div>
-                <img className="sparkle sparkle-one" src={sparkle} alt="" />
-                <img className="sparkle sparkle-two" src={sparkleSmall} alt="" />
-                <img className="sparkle sparkle-three" src={sparkleTiny} alt="" />
-                <img className="sparkle sparkle-four" src={sparkleSmall} alt="" />
-                <p className="mobile-guide-label">YOUR ACADEMIC GUIDE</p>
-                <p className="hero-footer">MADE FOR STUDENTS. BUILT WITH PROFESSORS.</p>
+                {[
+                    [sparkle, "top-3/5 left-1/7"],
+                    [sparkleSmall, "top-3/8 right-1/5 animate-delay-350"],
+                    [sparkleTiny, "top-3/5 right-1/6 animate-delay-700"],
+                    [sparkleSmall, "top-3/4 left-3/16 animate-delay-1050"],
+                ].map(([src, place]) => (
+                    <img
+                        key={place}
+                        className={cn(
+                            "pointer-events-none absolute animate-auth-sparkle motion-reduce:animate-none max-md:hidden",
+                            place,
+                        )}
+                        src={src}
+                        alt=""
+                    />
+                ))}
+                <p className="mt-2 type-caption text-muted-foreground md:hidden">
+                    YOUR ACADEMIC GUIDE
+                </p>
+                <p className="m-0 mt-auto type-caption tracking-wide text-muted-foreground max-md:hidden">
+                    MADE FOR STUDENTS. BUILT WITH PROFESSORS.
+                </p>
             </section>
-            <section className="auth-panel" aria-labelledby="auth-title">
-                <p className="guide-label">YOUR ACADEMIC GUIDE</p>
+            <section
+                className="relative flex min-w-0 flex-1 flex-col bg-card px-6 pt-3 pb-2.5 md:col-span-5 md:px-2 md:pt-3.5"
+                aria-labelledby="auth-title"
+            >
+                <p className="m-0 type-caption text-muted-foreground max-md:hidden">
+                    YOUR ACADEMIC GUIDE
+                </p>
                 <Tabs
                     value={activeTab}
                     onValueChange={changeAuthMode}
-                    className={`auth-form-area gap-0${isRegister ? " is-register" : ""}`}
+                    className={cn(
+                        "relative mx-auto mb-3 w-full max-w-91 shrink-0 animate-auth-enter animate-delay-120 gap-0 motion-reduce:animate-none md:px-4 xl:px-0",
+                        isRegister ? "mt-1 mb-1 max-md:mt-0" : "mt-0 md:mt-16",
+                    )}
                 >
                     <TabsList
                         variant="line"
@@ -391,22 +457,33 @@ export function LoginRegister() {
                         ))}
                     </TabsList>
                     <TabsContent value={activeTab} className="flex-none type-body">
-                        <div className="auth-intro" key={`intro-${activeTab}`}>
-                            <p className="form-eyebrow">
+                        <div
+                            className={cn(
+                                "animate-auth-content-enter motion-reduce:animate-auth-fade-in",
+                                isRegister ? "my-2" : "my-4",
+                            )}
+                            key={`intro-${activeTab}`}
+                        >
+                            <p className="m-0 mb-0.5 type-caption text-primary">
                                 {isRegister
                                     ? "YOUR NEXT CHAPTER STARTS HERE"
                                     : "GOOD TO SEE YOU AGAIN"}
                             </p>
-                            <h2 id="auth-title">
+                            <h2 id="auth-title" className="m-0 type-section-title text-foreground">
                                 {isRegister ? "Create your account." : "Welcome back."}
                             </h2>
-                            <p className="form-subtitle">
+                            <p className="mt-1.5 type-small text-muted-foreground">
                                 {isRegister
                                     ? "Set your goals. Build a stronger semester."
                                     : "Your grades, goals, and next steps are waiting."}
                             </p>
                         </div>
-                        <form key={activeTab} onSubmit={handleSubmit} noValidate>
+                        <form
+                            key={activeTab}
+                            onSubmit={handleSubmit}
+                            noValidate
+                            className="animate-auth-content-enter animate-delay-50 motion-reduce:animate-auth-fade-in"
+                        >
                             {isRegister && (
                                 <RadioGroup
                                     name="role"
@@ -430,7 +507,7 @@ export function LoginRegister() {
                                     ))}
                                 </RadioGroup>
                             )}
-                            <div className={isRegister ? "registration-identity" : undefined}>
+                            <div className={isRegister ? "grid-cols-2 gap-3 md:grid" : undefined}>
                                 {isRegister && (
                                     <TextField
                                         id="fullName"
@@ -492,23 +569,27 @@ export function LoginRegister() {
                                 />
                             )}
                             <div
-                                className={`auth-feedback${isRegister ? " registration-feedback" : ""}`}
+                                className={cn(
+                                    "mb-2.5 empty:hidden",
+                                    isRegister && "mb-1.5 min-h-7.5",
+                                )}
                             >
                                 {isRegister && !errorMessage && !infoMessage && (
                                     <ul
-                                        className="password-hints"
+                                        className="m-0 grid grid-cols-2 gap-x-2.5 gap-y-0.5 p-0 type-small"
                                         aria-label="Password requirements"
                                     >
                                         {PASSWORD_REQUIREMENTS.map((requirement) => (
                                             <li
                                                 key={requirement.label}
-                                                className={
+                                                className={cn(
+                                                    "transition-colors",
                                                     requirement.test(password)
-                                                        ? "met"
+                                                        ? "text-success"
                                                         : showPasswordHints
-                                                          ? "unmet"
-                                                          : "pending"
-                                                }
+                                                          ? "text-destructive"
+                                                          : "text-muted-foreground",
+                                                )}
                                             >
                                                 <span aria-hidden="true">
                                                     {requirement.test(password)
@@ -541,26 +622,34 @@ export function LoginRegister() {
                                 {isRegister ? "Create account" : "Log In"}
                             </Button>
                         </form>
-                        <p className="switch-copy">
+                        <p
+                            className={cn(
+                                "m-0 text-center type-small text-muted-foreground",
+                                isRegister ? "mt-2" : "mt-3",
+                            )}
+                        >
                             {isRegister ? "Already have an account? " : "New to CompUGrade? "}
-                            <button
-                                type="button"
+                            <Button
+                                variant="link"
+                                className="h-auto p-0 type-small font-normal"
                                 onClick={() => changeAuthMode(isRegister ? "login" : "register")}
                             >
                                 {isRegister ? "Log in" : "Create an account"}
-                            </button>
+                            </Button>
                         </p>
                         {!isRegister && (
-                            <p className="demo-copy">
+                            <p className="m-0 mt-3.5 border-t border-border pt-2.5 text-center type-small text-muted-foreground">
                                 Demo student: ysa@student.edu (or U1)
-                                <span>
-                                    Password: <strong>password123</strong>
+                                <span className="block text-primary">
+                                    Password: <strong className="font-normal">password123</strong>
                                 </span>
                             </p>
                         )}
                     </TabsContent>
                 </Tabs>
-                <small className="copyright">© 2026 CompUGrade</small>
+                <small className="mt-auto self-end type-small text-muted-foreground md:pr-4">
+                    © 2026 CompUGrade
+                </small>
             </section>
         </main>
     );

@@ -236,6 +236,86 @@
     --spacing-control-sm: 2rem;
     --spacing-control-lg: 3rem;
     --spacing-control-touch: 2.75rem;
+
+    /* Login page motion (moved from LoginRegister.css, T7.L3a). */
+    --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;
+    --animate-auth-content-enter: auth-content-enter 300ms ease-out both;
+    --animate-auth-fade-in: auth-fade-in 240ms ease-out both;
+    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--bar-delay, 180ms) var(--ease-auth) both;
+    --animate-auth-note-enter: auth-note-enter 650ms 650ms ease-out both;
+    --animate-auth-sparkle: auth-sparkle 5s ease-in-out infinite;
+    --animate-auth-float: auth-float 6s 800ms ease-in-out infinite;
+
+    @keyframes auth-enter {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-content-enter {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes auth-bar-grow {
+        from {
+            transform: scaleY(0);
+        }
+        to {
+            transform: scaleY(1);
+        }
+    }
+    @keyframes auth-note-enter {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-sparkle {
+        0%,
+        100% {
+            transform: translateY(0) rotate(0);
+        }
+        50% {
+            transform: translateY(-4px) rotate(8deg);
+        }
+    }
+    @keyframes auth-float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+}
+
+/* animation-delay in milliseconds: animate-delay-120 (Tailwind has none). */
+@utility animate-delay-* {
+    animation-delay: calc(--value(integer) * 1ms);
 }
 
 /* Text roles (AGENTS.md section 7, docs/TASKS.md 4.2). Each role sets its
@@ -471,5 +551,48 @@
 @media (max-width: 767px) {
     .brand-name {
         font-size: 1.8rem;
+    }
+}
+
+/* Login page brand (branding, kept exactly as it was; moved from
+   LoginRegister.css in T7.L3a). */
+.auth-brand-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 38px;
+    border-radius: 6px;
+    background: var(--primary);
+}
+
+.auth-brand-icon img {
+    display: block;
+    width: 22.4px;
+    height: 27.4px;
+}
+
+.auth-brand-name {
+    font:
+        600 36px/1 "Khand",
+        sans-serif;
+    letter-spacing: -0.6px;
+    white-space: nowrap;
+}
+
+.auth-brand-dot {
+    color: var(--primary);
+    font: inherit;
+    letter-spacing: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .auth-brand-name {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .auth-brand-dot {
+        color: var(--foreground);
     }
 }
