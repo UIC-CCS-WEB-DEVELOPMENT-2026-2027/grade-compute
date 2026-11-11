@@ -1,9 +1,16 @@
 // Display formatting shared by several screens.
+import { clamp } from "./number.js";
 
 // A grade as "x%", rounded to `decimals` places with trailing zeros removed
 // (91.5 -> "91.5%", 90 -> "90%"), or "—" when there is no grade.
 export function formatGrade(value, { decimals = 2 } = {}) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(decimals))}%`;
+}
+
+// How full a grade gauge is drawn, in percent: the grade kept within 0–100,
+// or 0 when there is no grade yet.
+export function getGaugeProgress(grade) {
+    return grade === null ? 0 : clamp(grade, 0, 100);
 }
 
 // Avatar initials: the first letters of the first two words, upper-cased.

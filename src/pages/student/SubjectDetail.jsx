@@ -15,7 +15,8 @@ import {
     calculateUnofficialGrade,
     getOfficialAssessments,
 } from "@/lib/grades";
-import { getSpaceSplitInitials } from "@/lib/format";
+import { getAchievement, getCelebrationMessage } from "@/lib/celebration";
+import { getGaugeProgress, getSpaceSplitInitials } from "@/lib/format";
 import { getSubjectDetailTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
@@ -63,30 +64,14 @@ function SubjectDetail() {
         const currentTarget = getSubjectDetailTarget(currentRecord, currentTerm);
         const officialGrade = calculateOfficialGrade(currentRecord, term, currentRule);
         const expectedGrade = calculateUnofficialGrade(currentRecord, term, currentRule);
-        const officialReached = officialGrade !== null && officialGrade >= currentTarget;
-        const expectedReached = expectedGrade !== null && expectedGrade >= currentTarget;
+        const achievement = getAchievement(officialGrade, expectedGrade, currentTarget);
         const key = `${subjectId}:${currentTerm}`;
         const previous = previousAchievement.current;
 
-        if (previous?.key === key) {
-            const officialJustReached = !previous.officialReached && officialReached;
-            const expectedJustReached = !previous.expectedReached && expectedReached;
-            if (officialJustReached || expectedJustReached) {
-                setCelebration(
-                    officialJustReached && expectedJustReached
-                        ? "Both your official and expected grades reached the target!"
-                        : officialJustReached
-                          ? "Your official grade reached the target!"
-                          : "Your expected grade reached the target!",
-                );
-            }
-        }
+        const message = getCelebrationMessage(previous?.key === key ? previous : null, achievement);
+        if (message) setCelebration(message);
 
-        previousAchievement.current = {
-            key,
-            officialReached,
-            expectedReached,
-        };
+        previousAchievement.current = { key, ...achievement };
     }, [dbData, subjectId, term, studentId]);
 
     useEffect(() => {
@@ -163,10 +148,8 @@ function SubjectDetail() {
     const officialTasks = getOfficialAssessments(selectedTerm);
     const officialAverage = calculateOfficialGrade(studentRecord, term, computationRule);
     const expectedAverage = calculateUnofficialGrade(studentRecord, term, computationRule);
-    const officialProgress =
-        officialAverage === null ? 0 : Math.min(100, Math.max(0, officialAverage));
-    const expectedProgress =
-        expectedAverage === null ? 0 : Math.min(100, Math.max(0, expectedAverage));
+    const officialProgress = getGaugeProgress(officialAverage);
+    const expectedProgress = getGaugeProgress(expectedAverage);
     const targetGrade = getSubjectDetailTarget(studentRecord, selectedTermKey);
 
     function updateTargetGrade(value) {

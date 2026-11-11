@@ -539,9 +539,10 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - **As done:**
     - Header is not converted. It doesn't keep the database in state; it calls `getDb()` on every render. `useDb({ live: false })` would read only once and could show stale data, so the other three non-listeners use `live: false` and Header stays as it is.
     - In a real browser, the saved data and the visible page text after each checklist step were byte-identical to before.
-- [ ] **T6.10 ⚠ Subject Detail grade logic → `lib/`.**
+- [x] **T6.10 ⚠ Subject Detail grade logic → `lib/`.**
   - The celebration decision (`lib/celebration.js`: previous/next reached → message or null) and the gauge clamp.
   - Add unit tests. The SubjectDetail tests stay unchanged.
+  - **As done:** the gauge clamp is `getGaugeProgress` in `lib/format.js`. The sandbox `Gauge` had the same line and uses it too. Checked G8 and G9 in a browser, with identical results.
 - [ ] **T6.11 ⚠ Auth helpers → `features/auth/lib/accounts.js`.**
   - Move: `validateAuthFields`, `getPasswordError`, `registerAccount`, `authenticateAccount`, the password requirements.
   - `LoginRegister` uses `ACTIVE_USER_KEY` (G10b).

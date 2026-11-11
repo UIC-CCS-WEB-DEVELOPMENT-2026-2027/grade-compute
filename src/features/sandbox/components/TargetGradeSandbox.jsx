@@ -16,7 +16,7 @@ import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
-import { formatGrade } from "@/lib/format";
+import { formatGrade, getGaugeProgress } from "@/lib/format";
 import { useDb } from "@/hooks/useDb";
 import "./TargetGradeSandbox.css";
 
@@ -25,7 +25,7 @@ function pluralTasks(count) {
 }
 
 function Gauge({ label, grade, target, className }) {
-    const progress = grade === null ? 0 : Math.min(100, Math.max(0, grade));
+    const progress = getGaugeProgress(grade);
     return (
         <div className={`grade-gauge ${className}`}>
             <span className="grade-gauge-label">{label}</span>

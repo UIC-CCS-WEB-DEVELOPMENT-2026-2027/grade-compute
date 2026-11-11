@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatGrade, getInitials, getSpaceSplitInitials } from "./format.js";
+import { formatGrade, getGaugeProgress, getInitials, getSpaceSplitInitials } from "./format.js";
 import { makeSeedDb } from "@/test/fixtures.js";
 
 describe("formatGrade", () => {
@@ -72,5 +72,23 @@ describe("initials", () => {
         expect(getSpaceSplitInitials("")).toBe("");
         expect(getInitials("   ")).toBe("");
         expect(getSpaceSplitInitials("   ")).toBe("");
+    });
+});
+
+describe("getGaugeProgress", () => {
+    it("is 0 when there is no grade", () => {
+        expect(getGaugeProgress(null)).toBe(0);
+    });
+
+    it("keeps the grade within 0-100", () => {
+        expect(getGaugeProgress(87.5)).toBe(87.5);
+        expect(getGaugeProgress(0)).toBe(0);
+        expect(getGaugeProgress(100)).toBe(100);
+        expect(getGaugeProgress(107.5)).toBe(100);
+        expect(getGaugeProgress(-3)).toBe(0);
+    });
+
+    it("passes NaN through, like Math.min and Math.max", () => {
+        expect(getGaugeProgress(NaN)).toBeNaN();
     });
 });
