@@ -159,7 +159,6 @@
     box-sizing: border-box;
     background: var(--card);
     color: var(--foreground);
-    font-family: Arial, sans-serif;
 }
 
 /* PAGE LINKS (Subject Detail <-> Sandbox), until T7.G2 and T7.I1 */
@@ -287,42 +286,12 @@
     margin-bottom: 20px;
 }
 
-.subject-sandbox-link {
-    flex: 0 0 auto;
-}
-
 .subject-title-row h1 {
     margin: 0 0 12px;
     color: var(--foreground);
     font-size: clamp(22px, 3vw, 30px);
     font-weight: 700;
     line-height: 1.3;
-}
-
-.subject-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 9px;
-    color: var(--muted-foreground);
-    font-size: 11px;
-}
-
-.instructor-avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 23px;
-    height: 23px;
-    border-radius: 50%;
-    background: #edf2fa;
-    color: #5476a7;
-    font-size: 8px;
-    font-weight: 600;
-}
-
-.meta-divider {
-    color: #b3bfce;
 }
 
 .target-grade-button {
@@ -379,193 +348,6 @@
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #e0e6ef;
-}
-
-/* OFFICIAL GRADE CARD */
-
-.official-grade-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1.7fr) 1px minmax(0, 0.9fr) minmax(0, 0.9fr);
-    align-items: center;
-    gap: clamp(8px, 1.2vw, 16px);
-    min-height: 100px;
-    padding: 18px 20px;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    border: 1px solid #e8e4dc;
-    border-radius: 9px;
-    background: var(--highlight-soft);
-}
-
-.grade-gauges {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    justify-content: flex-start;
-    gap: clamp(8px, 1.2vw, 18px);
-}
-
-.grade-target-control {
-    display: flex;
-    flex: 0 1 auto;
-    flex-direction: column;
-    align-items: flex-start;
-    min-width: 0;
-    gap: 5px;
-    color: var(--foreground);
-    font-size: 9px;
-    font-weight: 600;
-}
-
-.grade-target-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: #b39310;
-    font-size: 12px;
-}
-
-.grade-target-input-wrap input {
-    width: 52px;
-    padding: 5px 6px;
-    border: 1px solid var(--highlight-strong);
-    border-radius: 7px;
-    background: var(--card);
-    color: var(--foreground);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.grade-target-control > small {
-    color: var(--highlight-text);
-    font-size: 7px;
-    font-weight: 400;
-    white-space: normal;
-}
-
-.grade-target-control > .grade-target-error {
-    max-width: 8rem;
-    color: var(--destructive);
-    white-space: normal;
-}
-
-.grade-gauge {
-    position: relative;
-    display: flex;
-    min-width: 0;
-    flex: 0 1 auto;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    outline: none;
-}
-
-.grade-gauge-label {
-    padding: 3px 7px;
-    border-radius: 999px;
-    background: rgba(65, 100, 155, 0.1);
-    color: var(--primary);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.grade-gauge-ring {
-    --grade-color: var(--primary);
-    display: grid;
-    position: relative;
-    place-items: center;
-    width: clamp(82px, 8vw, 112px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: conic-gradient(
-        from 0deg,
-        var(--grade-color) var(--grade-progress),
-        #e8edf4 var(--grade-progress)
-    );
-    transition:
-        transform 0.2s ease,
-        filter 0.2s ease;
-}
-
-.grade-gauge-ring {
-    --gauge-size: clamp(82px, 8vw, 112px);
-    width: var(--gauge-size);
-}
-
-.grade-gauge-ring::before {
-    position: absolute;
-    inset: 8px;
-    border-radius: inherit;
-    background: var(--card);
-    content: "";
-}
-
-.grade-gauge-target-marker {
-    position: absolute;
-    top: 0;
-    left: calc(50% - 1.5px);
-    z-index: 2;
-    width: 3px;
-    height: 10px;
-    border-radius: 2px;
-    background: var(--highlight-strong);
-    box-shadow: 0 0 0 1px #fff;
-    transform: rotate(var(--target-angle));
-    transform-origin: 50% calc(var(--gauge-size) / 2);
-}
-
-.grade-gauge-ring strong {
-    z-index: 1;
-    color: var(--grade-color);
-    font-size: clamp(18px, 2vw, 26px);
-    line-height: 1;
-}
-
-.grade-gauge-ring strong small {
-    font-size: 0.55em;
-}
-
-.expected-gauge .grade-gauge-ring {
-    --grade-color: #d8bb37;
-}
-
-.grade-gauge-details {
-    position: absolute;
-    z-index: 2;
-    top: calc(100% + 4px);
-    left: 50%;
-    width: 13rem;
-    padding: 0.55rem 0.65rem;
-    border: 1px solid #dfe5ed;
-    border-radius: 0.5rem;
-    background: var(--card);
-    box-shadow: 0 0.5rem 1rem rgba(23, 42, 67, 0.14);
-    color: #586b85;
-    font-size: 0.65rem;
-    line-height: 1.45;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, -0.2rem);
-    transition:
-        opacity 0.16s ease,
-        transform 0.16s ease;
-}
-
-.grade-gauge:hover .grade-gauge-details,
-.grade-gauge:focus-visible .grade-gauge-details {
-    opacity: 1;
-    transform: translate(-50%, 0);
-}
-
-.grade-gauge:hover .grade-gauge-ring,
-.grade-gauge:focus-visible .grade-gauge-ring {
-    filter: drop-shadow(0 3px 6px rgba(39, 62, 99, 0.18));
-    transform: scale(1.04);
 }
 
 .grade-celebration-backdrop {
@@ -731,94 +513,6 @@
     }
 }
 
-.official-average {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.official-average > span {
-    color: #7e8ba0;
-    font-size: 10px;
-}
-
-.official-average strong {
-    color: var(--foreground);
-    font-size: 27px;
-    line-height: 1;
-}
-
-.official-average strong span {
-    font-size: 17px;
-}
-
-.expected-average strong {
-    color: var(--primary);
-}
-
-.grade-card-divider {
-    width: 1px;
-    height: 48px;
-    background: #e4e5e7;
-}
-
-.grade-card-information {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.grade-card-information p {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    color: var(--muted-foreground);
-    font-size: 9px;
-}
-
-.grade-card-information small {
-    color: var(--muted-foreground);
-    font-size: 8px;
-    line-height: 1.5;
-}
-
-.grade-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    flex-shrink: 0;
-    border-radius: 50%;
-}
-
-.blue-dot {
-    background: #5793f5;
-}
-
-.dark-dot {
-    background: var(--foreground);
-}
-
-.grade-card-legend {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.grade-card-legend span {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: 7px;
-    color: #7d8ca0;
-    font-size: 9px;
-    white-space: normal;
-    overflow-wrap: anywhere;
-}
-
 /*  MOBILE RESPONSIVENESS */
 
 @media (max-width: 760px) {
@@ -848,16 +542,6 @@
         gap: 15px;
     }
 
-    .subject-sandbox-link {
-        align-self: flex-start;
-    }
-
-    .official-grade-card {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 16px;
-        padding: 17px;
-    }
-
     .subject-target-grade-section-heading {
         align-items: flex-start;
         flex-direction: column;
@@ -865,25 +549,6 @@
 
     .subject-target-grade-section-heading .target-grade-button {
         width: 100%;
-    }
-
-    .grade-gauges {
-        grid-column: 1 / -1;
-        justify-content: space-evenly;
-    }
-
-    .grade-card-divider {
-        display: none;
-    }
-
-    .grade-card-information {
-        min-width: 0;
-    }
-
-    .grade-card-legend {
-        grid-column: 1 / -1;
-        padding-top: 12px;
-        border-top: 1px solid #e8e5df;
     }
 }
 
@@ -914,40 +579,12 @@
     .subject-title-row h1 {
         font-size: 22px;
     }
-
-    .official-grade-card {
-        grid-template-columns: 1fr;
-    }
-
-    .grade-gauges {
-        grid-column: auto;
-    }
-
-    .grade-card-legend {
-        grid-column: auto;
-    }
-
-    .official-average strong {
-        font-size: 25px;
-    }
-}
-
-/* Phones: the gauges' hover notes would run off the screen (and there's no
-   hover on touch); the legend under the gauges explains the same thing. */
-@media (max-width: 760px) {
-    .grade-gauge-details {
-        display: none;
-    }
 }
 
 /* Phones: comfortable tap targets (at least 44px tall). */
 @media (max-width: 760px) {
     .term-nav-link,
     .sandbox-back-link {
-        min-height: 44px;
-    }
-
-    .grade-target-input-wrap input {
         min-height: 44px;
     }
 }

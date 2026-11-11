@@ -2,7 +2,7 @@
 /* Target Grade Sandbox page. The result card is the answer to "what do I
    need?", so it is the most prominent element: colored, large, and sticky
    beside the inputs on wide screens (first on phones). Gauge styles
-   (grade-gauge-*) come from SubjectDetail.css. */
+   come from GradeGauge.jsx. */
 
 .sandbox {
     /* Layout follows the space next to the sidebar, not the window width. */
@@ -348,18 +348,6 @@
     align-items: center;
     justify-content: space-evenly;
     gap: 1rem;
-}
-
-.sandbox-gauges .grade-gauge {
-    flex: 0 1 96px;
-    width: 96px;
-}
-
-.sandbox-gauges .grade-gauge-label {
-    max-width: 100%;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    line-height: 1.25;
 }
 
 /* Step 2 */

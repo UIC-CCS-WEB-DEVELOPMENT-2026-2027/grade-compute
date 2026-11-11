@@ -24,36 +24,13 @@ import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import { HistoryChart } from "@/features/history/components/HistoryChart";
-import { formatGrade, getGaugeProgress } from "@/lib/format";
+import { formatGrade } from "@/lib/format";
+import { GradeGauge } from "@/components/GradeGauge";
 import { useDb } from "@/hooks/useDb";
 import "./TargetGradeSandbox.css";
 
 function pluralTasks(count) {
     return `${count} ${count === 1 ? "task" : "tasks"}`;
-}
-
-function Gauge({ label, grade, target, className }) {
-    const progress = getGaugeProgress(grade);
-    return (
-        <div className={`grade-gauge ${className}`}>
-            <span className="grade-gauge-label">{label}</span>
-            <span
-                className="grade-gauge-ring"
-                role="img"
-                style={{
-                    "--grade-progress": `${progress}%`,
-                    "--target-angle": `${target * 3.6}deg`,
-                }}
-                aria-label={`${label}: ${grade === null ? "no grade yet" : `${grade.toFixed(0)} percent`}`}
-            >
-                <strong>
-                    {grade === null ? "—" : grade.toFixed(0)}
-                    {grade !== null && <small>%</small>}
-                </strong>
-                <span className="grade-gauge-target-marker" />
-            </span>
-        </div>
-    );
 }
 
 // The answer card. Kept separate so it is easy to find in the code too.
@@ -275,17 +252,16 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                             )}
                         </div>
                         <div className="sandbox-gauges">
-                            <Gauge
+                            <GradeGauge
                                 label={`${termLabel} official`}
                                 grade={officialGrade}
                                 target={target}
-                                className="official-gauge"
                             />
-                            <Gauge
+                            <GradeGauge
                                 label={`${termLabel} expected`}
                                 grade={expectedGrade}
                                 target={target}
-                                className="expected-gauge"
+                                tone="expected"
                             />
                         </div>
                     </section>

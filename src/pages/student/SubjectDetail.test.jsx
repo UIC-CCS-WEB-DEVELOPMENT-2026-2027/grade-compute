@@ -39,7 +39,7 @@ function withTarget(targetGradeSandbox) {
 const targetInput = (term = "Prelim") => screen.getByLabelText(`${term} target grade`);
 const officialGauge = () => screen.getByLabelText(/^Official grade:/);
 const expectedGauge = () => screen.getByLabelText(/^Expected grade:/);
-const ring = (gauge) => gauge.querySelector(".grade-gauge-ring");
+const ring = (gauge) => gauge.querySelector('[data-slot="gauge-ring"]');
 
 function commitTarget(value) {
     const input = targetInput();

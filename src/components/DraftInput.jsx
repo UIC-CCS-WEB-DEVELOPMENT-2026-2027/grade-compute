@@ -9,10 +9,19 @@
 // onCommit(text): called once with the final text, only if it changed.
 // acceptTyping(text): optional; return false to reject a keystroke
 //                 (the box keeps its previous text).
-// Any other props (type, aria-*, placeholder, ...) go to the <input>.
+// as:             the input component to render (default: a plain <input>).
+// Any other props (type, aria-*, placeholder, ...) go to the input.
 import { useRef, useState } from "react";
 
-export function DraftInput({ value, onCommit, acceptTyping, onBlur, onKeyDown, ...inputProps }) {
+export function DraftInput({
+    value,
+    onCommit,
+    acceptTyping,
+    onBlur,
+    onKeyDown,
+    as: InputComponent = "input",
+    ...inputProps
+}) {
     const savedText = value === null || value === undefined ? "" : String(value);
     const [draft, setDraft] = useState(null);
     const cancelled = useRef(false);
@@ -28,7 +37,7 @@ export function DraftInput({ value, onCommit, acceptTyping, onBlur, onKeyDown, .
     }
 
     return (
-        <input
+        <InputComponent
             {...inputProps}
             value={draft ?? savedText}
             onChange={(event) => {

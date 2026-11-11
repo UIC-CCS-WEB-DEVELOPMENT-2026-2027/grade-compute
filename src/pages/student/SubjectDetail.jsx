@@ -1,10 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { TargetIcon } from "lucide-react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { PageFooter } from "@/components/layout/PageFooter";
 import { CurrentTermRecords } from "@/features/term-records/components/CurrentTermRecords";
 import { DraftInput } from "@/components/DraftInput";
+import { GradeGauge } from "@/components/GradeGauge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+    InputGroupText,
+} from "@/components/ui/input-group";
+import { Separator } from "@/components/ui/separator";
 import { TermNavigation } from "@/features/term-records/components/TermNavigation";
 import { SubjectGradeHistory } from "@/features/history/components/SubjectGradeHistory";
 import { getDb, saveDb } from "@/services/db";
@@ -16,12 +29,13 @@ import {
     getOfficialAssessments,
 } from "@/lib/grades";
 import { getAchievement, getCelebrationMessage } from "@/lib/celebration";
-import { getGaugeProgress, getSpaceSplitInitials } from "@/lib/format";
+import { getSpaceSplitInitials } from "@/lib/format";
 import { getSubjectDetailTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { useDb } from "@/hooks/useDb";
+import { cn } from "@/lib/utils";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
@@ -148,8 +162,6 @@ export function SubjectDetail() {
     const officialTasks = getOfficialAssessments(selectedTerm);
     const officialAverage = calculateOfficialGrade(studentRecord, term, computationRule);
     const expectedAverage = calculateUnofficialGrade(studentRecord, term, computationRule);
-    const officialProgress = getGaugeProgress(officialAverage);
-    const expectedProgress = getGaugeProgress(expectedAverage);
     const targetGrade = getSubjectDetailTarget(studentRecord, selectedTermKey);
 
     function updateTargetGrade(value) {
@@ -200,59 +212,60 @@ export function SubjectDetail() {
                     />
 
                     {/* Subject Heading */}
-                    <section className="subject-overview">
-                        <div className="subject-semester">FIRST SEMESTER · 2026–2027</div>
+                    <section className="mb-8 w-full">
+                        <div className="mb-2 type-caption tracking-wide text-muted-foreground">
+                            FIRST SEMESTER · 2026–2027
+                        </div>
 
-                        <div className="subject-title-row">
+                        <div className="mb-5 flex items-start justify-between gap-5 max-md:flex-col max-md:gap-4">
                             <div>
-                                <h1>
+                                <h1 className="m-0 mb-3 type-page-title text-foreground">
                                     {subject.subjectCode} - {subject.subjectName}
                                 </h1>
 
-                                <div className="subject-meta">
-                                    <span className="instructor-avatar">
-                                        {getSpaceSplitInitials(professor)}
-                                    </span>
+                                <div className="flex flex-wrap items-center gap-2 type-small text-muted-foreground">
+                                    <Avatar size="sm">
+                                        <AvatarFallback className="bg-secondary font-semibold text-primary">
+                                            {getSpaceSplitInitials(professor)}
+                                        </AvatarFallback>
+                                    </Avatar>
                                     <span>{professor}</span>
-                                    <span className="meta-divider">·</span>
+                                    <span className="text-border">·</span>
                                     <span>{classItem.units ?? 3} units</span>
                                 </div>
                             </div>
                             <Link
-                                className="term-nav-link subject-sandbox-link"
+                                className={cn(
+                                    buttonVariants({ variant: "outline" }),
+                                    "shrink-0 rounded-full border-primary bg-secondary text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
+                                )}
                                 to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
                             >
-                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="8.5"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                    />
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="4.5"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                    />
-                                    <circle cx="12" cy="12" r="1" fill="currentColor" />
-                                </svg>
+                                <TargetIcon data-icon="inline-start" aria-hidden="true" />
                                 Target grade sandbox
                             </Link>
                         </div>
 
                         {/* Official Grade Summary */}
-                        <div className="official-grade-card">
-                            <div className="grade-gauges" aria-label={`${term} grades`}>
-                                <label className="grade-target-control">
-                                    <span>Target grade</span>
-                                    <span className="grade-target-input-wrap">
+                        <Card className="grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
+                            <div
+                                className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-[1.7] xl:justify-start xl:gap-4"
+                                aria-label={`${term} grades`}
+                            >
+                                <Field className="w-auto shrink-0 gap-1.5 max-sm:w-full">
+                                    <FieldLabel
+                                        htmlFor="subject-target-grade"
+                                        className="font-semibold text-foreground"
+                                    >
+                                        Target grade
+                                    </FieldLabel>
+                                    <InputGroup className="w-24 border-highlight-strong bg-card max-md:h-control-touch">
                                         {/* Saved on blur / Enter, so a half-typed target
-                                    (e.g. "8" on the way to "85") can't trigger
-                                    the celebration. */}
+                                        (e.g. "8" on the way to "85") can't trigger
+                                        the celebration. */}
                                         <DraftInput
+                                            as={InputGroupInput}
+                                            id="subject-target-grade"
                                             type="number"
                                             min="0"
                                             max="100"
@@ -260,96 +273,78 @@ export function SubjectDetail() {
                                             value={targetGrade}
                                             aria-label={`${term} target grade`}
                                             onCommit={updateTargetGrade}
+                                            className="font-bold"
                                         />
-                                        <span aria-hidden="true">%</span>
-                                    </span>
-                                    <small>Yellow marker shows your target</small>
+                                        <InputGroupAddon align="inline-end">
+                                            <InputGroupText
+                                                className="text-highlight-text"
+                                                aria-hidden="true"
+                                            >
+                                                %
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+                                    <small className="max-w-32 type-small text-highlight-text max-sm:max-w-none">
+                                        Yellow marker shows your target
+                                    </small>
                                     {targetGradeError && (
-                                        <small className="grade-target-error" role="alert">
+                                        <small
+                                            className="max-w-32 type-small text-destructive"
+                                            role="alert"
+                                        >
                                             {targetGradeError}
                                         </small>
                                     )}
-                                </label>
-                                <div
-                                    className="grade-gauge official-gauge"
-                                    tabIndex="0"
-                                    aria-label={`Official grade: ${officialAverage === null ? "no grade yet" : `${officialAverage.toFixed(2)} percent`}`}
-                                >
-                                    <span className="grade-gauge-label">{term} official</span>
-                                    <span
-                                        className="grade-gauge-ring"
-                                        style={{
-                                            "--grade-progress": `${officialProgress}%`,
-                                            "--target-angle": `${targetGrade * 3.6}deg`,
-                                        }}
-                                        aria-hidden="true"
-                                    >
-                                        <strong>
-                                            {officialAverage === null
-                                                ? "—"
-                                                : officialAverage.toFixed(0)}
-                                            {officialAverage !== null && <small>%</small>}
-                                        </strong>
-                                        <span className="grade-gauge-target-marker" />
-                                    </span>
-                                    <span className="grade-gauge-details">
-                                        Professor-recorded scores only. These grades are locked.
-                                    </span>
-                                </div>
-
-                                <div
-                                    className="grade-gauge expected-gauge"
-                                    tabIndex="0"
-                                    aria-label={`Expected grade: ${expectedAverage === null ? "no grade yet" : `${expectedAverage.toFixed(2)} percent`}`}
-                                >
-                                    <span className="grade-gauge-label">{term} expected</span>
-                                    <span
-                                        className="grade-gauge-ring"
-                                        style={{
-                                            "--grade-progress": `${expectedProgress}%`,
-                                            "--target-angle": `${targetGrade * 3.6}deg`,
-                                        }}
-                                        aria-hidden="true"
-                                    >
-                                        <strong>
-                                            {expectedAverage === null
-                                                ? "—"
-                                                : expectedAverage.toFixed(0)}
-                                            {expectedAverage !== null && <small>%</small>}
-                                        </strong>
-                                        <span className="grade-gauge-target-marker" />
-                                    </span>
-                                    <span className="grade-gauge-details">
-                                        Includes student-reported draft scores with official scores
-                                        taking priority.
-                                    </span>
-                                </div>
+                                </Field>
+                                <GradeGauge
+                                    label={`${term} official`}
+                                    grade={officialAverage}
+                                    target={targetGrade}
+                                    ariaLabelPrefix="Official grade"
+                                    ariaDecimals={2}
+                                    focusable
+                                    className="shrink-0"
+                                    details="Professor-recorded scores only. These grades are locked."
+                                />
+                                <GradeGauge
+                                    label={`${term} expected`}
+                                    grade={expectedAverage}
+                                    target={targetGrade}
+                                    tone="expected"
+                                    ariaLabelPrefix="Expected grade"
+                                    ariaDecimals={2}
+                                    focusable
+                                    className="shrink-0"
+                                    details="Includes student-reported draft scores with official scores taking priority."
+                                />
                             </div>
 
-                            <div className="grade-card-divider" />
+                            <Separator orientation="vertical" className="hidden h-12 xl:block" />
 
-                            <div className="grade-card-information">
-                                <p>
-                                    <span className="grade-dot blue-dot" />
+                            <div className="flex min-w-0 flex-col gap-2 xl:flex-1">
+                                <p className="m-0 flex items-center gap-2 type-small text-muted-foreground">
+                                    <span className="size-2 shrink-0 rounded-full bg-self-reported" />
                                     {officialTasks.length} official assessment
                                     {officialTasks.length === 1 ? "" : "s"} recorded
                                 </p>
 
-                                <small>Official records never include sandbox drafts.</small>
+                                <small className="type-small text-muted-foreground">
+                                    Official records never include sandbox drafts.
+                                </small>
                             </div>
 
-                            <div className="grade-card-legend">
-                                <span>
-                                    <i className="grade-dot dark-dot" />
+                            <div className="flex min-w-0 flex-col gap-2.5 border-t border-highlight pt-3 type-small text-muted-foreground md:border-0 md:pt-0 xl:flex-1">
+                                <span className="flex items-center gap-2">
+                                    <i className="size-2 shrink-0 rounded-full bg-official" />
                                     Locked official scores
                                 </span>
 
-                                <span>
-                                    <i className="grade-dot blue-dot" />
+                                <span className="flex items-center gap-2">
+                                    <i className="size-2 shrink-0 rounded-full bg-self-reported" />
                                     Private sandbox drafts
                                 </span>
                             </div>
-                        </div>
+                        </Card>
                     </section>
 
                     {/* Current Term Records */}
