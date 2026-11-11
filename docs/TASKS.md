@@ -406,7 +406,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Files: `src/assets/index.css` → `src/index.css`; `src/main.jsx` (import); font `url()` paths inside the file.
   - Change: move only.
   - Check: V-same.
-- [ ] **T4.2 `@/` import alias.**
+- [x] **T4.2 `@/` import alias.**
   - Files: `vite.config.js` (`resolve.alias`), a new `jsconfig.json` (`paths`).
   - Change: no import is changed yet. Vitest picks up the alias from `vite.config.js`.
   - Check: V-same, and a one-off import through `@/` builds.
