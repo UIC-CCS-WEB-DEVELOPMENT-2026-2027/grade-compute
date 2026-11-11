@@ -83,9 +83,10 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 | Package manager | npm (`package-lock.json`). Use only npm |
 | Dev server | `npm run dev` (Vite, `http://localhost:5173`) |
 | Build | `npm run build` (Vite, output in `dist/`) |
-| Lint | `npm run lint` (ESLint 10 flat config, `eslint.config.js`). Fails with 2 errors at the Phase 0 baseline; see `docs/AUDIT.md` §2 |
-| Format | None yet. Prettier is added in Phase 2 |
-| Test | None yet. Vitest and React Testing Library are added in Phase 2 |
+| Lint | `npm run lint` (ESLint 10 flat config, `eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
+| Format | `npm run format` / `npm run format:check` (Prettier 3, `.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
+| Test | `npm test` (Vitest 5, React Testing Library, jsdom). Characterization tests next to the code (`*.test.js(x)`); helpers in `src/test/`. The date is frozen at 2026-11-11 |
+| Screenshots | `npm run screenshots [outDir]` (Playwright, `scripts/screenshots.mjs`). Baseline in `docs/baseline/`; manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
 | Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `src/App.jsx` |
 | State management | React local state per component. A `compugrade-db-updated` window event (from `saveDb`) tells other components to re-read. The sidebar uses a `useSyncExternalStore` module store. No state library |
 | Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`), seeded from `src/utils/db.json` through `src/utils/db.js` |
