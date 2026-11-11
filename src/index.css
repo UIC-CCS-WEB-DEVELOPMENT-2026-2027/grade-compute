@@ -407,22 +407,41 @@
     }
 }
 
-/* The element rules below stay outside the layers, so their cascade with
-   the app's other rules is unchanged. :where(:not([data-slot])) keeps them
-   off shadcn components (which carry data-slot) without adding
-   specificity. They go when the screens are converted (Phase 7). */
-button:where(:not([data-slot])) {
-    font-family: var(--font-body);
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-    transition: opacity 0.2s ease;
-}
+/* Element defaults for the existing screens. In the base layer, so Tailwind
+   utilities override them (owner decision, Gate 4: hover and focus styles
+   may change). :where(:not([data-slot])) keeps them off shadcn components
+   (which carry data-slot) without adding specificity. They go when the
+   screens are converted (Phase 7). */
+@layer base {
+    button:where(:not([data-slot])) {
+        font-family: var(--font-body);
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: opacity 0.2s ease;
+    }
 
-button:where(:not([data-slot])):hover {
-    opacity: 0.85;
+    button:where(:not([data-slot])):hover {
+        opacity: 0.85;
+    }
+
+    input:where(:not([data-slot])),
+    select:where(:not([data-slot])) {
+        font-family: var(--font-body);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.5rem;
+        outline: none;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    input:where(:not([data-slot])):focus,
+    select:where(:not([data-slot])):focus {
+        border-color: var(--primary);
+    }
 }
 
 .btn-primary {
@@ -475,22 +494,6 @@ button:where(:not([data-slot])):hover {
 .btn-warning {
     background-color: var(--warning);
     color: #ffffff;
-}
-
-input:where(:not([data-slot])),
-select:where(:not([data-slot])) {
-    font-family: var(--font-body);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.5rem;
-    outline: none;
-    width: 100%;
-    max-width: 100%;
-}
-
-input:where(:not([data-slot])):focus,
-select:where(:not([data-slot])):focus {
-    border-color: var(--primary);
 }
 
 /* =========================================
