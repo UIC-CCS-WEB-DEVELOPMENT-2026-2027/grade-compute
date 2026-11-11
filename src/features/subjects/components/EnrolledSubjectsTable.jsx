@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AddSubjectForm from "./AddSubjectForm";
+import { formatGrade } from "@/lib/format";
 import { PASSING_GRADE } from "@/lib/subjects";
 import "./EnrolledSubjectsTable.css";
 
@@ -14,10 +15,6 @@ const STATUS_LABELS = {
     below: "Below passing",
     none: "No grades yet",
 };
-
-function formatGrade(grade) {
-    return grade === null ? "—" : `${Number(grade.toFixed(1))}%`;
-}
 
 // Short label for the icon box: the letters of the subject code ("IT101" -> "IT").
 function subjectInitials(subjectCode) {
@@ -161,7 +158,7 @@ export default function EnrolledSubjectsTable({
                                     </td>
                                     <td className="enrolled-cell-official">
                                         <span className="enrolled-grade-num">
-                                            {formatGrade(row.officialGrade)}
+                                            {formatGrade(row.officialGrade, { decimals: 1 })}
                                         </span>
                                         <span className="enrolled-grade-label">
                                             {row.officialGrade === null
@@ -171,7 +168,7 @@ export default function EnrolledSubjectsTable({
                                     </td>
                                     <td className="enrolled-cell-expected">
                                         <span className="enrolled-grade-num expected">
-                                            {formatGrade(row.expectedGrade)}
+                                            {formatGrade(row.expectedGrade, { decimals: 1 })}
                                         </span>
                                         <span className="enrolled-grade-label">
                                             {row.expectedGrade === null

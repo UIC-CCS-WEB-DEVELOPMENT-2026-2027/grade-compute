@@ -3,10 +3,11 @@
 // sidebar). Render it only while it should be open.
 import { Link } from "react-router-dom";
 import Dialog from "@/components/Dialog";
+import { formatGrade } from "@/lib/format";
 import "./SandboxSubjectPicker.css";
 
-function formatGrade(grade) {
-    return grade === null ? "No grade yet" : `Expected ${Number(grade.toFixed(1))}%`;
+function formatExpectedGrade(grade) {
+    return grade === null ? "No grade yet" : `Expected ${formatGrade(grade, { decimals: 1 })}`;
 }
 
 // subjects: rows from getEnrolledSubjects() (classId, subjectCode, subjectName, expectedGrade).
@@ -74,7 +75,7 @@ export default function SandboxSubjectPicker({
                                     <span className="sandbox-picker-name">{row.subjectName}</span>
                                 </div>
                                 <span className="sandbox-picker-grade">
-                                    {formatGrade(row.expectedGrade)}
+                                    {formatExpectedGrade(row.expectedGrade)}
                                 </span>
                             </Link>
                         </li>

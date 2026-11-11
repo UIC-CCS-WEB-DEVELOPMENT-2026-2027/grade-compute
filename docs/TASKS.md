@@ -518,7 +518,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T6.4 `lib/scores.js`.**
   - `validateScore` (G7), used by CurrentTermRecords and TargetGradeSandbox. Messages stay in the components.
   - Add unit tests. Component tests unchanged.
-- [ ] **T6.5 `lib/format.js` `formatGrade`** (G4).
+- [x] **T6.5 `lib/format.js` `formatGrade`** (G4).
   - Replace the 5 identical copies. The 1-decimal and "Expected" variants are built on it with the same output.
   - Add unit tests.
 - [ ] **T6.6 Initials (G5).**

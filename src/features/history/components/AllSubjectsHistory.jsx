@@ -21,6 +21,7 @@ import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
 import { TERMS, getTermLabel } from "@/lib/terms";
 import HistoryTooltip from "./HistoryTooltip";
 import usePointHover from "@/features/history/hooks/usePointHover";
+import { formatGrade } from "@/lib/format";
 import "./HistoryChart.css";
 
 // Strong colors first so the first lines read well on white.
@@ -28,10 +29,6 @@ const LINE_COLOR_ORDER = [1, 4, 3, 5, 2, 8, 7, 6];
 
 function lineColor(index) {
     return resolveColor(getCriteriaColor(LINE_COLOR_ORDER[index % LINE_COLOR_ORDER.length]));
-}
-
-function formatGrade(value) {
-    return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
 }
 
 // One subject's dot. Hovering it shows a tooltip for this point only;

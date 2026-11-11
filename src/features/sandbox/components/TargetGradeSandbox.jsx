@@ -15,11 +15,8 @@ import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
+import { formatGrade } from "@/lib/format";
 import "./TargetGradeSandbox.css";
-
-function formatGrade(value) {
-    return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
-}
 
 function pluralTasks(count) {
     return `${count} ${count === 1 ? "task" : "tasks"}`;

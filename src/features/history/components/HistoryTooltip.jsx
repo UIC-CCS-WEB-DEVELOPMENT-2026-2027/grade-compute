@@ -3,10 +3,7 @@
 // (see usePointHover.js): the task, its score, the entry an official score
 // replaced or the planned score, and the grade right after it.
 import { useEffect, useState } from "react";
-
-function formatGrade(value) {
-    return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
-}
+import { formatGrade } from "@/lib/format";
 
 function ReplacedLine({ point }) {
     const change = point.percent - point.replacedEntry.percent;

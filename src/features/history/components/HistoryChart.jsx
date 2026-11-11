@@ -20,11 +20,8 @@ import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import HistoryTooltip from "./HistoryTooltip";
 import usePointHover from "@/features/history/hooks/usePointHover";
+import { formatGrade } from "@/lib/format";
 import "./HistoryChart.css";
-
-function formatGrade(value) {
-    return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
-}
 
 // Keep the "Target reached" label inside the chart: below the point when
 // the point is near the top edge, and inward at the first/last step.

@@ -12,10 +12,7 @@ import { getTermTarget } from "@/lib/targets";
 import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
 import HistoryChart from "./HistoryChart";
-
-function formatGrade(value) {
-    return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;
-}
+import { formatGrade } from "@/lib/format";
 
 export default function SubjectGradeHistory({ classId, termKey }) {
     const [dbData, setDbData] = useState(() => getDb());
