@@ -543,11 +543,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - The celebration decision (`lib/celebration.js`: previous/next reached → message or null) and the gauge clamp.
   - Add unit tests. The SubjectDetail tests stay unchanged.
   - **As done:** the gauge clamp is `getGaugeProgress` in `lib/format.js`. The sandbox `Gauge` had the same line and uses it too. Checked G8 and G9 in a browser, with identical results.
-- [ ] **T6.11 ⚠ Auth helpers → `features/auth/lib/accounts.js`.**
+- [x] **T6.11 ⚠ Auth helpers → `features/auth/lib/accounts.js`.**
   - Move: `validateAuthFields`, `getPasswordError`, `registerAccount`, `authenticateAccount`, the password requirements.
   - `LoginRegister` uses `ACTIVE_USER_KEY` (G10b).
   - Add unit tests for every message in checklist A3–A13.
   - Check: V-same, checklist A.
+  - **As done:** the password requirements are exported as `PASSWORD_REQUIREMENTS` (UPPER_SNAKE_CASE constant, AGENTS §6). Checklist A1–A18 passed in a browser, with identical page text, session and saved users before and after.
 - [ ] **T6.12 ⚠ B9 fix (approved, AGENTS §3).**
   - Change: "Try draft scores" writes `targetGradeSandbox.terms[term].draftScores[taskId]` (via `services/records.js`) and never touches `studentReportedScore`. No migration.
   - Tests: update the B9 sandbox test **in the same commit**, and say so in the commit message.
