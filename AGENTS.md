@@ -61,7 +61,7 @@ The job in progress is a codebase and UI clean-up. Until the owner lifts the fre
 
 **If you find a bug**, report it and keep the current behaviour. Fixing a bug is a behaviour change and needs the owner's approval.
 
-**Owner-approved exceptions.** These are the only approved behaviour or data changes (Gate 0, 2026-11-11; see `docs/AUDIT.md` §12 and §14). Each one is its own task and its own commit.
+**Owner-approved exceptions.** These are the only approved behaviour or data changes (Gates 0 and 3, 2026-11-11; see `docs/AUDIT.md` §12 and §14 and `docs/TASKS.md` §8). Each one is its own task and its own commit.
 
 - **B9: sandbox drafts become draft-only.**
   - **Today:** "Try draft scores" in the Target Grade Sandbox writes the real `studentReportedScore`.
@@ -69,7 +69,13 @@ The job in progress is a codebase and UI clean-up. Until the owner lifts the fre
   - **When:** a dedicated Phase 6 task, after the sandbox logic has moved to `lib/`.
   - **Tests:** the characterization test for the old behaviour is updated in the same commit.
   - **No migration:** existing `studentReportedScore` values stay as real scores.
-- **Sidebar breakpoints.** In Phase 8, `PHONE_MAX_WIDTH` moves from 760 to 767 and `TABLET_MAX_WIDTH` from 1100 to 1023, to match the Tailwind breakpoints in section 7.
+  - **Drafts feed the sandbox only** (Gate 3): its result card, gauges and plan chart. A draft box starts from the task's real self-reported score.
+- **Sidebar breakpoints.** `PHONE_MAX_WIDTH` moves from 760 to 767 and `TABLET_MAX_WIDTH` from 1100 to 1023, to match the Tailwind breakpoints in section 7. This is done with the sidebar rebuild (T7.S1).
+- **shadcn `Sidebar`** (Gate 3).
+  - **Change:** the sidebar is rebuilt on the shadcn `Sidebar` and keeps its current appearance.
+  - **Behaviour:** only as listed and confirmed in `docs/TASKS.md` §3.2 (S1–S5).
+- **Rule editor confirm** (Gate 3). PillLevel's `window.confirm` becomes a shadcn `AlertDialog` with the same wording.
+- **Dead settings prototype** (Gate 3). `src/pages/StudentSettingsPrototype.jsx` and its `.student-switcher*` / `.student-role-*` CSS are deleted in Phase 5a, once `SPEC.md` §6 (f) has been updated.
 
 Every other bug in `docs/AUDIT.md` §12 stays as it is.
 
@@ -139,7 +145,7 @@ src/
 - Named exports. Default exports only where a tool requires them. Today 39 files use default exports. Convert them in dedicated Phase 6 tasks, never inside a file-move commit.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0).
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3).
 - **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes
@@ -173,8 +179,10 @@ src/
   - the 3-state tokens `official` (locked official scores) and `self-reported` (student entries)
   - `criteria-1` to `criteria-8`, each with its `-on` pair
 - Themes: the app has one theme (light), and it keeps working. The `.global-settings.dark` rules and `--*-dark` tokens can't be reached, so they are dead code and are deleted in Phase 5a. Do not add a theme.
-- Typography: one font family set and one fixed scale of text roles (page title, section title, body, small, caption) defined once and reused. No one-off sizes. Minimum sizes:
-  - 14px for body text, inputs and buttons.
+- Typography: one font family set and one fixed scale of text roles, defined once and reused. No one-off sizes.
+  - Fonts: Khand for headings and General Sans for everything else, from the files in `src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
+  - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/TASKS.md` §4.2.
+  - Minimum sizes: 14px for body text, inputs and buttons.
   - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
 - Spacing and sizing: the Tailwind spacing scale only. Same element, same size everywhere (one button height per size variant, one input height, one card padding).
 - Branding: out of scope for the current job (see section 3). Keep the existing logo and name exactly as they are, including when moving the files that show them.

@@ -39,7 +39,9 @@
    - its widths (16rem / 3rem) differ from the app's 310px / 76px
 
    Each of these would change behaviour. See the Sidebar decision in §3.2.
-6. **Conflict between the workflow and `SPEC.md`.** Phase 5a lists `src/pages/StudentSettingsPrototype.jsx` and the dead `.student-switcher*` / `.student-role-*` CSS for deletion. `SPEC.md` §6 (f) lists that prototype "with its CSS" as non-student code that is **kept**. SPEC outranks the workflow, so this plan keeps them (Gate 3 decision D1).
+6. **Conflict between the workflow and `SPEC.md`.** Phase 5a lists `src/pages/StudentSettingsPrototype.jsx` and the dead `.student-switcher*` / `.student-role-*` CSS for deletion. `SPEC.md` §6 (f) lists that prototype "with its CSS" as non-student code that is kept.
+   - **Gate 3 decision (D1):** the owner decided they are dead code and are deleted in T5a.1 and T5a.3.
+   - **Blocked:** those deletions wait until `SPEC.md` §6 (f) has been updated through the SPEC protocol.
 
 ---
 
@@ -56,7 +58,7 @@ src/
     auth/LoginRegister.jsx
     student/StudentDashboard.jsx  SubjectMenu.jsx  SubjectDetail.jsx (+test)
             TargetGradeSandboxPage.jsx  GradeRules.jsx  RuleDetailPage.jsx
-    settings/GlobalSettings.jsx  StudentSettingsPrototype.jsx (kept, unrouted; D1)
+    settings/GlobalSettings.jsx
   features/
     auth/lib/accounts.js (+test)                          T6.11
     subjects/components/EnrolledSubjectsTable.jsx  AddSubjectForm.jsx
@@ -109,11 +111,12 @@ A file's test moves with it. Each per-component CSS file moves with its componen
 | `src/components/student/HistoryChart.jsx` (+`.css`), `AllSubjectsHistory.jsx`, `SubjectGradeHistory.jsx`, `HistoryTooltip.jsx` | `src/features/history/components/` | T5.10 |
 | `src/components/student/usePointHover.js` | `src/features/history/hooks/usePointHover.js` | T5.10 |
 | `src/components/SettingRow.jsx`, `ToggleSetting.jsx` | `src/features/settings/components/` | T5.11 |
-| `src/pages/GlobalSettings.jsx` (+`.css`), `src/pages/StudentSettingsPrototype.jsx` | `src/pages/settings/` | T5.11 |
+| `src/pages/GlobalSettings.jsx` (+`.css`) | `src/pages/settings/` | T5.11 |
 | `src/pages/student/RuleDetail.jsx` (+`.css`) | `src/pages/student/RuleDetailPage.jsx` (+`.css`) (name now matches the export) | T5.12 |
 | `src/assets/congrats_voice .mp3` | `src/assets/congrats-voice.mp3` (no space in the name) | T5.12 |
 
 **Deleted in Phase 5a, not moved:**
+- `src/pages/StudentSettingsPrototype.jsx` (D1, after the SPEC update)
 - `src/components/SelectSetting.jsx`
 - `src/components/shared/RuleCompare.jsx`
 - `src/components/ToggleSettings`
@@ -183,9 +186,9 @@ shadcn is set up for **Base UI**, JavaScript (`tsx: false`), with the `@/` alias
 | `Dialog.jsx` (native `<dialog>`), Sidebar Help, session details, Settings help, sandbox subject picker, rule impact dialog, delete-rule dialog | `Dialog` | |
 | Remove-subject alert, 2FA turn-off, log out of all sessions, `window.confirm` in PillLevel (D4) | `AlertDialog` | |
 | Celebration overlay | `Dialog` with custom content | Confetti and audio stay custom; 6-second close kept |
-| Phone sidebar menu | `Sheet` (side left) | Focus trap, Escape and backdrop come built in |
-| Minimised-sidebar pop-out subject list | `Popover` | |
-| Minimised-sidebar icon labels (`data-tooltip`) | `Tooltip` | |
+| The whole sidebar (desktop, minimised and phone menu) | `Sidebar` (§3.2). The phone menu uses its built-in `Sheet` | Appearance kept |
+| Minimised-sidebar pop-out subject list | `Popover` inside the `Sidebar` | |
+| Minimised-sidebar icon labels (`data-tooltip`) | `SidebarMenuButton tooltip` (shadcn `Tooltip`) | |
 | Cards (`*-card`, `.rule-card`, `.sandbox-card`, `.enrolled-subjects`, settings panels) | `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | |
 | Status pill ("Passing"), record tags ("Self Reported", "Custom Addition"), counts, "Viewing now", rule tags | `Badge` | |
 | Header initials, instructor initials, Settings photo | `Avatar` + `AvatarFallback` | |
@@ -205,18 +208,29 @@ shadcn is set up for **Base UI**, JavaScript (`tsx: false`), with the `@/` alias
 - **Chart dots, hit areas and tooltip content:** Recharts render props.
 - **Rule pie rings:** Recharts.
 
-### 3.2 Sidebar decision (R5): composed primitives (recommended)
+### 3.2 Sidebar decision (R5): shadcn `Sidebar` (owner decision, Gate 3, D7)
 
-| | shadcn `Sidebar` | Composed: `Sheet`, `Tooltip`, `Popover`, `Button`, `Separator`, `Badge`, `AlertDialog`, `Dialog` |
-| --- | --- | --- |
-| `compugrade-sidebar-minimized` key | Would need patching: it writes a `sidebar_state` cookie, a new stored value | Kept: `useSidebarState` stays the source of truth |
-| Tablet default (minimised at 1100, later 1023) | Needs patching | Kept as is |
-| Phone switch at 760 (767 after T8.0) | Uses its own `useIsMobile` (768) | Kept: `PHONE_MAX_WIDTH` |
-| Keyboard shortcut | Adds Ctrl/⌘+B (new behaviour) | None, as today |
-| Widths 310 / 76px | Needs overriding | Tokens `--sidebar-width`, `--sidebar-width-icon` |
-| Focus trap and Escape in the phone menu | Through Sheet | Through Sheet |
+The sidebar becomes the shadcn `Sidebar` (`SidebarProvider`, `Sidebar collapsible="icon"`, `SidebarHeader`, `SidebarContent`, `SidebarGroup`, `SidebarMenu`, `SidebarMenuButton` with `tooltip`, `SidebarMenuSub`, `SidebarFooter`, `SidebarTrigger`).
 
-**Recommendation:** compose the sidebar from primitives. The shadcn `Sidebar` would need four patches, and each patch is a behaviour risk.
+**The current appearance is kept:**
+- the yellow `sidebar` background
+- the 310px / 76px widths, through `--sidebar-width` and `--sidebar-width-icon`
+- the brand block, nav items, the My Subjects count badge and expandable subject list, the Settings / Help / Logout group, and the coral Logout button
+
+**The new behaviour is worked on during the clean-up**, as an approved exception. Today's behaviour differs from the component's in these places:
+
+| Item | Today | shadcn `Sidebar` | Proposed handling (S1–S5 need owner confirmation; see §8) |
+| --- | --- | --- | --- |
+| S1 Remembered state | `localStorage` `compugrade-sidebar-minimized` (`"1"`/`"0"`) | Writes a `sidebar_state` cookie | Control the provider (`open` / `onOpenChange`) from `useSidebarState`. Keep the existing key and drop the cookie, so no new stored data |
+| S2 Keyboard shortcut | None | Ctrl/⌘+B toggles the sidebar | Accept it as new behaviour |
+| S3 Phone switch | 760px | `useIsMobile` at 768, so phone means 767 or less | Move `PHONE_MAX_WIDTH` to 767 (the approved threshold change) inside the sidebar group (T7.S1), so both agree |
+| S4 Tablet default | Minimised at 1100 or less | Open by default | Keep: `defaultOpen` comes from `useSidebarState`, with the approved 1023 threshold (T7.S1) |
+| S5 Minimised subject list | A pop-out list (Escape or an outside click closes it) | No pop-out; sub-menus are hidden in icon mode | Keep the pop-out with a `Popover` on the My Subjects button |
+
+**Unchanged by the component:**
+- the phone menu as a `Sheet` (focus trap and Escape, as today)
+- the remove-subject `AlertDialog` (T7.S4)
+- the Help `Dialog` (T7.S5)
 
 ---
 
@@ -281,13 +295,19 @@ The fonts are Khand SemiBold for headings and General Sans Regular for everythin
 | `small` | General Sans 400 / 600 | 14px | 1.45 | 12.8–15.4px helper text, table cells, buttons, inputs, **and all non-caption text below 14px** (8–13.6px) |
 | `caption` | General Sans 600, uppercase where it is today | 12px | 1.3 | 7–12px chart axes, badges and eyebrow labels only |
 
-**Not covered by the five roles in `AGENTS.md` §7** (decision D2):
-- **h3 card titles at 20–23px:** proposed role `card-title`, Khand 600, 20px.
-- **The login hero heading at 52px:** proposed role `display`, Khand 600, 40 → 48px.
+**Two more roles (approved at Gate 3, D2; added to `AGENTS.md` §7):**
 
-Without these roles, card titles would drop to `small`/`body` and the hero to `page-title`.
+| Role | Font, weight | Size (phone → md and up) | Line height | Merges today's sizes |
+| --- | --- | --- | --- | --- |
+| `display` | Khand 600 | 40 → 48px | 1.05 | The login hero heading (52px). Used there only |
+| `card-title` | Khand 600 | 20px | 1.2 | h3 card titles at 20–23px |
 
-**Weights:** 400, 600 and 700 (merges 500–690 and 800). General Sans ships only Regular, so 600/700 are synthesized by the browser today (decision D3).
+**Fonts and weights (D3).**
+- Only Khand and General Sans, from `src/assets/`.
+- Weights are 400, 600 and 700 (merges 500–690 and 800):
+  - Headings use Khand 600; `Khand-SemiBold.ttf` is already in `src/assets/`.
+  - Body text uses General Sans 400, 600 and 700. Only `GeneralSans-Regular.otf` exists today, so 600 and 700 are synthesized by the browser.
+- T7.0c adds the General Sans Semibold and Bold files, from the type foundry's official download (check that the licence allows bundling), so the bold text is real.
 
 ### 4.3 Spacing
 
@@ -351,7 +371,7 @@ Tailwind's 4px scale (`--spacing: 0.25rem`). Existing values snap to the nearest
 | 720 | `md` |
 | 900, 1000 | `lg` (1024) |
 | 1200 | `xl` (1280) |
-| JS `PHONE_MAX_WIDTH` 760, `TABLET_MAX_WIDTH` 1100 | 767 and 1023 (T8.0, approved exception) |
+| JS `PHONE_MAX_WIDTH` 760, `TABLET_MAX_WIDTH` 1100 | 767 and 1023 (T7.S1, approved exception) |
 
 ---
 
@@ -364,7 +384,7 @@ These come from AUDIT §10 and the Phase 2 screenshots and measurements. All scr
 
 | Screen | Fixes |
 | --- | --- |
-| **Global** | Sidebar thresholds 767/1023 (T8.0). Header bell and chevron to 44px. Sidebar minimise toggle, subject rows and delete buttons to 44px |
+| **Global** | Sidebar thresholds 767/1023 (done in T7.S1). Header bell and chevron to 44px. Sidebar minimise toggle, subject rows and delete buttons to 44px |
 | **Login** | Tabs to 44px tall. Inputs and submit to 44px. Eye button to 44×44. At 768 the form column is cramped and "YOUR ACADEMIC GUIDE" sits loose at the top: stack the hero above the form below `lg` |
 | **Dashboard** | History chips, toggles and "Show as a table" to 44px. The subjects table becomes cards below `md`, so no inner scroll at 768. Search and filters to 44px |
 | **My Subjects** | Same table fix. Semester picker to 44px |
@@ -401,6 +421,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - `npx shadcn@latest init` with base **Base UI**, `tsx: false`, CSS `src/index.css`, aliases `@/components`, `@/components/ui`, `@/lib`, `@/lib/utils`, `@/hooks`. Use `--dry-run`/`--diff` first and merge by hand.
   - Keep the tokens from T4.3.
   - Remove or postpone anything init adds that changes the screen (its base-layer `body`/`*` rules) until T7.P.
+  - Keep the fonts: if init or a preset adds a font (for example Geist) or font variables, remove them. `--font-heading` stays Khand and `--font-sans` maps to General Sans (`AGENTS.md` §7).
   - Add a scoped border reset for shadcn components while preflight is off: `[data-slot], [data-slot] *` get `border: 0 solid`.
   - Creates `components.json` and `src/lib/utils.js` (`cn`). Installs the packages the CLI adds (approved).
   - Check: V-same, plus a scratch render of `Button` in a test (not committed in a page).
@@ -413,16 +434,15 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 ### Phase 5a — Remove dead code (V-same for every task)
 
 - [ ] **T5a.1 Unused files.**
-  - Delete: `src/components/SelectSetting.jsx`, `src/components/shared/RuleCompare.jsx` (0 bytes), `src/components/ToggleSettings` (0 bytes).
-  - **Keep** `src/pages/StudentSettingsPrototype.jsx` (SPEC §6 f; D1).
+  - Delete: `src/components/SelectSetting.jsx`, `src/components/shared/RuleCompare.jsx` (0 bytes), `src/components/ToggleSettings` (0 bytes), and `src/pages/StudentSettingsPrototype.jsx` (D1).
+  - **Blocked** until `SPEC.md` §6 (f) is updated through the SPEC protocol.
   - Check: V-same, and nothing imports the deleted files.
 - [ ] **T5a.2 Unused assets.**
   - Delete: `src/assets/bell-icon.png`, `user-profile.png`, `visibility-eye.svg`; `public/grade-rules-mark.svg`, `public/icons.svg`.
   - Keep `public/favicon.svg` (branding).
   - Check: V-same, and grep finds no reference to them.
 - [ ] **T5a.3 Dead global CSS classes.**
-  - Remove: `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
-  - **Keep** `.student-switcher*` and `.student-role-*` (SPEC §6 f; D1).
+  - Remove: `.student-switcher*`, `.student-role-*` (D1, after the SPEC update), `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
   - Check: V-same, plus a grep of JSX for each class name.
 - [ ] **T5a.4 Unreachable dark theme.**
   - Remove all `.global-settings.dark` rules (`GlobalSettings.css`), the `--*-dark` tokens (`index.css`), and any token used only by them.
@@ -448,7 +468,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [ ] **T5.8** `CurrentTermRecord.*` → `features/term-records/components/CurrentTermRecords.*`. TermNavigation (+CSS) → the same folder.
 - [ ] **T5.9** TargetGradeSandbox (+CSS, test) and SandboxSubjectPicker (+CSS) → `features/sandbox/components/`.
 - [ ] **T5.10** History components (+CSS) → `features/history/components/`. `usePointHover.js` → `features/history/hooks/`.
-- [ ] **T5.11** SettingRow and ToggleSetting → `features/settings/components/`. GlobalSettings (+CSS) and StudentSettingsPrototype → `pages/settings/`.
+- [ ] **T5.11** SettingRow and ToggleSetting → `features/settings/components/`. GlobalSettings (+CSS) → `pages/settings/`.
 - [ ] **T5.12** `RuleDetail.jsx` → `RuleDetailPage.jsx` (+CSS). `congrats_voice .mp3` → `congrats-voice.mp3`. Then remove the empty `components/shared/`, `components/student/` and `utils/`.
 
 ### Phase 6 — Logic clean-up (V-tests and V-same for every task unless stated)
@@ -489,7 +509,9 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [ ] **T6.12 ⚠ B9 fix (approved, AGENTS §3).**
   - Change: "Try draft scores" writes `targetGradeSandbox.terms[term].draftScores[taskId]` (via `services/records.js`) and never touches `studentReportedScore`. No migration.
   - Tests: update the B9 sandbox test **in the same commit**, and say so in the commit message.
-  - Decision D5 must be settled first: whether drafts feed the sandbox result and chart, and what the box shows at first.
+  - **How drafts behave (D5, approved):**
+    - Drafts feed the sandbox only: the result card, the sandbox gauges and the plan chart. A pure helper builds the record the sandbox calculates with (`withDraftScores(record, term)` in `lib/sandbox.js`, with unit tests). Subject Detail, Current Term Records and the official grade never see drafts.
+    - A draft box first shows the task's real self-reported score. Typing stores a draft for that task. A cleared box stores `""`, which counts as "no score" in the sandbox.
   - Also update `docs/BEHAVIOUR_CHECKLIST.md` I9.
   - The SPEC §4 note is updated afterwards through the SPEC protocol (owner).
 - [ ] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
@@ -510,19 +532,34 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Add shadcn `button`, `card`, `separator`, `badge`.
   - Use them in no page yet except one proof page, StudentDashboard, which gets PageShell.
   - Check: V-visual.
-- **Sidebar group (R5; composed, §3.2).** Key, tablet default, focus trap and Escape stay identical.
-  - [ ] **T7.S1 ⚠ Phone menu → `Sheet`.**
-    - Keep the ☰ trigger in the Header, `PHONE_MAX_WIDTH` and body scroll locking.
-    - Check: checklist B4, B10.
-  - [ ] **T7.S2 Minimised icon labels → `Tooltip`.** Check: B2, B3.
-  - [ ] **T7.S3 Subject pop-out → `Popover`.** Check: B6.
+- [ ] **T7.0c General Sans Semibold and Bold (D3).**
+  - Add the font files to `src/assets/` from the official source, after a licence check. Add their `@font-face` rules in `src/index.css`.
+  - Check: V-visual. Expected: 600/700 body text drawn with real bold glyphs instead of synthesized ones.
+- **Sidebar group (R5; shadcn `Sidebar`, §3.2, D7).** The appearance stays the same. The behaviour changes only as listed in §3.2 (S1–S5) and approved by the owner.
+  - [ ] **T7.S0 ⚠ Add the shadcn `sidebar` component and adapt it.**
+    - Add it, and review the generated file.
+    - Control `SidebarProvider` from `useSidebarState` (key `compugrade-sidebar-minimized`, no cookie; S1).
+    - Set `--sidebar-width` / `--sidebar-width-icon` to the current 310px / 76px as tokens.
+    - Map the sidebar colours to the `sidebar` tokens (yellow).
+    - Check: V-tests. The component isn't used yet.
+  - [ ] **T7.S1 ⚠ Phone switch and tablet default (includes T8.0, S3/S4).**
+    - Move `PHONE_MAX_WIDTH` to 767 and `TABLET_MAX_WIDTH` to 1023, matching `useIsMobile`.
+    - Update checklist B3 and `scripts/screenshots.mjs` (`SIDEBAR_MINIMIZED[1024] = "0"`).
+    - Check: V-visual at 768 and 1024.
+  - [ ] **T7.S2 ⚠ Rebuild `Sidebar.jsx` on `Sidebar`.**
+    - Brand header with `BrandMark`; nav with `SidebarMenu`/`SidebarMenuButton` (`tooltip` gives the minimised labels); My Subjects with the count `Badge` and `SidebarMenuSub` list; footer with Settings, Help and the coral Logout.
+    - The Header's ☰ becomes `SidebarTrigger` behaviour (the phone `Sheet`).
+    - Move the sidebar rules out of `index.css` into utilities.
+    - Check: V-visual (the sidebar must look the same at 375, 768, 1024, 1440), and checklist B1–B6, B10.
+  - [ ] **T7.S3 Minimised subject pop-out → `Popover` (S5).** Check: B6.
   - [ ] **T7.S4 Remove-subject alert → `AlertDialog`.** Check: F1–F4.
   - [ ] **T7.S5 Help popup → `Dialog`.**
     - Remove its inline styles and the 2 `rgba()` values.
     - Check: B7.
-  - [ ] **T7.S6 Nav items, Logout, brand → `Button`, `Separator`, `Badge`, tokens.**
-    - Move the sidebar rules out of `index.css` into utilities.
-    - Check: B1, B5, B8, B9.
+  - [ ] **T7.S6 Sandbox picker entry.**
+    - The Target Grade Sandbox menu item opens `SandboxSubjectPicker`.
+    - Check: B8, B9.
+  - **Afterwards:** `SPEC.md` F13 (sidebar thresholds and the keyboard shortcut) needs an owner-approved SPEC update.
 - [ ] **T7.H Header and footer.**
   - `Avatar`, `Button size="icon"` for the bell and chevron (still no action, B13), tokens.
   - Delete `Header.css` and `PageFooter.css`.
@@ -583,7 +620,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - [ ] **T7.K1** Details form: `Field`, `Input`, `Checkbox`s in `FieldSet`, school chips (`Badge` + `Button`). Check: K13, K14.
   - [ ] **T7.K2 ⚠ PillEditor / PillLevel.**
     - Buttons → `Button size="icon"`, the % box → `Input`, the handles stay custom (`@utility`).
-    - The `window.confirm` change only if D4 approves it.
+    - `window.confirm("Delete … and all of its subcriteria?")` → `AlertDialog`, same wording (D4, approved).
     - Delete `PillEditor.css`.
     - Check: K3–K8.
   - [ ] **T7.K3** View switch `ToggleGroup`, the impact `Dialog`, the status line, the action buttons. Delete `RuleDetailPage.css`. Check: K1, K2, K9–K12, K15.
@@ -610,10 +647,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 
 ### Phase 8 — Responsive (V-visual at 375, 768, 1024, 1440, plus the Phase 2 measurement: overflow, text below 14px, targets below 44px)
 
-- [ ] **T8.0 ⚠ Sidebar thresholds.**
-  - Change: `PHONE_MAX_WIDTH` 760 → 767 and `TABLET_MAX_WIDTH` 1100 → 1023 (approved exception).
-  - The sidebar now starts **expanded** at 1024. Update checklist B3, and set `SIDEBAR_MINIMIZED[1024]` to `"0"` in `scripts/screenshots.mjs` in the same commit.
-  - `SPEC.md` F13 then needs an owner-approved update (SPEC protocol).
+- **T8.0 Sidebar thresholds: moved into T7.S1** (no separate task), so the shadcn `Sidebar`'s 768px phone switch and the app's thresholds change together. After it, the sidebar starts **expanded** at 1024.
 - [ ] **T8.1** Global: header, sidebar and footer targets.
 - [ ] **T8.2** Login.
 - [ ] **T8.3** Dashboard.
@@ -630,7 +664,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).
-  - Ask the owner before removing `@types/react*` (D6).
+  - Remove the unused `@types/react` and `@types/react-dom` dev dependencies (D6, approved).
 - [ ] **T9.2** Lint, format check, build, all tests.
 - [ ] **T9.3** Walk `docs/BEHAVIOUR_CHECKLIST.md` in full.
 - [ ] **T9.4** `npm run screenshots -- docs/after`.
@@ -650,15 +684,20 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 - The Arial declarations are at the lines given in §0.
 
 **Behaviour, data, wording and branding.**
-- **Behaviour or data changes:** only T6.12 (B9, approved) and T8.0 (thresholds, approved).
-- **Appearance only (allowed):** T7.0a and T7.P.
+- **Behaviour or data changes (all approved):**
+  - T6.12 (B9)
+  - T7.S1 (thresholds)
+  - the shadcn `Sidebar` group T7.S0–S2 (S1–S5 in §3.2, D7)
+  - T7.K2 (`window.confirm` → `AlertDialog`, D4)
+- **Appearance only (allowed):** T7.0a, T7.0c (fonts) and T7.P.
 - **Wording:** unchanged everywhere. G19 deliberately keeps both password-toggle wordings.
 - **Branding:** untouched. `BrandMark` is an identical extraction, and the favicon and title stay.
-- **Flagged for decision:** D4, the `window.confirm` replacement, which changes the dialog's look.
 
 **Conflicts with `SPEC.md`.**
-- Deleting StudentSettingsPrototype and its CSS conflicts with SPEC §6 (f). This plan keeps them (D1).
-- T6.12 and T8.0 make SPEC §4 (B9 note) and F13 (thresholds) out of date when they ship. Each needs an owner-approved SPEC update at that point.
+- **Deleting StudentSettingsPrototype and its CSS (D1)** conflicts with SPEC §6 (f). T5a.1 and T5a.3 are blocked until SPEC §6 (f) is updated through the protocol (proposal in the Gate 3 reply).
+- **When they ship, these make `SPEC.md` out of date**, and each needs an owner-approved SPEC update at that point:
+  - T6.12 → the B9 note in SPEC §4
+  - T7.S1–S2 → F13 (sidebar thresholds and the keyboard shortcut)
 
 **Size.** Settings, Sidebar, Subject Detail and Login are split into several tasks. The largest single tasks are T4.3 and T7.0a. Both are mechanical, and both are verified with V-same or V-visual.
 
@@ -670,8 +709,8 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 | T6.3, T6.7, T6.9, T6.10, T6.11 | Grade logic, stored data, auth | Unchanged tests, plus V-same, plus the listed checklist items; new unit tests first where the logic moves |
 | T6.12 | B9 | The test change is declared in the commit |
 | T7.0a, T7.P | App-wide appearance | V-visual over all 56 shots |
-| T7.S1, T7.D2, T7.G2–G4, T7.I2, T7.K2, T7.L3 | Interactive screens | V-visual, the component tests, and the checklist |
-| T8.0 | Sidebar thresholds | V-visual, checklist B2–B4 |
+| T7.S0–S2 | shadcn `Sidebar`, thresholds | V-visual (the sidebar must look the same), checklist B1–B10 and F |
+| T7.D2, T7.G2–G4, T7.I2, T7.K2, T7.L3 | Interactive screens | V-visual, the component tests, and the checklist |
 
 **Audit items not addressed, and why:**
 
@@ -682,20 +721,25 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 | B20 | `npm audit` advisories in the ESLint chain. Fixing them means downgrading ESLint, which needs the owner |
 | The 800 kB bundle warning | Code splitting (`React.lazy`) would change loading behaviour (suspense fallbacks). Out of scope unless the owner adds it |
 | Branding notes (AUDIT §9) | Handed to the branding branch in T9.7 |
-| Font weights (General Sans Regular only) | D3 |
 | Input-border contrast (WCAG 1.4.11, 3:1 for control outlines) | Not required by `AGENTS.md`, which asks for text contrast. Noted only |
 
 ---
 
-## 8. Decisions needed at Gate 3
+## 8. Gate 3 decisions
 
-| # | Question | Recommendation |
+The owner answered on 2026-11-11:
+
+| # | Decision | Where it is applied |
 | --- | --- | --- |
-| D1 | Phase 5a wants to delete `StudentSettingsPrototype.jsx` and the `.student-switcher*` / `.student-role-*` CSS, but `SPEC.md` §6 (f) says they are kept | **Keep them**, as SPEC says. To delete them instead, SPEC §6 (f) must change first, through the protocol |
-| D2 | Add two type roles beyond `AGENTS.md` §7's five: `card-title` (20px) and `display` (40–48px, the login hero only)? | **Yes.** Otherwise card titles shrink to body size and the login hero drops from 52 to 36px. Needs an `AGENTS.md` §7 edit |
-| D3 | Body text at weight 500–700 is synthesized because only General Sans Regular is installed. Add the Medium/Semibold font files (an asset, not a dependency), or keep synthesized bold? | Keep it as is for this job and note it for the branding branch. Changing fonts changes the look broadly |
-| D4 | Replace PillLevel's `window.confirm("Delete … and all of its subcriteria?")` with a shadcn `AlertDialog` (same wording, in-app styling)? | **Yes.** It's the only browser-native dialog left |
-| D5 | B9 fix details: (a) do draft scores feed the sandbox result, gauges and plan chart (as hypothetical scores), or are they stored only? (b) What does the draft box show before a draft exists: empty, or the real self-reported score? | (a) **Feed the sandbox only**, never Subject Detail, matching "plug hypothetical scores" in the project details. (b) **The real self-reported score**, so the sandbox starts from today's numbers |
-| D6 | Remove the unused `@types/react` and `@types/react-dom` dev dependencies in Phase 9? | Yes, unless your editor relies on them |
-| D7 | Sidebar: composed primitives (§3.2) or the shadcn `Sidebar`? | **Composed primitives** |
-| D8 | Approve the tokens in §4: the merged colours, including the AA darkening of muted, error, self-reported and yellow text; the type roles; spacing; radius; shadows | Approve as listed |
+| D1 | The settings prototype and its `.student-switcher*` / `.student-role-*` CSS are dead code and are **deleted** | T5a.1, T5a.3. Blocked until `SPEC.md` §6 (f) is updated through the protocol |
+| D2 | Add the `display` and `card-title` type roles | §4.2, `AGENTS.md` §7 |
+| D3 | Add the missing General Sans weights. Use only Khand and General Sans, from `src/assets/` | §4.2, T4.4, T7.0c, `AGENTS.md` §7 |
+| D4 | `window.confirm` → `AlertDialog` | T7.K2 |
+| D5 | Drafts feed the sandbox only, and the box starts from the real self-reported score | T6.12 |
+| D6 | Remove `@types/react*` | T9.1 |
+| D7 | Use the shadcn `Sidebar`, keeping the current look; its new behaviour is worked on during the clean-up | §3.2, T7.S0–S6 |
+
+**Still open:**
+- **S1–S5 in §3.2:** the concrete sidebar behaviour; needs owner confirmation.
+- **D8:** the token values in §4.
+- **The owner's homepage idea** (an interactive grade-calculator hero, switching to a grade inputter for professors): a new feature, so it goes to the `SPEC.md` Backlog through the protocol, not into this job.
