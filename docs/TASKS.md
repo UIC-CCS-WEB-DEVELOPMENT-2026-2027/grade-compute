@@ -472,7 +472,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Delete: `src/assets/bell-icon.png`, `user-profile.png`, `visibility-eye.svg`; `public/grade-rules-mark.svg`, `public/icons.svg`.
   - Keep `public/favicon.svg` (branding).
   - Check: V-same, and grep finds no reference to them.
-- [ ] **T5a.3 Dead global CSS classes.**
+- [x] **T5a.3 Dead global CSS classes.**
   - Remove: `.student-switcher*`, `.student-role-*` (D1), `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
   - Check: V-same, plus a grep of JSX for each class name.
 - [ ] **T5a.4 Unreachable dark theme.**
