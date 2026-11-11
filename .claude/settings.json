@@ -1,5 +1,5 @@
    {
      "permissions": {
-       "ask": ["Edit(/SPEC.md)"]
+       "ask": ["Edit(/SPEC.md)", "Write(/SPEC.md)", "Edit(SPEC.md)"]
      }
    }
