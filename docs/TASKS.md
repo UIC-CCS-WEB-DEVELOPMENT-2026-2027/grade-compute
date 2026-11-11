@@ -465,7 +465,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 
 ### Phase 5a — Remove dead code (V-same for every task)
 
-- [ ] **T5a.1 Unused files.**
+- [x] **T5a.1 Unused files.**
   - Delete: `src/components/SelectSetting.jsx`, `src/components/shared/RuleCompare.jsx` (0 bytes), `src/components/ToggleSettings` (0 bytes), and `src/pages/StudentSettingsPrototype.jsx` (D1).
   - Check: V-same, and nothing imports the deleted files.
 - [ ] **T5a.2 Unused assets.**
