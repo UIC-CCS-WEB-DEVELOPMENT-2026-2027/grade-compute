@@ -1,6 +1,6 @@
 import "./Header.css";
-import { getDb } from "../../utils/db";
-import { getActiveUser } from "../../utils/session";
+import { getDb } from "@/services/db";
+import { getActiveUser } from "@/services/session";
 import useSidebarState, { setSidebarMenuOpen } from "./useSidebarState";
 
 function BellIcon() {

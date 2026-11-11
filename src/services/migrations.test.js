@@ -1,6 +1,6 @@
 // Characterization tests for migrations.js (stored data, schema v1 -> v2).
 import { describe, expect, it } from "vitest";
-import { makeSeedDb, makeStandardRule, makeTask } from "../test/fixtures.js";
+import { makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";
 import { migrateDb, needsMigration, SCHEMA_VERSION } from "./migrations.js";
 
 // A database in the old format: no schemaVersion, a rule with "hierarchy",

@@ -6,7 +6,7 @@
 // Every shot runs on the same fixed state, so "before" and "after" shots
 // can be compared:
 // - the browser clock is frozen at the date the tests use (src/test/fixedDate.js)
-// - localStorage holds the seed database (src/utils/db.json), signed in as U1
+// - localStorage holds the seed database (src/services/db.json), signed in as U1
 // - compugrade-sidebar-minimized is set explicitly to the state a new user
 //   gets at that width: "1" (minimized) at 768 and 1024, "0" otherwise.
 //   (useSidebarState starts minimized at 1100px or less; phones use the
@@ -20,7 +20,7 @@ import { FIXED_NOW } from "../src/test/fixedDate.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = path.resolve(root, process.argv[2] ?? "docs/baseline");
-const seedDb = await readFile(path.join(root, "src/utils/db.json"), "utf8");
+const seedDb = await readFile(path.join(root, "src/services/db.json"), "utf8");
 
 const WIDTHS = [375, 768, 1024, 1440];
 const HEIGHT = 900;

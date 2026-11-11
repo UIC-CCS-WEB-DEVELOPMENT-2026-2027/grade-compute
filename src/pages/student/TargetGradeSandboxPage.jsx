@@ -5,8 +5,8 @@ import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
 import TermNavigation from "../../components/student/TermNavigation";
-import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
-import { getActiveStudentId } from "../../utils/session";
+import { DB_UPDATED_EVENT, getDb } from "@/services/db";
+import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
 import "./SubjectDetail.css";
 

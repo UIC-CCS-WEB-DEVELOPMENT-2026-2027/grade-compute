@@ -7,7 +7,7 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import RuleCard from "../../components/shared/RuleCard";
 import DeleteRuleDialog from "../../components/shared/DeleteRuleDialog";
-import { getDb, saveDb } from "../../utils/db";
+import { getDb, saveDb } from "@/services/db";
 import { duplicateRule, getRuleUsage, searchRules } from "@/lib/rules";
 import "./GradeRules.css";
 

@@ -1,5 +1,5 @@
 // Shared inputs for the characterization tests.
-import seedDb from "../utils/db.json";
+import seedDb from "@/services/db.json";
 
 // A fresh copy of the seed database (src/utils/db.json) for each test.
 export function makeSeedDb() {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Characterization tests for db.js and session.js (browser storage).
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { makeSeedDb } from "../test/fixtures.js";
+import { makeSeedDb } from "@/test/fixtures.js";
 import { DB_UPDATED_EVENT, getDb, initializeDatabase, saveDb } from "./db.js";
 import { ACTIVE_USER_KEY, getActiveStudentId, getActiveUser, signOut } from "./session.js";
 

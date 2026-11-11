@@ -3,7 +3,7 @@
 // can show it (Dashboard and My Subjects use it through EnrolledSubjectsTable).
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getDb, saveDb } from "../../utils/db";
+import { getDb, saveDb } from "@/services/db";
 import { getRuleFormulaText } from "@/lib/rules";
 import { addSubject, getInitialRuleId } from "@/lib/subjects";
 import "./AddSubjectForm.css";

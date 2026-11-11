@@ -7,7 +7,7 @@ import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import DraftInput from "../../components/shared/DraftInput";
 import TermNavigation from "../../components/student/TermNavigation";
 import SubjectGradeHistory from "../../components/student/SubjectGradeHistory";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import congratulationAudio from "../../assets/congrats_voice .mp3";
 import {
     calculateOfficialGrade,
@@ -15,7 +15,7 @@ import {
     getOfficialAssessments,
 } from "@/lib/grades";
 import { getTermLabel, toTermKey } from "@/lib/terms";
-import { getActiveStudentId } from "../../utils/session";
+import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import "./SubjectDetail.css";
 

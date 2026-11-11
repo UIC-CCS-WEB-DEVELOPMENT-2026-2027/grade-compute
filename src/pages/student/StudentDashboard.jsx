@@ -6,8 +6,8 @@ import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
 import AllSubjectsHistory from "../../components/student/AllSubjectsHistory";
-import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
-import { getActiveStudentId } from "../../utils/session";
+import { DB_UPDATED_EVENT, getDb } from "@/services/db";
+import { getActiveStudentId } from "@/services/session";
 import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
 import "./StudentDashboard.css";
 

@@ -3,8 +3,8 @@ import Sidebar from "../../components/shared/Sidebar";
 import Header from "../../components/shared/Header";
 import PageFooter from "../../components/shared/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
-import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
-import { getActiveStudentId } from "../../utils/session";
+import { DB_UPDATED_EVENT, getDb } from "@/services/db";
+import { getActiveStudentId } from "@/services/session";
 import {
     getClassSemesterId,
     getCurrentSemester,

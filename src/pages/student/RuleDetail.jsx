@@ -12,7 +12,7 @@ import RulePieChart from "../../components/shared/RulePieChart";
 import RuleHierarchyTable from "../../components/shared/RuleHierarchyTable";
 import Dialog from "../../components/shared/Dialog";
 import DeleteRuleDialog from "../../components/shared/DeleteRuleDialog";
-import { getDb, saveDb } from "../../utils/db";
+import { getDb, saveDb } from "@/services/db";
 import {
     DEFAULT_TAGS,
     buildRuleMath,

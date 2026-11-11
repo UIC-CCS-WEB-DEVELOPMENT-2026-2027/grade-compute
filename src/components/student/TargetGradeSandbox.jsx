@@ -4,10 +4,10 @@
 // The math lives in utils/sandbox.js. Sandbox settings and draft scores
 // are private to the student and never change official scores.
 import { useEffect, useState } from "react";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
-import { getActiveStudentId } from "../../utils/session";
+import { getActiveStudentId } from "@/services/session";
 import {
     getSandboxPlan,
     getSandboxTarget,

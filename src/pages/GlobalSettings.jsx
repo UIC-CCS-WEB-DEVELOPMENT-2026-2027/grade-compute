@@ -7,12 +7,12 @@ import {
     saveLocalPassword,
     saveLocalLoginSessions,
     verifyLocalPassword,
-} from "../utils/localAccountStore";
+} from "@/services/localAccountStore";
 import {
     createPrototypeChallenge,
     getVerifiedMethods,
     verifyPrototypeChallenge,
-} from "../utils/prototypeVerification";
+} from "@/services/prototypeVerification";
 import SettingRow from "../components/SettingRow";
 import ToggleSetting from "../components/ToggleSetting";
 import "./GlobalSettings.css";

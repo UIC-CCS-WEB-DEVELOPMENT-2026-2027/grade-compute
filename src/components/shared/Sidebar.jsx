@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
+import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import { getEnrolledSubjects } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
-import { getActiveStudentId, signOut } from "../../utils/session";
+import { getActiveStudentId, signOut } from "@/services/session";
 import SandboxSubjectPicker from "../student/SandboxSubjectPicker";
 import useSidebarState, {
     PHONE_MAX_WIDTH,

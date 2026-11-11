@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getDb, saveDb } from "../../utils/db";
+import { getDb, saveDb } from "@/services/db";
 import documentIcon from "../../assets/document-icon.svg";
 import graduationCap from "../../assets/graduation-cap.svg";
 import sparkle from "../../assets/decorative-sparkle.svg";
