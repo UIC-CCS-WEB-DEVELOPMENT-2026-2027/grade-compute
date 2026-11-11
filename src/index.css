@@ -915,7 +915,7 @@
 }
 
 /* ---- Minimized: icons only (wider than phones) ---- */
-@media (min-width: 761px) {
+@media (min-width: 768px) {
     .sidebar.is-minimized {
         width: 76px;
         padding-inline: 0.7rem;
@@ -1059,7 +1059,7 @@
 }
 
 /* ---- Phones: the sidebar becomes a slide-in menu ---- */
-@media (max-width: 760px) {
+@media (max-width: 767px) {
     .sidebar {
         position: fixed;
         inset: 0 auto 0 0;

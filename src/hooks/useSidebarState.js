@@ -1,13 +1,14 @@
 // src/components/shared/useSidebarState.js
 // Shared sidebar state, used by Sidebar and by Header's ☰ button.
-// - minimized: the sidebar shows icons only (screens wider than 760px).
+// - minimized: the sidebar shows icons only (screens 768px and wider).
 //   Remembered in this browser. Until the student picks, it starts
-//   minimized on tablets (761–1100px) and open on wider screens.
-// - menuOpen: on phones (760px and below) the sidebar is a slide-in menu.
+//   minimized on tablets (768–1023px) and open on wider screens.
+// - menuOpen: on phones (767px and below) the sidebar is a slide-in menu.
+// The thresholds match Tailwind md (768) and lg (1024) and useIsMobile.
 import { useSyncExternalStore } from "react";
 
-export const PHONE_MAX_WIDTH = 760;
-const TABLET_MAX_WIDTH = 1100;
+export const PHONE_MAX_WIDTH = 767;
+const TABLET_MAX_WIDTH = 1023;
 const STORAGE_KEY = "compugrade-sidebar-minimized";
 
 function readStoredMinimized() {

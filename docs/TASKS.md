@@ -590,7 +590,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Set `--sidebar-width` / `--sidebar-width-icon` to the current 310px / 76px as tokens.
     - Map the sidebar colours to the `sidebar` tokens (yellow).
     - Check: V-tests. The component isn't used yet.
-  - [ ] **T7.S1 ⚠ Phone switch and tablet default (includes T8.0, S3/S4).**
+  - [x] **T7.S1 ⚠ Phone switch and tablet default (includes T8.0, S3/S4).**
     - Move `PHONE_MAX_WIDTH` to 767 and `TABLET_MAX_WIDTH` to 1023, matching `useIsMobile`.
     - Update checklist B3 and `scripts/screenshots.mjs` (`SIDEBAR_MINIMIZED[1024] = "0"`).
     - Check: V-visual at 768 and 1024.

@@ -48,7 +48,7 @@ Write **Pass** or **Fail** (with a note) next to each item.
 | --- | --- | --- |
 | B1 | Click Dashboard, My Subjects, Grade Rules and Settings in the sidebar | Each opens its page: `/student/dashboard`, `/student/subject`, `/student/rules`, `/settings` |
 | B2 | At 1440 wide, click the minimise toggle, then reload | The sidebar becomes icon-only and stays minimised after the reload (`compugrade-sidebar-minimized` = `"1"`) |
-| B3 | Clear `compugrade-sidebar-minimized` and reload at 1024 wide, then at 1440 | Starts minimised at 1024 (1100 or less) and expanded at 1440 |
+| B3 | Clear `compugrade-sidebar-minimized` and reload at 768 wide, then at 1024 | Starts minimised at 768 (tablets, 768–1023) and expanded at 1024 and wider. Below 768 it is the phone menu (T7.S1, approved threshold change) |
 | B4 | At 375 wide, tap ☰ in the header | The sidebar slides in as a menu. Escape or a tap on the backdrop closes it |
 | B5 | Expanded sidebar: click the My Subjects chevron | Lists each enrolled subject. Clicking one opens its Subject Detail |
 | B6 | Minimised sidebar: click My Subjects | A pop-out lists the subjects. Escape or a click outside closes it |

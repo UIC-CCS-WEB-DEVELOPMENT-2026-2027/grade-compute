@@ -101,7 +101,7 @@
 }
 
 /* ☰ button: only on phones, where the sidebar becomes a slide-in menu
-   (see useSidebarState.js for the 760px breakpoint). */
+   (see useSidebarState.js for the 767px breakpoint). */
 .app-header__menu {
     display: none;
     flex-shrink: 0;
@@ -137,7 +137,7 @@
     }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
     .app-header {
         position: sticky;
         top: 0;

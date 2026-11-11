@@ -24,7 +24,7 @@ const seedDb = await readFile(path.join(root, "src/services/db.json"), "utf8");
 
 const WIDTHS = [375, 768, 1024, 1440];
 const HEIGHT = 900;
-const SIDEBAR_MINIMIZED = { 375: "0", 768: "1", 1024: "1", 1440: "0" };
+const SIDEBAR_MINIMIZED = { 375: "0", 768: "1", 1024: "0", 1440: "0" };
 
 // name: file name prefix. signedIn: false for the login page.
 // action: optional, run after the page loads (for example, open a section).
