@@ -14,8 +14,7 @@
     background-color: var(--muted);
 }
 /* Remove extra margins from header container */
-.dashboard-content-wrapper > header,
-.header-container {
+.dashboard-content-wrapper > header {
     width: 100%;
     margin-top: 0 !important;
     border-radius: 0 !important;
@@ -24,65 +23,6 @@
 /* ==========================================================================
    SECTION 2: STUDENT OVERVIEW BANNER
    ========================================================================== */
-.overview-banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 38px;
-}
-
-.overview-title {
-    margin: 0;
-    color: var(--foreground);
-    font-size: 34px;
-}
-
-.overview-subtitle {
-    margin-top: 5px;
-    color: var(--muted-foreground);
-    font-size: 10px;
-}
-
-.semester-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    width: 198px;
-    min-height: 48px;
-    border: 1px solid #dbe5f0;
-    border-radius: 8px;
-    padding: 0.65rem 0.75rem;
-    background-color: var(--card);
-    font-size: 0.7rem;
-    color: var(--foreground);
-    white-space: nowrap;
-}
-
-.badge-dot {
-    color: var(--self-reported-foreground);
-    font-size: 0.8rem;
-    line-height: 0;
-}
-
-.badge-divider {
-    color: #cbd5e1;
-    margin: 0 0.05rem;
-}
-
-@media (max-width: 640px) {
-    .overview-banner {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 14px;
-        margin-bottom: 28px;
-    }
-
-    .overview-title {
-        font-size: 29px;
-    }
-}
 
 /* ==========================================================================
    SECTION 3: FOCUS SUBJECTS SECTION & CARDS GRID

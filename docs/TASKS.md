@@ -630,7 +630,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       - Breakpoints: 760/761 → `md`, 1200 → `xl`. The columns are 7/12 and 5/12 (were 57.29%). The page has a minimum height instead of a fixed one, so very short screens scroll; the old height-based squeezing (max-height 650/540) is gone (Phase 8 may revisit).
       - Text uses the roles: the hero heading `display`, the form heading `section-title`, the preview labels `caption`, the rest `small`.
 - **Dashboard**
-  - [ ] **T7.D1** Page shell, overview header, semester badge (`Badge`). Check: C1.
+  - [x] **T7.D1** Page shell, overview header, semester badge (`Badge`). Check: C1.
   - [ ] **T7.D2 ⚠ AllSubjectsHistory.**
     - Change: term `ToggleGroup`, chips `Toggle`, `ChartContainer`, the shared `HistoryChartFrame` (G21), and "Show as a table" → `Collapsible` + `Table`.
     - Recharts guard: add `chart` with `--dry-run`. If it would change the Recharts version, keep 3.10.1 (it satisfies the component) and don't accept the downgrade.

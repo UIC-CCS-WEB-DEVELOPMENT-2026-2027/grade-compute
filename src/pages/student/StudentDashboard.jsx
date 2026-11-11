@@ -1,6 +1,7 @@
 // src/pages/student/StudentDashboard.jsx
 
 import { PageShell } from "@/components/layout/PageShell";
+import { Badge } from "@/components/ui/badge";
 import { EnrolledSubjectsTable } from "@/features/subjects/components/EnrolledSubjectsTable";
 import { AllSubjectsHistory } from "@/features/history/components/AllSubjectsHistory";
 import { getActiveStudentId } from "@/services/session";
@@ -20,18 +21,27 @@ export function StudentDashboard() {
     return (
         <PageShell>
             {/* --- STUDENT OVERVIEW BANNER --- */}
-            <div className="overview-banner">
-                <div className="overview-text">
-                    <h1 className="overview-title">Student Overview</h1>
-                    <p className="overview-subtitle">Your subjects, progress, and next step.</p>
+            <div className="mb-9 flex items-center justify-between gap-5 max-sm:mb-7 max-sm:flex-col max-sm:items-start max-sm:gap-3.5">
+                <div>
+                    <h1 className="m-0 type-page-title text-foreground">Student Overview</h1>
+                    <p className="mt-1 type-small text-muted-foreground">
+                        Your subjects, progress, and next step.
+                    </p>
                 </div>
 
-                <div className="semester-badge">
-                    <span className="badge-dot">•</span>
-                    <span className="badge-term">{semester.semester}</span>
-                    <span className="badge-divider">·</span>
-                    <span className="badge-year">{semester.academicYear}</span>
-                </div>
+                <Badge
+                    variant="outline"
+                    className="h-auto min-h-12 gap-1 rounded-lg bg-card px-3 py-2.5 text-foreground"
+                >
+                    <span className="text-self-reported-foreground" aria-hidden="true">
+                        •
+                    </span>
+                    <span>{semester.semester}</span>
+                    <span className="text-input" aria-hidden="true">
+                        ·
+                    </span>
+                    <span>{semester.academicYear}</span>
+                </Badge>
             </div>
 
             {/* --- GRADE HISTORY (all subjects, one term) --- */}
