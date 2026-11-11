@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 import { readRecord, seedBrowser, setupBrowserTests } from "@/test/browser.js";
 import { FIXED_NOW } from "@/test/fixedDate.js";
 import { makeSeedDb, makeTask } from "@/test/fixtures.js";
+import { RequireStudent } from "@/app/RequireStudent";
 import { SubjectDetail } from "./SubjectDetail";
 
 setupBrowserTests();
@@ -16,7 +17,14 @@ function renderPage(db = makeSeedDb(), url = "/student/subject/C101") {
     return render(
         <MemoryRouter initialEntries={[url]}>
             <Routes>
-                <Route path="/student/subject/:subjectId" element={<SubjectDetail />} />
+                <Route
+                    path="/student/subject/:subjectId"
+                    element={
+                        <RequireStudent>
+                            <SubjectDetail />
+                        </RequireStudent>
+                    }
+                />
             </Routes>
         </MemoryRouter>,
     );

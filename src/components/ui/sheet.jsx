@@ -2,7 +2,7 @@
 // (AGENTS.md section 7): token colours, h-control sizes, the type roles,
 // weight 600, and the Tailwind scale instead of one-off values.
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";

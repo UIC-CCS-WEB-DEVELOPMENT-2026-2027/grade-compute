@@ -1,9 +1,12 @@
-// src/components/shared/useSidebarState.js
-// Shared sidebar state, used by Sidebar and by Header's ☰ button.
-// - minimized: the sidebar shows icons only (screens 768px and wider).
-//   Remembered in this browser. Until the student picks, it starts
-//   minimized on tablets (768–1023px) and open on wider screens.
-// - menuOpen: on phones (767px and below) the sidebar is a slide-in menu.
+// Whether the sidebar is minimized (icons only), shared by every page.
+// The shadcn SidebarProvider is controlled from it (AppSidebarProvider), so
+// the choice is remembered under the existing key instead of a cookie
+// (TASKS.md section 3.2, S1).
+// - Screens 768px and wider: remembered in this browser. Until the student
+//   picks, it starts minimized on tablets (768–1023px) and open on wider
+//   screens.
+// - Phones (767px and below) use the slide-in menu instead, which the
+//   provider opens and closes.
 // The thresholds match Tailwind md (768) and lg (1024) and useIsMobile.
 import { useSyncExternalStore } from "react";
 
@@ -22,7 +25,7 @@ function readStoredMinimized() {
     return typeof window !== "undefined" && window.innerWidth <= TABLET_MAX_WIDTH;
 }
 
-let state = { minimized: readStoredMinimized(), menuOpen: false };
+let state = { minimized: readStoredMinimized() };
 const listeners = new Set();
 
 function setState(changes) {
@@ -44,11 +47,7 @@ export function setSidebarMinimized(minimized) {
     setState({ minimized });
 }
 
-export function setSidebarMenuOpen(menuOpen) {
-    if (state.menuOpen !== menuOpen) setState({ menuOpen });
-}
-
-// { minimized, menuOpen } — re-renders when either changes.
+// { minimized } — re-renders when it changes.
 export function useSidebarState() {
     return useSyncExternalStore(
         subscribe,

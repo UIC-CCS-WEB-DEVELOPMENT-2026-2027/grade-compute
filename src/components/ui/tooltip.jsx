@@ -3,7 +3,7 @@
 // weight 600, and the Tailwind scale instead of one-off values.
 
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 function TooltipProvider({ delay = 0, ...props }) {
     return <TooltipPrimitive.Provider data-slot="tooltip-provider" delay={delay} {...props} />;

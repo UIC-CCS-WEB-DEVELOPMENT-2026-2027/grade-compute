@@ -661,6 +661,16 @@ body,
     background: var(--settings-bg);
 }
 
+/* The brand block's layout, moved here from index.css when the shared
+   sidebar was rebuilt (T7.S2). Settings drops it in T7.L0. */
+.global-settings .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.15rem;
+    min-width: 0;
+}
+
 .global-settings .settings-sidebar {
     position: sticky;
     top: 0;

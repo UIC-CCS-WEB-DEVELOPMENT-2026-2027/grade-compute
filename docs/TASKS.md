@@ -594,11 +594,18 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Move `PHONE_MAX_WIDTH` to 767 and `TABLET_MAX_WIDTH` to 1023, matching `useIsMobile`.
     - Update checklist B3 and `scripts/screenshots.mjs` (`SIDEBAR_MINIMIZED[1024] = "0"`).
     - Check: V-visual at 768 and 1024.
-  - [ ] **T7.S2 ⚠ Rebuild `Sidebar.jsx` on `Sidebar`.**
+  - [x] **T7.S2 ⚠ Rebuild `Sidebar.jsx` on `Sidebar`.**
     - Brand header with `BrandMark`; nav with `SidebarMenu`/`SidebarMenuButton` (`tooltip` gives the minimised labels); My Subjects with the count `Badge` and `SidebarMenuSub` list; footer with Settings, Help and the coral Logout.
     - The Header's ☰ becomes `SidebarTrigger` behaviour (the phone `Sheet`).
     - Move the sidebar rules out of `index.css` into utilities.
     - Check: V-visual (the sidebar must look the same at 375, 768, 1024, 1440), and checklist B1–B6, B10.
+    - **As done:**
+      - `AppSidebarProvider` (controlled from `useSidebarState`) wraps every signed-in page through `RequireStudent`. Its wrapper is `display: contents`. The scoped `[data-slot]` reset now leaves that wrapper out, since it surrounds whole pages. `useSidebarState` keeps only `minimized`; the phone menu state lives in the provider.
+      - `src/lib/utils.js` exports a `cn` that knows the project's `control` sizes and `type-*` roles. Without it, overrides of those classes didn't win. Every component imports `cn` from `@/lib/utils`, and generated ones must be switched to it when they are added.
+      - Look changes, by the standards: labels at 14px weight 600 (subject entries were 11px, so they now wrap); the count badge is the default `Badge` (primary; white on the old bright blue fails AA); Logout text uses `warning-foreground` (dark on coral, AA); spacing on the 4px scale.
+      - The Help, remove-subject, pop-out and picker dialogs render outside the sidebar, because on phones the Sheet unmounts its content when it closes. Opening the sandbox picker now closes the phone menu first, like Help and Remove already did.
+      - Settings' brand block keeps its old layout rule (moved into `GlobalSettings.css`) until T7.L0.
+      - Checked in a browser: B1–B8 and B10, the phone menu (Escape, backdrop, focus back to ☰, picking a page closes it) and Ctrl/⌘+B (S2).
   - [ ] **T7.S3 Minimised subject pop-out → `Popover` (S5).** Check: B6.
   - [ ] **T7.S4 Remove-subject alert → `AlertDialog`.** Check: F1–F4.
   - [ ] **T7.S5 Help popup → `Dialog`.**

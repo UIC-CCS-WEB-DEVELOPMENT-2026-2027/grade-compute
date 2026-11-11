@@ -2,7 +2,7 @@ import "./Header.css";
 import { getDb } from "@/services/db";
 import { getInitials } from "@/lib/format";
 import { getActiveUser } from "@/services/session";
-import { setSidebarMenuOpen, useSidebarState } from "@/hooks/useSidebarState";
+import { useSidebar } from "@/components/ui/sidebar";
 
 function BellIcon() {
     return (
@@ -37,7 +37,7 @@ export function Header({ title, subtitle = "A little progress, every day." }) {
         ? `${role} · ${profile.programSection}`
         : `${role} · CompUGrade`;
     const welcomeTitle = title ?? `Welcome back, ${name.split(/\s+/)[0]}!`;
-    const { menuOpen } = useSidebarState();
+    const { openMobile, setOpenMobile } = useSidebar();
 
     return (
         <header className="app-header">
@@ -48,8 +48,8 @@ export function Header({ title, subtitle = "A little progress, every day." }) {
                 type="button"
                 aria-label="Open menu"
                 aria-controls="app-sidebar"
-                aria-expanded={menuOpen}
-                onClick={() => setSidebarMenuOpen(true)}
+                aria-expanded={openMobile}
+                onClick={() => setOpenMobile(true)}
             >
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path

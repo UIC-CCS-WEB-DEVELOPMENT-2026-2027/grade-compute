@@ -1,4 +1,4 @@
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 // The CompUGrade mark: the document icon on its blue gradient tile. The
 // Sidebar and Settings drew identical copies (AUDIT G14). Branding is out

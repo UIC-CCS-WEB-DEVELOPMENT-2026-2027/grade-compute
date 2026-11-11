@@ -2,7 +2,7 @@
 // (AGENTS.md section 7): token colours, h-control sizes, the type roles,
 // weight 600, and the Tailwind scale instead of one-off values.
 import { Input as InputPrimitive } from "@base-ui/react/input";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 function Input({ className, type, ...props }) {
     return (
