@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
-import { focusTaskRow } from "../../utils/focusTask";
+import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getEntryAccuracy, getGradeHistory, getPlanPoints, getTermTarget } from "@/lib/history";
 import { getActiveStudentId } from "../../utils/session";
 import { getTermLabel } from "@/lib/terms";

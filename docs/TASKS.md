@@ -490,7 +490,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 ### Phase 5 — Structure (moves and renames only; fix imports using `@/`; V-same and V-tests for every task)
 
 - [x] **T5.1** `utils/` pure logic and tests → `lib/` (table §1.1).
-- [ ] **T5.2** `focusTask.js`, `cssColor.js` → `lib/dom/`.
+- [x] **T5.2** `focusTask.js`, `cssColor.js` → `lib/dom/`.
 - [ ] **T5.3** Storage modules and tests → `services/`. `src/test/fixtures.js` imports `@/services/db.json`.
 - [ ] **T5.4** `App.jsx`, `main.jsx`, `RequireStudent.jsx` → `app/`. The `index.html` script path changes to `/src/app/main.jsx`; the title is untouched.
 - [ ] **T5.5** Sidebar, Header, PageFooter (+CSS) → `components/layout/`. `useSidebarState.js` → `hooks/`.

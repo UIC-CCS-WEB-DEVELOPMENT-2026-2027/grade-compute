@@ -16,7 +16,7 @@ import {
 } from "@/lib/grades";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "../../utils/session";
-import { focusTaskRow } from "../../utils/focusTask";
+import { focusTaskRow } from "@/lib/dom/focusTask";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];

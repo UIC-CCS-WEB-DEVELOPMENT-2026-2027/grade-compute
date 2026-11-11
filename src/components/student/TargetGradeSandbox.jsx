@@ -15,7 +15,7 @@ import {
     requiredScore,
     updateSandboxSettings,
 } from "@/lib/sandbox";
-import { focusTaskRow } from "../../utils/focusTask";
+import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import HistoryChart from "./HistoryChart";
 import "./TargetGradeSandbox.css";

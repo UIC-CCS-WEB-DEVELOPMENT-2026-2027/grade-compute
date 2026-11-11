@@ -15,7 +15,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import { resolveColor } from "../../utils/cssColor";
+import { resolveColor } from "@/lib/dom/cssColor";
 import { getCriteriaColor } from "@/lib/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
 import { TERMS, getTermLabel } from "@/lib/terms";

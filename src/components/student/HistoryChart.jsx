@@ -16,7 +16,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import { resolveColor } from "../../utils/cssColor";
+import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import HistoryTooltip from "./HistoryTooltip";
 import usePointHover from "./usePointHover";
