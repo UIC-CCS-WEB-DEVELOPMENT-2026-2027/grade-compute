@@ -1,18 +1,18 @@
 :root {
-    --compu-yellow: var(--color-highlight);
-    --compu-yellow-strong: var(--color-highlight-strong);
-    --sidebar: var(--color-surface);
-    --bg: var(--color-bg-main);
-    --card: var(--color-surface);
-    --card-soft: var(--color-surface-soft);
-    --line: var(--color-border);
-    --text: var(--color-text-locked);
-    --muted: var(--color-muted);
-    --primary: var(--color-primary);
-    --primary-soft: var(--color-primary-soft);
-    --danger: var(--color-warning);
-    --danger-soft: var(--color-warning-soft);
-    --shadow: var(--shadow-card);
+    --settings-compu-yellow: var(--highlight);
+    --settings-compu-yellow-strong: var(--highlight-strong);
+    --settings-sidebar: var(--card);
+    --settings-bg: var(--background);
+    --settings-card: var(--card);
+    --settings-card-soft: var(--surface-soft);
+    --settings-line: var(--border);
+    --settings-text: var(--foreground);
+    --settings-muted: var(--muted-foreground);
+    --settings-primary: var(--primary);
+    --settings-primary-soft: var(--secondary);
+    --settings-danger: var(--warning);
+    --settings-danger-soft: var(--warning-soft);
+    --settings-shadow: var(--elevation-card);
 }
 
 * {
@@ -26,8 +26,8 @@ body,
     min-height: 100%;
     height: 100%;
     font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
+    background: var(--settings-bg);
+    color: var(--settings-text);
 }
 
 button,
@@ -45,13 +45,13 @@ img {
     display: flex;
     width: 100%;
     min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--settings-bg);
+    color: var(--settings-text);
 }
 
 .global-settings.dark {
-    background: var(--color-bg-dark);
-    color: var(--color-text-dark);
+    background: var(--dark-bg);
+    color: var(--dark-text);
 }
 
 @media (min-width: 1200px) {
@@ -63,20 +63,20 @@ img {
 }
 
 .settings-workspace-box {
-    background: var(--color-surface-overlay);
-    border: 1px solid var(--color-border-overlay);
+    background: var(--surface-overlay);
+    border: 1px solid var(--border-overlay);
     border-radius: 16px;
     padding: 12px 14px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    color: var(--muted);
+    color: var(--settings-muted);
     font-size: 0.9rem;
 }
 
 .settings-workspace-box strong {
     font-size: 2rem;
-    color: var(--text);
+    color: var(--settings-text);
     font-weight: 700;
 }
 
@@ -91,7 +91,7 @@ img {
 
 .eyebrow {
     margin: 0 0 10px;
-    color: var(--muted);
+    color: var(--settings-muted);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -105,11 +105,11 @@ img {
 }
 
 .main-card {
-    background: var(--color-surface-overlay-subtle);
-    border: 1px solid var(--line);
+    background: var(--surface-overlay-subtle);
+    border: 1px solid var(--settings-line);
     border-radius: 18px;
     padding: 22px 18px 20px;
-    box-shadow: 0 12px 18px var(--shadow);
+    box-shadow: 0 12px 18px var(--settings-shadow);
 }
 
 .section-header-row {
@@ -126,8 +126,8 @@ img {
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    color: var(--settings-primary);
     font-size: 2rem;
     font-weight: 800;
 }
@@ -141,13 +141,13 @@ img {
 
 .section-description {
     margin: 0 0 24px;
-    color: var(--muted);
+    color: var(--settings-muted);
     font-size: 1.04rem;
 }
 
 .settings-panel {
-    background: var(--card);
-    border: 1px solid var(--line);
+    background: var(--settings-card);
+    border: 1px solid var(--settings-line);
     border-radius: 18px;
     padding: 26px 20px;
 }
@@ -180,8 +180,8 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    color: var(--settings-primary);
     font-size: 2.6rem;
     font-weight: 800;
 }
@@ -200,7 +200,7 @@ img {
 
 .profile-info-block p {
     margin: 0;
-    color: var(--muted);
+    color: var(--settings-muted);
     font-size: 1rem;
 }
 
@@ -209,8 +209,8 @@ img {
     align-items: center;
     justify-content: center;
     width: max-content;
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    color: var(--settings-primary);
     border-radius: 999px;
     padding: 8px 14px;
     font-size: 0.85rem;
@@ -225,15 +225,15 @@ img {
 }
 
 .summary-card {
-    background: var(--card-soft);
-    border: 1px solid var(--line);
+    background: var(--settings-card-soft);
+    border: 1px solid var(--settings-line);
     border-radius: 14px;
     padding: 18px 16px;
 }
 
 .summary-label {
     display: block;
-    color: var(--muted);
+    color: var(--settings-muted);
     font-size: 0.84rem;
     margin-bottom: 10px;
 }
@@ -243,7 +243,7 @@ img {
 }
 
 .bio-box {
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--settings-line);
     padding-top: 20px;
 }
 
@@ -254,7 +254,7 @@ img {
 
 .bio-box p {
     margin: 0;
-    color: var(--muted);
+    color: var(--settings-muted);
     line-height: 1.6;
 }
 
@@ -272,7 +272,7 @@ img {
 
 .account-header-row p {
     margin: 0;
-    color: var(--muted);
+    color: var(--settings-muted);
 }
 
 .profile-photo-box {
@@ -280,8 +280,8 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 22px;
-    background: var(--card-soft);
-    border: 1px solid var(--line);
+    background: var(--settings-card-soft);
+    border: 1px solid var(--settings-line);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 20px;
@@ -306,8 +306,8 @@ img {
     justify-content: center;
     padding: 11px 18px;
     border-radius: 10px;
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    color: var(--settings-primary);
     font-weight: 700;
     cursor: pointer;
     position: relative;
@@ -332,26 +332,26 @@ img {
 }
 
 .secondary-button {
-    background: var(--color-border);
-    color: var(--text);
+    background: var(--border);
+    color: var(--settings-text);
     padding: 11px 18px;
 }
 
 .primary-button {
-    background: var(--primary);
-    color: var(--color-white);
+    background: var(--settings-primary);
+    color: var(--white);
     padding: 14px 24px;
 }
 
 .toggle-button {
-    background: var(--color-border);
-    color: var(--text);
+    background: var(--border);
+    color: var(--settings-text);
     padding: 10px 18px;
 }
 
 .toggle-button.on {
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    color: var(--settings-primary);
 }
 
 .form-grid {
@@ -372,11 +372,11 @@ img {
 
 .field span {
     font-weight: 700;
-    color: var(--text);
+    color: var(--settings-text);
 }
 
 .field > label {
-    color: var(--text);
+    color: var(--settings-text);
     font-size: 0.82rem;
     font-weight: 610;
 }
@@ -384,13 +384,13 @@ img {
 .field input,
 .field select,
 .field textarea,
-select {
+select:where(:not([data-slot])) {
     width: 100%;
     min-height: 54px;
     border-radius: 10px;
-    border: 1px solid var(--line);
-    background: var(--color-white);
-    color: var(--text);
+    border: 1px solid var(--settings-line);
+    background: var(--white);
+    color: var(--settings-text);
     padding: 12px 14px;
 }
 
@@ -412,7 +412,7 @@ select {
     justify-content: space-between;
     gap: 18px;
     padding: 18px 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--settings-line);
 }
 
 .simple-row:last-child,
@@ -429,7 +429,7 @@ select {
 .simple-row p,
 .danger-box p {
     margin: 0;
-    color: var(--muted);
+    color: var(--settings-muted);
     line-height: 1.5;
 }
 
@@ -451,44 +451,44 @@ select {
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    border: 1px solid var(--line);
+    border: 1px solid var(--settings-line);
 }
 
 .light-box {
-    background: var(--color-surface);
-    color: var(--text);
+    background: var(--card);
+    color: var(--settings-text);
 }
 
 .dark-box {
-    background: var(--color-surface-dark);
-    color: var(--color-text-dark);
+    background: var(--dark-surface);
+    color: var(--dark-text);
 }
 
 .danger-box.destructive {
-    border: 1px solid var(--color-warning-border);
-    background: var(--danger-soft);
+    border: 1px solid var(--warning-border);
+    background: var(--settings-danger-soft);
     border-radius: 14px;
     padding: 18px 16px;
     margin-top: 12px;
 }
 
 .danger-button {
-    background: var(--danger);
-    color: var(--color-white);
+    background: var(--settings-danger);
+    color: var(--white);
     padding: 12px 18px;
 }
 
 .delete-confirmation {
     margin-top: 20px;
-    background: var(--card-soft);
-    border: 1px solid var(--line);
+    background: var(--settings-card-soft);
+    border: 1px solid var(--settings-line);
     border-radius: 14px;
     padding: 18px 16px;
 }
 
 .delete-confirmation p {
     margin: 0 0 14px;
-    color: var(--muted);
+    color: var(--settings-muted);
     line-height: 1.6;
 }
 
@@ -500,9 +500,9 @@ select {
 
 .status-message {
     margin-top: 18px;
-    background: var(--primary-soft);
-    border: 1px solid var(--color-primary-soft);
-    color: var(--primary);
+    background: var(--settings-primary-soft);
+    border: 1px solid var(--secondary);
+    color: var(--settings-primary);
     border-radius: 10px;
     padding: 12px 14px;
     font-weight: 600;
@@ -519,7 +519,7 @@ select {
 .global-settings.dark .simple-row h4,
 .global-settings.dark .danger-box h4,
 .global-settings.dark .status-message {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .settings-workspace-box,
@@ -535,7 +535,7 @@ select {
 .global-settings.dark .field input,
 .global-settings.dark .field select,
 .global-settings.dark select {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .settings-panel,
@@ -544,28 +544,28 @@ select {
 .global-settings.dark .summary-card,
 .global-settings.dark .profile-photo-box,
 .global-settings.dark .delete-confirmation {
-    background: var(--color-surface-dark);
-    border-color: var(--color-surface-overlay-faint);
+    background: var(--dark-surface);
+    border-color: var(--surface-overlay-faint);
 }
 
 .global-settings.dark .field input,
 .global-settings.dark .field select,
 .global-settings.dark .field textarea,
 .global-settings.dark select {
-    background: var(--color-bg-dark);
-    border-color: var(--color-surface-overlay-faint);
+    background: var(--dark-bg);
+    border-color: var(--surface-overlay-faint);
 }
 
 .global-settings.dark .secondary-button,
 .global-settings.dark .toggle-button {
-    background: var(--color-surface-overlay-faint);
-    color: var(--color-text-dark);
+    background: var(--surface-overlay-faint);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .toggle-button.on,
 .global-settings.dark .status-message {
-    background: var(--color-primary-dark-soft);
-    color: var(--color-text-dark);
+    background: var(--dark-primary-soft);
+    color: var(--dark-text);
 }
 
 @media (max-width: 900px) {
@@ -691,12 +691,12 @@ select {
     gap: 18px;
     margin-top: 20px;
     padding: 18px 0 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--settings-line);
 }
 
 .danger-btn {
-    background: var(--danger-soft);
-    color: var(--danger);
+    background: var(--settings-danger-soft);
+    color: var(--settings-danger);
     padding: 12px 18px;
 }
 
@@ -710,14 +710,14 @@ body,
 #root {
     min-height: 100%;
     height: auto;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--settings-bg);
+    color: var(--settings-text);
     font-family: var(--font-body);
 }
 
 .global-settings {
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--settings-bg);
 }
 
 .global-settings .settings-sidebar {
@@ -732,7 +732,7 @@ body,
     overflow-y: auto;
     scrollbar-width: thin;
     padding: 1.1rem 1.15rem 0.9rem;
-    background: var(--color-highlight);
+    background: var(--highlight);
     border-right: 1px solid rgba(46, 48, 55, 0.2);
     box-shadow: inset -1px 0 0 rgba(29, 35, 42, 0.08);
 }
@@ -741,8 +741,8 @@ body,
     margin-top: 1.5rem;
     gap: 3px;
     padding: 11px 13px;
-    background: var(--color-surface-soft);
-    border: 1px solid var(--color-border);
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
     border-radius: 12px;
     font-size: 0.72rem;
 }
@@ -805,7 +805,7 @@ body,
 .settings-nav-item.active:hover {
     background: rgba(255, 255, 255, 0.42);
     box-shadow: inset 0 0 0 1px rgba(70, 93, 127, 0.08);
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .settings-nav-item:focus-visible,
@@ -814,7 +814,7 @@ button:focus-visible,
 select:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
@@ -876,8 +876,8 @@ textarea:focus-visible {
     margin: 0 0 18px 8px;
     padding: 5px 15px 5px 6px;
     border-radius: 999px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    background: var(--secondary);
+    color: var(--primary);
     font-size: 0.9rem;
     font-weight: 550;
     text-decoration: none;
@@ -887,7 +887,7 @@ textarea:focus-visible {
 }
 
 .back-button:hover {
-    background: var(--color-border);
+    background: var(--border);
     transform: translateY(-1px);
 }
 
@@ -898,7 +898,7 @@ textarea:focus-visible {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--color-white);
+    background: var(--white);
 }
 
 .back-button__icon svg {
@@ -911,13 +911,13 @@ textarea:focus-visible {
 }
 
 .back-button:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 3px;
 }
 
 .eyebrow {
     margin-bottom: 8px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.67rem;
     font-weight: 700;
     letter-spacing: 0.13em;
@@ -934,7 +934,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     gap: 9px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.82rem;
     font-weight: 570;
 }
@@ -945,18 +945,18 @@ textarea:focus-visible {
     height: 34px;
     place-items: center;
     border-radius: 50%;
-    background: var(--color-highlight);
-    color: var(--color-primary);
+    background: var(--highlight);
+    color: var(--primary);
     font-size: 0.72rem;
     font-weight: 700;
 }
 
 .main-card {
     padding: 30px clamp(20px, 3vw, 36px) 34px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 18px;
-    background: var(--color-white);
-    box-shadow: 0 8px 24px var(--shadow);
+    background: var(--white);
+    box-shadow: 0 8px 24px var(--settings-shadow);
 }
 
 .section-header-row {
@@ -971,16 +971,16 @@ textarea:focus-visible {
 
 .section-description {
     margin-bottom: 24px;
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.89rem;
     line-height: 1.55;
 }
 
 .settings-panel {
     padding: 21px 22px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 14px;
-    background: var(--color-white);
+    background: var(--white);
 }
 
 .simple-row,
@@ -988,7 +988,7 @@ textarea:focus-visible {
     position: relative;
     min-height: 77px;
     padding: 17px 32px 17px 4px;
-    border-bottom-color: var(--color-border-soft);
+    border-bottom-color: var(--border-soft);
     border-radius: 9px;
     cursor: pointer;
     transition:
@@ -999,7 +999,7 @@ textarea:focus-visible {
 .simple-row:hover,
 .danger-box:not(.destructive):hover {
     transform: translateY(-1px);
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .simple-row::after,
@@ -1007,7 +1007,7 @@ textarea:focus-visible {
     position: absolute;
     top: 50%;
     right: 7px;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 1.35rem;
     font-weight: 400;
     line-height: 1;
@@ -1039,7 +1039,7 @@ textarea:focus-visible {
 
 .simple-row p,
 .danger-box p {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
     line-height: 1.5;
 }
@@ -1057,31 +1057,31 @@ textarea:focus-visible {
 }
 
 .secondary-button {
-    background: var(--color-surface-muted);
-    color: var(--color-text-locked);
+    background: var(--muted);
+    color: var(--foreground);
 }
 
 .secondary-button:hover,
 .toggle-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 8px var(--shadow-hover-strong);
+    box-shadow: 0 3px 8px var(--elevation-hover-strong);
 }
 
 .toggle-button {
     min-width: 64px;
-    background: var(--color-text-dark);
-    color: var(--color-muted);
+    background: var(--dark-text);
+    color: var(--muted-foreground);
 }
 
 .toggle-button.on {
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
 }
 
 .primary-button {
     border-radius: 10px;
-    background: var(--color-highlight-strong);
-    color: var(--color-text-locked);
+    background: var(--highlight-strong);
+    color: var(--foreground);
     font-size: 0.84rem;
 }
 
@@ -1097,8 +1097,8 @@ textarea:focus-visible {
 
 .profile-avatar-placeholder,
 .photo-placeholder {
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
     font-size: 1.8rem;
 }
 
@@ -1110,8 +1110,8 @@ textarea:focus-visible {
 
 .student-badge {
     padding: 6px 10px;
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
     font-size: 0.73rem;
 }
 
@@ -1122,9 +1122,9 @@ textarea:focus-visible {
 
 .summary-card {
     padding: 15px;
-    border: 1px solid var(--color-border-soft);
+    border: 1px solid var(--border-soft);
     border-radius: 11px;
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .summary-label {
@@ -1160,9 +1160,9 @@ textarea:focus-visible {
 
 .profile-photo-box {
     padding: 16px;
-    border-color: var(--color-border-soft);
+    border-color: var(--border-soft);
     border-radius: 12px;
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .photo-preview-wrap {
@@ -1183,11 +1183,11 @@ textarea:focus-visible {
 .field select,
 .field textarea,
 .select-row select,
-select {
+select:where(:not([data-slot])) {
     min-height: 44px;
-    border-color: var(--color-border-strong);
+    border-color: var(--border-strong);
     border-radius: 9px;
-    background-color: var(--color-white);
+    background-color: var(--white);
     font-size: 0.84rem;
 }
 
@@ -1198,13 +1198,13 @@ select {
 .danger-box.destructive {
     margin-top: 15px;
     padding: 16px;
-    border-color: var(--color-warning-soft);
-    background: var(--color-warning-soft);
+    border-color: var(--warning-soft);
+    background: var(--warning-soft);
 }
 
 .danger-button {
     border-radius: 9px;
-    background: var(--color-warning-strong);
+    background: var(--destructive);
     font-size: 0.8rem;
 }
 
@@ -1213,10 +1213,10 @@ select {
 }
 
 .status-message {
-    border-color: var(--color-highlight);
+    border-color: var(--highlight);
     border-radius: 10px;
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
     font-size: 0.83rem;
 }
 
@@ -1232,7 +1232,7 @@ select {
     align-items: center;
     gap: 14px;
     padding-bottom: 17px;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .password-lock-icon {
@@ -1242,10 +1242,10 @@ select {
     justify-content: center;
     width: 48px;
     height: 48px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 50%;
-    background: var(--color-surface-soft);
-    color: var(--color-primary);
+    background: var(--surface-soft);
+    color: var(--primary);
 }
 
 .password-lock-icon .settings-nav-icon {
@@ -1265,7 +1265,7 @@ select {
 
 .password-change-heading p {
     margin-top: 4px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.81rem;
     line-height: 1.5;
 }
@@ -1278,13 +1278,13 @@ select {
 }
 
 .password-label-row > label {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 0.82rem;
     font-weight: 610;
 }
 
 .password-label-row > label > span {
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .password-clear {
@@ -1292,14 +1292,14 @@ select {
     border: 0;
     border-radius: 5px;
     background: transparent;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.76rem;
     cursor: pointer;
 }
 
 .password-clear:hover {
-    background: var(--color-surface-muted);
-    color: var(--color-primary);
+    background: var(--muted);
+    color: var(--primary);
 }
 
 .password-strength {
@@ -1317,24 +1317,24 @@ select {
 .password-strength-meter > span {
     height: 5px;
     border-radius: 999px;
-    background: var(--color-border);
+    background: var(--border);
 }
 
 .password-strength-meter.strength-1 > span.is-filled {
-    background: var(--color-warning-strong);
+    background: var(--destructive);
 }
 
 .password-strength-meter.strength-2 > span.is-filled {
-    background: var(--color-highlight-strong);
+    background: var(--highlight-strong);
 }
 
 .password-strength-meter.strength-3 > span.is-filled {
-    background: var(--color-success);
+    background: var(--success);
 }
 
 .password-strength-label {
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.76rem;
 }
 
@@ -1343,7 +1343,7 @@ select {
     gap: 5px;
     margin: 0;
     padding: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.76rem;
     list-style: none;
 }
@@ -1361,19 +1361,19 @@ select {
     height: 16px;
     place-items: center;
     border-radius: 50%;
-    background: var(--color-surface-muted);
-    color: var(--color-muted);
+    background: var(--muted);
+    color: var(--muted-foreground);
     font-size: 0.68rem;
     font-weight: 700;
 }
 
 .password-requirements li.is-met {
-    color: var(--color-success);
+    color: var(--success);
 }
 
 .password-requirements li.is-met > span {
-    background: var(--color-success);
-    color: var(--color-white);
+    background: var(--success);
+    color: var(--white);
 }
 
 .password-form-heading h3 {
@@ -1385,7 +1385,7 @@ select {
 .password-form-heading p,
 .password-note {
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.81rem;
     line-height: 1.5;
 }
@@ -1405,15 +1405,15 @@ select {
 }
 
 .password-field input[aria-invalid="true"] {
-    border-color: var(--color-warning-strong);
+    border-color: var(--destructive);
 }
 
 .password-field input[aria-invalid="true"]:focus {
-    outline-color: var(--color-warning-border);
+    outline-color: var(--warning-border);
 }
 
 .password-field-error {
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 0.76rem;
     font-weight: 500;
     line-height: 1.4;
@@ -1427,7 +1427,7 @@ select {
     border: 0;
     border-radius: 6px;
     background: transparent;
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.72rem;
     font-weight: 620;
     cursor: pointer;
@@ -1442,21 +1442,21 @@ select {
 }
 
 .password-validation.valid {
-    color: var(--color-success);
+    color: var(--success);
 }
 
 .password-validation.invalid,
 .password-validation.error {
-    color: var(--color-warning-strong);
+    color: var(--destructive);
 }
 
 .password-validation.checking {
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
 }
 
 .password-visibility:hover {
-    background: var(--color-surface-muted);
-    color: var(--color-text-locked);
+    background: var(--muted);
+    color: var(--foreground);
 }
 
 .password-note {
@@ -1475,9 +1475,9 @@ select {
     gap: 15px;
     padding: 18px 9px;
     border: 0;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
     background: transparent;
-    color: var(--text);
+    color: var(--settings-text);
     text-align: left;
     cursor: pointer;
     transition:
@@ -1487,15 +1487,15 @@ select {
 
 .security-row:hover,
 .session-row:hover {
-    background: var(--color-surface-soft);
-    box-shadow: 0 3px 10px var(--shadow-hover);
+    background: var(--surface-soft);
+    box-shadow: 0 3px 10px var(--elevation-hover);
 }
 
 .security-row .nav-icon,
 .session-row .nav-icon {
     width: 21px;
     height: 21px;
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .security-row-copy {
@@ -1512,13 +1512,13 @@ select {
 }
 
 .security-row-copy > span {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.79rem;
     line-height: 1.45;
 }
 
 .security-arrow {
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 1.35rem;
     transition:
         transform 180ms ease,
@@ -1527,13 +1527,13 @@ select {
 
 .security-row:hover .security-arrow,
 .session-row:hover .security-arrow {
-    color: var(--color-primary);
+    color: var(--primary);
     transform: translateX(3px);
 }
 
 .security-prototype-note {
     margin: 17px 8px 10px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.74rem;
     line-height: 1.5;
 }
@@ -1541,7 +1541,7 @@ select {
 .privacy-section {
     margin: 25px 7px 6px;
     padding-top: 19px;
-    border-top: 1px solid var(--color-border-soft);
+    border-top: 1px solid var(--border-soft);
 }
 
 .privacy-section > h3 {
@@ -1557,7 +1557,7 @@ select {
 }
 
 .global-settings.dark .privacy-section {
-    border-top-color: var(--color-border-dark);
+    border-top-color: var(--dark-border);
 }
 
 .security-subview {
@@ -1568,7 +1568,7 @@ select {
     padding: 4px 0;
     border: 0;
     background: transparent;
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 0.82rem;
     font-weight: 620;
     cursor: pointer;
@@ -1587,14 +1587,14 @@ select {
 
 .security-subview .password-form-heading {
     margin: 0;
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.84rem;
     line-height: 1.5;
 }
 
 .security-error {
     margin: 0;
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 0.8rem;
     line-height: 1.45;
 }
@@ -1616,7 +1616,7 @@ select {
 }
 
 .security-success p {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.84rem;
 }
 
@@ -1629,17 +1629,17 @@ select {
     display: flex;
     align-items: center;
     gap: 9px;
-    color: var(--text);
+    color: var(--settings-text);
     font-size: 0.82rem;
 }
 
 .prototype-code {
     margin: 0;
     padding: 10px 12px;
-    border: 1px dashed var(--color-highlight);
+    border: 1px dashed var(--highlight);
     border-radius: 9px;
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
     font-size: 0.81rem;
 }
 
@@ -1650,7 +1650,7 @@ select {
     justify-content: space-between;
     gap: 18px;
     padding-bottom: 17px;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .two-factor-heading .security-subtitle,
@@ -1662,7 +1662,7 @@ select {
 .sessions-heading p,
 .verification-setup > p {
     margin: 5px 0 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
     line-height: 1.5;
 }
@@ -1678,7 +1678,7 @@ select {
     justify-content: space-between;
     gap: 14px;
     padding: 13px 3px;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .verified-method > div {
@@ -1691,12 +1691,12 @@ select {
 }
 
 .verified-method span {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.78rem;
 }
 
 .verified-method .method-enabled {
-    color: var(--color-success);
+    color: var(--success);
     font-weight: 620;
 }
 
@@ -1706,7 +1706,7 @@ select {
     margin-top: 18px;
     padding: 15px;
     border-radius: 11px;
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .verification-code-form {
@@ -1715,7 +1715,7 @@ select {
 }
 
 .security-success-message {
-    color: var(--color-success);
+    color: var(--success);
     font-size: 0.82rem;
 }
 
@@ -1735,13 +1735,13 @@ select {
 .session-active,
 .session-other {
     white-space: nowrap;
-    color: var(--color-success);
+    color: var(--success);
     font-size: 0.72rem;
     font-weight: 620;
 }
 
 .session-other {
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
 }
 
 .modal-backdrop {
@@ -1751,17 +1751,17 @@ select {
     display: grid;
     place-items: center;
     padding: 20px;
-    background: var(--color-overlay);
+    background: var(--overlay);
 }
 
 .session-modal,
 .confirmation-panel {
     width: min(100%, 440px);
     padding: 24px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    background: var(--color-white);
-    box-shadow: 0 20px 60px var(--shadow-dialog);
+    background: var(--white);
+    box-shadow: 0 20px 60px var(--elevation-dialog);
 }
 
 .session-modal h3 {
@@ -1778,7 +1778,7 @@ select {
     gap: 7px;
     margin: 0 34px 20px 0;
     padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .help-tab {
@@ -1786,7 +1786,7 @@ select {
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.78rem;
     font-weight: 590;
     cursor: pointer;
@@ -1796,13 +1796,13 @@ select {
 }
 
 .help-tab:hover {
-    background: var(--color-surface-hover);
-    color: var(--color-surface-dark-soft);
+    background: var(--surface-hover);
+    color: var(--dark-surface-soft);
 }
 
 .help-tab.active {
-    background: var(--color-highlight-soft);
-    color: var(--color-primary);
+    background: var(--highlight-soft);
+    color: var(--primary);
 }
 
 .help-modal .eyebrow {
@@ -1810,7 +1810,7 @@ select {
 }
 
 .help-modal > p:not(.eyebrow) {
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.84rem;
     line-height: 1.55;
 }
@@ -1825,8 +1825,8 @@ select {
     place-items: center;
     border: 0;
     border-radius: 50%;
-    background: var(--color-surface-muted);
-    color: var(--color-muted);
+    background: var(--muted);
+    color: var(--muted-foreground);
     font-size: 1.2rem;
     cursor: pointer;
     transition:
@@ -1835,22 +1835,22 @@ select {
 }
 
 .dialog-close:hover {
-    background: var(--color-border-soft);
-    color: var(--color-surface-dark-soft);
+    background: var(--border-soft);
+    color: var(--dark-surface-soft);
 }
 
 .help-steps {
     display: grid;
     gap: 11px;
     padding-left: 21px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.82rem;
     line-height: 1.55;
 }
 
 .guide-topic {
     padding: 13px 0;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .guide-topic strong {
@@ -1859,7 +1859,7 @@ select {
 
 .guide-topic p {
     margin: 5px 0 0;
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.8rem;
     line-height: 1.5;
 }
@@ -1872,7 +1872,7 @@ select {
 }
 
 .session-modal dt {
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.8rem;
 }
 
@@ -1896,7 +1896,7 @@ select {
 
 .confirmation-panel p,
 .session-modal > p {
-    color: var(--color-text-subtle);
+    color: var(--subtle-foreground);
     font-size: 0.83rem;
     line-height: 1.5;
 }
@@ -1911,20 +1911,20 @@ select {
 }
 
 .global-settings.dark {
-    --bg: var(--color-bg-dark);
-    --card: var(--color-surface-dark);
-    --card-soft: var(--color-surface-dark-soft);
-    --line: var(--color-border-dark);
-    --text: var(--color-text-dark);
-    --muted: var(--color-text-dark-muted);
-    --primary: var(--color-primary-dark);
-    --primary-soft: var(--color-primary-dark-soft);
-    --sidebar: var(--color-surface-dark);
-    --shadow: var(--shadow-card-dark);
+    --settings-bg: var(--dark-bg);
+    --settings-card: var(--dark-surface);
+    --settings-card-soft: var(--dark-surface-soft);
+    --settings-line: var(--dark-border);
+    --settings-text: var(--dark-text);
+    --settings-muted: var(--dark-text-muted);
+    --settings-primary: var(--dark-primary);
+    --settings-primary-soft: var(--dark-primary-soft);
+    --settings-sidebar: var(--dark-surface);
+    --settings-shadow: var(--elevation-card-dark);
 }
 
 .global-settings.dark .settings-sidebar {
-    background: var(--color-highlight);
+    background: var(--highlight);
     border-color: rgba(46, 48, 55, 0.2);
 }
 
@@ -1933,13 +1933,13 @@ select {
 .global-settings.dark .profile-photo-box,
 .global-settings.dark .simple-row:hover,
 .global-settings.dark .danger-box:not(.destructive):hover {
-    background: var(--color-surface-dark-soft);
+    background: var(--dark-surface-soft);
 }
 
 .global-settings.dark .main-card,
 .global-settings.dark .settings-panel {
-    background: var(--color-surface-dark);
-    border-color: var(--color-border-dark);
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .settings-workspace-box,
@@ -1949,12 +1949,12 @@ select {
 .global-settings.dark .field select,
 .global-settings.dark .field textarea,
 .global-settings.dark select {
-    border-color: var(--color-border-dark);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .secondary-button {
-    background: var(--color-surface-dark-raised);
-    color: var(--color-text-dark);
+    background: var(--dark-surface-raised);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .account-chip,
@@ -1963,26 +1963,26 @@ select {
 .global-settings.dark .password-note,
 .global-settings.dark .simple-row p,
 .global-settings.dark .danger-box p {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .field > label {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .password-visibility {
-    color: var(--color-text-dark-soft);
+    color: var(--dark-text-soft);
 }
 
 .global-settings.dark .password-visibility:hover {
-    background: var(--color-border-dark);
-    color: var(--color-white);
+    background: var(--dark-border);
+    color: var(--white);
 }
 
 .global-settings.dark .security-row:hover,
 .global-settings.dark .session-row:hover,
 .global-settings.dark .verification-setup {
-    background: var(--color-surface-dark-soft);
+    background: var(--dark-surface-soft);
 }
 
 .global-settings.dark .security-row,
@@ -1990,7 +1990,7 @@ select {
 .global-settings.dark .verified-method,
 .global-settings.dark .two-factor-heading,
 .global-settings.dark .sessions-heading {
-    border-color: var(--color-border-dark);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .security-row-copy > span,
@@ -1999,47 +1999,47 @@ select {
 .global-settings.dark .verified-method span,
 .global-settings.dark .confirmation-panel p,
 .global-settings.dark .session-modal dt {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .session-modal,
 .global-settings.dark .confirmation-panel {
-    border-color: var(--color-border-dark);
-    background: var(--color-surface-dark);
-    color: var(--color-text-dark);
+    border-color: var(--dark-border);
+    background: var(--dark-surface);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .help-modal > p:not(.eyebrow),
 .global-settings.dark .help-steps,
 .global-settings.dark .guide-topic p {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .guide-topic {
-    border-color: var(--color-border-dark);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .help-tabs {
-    border-color: var(--color-border-dark);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .help-tab {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .help-tab:hover {
-    background: var(--color-border-dark);
-    color: var(--color-text-dark);
+    background: var(--dark-border);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .help-tab.active {
-    background: var(--color-warning-dark-soft);
-    color: var(--color-primary-dark);
+    background: var(--dark-warning-soft);
+    color: var(--dark-primary);
 }
 
 .global-settings.dark .dialog-close {
-    background: var(--color-border-dark);
-    color: var(--color-text-dark-soft);
+    background: var(--dark-border);
+    color: var(--dark-text-soft);
 }
 
 .danger-box.destructive > .danger-button {
@@ -2076,31 +2076,31 @@ select {
     }
 }
 .global-settings.dark .prototype-code {
-    border-color: var(--color-border-dark-highlight);
-    background: var(--color-warning-dark-soft);
-    color: var(--color-warning-dark-text);
+    border-color: var(--dark-border-highlight);
+    background: var(--dark-warning-soft);
+    color: var(--dark-warning-text);
 }
 
 .global-settings.dark .password-validation.valid {
-    color: var(--color-success-dark);
+    color: var(--dark-success);
 }
 
 .global-settings.dark .password-validation.invalid,
 .global-settings.dark .password-validation.error {
-    color: var(--color-danger-dark);
+    color: var(--dark-danger);
 }
 
 .global-settings.dark .field input,
 .global-settings.dark .field select,
 .global-settings.dark .field textarea,
 .global-settings.dark select {
-    background: var(--color-bg-dark);
-    color: var(--color-text-dark);
+    background: var(--dark-bg);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .simple-row,
 .global-settings.dark .danger-box {
-    border-bottom-color: var(--color-border-dark);
+    border-bottom-color: var(--dark-border);
 }
 
 @media (max-width: 900px) {
@@ -2116,7 +2116,7 @@ select {
         min-width: 0;
         padding: 15px 20px;
         border-right: 0;
-        border-bottom: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--border);
     }
 
     .global-settings .brand {
@@ -2262,26 +2262,26 @@ select {
 }
 
 .global-settings.dark .settings-sidebar {
-    background: var(--color-bg-dark);
-    border-color: var(--color-border-dark);
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .brand-name,
 .global-settings.dark .brand-name-dot {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .back-button {
-    background: var(--color-primary-dark-soft);
-    color: var(--color-text-dark);
+    background: var(--dark-primary-soft);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .back-button:hover {
-    background: var(--color-surface-dark-raised);
+    background: var(--dark-surface-raised);
 }
 
 .global-settings.dark .back-button__icon {
-    background: var(--color-surface-dark-raised);
+    background: var(--dark-surface-raised);
 }
 
 .global-settings.dark .settings-workspace-box,
@@ -2293,9 +2293,9 @@ select {
 .global-settings.dark .delete-confirmation,
 .global-settings.dark .session-modal,
 .global-settings.dark .confirmation-panel {
-    background: var(--color-surface-dark);
-    border-color: var(--color-border-dark);
-    color: var(--color-text-dark);
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .settings-workspace-box,
@@ -2307,12 +2307,12 @@ select {
 .global-settings.dark .session-row:hover,
 .global-settings.dark .simple-row:hover,
 .global-settings.dark .danger-box:not(.destructive):hover {
-    background: var(--color-surface-dark-soft);
+    background: var(--dark-surface-soft);
 }
 
 .global-settings.dark .settings-nav-item,
 .global-settings.dark .settings-help-button {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .settings-menu-label,
@@ -2337,7 +2337,7 @@ select {
 .global-settings.dark .session-modal dt,
 .global-settings.dark .help-steps,
 .global-settings.dark .guide-topic p {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .settings-nav-item:hover,
@@ -2348,13 +2348,13 @@ select {
 .global-settings.dark .settings-nav-item.active {
     background: rgba(255, 255, 255, 0.14);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .settings-nav-item.active .settings-nav-icon,
 .global-settings.dark .settings-nav-icon,
 .global-settings.dark .settings-help-mark {
-    color: var(--color-primary-dark);
+    color: var(--dark-primary);
 }
 
 .global-settings.dark .page-header h1,
@@ -2374,7 +2374,7 @@ select {
 .global-settings.dark .two-factor-heading,
 .global-settings.dark .sessions-heading,
 .global-settings.dark .password-change-heading h3 {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .field input,
@@ -2382,59 +2382,59 @@ select {
 .global-settings.dark .field textarea,
 .global-settings.dark .select-row select,
 .global-settings.dark select {
-    border-color: var(--color-border-dark);
-    background: var(--color-bg-dark);
-    color: var(--color-text-dark);
+    border-color: var(--dark-border);
+    background: var(--dark-bg);
+    color: var(--dark-text);
     color-scheme: dark;
 }
 
 .global-settings.dark .field input::placeholder,
 .global-settings.dark .field textarea::placeholder {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .field input:disabled,
 .global-settings.dark .field textarea:disabled,
 .global-settings.dark .field select:disabled {
-    background: var(--color-surface-dark-soft);
-    color: var(--color-text-dark-muted);
+    background: var(--dark-surface-soft);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .upload-button {
-    background: var(--color-primary-dark-soft);
-    color: var(--color-text-dark);
+    background: var(--dark-primary-soft);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .secondary-button,
 .global-settings.dark .toggle-button {
-    background: var(--color-surface-dark-raised);
-    color: var(--color-text-dark);
+    background: var(--dark-surface-raised);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .secondary-button:hover,
 .global-settings.dark .toggle-button:hover {
-    background: var(--color-border-dark);
+    background: var(--dark-border);
 }
 
 .global-settings.dark .toggle-button.on {
-    background: var(--color-primary-dark-soft);
-    color: var(--color-text-dark);
+    background: var(--dark-primary-soft);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .primary-button {
-    background: var(--color-highlight-strong);
-    color: var(--color-text-locked);
+    background: var(--highlight-strong);
+    color: var(--foreground);
 }
 
 .global-settings.dark .status-message {
-    border-color: var(--color-border-dark-highlight);
-    background: var(--color-warning-dark-soft);
-    color: var(--color-warning-dark-text);
+    border-color: var(--dark-border-highlight);
+    background: var(--dark-warning-soft);
+    color: var(--dark-warning-text);
 }
 
 .global-settings.dark .danger-box.destructive {
-    border-color: var(--color-warning-border);
-    background: var(--color-warning-dark-soft);
+    border-color: var(--warning-border);
+    background: var(--dark-warning-soft);
 }
 
 .global-settings.dark .bio-box,
@@ -2446,80 +2446,80 @@ select {
 .global-settings.dark .sessions-heading,
 .global-settings.dark .guide-topic,
 .global-settings.dark .help-tabs {
-    border-color: var(--color-border-dark);
+    border-color: var(--dark-border);
 }
 
 .global-settings.dark .password-visibility,
 .global-settings.dark .password-clear,
 .global-settings.dark .back-link,
 .global-settings.dark .dialog-close {
-    color: var(--color-text-dark-soft);
+    color: var(--dark-text-soft);
 }
 
 .global-settings.dark .password-visibility:hover,
 .global-settings.dark .password-clear:hover,
 .global-settings.dark .dialog-close:hover {
-    background: var(--color-surface-dark-raised);
-    color: var(--color-text-dark);
+    background: var(--dark-surface-raised);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .password-lock-icon {
-    border-color: var(--color-border-dark);
-    color: var(--color-primary-dark);
+    border-color: var(--dark-border);
+    color: var(--dark-primary);
 }
 
 .global-settings.dark .password-strength-meter > span,
 .global-settings.dark .password-requirements li > span {
-    background: var(--color-surface-dark-raised);
+    background: var(--dark-surface-raised);
 }
 
 .global-settings.dark .password-requirements li.is-met > span {
-    background: var(--color-success);
-    color: var(--color-white);
+    background: var(--success);
+    color: var(--white);
 }
 
 .global-settings.dark .password-requirements li.is-met,
 .global-settings.dark .password-validation.valid {
-    color: var(--color-success-dark);
+    color: var(--dark-success);
 }
 
 .global-settings.dark .password-validation.invalid,
 .global-settings.dark .password-validation.error,
 .global-settings.dark .password-field-error,
 .global-settings.dark .security-error {
-    color: var(--color-danger-dark);
+    color: var(--dark-danger);
 }
 
 .global-settings.dark .session-active,
 .global-settings.dark .security-success-message {
-    color: var(--color-success-dark);
+    color: var(--dark-success);
 }
 
 .global-settings.dark .prototype-code {
-    border-color: var(--color-border-dark-highlight);
-    background: var(--color-warning-dark-soft);
-    color: var(--color-warning-dark-text);
+    border-color: var(--dark-border-highlight);
+    background: var(--dark-warning-soft);
+    color: var(--dark-warning-text);
 }
 
 .global-settings.dark .profile-avatar-placeholder,
 .global-settings.dark .photo-placeholder,
 .global-settings.dark .student-badge,
 .global-settings.dark .help-tab.active {
-    background: var(--color-primary-dark-soft);
-    color: var(--color-text-dark);
+    background: var(--dark-primary-soft);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .help-tab {
-    color: var(--color-text-dark-muted);
+    color: var(--dark-text-muted);
 }
 
 .global-settings.dark .help-tab:hover {
-    background: var(--color-surface-dark-raised);
-    color: var(--color-text-dark);
+    background: var(--dark-surface-raised);
+    color: var(--dark-text);
 }
 
 .global-settings.dark .help-steps,
 .global-settings.dark .guide-topic,
 .global-settings.dark .session-modal dd {
-    color: var(--color-text-dark);
+    color: var(--dark-text);
 }

@@ -19,7 +19,7 @@ export default function RulePieChart({ tree, size = 220, showLegend = false }) {
     const outer = size / 2 - 2;
     const hole = size * 0.14;
     const ringWidth = (outer - hole) / Math.max(rings.length, 1);
-    const gap = resolveColor("var(--color-surface)");
+    const gap = resolveColor("var(--card)");
     const summary = rows
         .map((row) => `${row.name} ${formatPercent(row.effectiveShare)}`)
         .join(", ");

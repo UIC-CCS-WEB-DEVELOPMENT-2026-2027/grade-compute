@@ -1,5 +1,17 @@
 /* src/index.css */
 
+/* Tailwind CSS v4, without preflight (docs/TASKS.md T4.3). The app still
+   relies on its own reset below; preflight is turned on in T7.P.
+   Cascade layers, lowest priority first. Anything not in a layer (all the
+   existing app CSS) still beats every layer. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+/* Scan app code only (src/). The tooling folders, docs and Markdown files
+   are not app code (AGENTS.md section 7). */
+@source "./";
+
 /* =========================================
    Typography (Local Fonts)
    ========================================= */
@@ -20,30 +32,15 @@
     font-style: normal;
 }
 
-:root {
-    /* Layer order (z-index), lowest to highest. Popups that must cover the
-     page are rendered on <body> so these values compare directly. */
-    --z-raised: 1; /* small lifts inside a card */
-    --z-chart-tooltip: 10; /* chart and card hover tips */
-    --z-header: 20; /* sticky header on phones */
-    --z-sidebar: 30; /* sidebar (and its icon tips) above the page */
-    --z-sidebar-backdrop: 35; /* phone menu backdrop */
-    --z-sidebar-phone: 40; /* phone slide-in menu */
-    --z-popover: 60; /* pop-out subject list */
-    --z-modal: 100; /* Help, Remove subject */
-
-    /* CompUGrade Design System Colors */
-    --color-primary: #406093; /* Deep Blue: Main UI, headers, active states */
-    --color-accent: #4c8ce4; /* Bright Blue: Student-reported inputs, self-generated tasks */
-    --color-warning: #ff7070; /* Coral: System warnings, destructive actions */
-    --color-highlight: #fff799; /* Pale Yellow: Alert banners, pending verification states */
-    --color-text-locked: #2c2c2c; /* Deep Navy: Official locked scores, standard text */
-
-    /* Criteria colors (grade computation rules).
-     Built from the brand palette: primary and accent blues, the highlight
-     yellow, and the coral, plus their deeper and softer tones. Neighbors
-     alternate between blue and warm so sections next to each other differ.
-     Each "-on" token is the text and dot color that reads on that color. */
+/* Criteria colors (grade computation rules).
+   Built from the brand palette: primary and accent blues, the highlight
+   yellow, and the coral, plus their deeper and softer tones. Neighbors
+   alternate between blue and warm so sections next to each other differ.
+   Each "-on" token is the text and dot color that reads on that color.
+   Tailwind theme colors (bg-criteria-1, text-criteria-1-on, ...). "static"
+   keeps them all emitted, because src/utils/rules.js builds the variable
+   names at runtime (var(--color-criteria-N)). */
+@theme static {
     --color-criteria-1: #406093; /* primary blue */
     --color-criteria-1-on: #ffffff;
     --color-criteria-2: #e9c936; /* highlight yellow, deep */
@@ -60,110 +57,134 @@
     --color-criteria-7-on: #2c2c2c;
     --color-criteria-8: #f7afa6; /* coral, soft */
     --color-criteria-8-on: #2c2c2c;
-    --color-primary-soft: #e6edf9;
-    --color-warning-soft: #f9e7e2;
-    --color-warning-strong: #c95d50;
-    --color-warning-border: rgba(216, 106, 93, 0.35);
-    --color-highlight-soft: #fff7d9;
-    --color-highlight-strong: #e9c936;
-    --color-success: #36754a;
-    --color-success-dark: #91d2a3;
-    --color-danger-dark: #f0968c;
-    --color-white: #ffffff;
+}
+
+:root {
+    /* Layer order (z-index), lowest to highest. Popups that must cover the
+     page are rendered on <body> so these values compare directly. */
+    --z-raised: 1; /* small lifts inside a card */
+    --z-chart-tooltip: 10; /* chart and card hover tips */
+    --z-header: 20; /* sticky header on phones */
+    --z-sidebar: 30; /* sidebar (and its icon tips) above the page */
+    --z-sidebar-backdrop: 35; /* phone menu backdrop */
+    --z-sidebar-phone: 40; /* phone slide-in menu */
+    --z-popover: 60; /* pop-out subject list */
+    --z-modal: 100; /* Help, Remove subject */
+
+    /* CompUGrade Design System Colors */
+    --primary: #406093; /* Deep Blue: Main UI, headers, active states */
+    --self-reported: #4c8ce4; /* Bright Blue: Student-reported inputs, self-generated tasks */
+    --warning: #ff7070; /* Coral: System warnings, destructive actions */
+    --highlight: #fff799; /* Pale Yellow: Alert banners, pending verification states */
+    --foreground: #2c2c2c; /* Deep Navy: Official locked scores, standard text */
+    --secondary: #e6edf9;
+    --warning-soft: #f9e7e2;
+    --destructive: #c95d50;
+    --warning-border: rgba(216, 106, 93, 0.35);
+    --highlight-soft: #fff7d9;
+    --highlight-strong: #e9c936;
+    --success: #36754a;
+    --dark-success: #91d2a3;
+    --dark-danger: #f0968c;
+    --white: #ffffff;
 
     /* Backgrounds & Neutrals */
-    --color-bg-main: #f4f7f9; /* Light grayish-blue for the app background */
-    --color-surface: #ffffff; /* White for cards, modals, and tables */
-    --color-surface-soft: #fafbfc;
-    --color-surface-hover: #f5f6f8;
-    --color-surface-muted: #f1f2f4;
-    --color-border: #e2e8f0; /* Light border color for dividers and standard inputs */
-    --color-border-soft: #edf0f2;
-    --color-border-strong: #e3e6ea;
-    --color-muted: #64748b; /* Muted text for helpers and effective multipliers */
-    --color-text-subtle: #777e88;
-    --color-text-faint: #a2a8b0;
+    --background: #f4f7f9; /* Light grayish-blue for the app background */
+    --card: #ffffff; /* White for cards, modals, and tables */
+    --surface-soft: #fafbfc;
+    --surface-hover: #f5f6f8;
+    --muted: #f1f2f4;
+    --border: #e2e8f0; /* Light border color for dividers and standard inputs */
+    --border-soft: #edf0f2;
+    --border-strong: #e3e6ea;
+    --muted-foreground: #64748b; /* Muted text for helpers and effective multipliers */
+    --subtle-foreground: #777e88;
+    --faint-foreground: #a2a8b0;
 
     /* Shared feedback, overlay, and elevation colors */
-    --color-overlay: rgba(24, 28, 34, 0.34);
-    --color-focus-ring: rgba(76, 140, 228, 0.36);
-    --color-border-overlay: rgba(26, 29, 34, 0.08);
-    --color-border-overlay-strong: rgba(26, 29, 34, 0.12);
-    --color-border-overlay-subtle: rgba(26, 29, 34, 0.06);
-    --color-surface-overlay: rgba(255, 255, 255, 0.45);
-    --color-surface-overlay-soft: rgba(255, 255, 255, 0.22);
-    --color-surface-overlay-subtle: rgba(255, 255, 255, 0.14);
-    --color-surface-overlay-faint: rgba(255, 255, 255, 0.06);
-    --shadow-card: rgba(28, 34, 44, 0.045);
-    --shadow-hover: rgba(25, 31, 40, 0.045);
-    --shadow-hover-strong: rgba(30, 36, 44, 0.09);
-    --shadow-dialog: rgba(24, 28, 34, 0.17);
+    --overlay: rgba(24, 28, 34, 0.34);
+    --ring: rgba(76, 140, 228, 0.36);
+    --border-overlay: rgba(26, 29, 34, 0.08);
+    --border-overlay-strong: rgba(26, 29, 34, 0.12);
+    --border-overlay-subtle: rgba(26, 29, 34, 0.06);
+    --surface-overlay: rgba(255, 255, 255, 0.45);
+    --surface-overlay-soft: rgba(255, 255, 255, 0.22);
+    --surface-overlay-subtle: rgba(255, 255, 255, 0.14);
+    --surface-overlay-faint: rgba(255, 255, 255, 0.06);
+    --elevation-card: rgba(28, 34, 44, 0.045);
+    --elevation-hover: rgba(25, 31, 40, 0.045);
+    --elevation-hover-strong: rgba(30, 36, 44, 0.09);
+    --elevation-dialog: rgba(24, 28, 34, 0.17);
 
     /* Dark theme surfaces and text */
-    --color-bg-dark: #191b1f;
-    --color-surface-dark: #22252a;
-    --color-surface-dark-soft: #292d33;
-    --color-surface-dark-raised: #2e3239;
-    --color-border-dark: #353941;
-    --color-border-dark-highlight: #665b2b;
-    --color-text-dark: #f0f1f3;
-    --color-text-dark-muted: #afb4bc;
-    --color-text-dark-soft: #d4d7dc;
-    --color-primary-dark: #4c8ce4;
-    --color-primary-dark-soft: #23354d;
-    --color-warning-dark-soft: #302b1a;
-    --color-warning-dark-text: #ede1a6;
-    --shadow-card-dark: rgba(0, 0, 0, 0.14);
-    --color-bg-alt: #fff79a; /* Yellow background for alternative */
-    --color-bg-selected: #edf1fa; /* Light blue background for selected items */
+    --dark-bg: #191b1f;
+    --dark-surface: #22252a;
+    --dark-surface-soft: #292d33;
+    --dark-surface-raised: #2e3239;
+    --dark-border: #353941;
+    --dark-border-highlight: #665b2b;
+    --dark-text: #f0f1f3;
+    --dark-text-muted: #afb4bc;
+    --dark-text-soft: #d4d7dc;
+    --dark-primary: #4c8ce4;
+    --dark-primary-soft: #23354d;
+    --dark-warning-soft: #302b1a;
+    --dark-warning-text: #ede1a6;
+    --elevation-card-dark: rgba(0, 0, 0, 0.14);
+    --bg-alt: #fff79a; /* Yellow background for alternative */
+    --bg-selected: #edf1fa; /* Light blue background for selected items */
 
     /* Typography Variables */
     --font-heading: "Khand", sans-serif;
     --font-body: "General Sans", sans-serif;
 }
 
-/* CSS Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* CSS Reset. In the base layer, so Tailwind utilities can override it.
+   Every rule here already loses to any app rule that sets the same
+   property, so layering it changes nothing on screen. */
+@layer base {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-body {
-    min-height: 100vh;
-    font-family: var(--font-body); /* Applied Body Font */
-    background-color: var(--color-bg-main);
-    color: var(--color-text-locked);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-}
+    body {
+        min-height: 100vh;
+        font-family: var(--font-body); /* Applied Body Font */
+        background-color: var(--background);
+        color: var(--foreground);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
 
-html,
-#root {
-    min-height: 100%;
-}
+    html,
+    #root {
+        min-height: 100%;
+    }
 
-button,
-input,
-select {
-    font: inherit;
-}
+    button,
+    input,
+    select {
+        font: inherit;
+    }
 
-img {
-    display: block;
-    max-width: 100%;
-}
+    img {
+        display: block;
+        max-width: 100%;
+    }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-heading); /* Applied Heading Font */
-    color: var(--color-primary);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-heading); /* Applied Heading Font */
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
 }
 
 /* =========================================
@@ -204,7 +225,11 @@ h6 {
    Base UI Elements
    ========================================= */
 
-button {
+/* The element rules below stay outside the layers, so their cascade with
+   the app's other rules is unchanged. :where(:not([data-slot])) keeps them
+   off shadcn components (which carry data-slot) without adding
+   specificity. They go when the screens are converted (Phase 7). */
+button:where(:not([data-slot])) {
     font-family: var(--font-body);
     cursor: pointer;
     border: none;
@@ -214,17 +239,17 @@ button {
     transition: opacity 0.2s ease;
 }
 
-button:hover {
+button:where(:not([data-slot])):hover {
     opacity: 0.85;
 }
 
 .btn-primary {
-    background-color: var(--color-primary);
+    background-color: var(--primary);
     color: #ffffff;
 }
 
 .btn-accent {
-    background-color: var(--color-accent);
+    background-color: var(--self-reported);
     color: #ffffff;
 }
 
@@ -236,8 +261,8 @@ button:hover {
     padding: 0.65rem 0.85rem;
     border: 1px solid #f0e783;
     border-radius: 4px;
-    background-color: var(--color-highlight);
-    color: var(--color-primary);
+    background-color: var(--highlight);
+    color: var(--primary);
     font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
@@ -252,7 +277,7 @@ button:hover {
 }
 
 .dashboard-view-button:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -266,14 +291,14 @@ button:hover {
 }
 
 .btn-warning {
-    background-color: var(--color-warning);
+    background-color: var(--warning);
     color: #ffffff;
 }
 
-input,
-select {
+input:where(:not([data-slot])),
+select:where(:not([data-slot])) {
     font-family: var(--font-body);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 0.5rem;
     outline: none;
@@ -281,9 +306,9 @@ select {
     max-width: 100%;
 }
 
-input:focus,
-select:focus {
-    border-color: var(--color-primary);
+input:where(:not([data-slot])):focus,
+select:where(:not([data-slot])):focus {
+    border-color: var(--primary);
 }
 
 /* =========================================
@@ -295,7 +320,7 @@ select:focus {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--color-highlight);
+    background: var(--highlight);
     border-right: 1px solid rgba(46, 48, 55, 0.2);
     padding: 1.1rem 1.15rem 0.9rem;
     box-shadow: inset -1px 0 0 rgba(29, 35, 42, 0.08);
@@ -472,7 +497,7 @@ select:focus {
 .sidebar-link.is-active {
     background: rgba(255, 255, 255, 0.42);
     box-shadow: inset 0 0 0 1px rgba(70, 93, 127, 0.08);
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .sidebar-icon-wrap {
@@ -620,7 +645,7 @@ select:focus {
     height: 1.45rem;
     padding: 0.35rem;
     border-radius: 0.4rem;
-    background: var(--color-highlight);
+    background: var(--highlight);
     color: #8b3b37;
     opacity: 0;
     transform: translateY(-50%);
@@ -653,18 +678,18 @@ select:focus {
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background: var(--color-overlay);
+    background: var(--overlay);
     backdrop-filter: blur(4px);
 }
 
 .subject-remove-dialog {
     width: min(100%, 19rem);
     padding: 1.25rem 1.1rem 1.1rem;
-    border: 1px solid var(--color-border-soft);
+    border: 1px solid var(--border-soft);
     border-radius: 0.85rem;
-    background: var(--color-surface);
-    box-shadow: 0 1rem 2.5rem var(--shadow-dialog);
-    color: var(--color-text-locked);
+    background: var(--card);
+    box-shadow: 0 1rem 2.5rem var(--elevation-dialog);
+    color: var(--foreground);
 }
 
 .subject-remove-heading {
@@ -681,7 +706,7 @@ select:focus {
     width: 2rem;
     height: 2rem;
     margin-bottom: 0.15rem;
-    color: var(--color-warning-strong);
+    color: var(--destructive);
 }
 
 .subject-remove-icon svg {
@@ -691,7 +716,7 @@ select:focus {
 
 .subject-remove-heading h2 {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
@@ -701,7 +726,7 @@ select:focus {
 
 .subject-remove-description {
     margin: 0.55rem 0 1rem;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 0.78rem;
     line-height: 1.5;
     text-align: center;
@@ -723,17 +748,17 @@ select:focus {
 }
 
 .subject-remove-cancel {
-    background: var(--color-surface-muted);
-    color: var(--color-text-locked);
+    background: var(--muted);
+    color: var(--foreground);
 }
 
 .subject-remove-cancel:hover {
-    background: var(--color-border);
+    background: var(--border);
 }
 
 .subject-remove-confirm {
     background: #e83932;
-    color: var(--color-white);
+    color: var(--white);
 }
 
 .subject-remove-confirm:hover {
@@ -741,7 +766,7 @@ select:focus {
 }
 
 .subject-remove-actions button:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -751,7 +776,7 @@ select:focus {
 }
 
 .sidebar-enrolled-subject.is-active {
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .sidebar-enrolled-subject-divider {
@@ -855,7 +880,7 @@ select:focus {
 .sidebar-minimize-toggle:focus-visible,
 .sidebar-close:focus-visible,
 .sidebar-subject-toggle:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -931,8 +956,8 @@ select:focus {
         z-index: var(--z-popover);
         padding: 0.35rem 0.6rem;
         border-radius: 0.4rem;
-        background: var(--color-text-locked);
-        color: var(--color-white);
+        background: var(--foreground);
+        color: var(--white);
         font-size: 0.8rem;
         font-weight: 500;
         white-space: nowrap;
@@ -948,10 +973,10 @@ select:focus {
     max-height: min(70vh, 420px);
     overflow-y: auto;
     padding: 0.5rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 0.8rem;
-    background: var(--color-surface);
-    box-shadow: 0 12px 32px var(--shadow-dialog);
+    background: var(--card);
+    box-shadow: 0 12px 32px var(--elevation-dialog);
 }
 
 .sidebar-popout-all {
@@ -960,7 +985,7 @@ select:focus {
     justify-content: space-between;
     padding: 0.55rem 0.65rem;
     border-radius: 0.5rem;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-weight: 600;
     text-decoration: none;
 }
@@ -976,7 +1001,7 @@ select:focus {
 .sidebar-popout ul {
     margin: 0.25rem 0 0;
     padding: 0.25rem 0 0;
-    border-top: 1px solid var(--color-border-soft);
+    border-top: 1px solid var(--border-soft);
     list-style: none;
 }
 
@@ -987,12 +1012,12 @@ select:focus {
     justify-content: center;
     padding: 0.4rem 0.65rem;
     border-radius: 0.5rem;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     text-decoration: none;
 }
 
 .sidebar-popout li a strong {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
 }
@@ -1007,7 +1032,7 @@ select:focus {
 .sidebar-popout a:hover,
 .sidebar-popout a:focus-visible,
 .sidebar-popout a.is-active {
-    background: var(--color-bg-selected);
+    background: var(--bg-selected);
     outline: none;
 }
 
@@ -1069,7 +1094,7 @@ select:focus {
         position: fixed;
         inset: 0;
         z-index: var(--z-sidebar-backdrop);
-        background: var(--color-overlay);
+        background: var(--overlay);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.25s ease;
@@ -1099,15 +1124,15 @@ select:focus {
 
 /* State 1: Official Score (Locked Text) */
 .text-official {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-weight: 700;
 }
 
 /* State 2: Student-Reported Score (Input Box) */
 .input-self-reported {
-    border: 2px solid var(--color-accent);
-    color: var(--color-accent);
-    background-color: var(--color-primary-soft); /* Very subtle blue tint */
+    border: 2px solid var(--self-reported);
+    color: var(--self-reported);
+    background-color: var(--secondary); /* Very subtle blue tint */
     font-weight: 600;
 }
 
@@ -1117,10 +1142,10 @@ select:focus {
 
 /* Alert Banners (e.g., Pending Verification) */
 .banner-pending {
-    background-color: var(--color-highlight);
-    color: var(--color-text-locked);
+    background-color: var(--highlight);
+    color: var(--foreground);
     padding: 0.75rem 1rem;
     border-radius: 4px;
     font-weight: 500;
-    border-left: 4px solid var(--color-warning);
+    border-left: 4px solid var(--warning);
 }

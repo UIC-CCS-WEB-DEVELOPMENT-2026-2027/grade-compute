@@ -7,10 +7,10 @@
     align-items: center;
     gap: 0.4rem;
     padding: 9px 15px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--primary);
     border-radius: 22px;
-    background: var(--color-bg-selected);
-    color: var(--color-primary);
+    background: var(--bg-selected);
+    color: var(--primary);
     font-size: 11px;
     font-weight: 600;
     text-decoration: none;
@@ -22,8 +22,8 @@
 
 .term-nav-link:hover,
 .term-nav-link:focus-visible {
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .term-nav-link svg {
@@ -36,7 +36,7 @@
     gap: 6px;
     padding: 7px 13px 7px 9px;
     border-color: transparent;
-    background: var(--color-primary-soft);
+    background: var(--secondary);
     font-size: 12px;
     font-weight: 500;
 }
@@ -49,7 +49,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .sandbox-back-link > span svg {
@@ -68,18 +68,18 @@
 
 .sandbox-back-link:hover,
 .sandbox-back-link:focus-visible {
-    border-color: var(--color-primary);
-    background: var(--color-surface);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--card);
+    color: var(--primary);
 }
 
 .sandbox-back-link:hover > span,
 .sandbox-back-link:focus-visible > span {
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .sandbox-back-link:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
@@ -136,13 +136,13 @@
 }
 
 .sandbox-term-navigation .term-selector button:hover:not(.selected) {
-    border-color: var(--color-primary);
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--secondary);
+    color: var(--primary);
 }
 
 .sandbox-term-navigation .term-selector button:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 

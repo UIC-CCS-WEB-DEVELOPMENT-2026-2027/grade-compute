@@ -5,9 +5,9 @@
 .enrolled-subjects {
     margin-top: 2rem;
     padding: 1.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 /* ---- Header ---- */
@@ -27,7 +27,7 @@
 
 .enrolled-title {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-heading);
     font-size: 2rem;
     font-weight: 700;
@@ -37,25 +37,25 @@
 .enrolled-count {
     padding: 0.15rem 0.5rem;
     border-radius: 6px;
-    background: var(--color-surface-muted);
-    color: var(--color-muted);
+    background: var(--muted);
+    color: var(--muted-foreground);
     font-size: 0.75rem;
     font-weight: 600;
 }
 
 .enrolled-subtitle {
     margin: 0.35rem 0 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.875rem;
 }
 
 .enrolled-add-button {
     flex-shrink: 0;
     padding: 0.55rem 1rem;
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--primary);
     border-radius: 8px;
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--primary);
+    color: var(--white);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
@@ -66,8 +66,8 @@
 }
 
 .enrolled-add-button[aria-expanded="true"] {
-    background: var(--color-surface);
-    color: var(--color-primary);
+    background: var(--card);
+    color: var(--primary);
 }
 
 /* ---- Filter tabs and search ---- */
@@ -93,7 +93,7 @@
     border: none;
     border-radius: 9999px;
     background: none;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.85rem;
     cursor: pointer;
     transition:
@@ -102,16 +102,16 @@
 }
 
 .enrolled-tab.active {
-    background: var(--color-bg-selected);
-    color: var(--color-primary);
+    background: var(--bg-selected);
+    color: var(--primary);
     font-weight: 500;
 }
 
 .enrolled-tab-count {
     padding: 0.1rem 0.4rem;
     border-radius: 9999px;
-    background: var(--color-warning-soft);
-    color: var(--color-warning-strong);
+    background: var(--warning-soft);
+    color: var(--destructive);
     font-size: 0.7rem;
     font-weight: 600;
 }
@@ -119,21 +119,21 @@
 .enrolled-search {
     width: 220px;
     padding: 0.45rem 0.85rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--color-surface);
-    color: var(--color-text-locked);
+    background: var(--card);
+    color: var(--foreground);
     font-size: 0.85rem;
 }
 
 .enrolled-search::placeholder {
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
 }
 
 .enrolled-search:focus {
-    border-color: var(--color-primary);
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 3px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--ring);
 }
 
 /* ---- Table ---- */
@@ -150,8 +150,8 @@
 
 .enrolled-table th {
     padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--color-border-soft);
-    color: var(--color-text-faint);
+    border-bottom: 1px solid var(--border-soft);
+    color: var(--faint-foreground);
     font-size: 0.725rem;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -161,7 +161,7 @@
 
 .enrolled-table td {
     padding: 1.15rem 0.5rem;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
     vertical-align: middle;
 }
 
@@ -171,7 +171,7 @@
 }
 
 .enrolled-table tbody tr:hover {
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .enrolled-table tbody tr.enrolled-empty-row {
@@ -188,7 +188,7 @@
 }
 
 .enrolled-subject:hover .enrolled-name {
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .enrolled-icon {
@@ -198,10 +198,10 @@
     flex-shrink: 0;
     width: 38px;
     height: 38px;
-    border: 1px solid var(--color-border-soft);
+    border: 1px solid var(--border-soft);
     border-radius: 8px;
-    background: var(--color-surface-soft);
-    color: var(--color-primary);
+    background: var(--surface-soft);
+    color: var(--primary);
     font-size: 0.85rem;
     font-weight: 700;
 }
@@ -212,7 +212,7 @@
 }
 
 .enrolled-code {
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -220,20 +220,20 @@
 
 .enrolled-name {
     margin-top: 1px;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 0.925rem;
     font-weight: 600;
 }
 
 .enrolled-prof {
     margin-top: 2px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.775rem;
 }
 
 .enrolled-grade-num {
     display: block;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 700;
@@ -243,13 +243,13 @@
 
 /* Expected grades use the student-reported color (css-styling-guide.txt). */
 .enrolled-grade-num.expected {
-    color: var(--color-accent);
+    color: var(--self-reported);
 }
 
 .enrolled-grade-label {
     display: block;
     margin-top: 2px;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 0.725rem;
     white-space: nowrap;
 }
@@ -264,18 +264,18 @@
 }
 
 .enrolled-status.passing {
-    background: var(--color-bg-selected);
-    color: var(--color-primary);
+    background: var(--bg-selected);
+    color: var(--primary);
 }
 
 .enrolled-status.below {
-    background: var(--color-warning-soft);
-    color: var(--color-warning-strong);
+    background: var(--warning-soft);
+    color: var(--destructive);
 }
 
 .enrolled-status.none {
-    background: var(--color-surface-muted);
-    color: var(--color-muted);
+    background: var(--muted);
+    color: var(--muted-foreground);
 }
 
 .enrolled-action {
@@ -284,7 +284,7 @@
 
 .enrolled-arrow {
     padding: 0.25rem 0.4rem;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 1.1rem;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -292,12 +292,12 @@
 
 .enrolled-arrow:hover,
 .enrolled-arrow:focus-visible {
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .enrolled-empty {
     padding: 2rem !important;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     text-align: center;
 }
 
@@ -310,8 +310,8 @@
     margin-top: 1rem;
     width: 100%;
     padding: 1.25rem 1.5rem 0 0;
-    border-top: 1px solid var(--color-border-soft);
-    color: var(--color-muted);
+    border-top: 1px solid var(--border-soft);
+    color: var(--muted-foreground);
     font-size: 10px;
     line-height: 1.5;
     box-sizing: border-box;
@@ -369,7 +369,7 @@
         gap: 0.75rem 1rem;
         margin-bottom: 0.75rem;
         padding: 1rem;
-        border: 1px solid var(--color-border);
+        border: 1px solid var(--border);
         border-radius: 12px;
     }
 
@@ -408,7 +408,7 @@
     .enrolled-cell-expected::before {
         display: block;
         margin-bottom: 0.25rem;
-        color: var(--color-text-faint);
+        color: var(--faint-foreground);
         font-size: 0.68rem;
         font-weight: 600;
         letter-spacing: 0.05em;

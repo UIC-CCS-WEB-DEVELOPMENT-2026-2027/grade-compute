@@ -10,7 +10,7 @@
 
 .rule-back {
     align-self: flex-start;
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 14px;
     text-decoration: none;
 }
@@ -25,10 +25,10 @@
     justify-content: center;
     gap: 6px;
     padding: 7px 13px 7px 9px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 999px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    background: var(--secondary);
+    color: var(--primary);
     font-size: 12px;
     font-weight: 500;
     text-decoration: none;
@@ -46,7 +46,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .rule-back-button span svg {
@@ -65,19 +65,19 @@
 
 .rule-back-button:hover,
 .rule-back-button:focus-visible {
-    border-color: var(--color-primary);
-    background: var(--color-surface);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--card);
+    color: var(--primary);
     text-decoration: none;
 }
 
 .rule-back-button:hover span,
 .rule-back-button:focus-visible span {
-    background: var(--color-primary-soft);
+    background: var(--secondary);
 }
 
 .rule-back-button:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
@@ -92,14 +92,14 @@
 
 .rule-detail-heading h1 {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 38px;
     line-height: 1.05;
 }
 
 .rule-detail-heading p {
     margin-top: 6px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
 }
 
 .rule-detail-tools {
@@ -110,11 +110,11 @@
 .rule-save-success {
     margin: -12px 0 0;
     padding: 10px 14px;
-    border: 1px solid var(--color-border);
-    border-left: 4px solid var(--color-primary);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
     border-radius: 6px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    background: var(--secondary);
+    color: var(--primary);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -126,12 +126,12 @@
     flex-direction: column;
     gap: 20px;
     padding-top: 22px;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--border);
 }
 
 .rule-section h2 {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 24px;
 }
 
@@ -160,17 +160,17 @@
     margin: 0;
     padding: 0;
     border: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 13px;
 }
 
 .rule-readonly-value {
     min-height: 38px;
     padding: 9px 12px;
-    border: 1px solid var(--color-border-soft);
+    border: 1px solid var(--border-soft);
     border-radius: 6px;
-    background: var(--color-surface-soft);
-    color: var(--color-text-locked);
+    background: var(--surface-soft);
+    color: var(--foreground);
     line-height: 1.4;
 }
 
@@ -180,12 +180,12 @@
 }
 
 .rule-field input[aria-invalid="true"] {
-    border-color: var(--color-warning-strong);
+    border-color: var(--destructive);
 }
 
 .rule-field-error {
     margin: 0;
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 13px;
 }
 
@@ -200,16 +200,16 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 999px;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 14px;
     cursor: pointer;
 }
 
 .rule-tag-option.is-readonly {
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    background: var(--secondary);
+    color: var(--primary);
     cursor: default;
 }
 
@@ -218,9 +218,9 @@
 }
 
 .rule-tag-option:has(input:checked) {
-    border-color: var(--color-primary);
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--secondary);
+    color: var(--primary);
 }
 
 .rule-schools ul {
@@ -237,9 +237,9 @@
     align-items: center;
     gap: 4px;
     padding: 3px 4px 3px 10px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 999px;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 13px;
 }
 
@@ -249,7 +249,7 @@
     padding: 0;
     border-radius: 50%;
     background: transparent;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
 }
 
 .rule-school-add {
@@ -273,13 +273,13 @@
     gap: 12px;
     margin: 0 calc(clamp(20px, 5vw, 64px) * -1);
     padding: 14px clamp(20px, 5vw, 64px);
-    border-top: 1px solid var(--color-border);
-    background: var(--color-surface);
+    border-top: 1px solid var(--border);
+    background: var(--card);
 }
 
 .rule-savebar p {
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 14px;
 }
 
@@ -318,7 +318,7 @@
     align-items: center;
     gap: 7px;
     margin-bottom: 9px;
-    color: var(--color-primary);
+    color: var(--primary);
     font-family: "General Sans", sans-serif;
     font-size: 10px;
     font-weight: 700;
@@ -331,7 +331,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--color-primary);
+    background: var(--primary);
     content: "";
 }
 
@@ -340,7 +340,7 @@
 }
 
 .rule-impact-description {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 13px;
 }
 
@@ -369,25 +369,25 @@
 }
 
 .rule-impact-dialog .rule-impact-subjects li:hover {
-    border-color: var(--color-primary);
-    background: var(--color-surface);
+    border-color: var(--primary);
+    background: var(--card);
 }
 
 .rule-impact-code {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
 }
 
 .rule-impact-name {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 16px;
     font-weight: 600;
 }
 
 .rule-impact-note {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 13px;
 }
 
@@ -404,22 +404,22 @@
 
 .rule-impact-dialog .app-dialog-actions .rule-impact-cancel,
 .rule-impact-dialog .app-dialog-actions .rule-impact-new {
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-muted);
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
 }
 
 .rule-impact-dialog .app-dialog-actions .rule-impact-cancel:hover,
 .rule-impact-dialog .app-dialog-actions .rule-impact-new:hover {
-    border-color: var(--color-primary);
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--secondary);
+    color: var(--primary);
 }
 
 .rule-impact-dialog .app-dialog-actions .rule-impact-confirm {
-    border: 1px solid var(--color-primary);
-    background: var(--color-primary);
-    color: var(--color-white);
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .rule-impact-dialog .app-dialog-actions .rule-impact-confirm:hover {
@@ -427,7 +427,7 @@
 }
 
 .rule-impact-dialog .app-dialog-actions button:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 

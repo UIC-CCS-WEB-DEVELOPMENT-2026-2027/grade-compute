@@ -7,7 +7,7 @@
 .sandbox {
     /* Layout follows the space next to the sidebar, not the window width. */
     container-type: inline-size;
-    color: var(--color-text-locked);
+    color: var(--foreground);
 }
 
 .sandbox-sr-only {
@@ -42,34 +42,34 @@
 
 /* ---- Result card ---- */
 .sandbox-result {
-    --result-bg: var(--color-primary);
-    --result-text: var(--color-white);
-    --result-muted: var(--color-surface-overlay);
-    --result-line: var(--color-surface-overlay-soft);
+    --result-bg: var(--primary);
+    --result-text: var(--white);
+    --result-muted: var(--surface-overlay);
+    --result-line: var(--surface-overlay-soft);
     padding: 1.4rem 1.4rem 1.2rem;
     border-radius: 14px;
     background: var(--result-bg);
     color: var(--result-text);
-    box-shadow: 0 12px 28px var(--shadow-hover-strong);
+    box-shadow: 0 12px 28px var(--elevation-hover-strong);
 }
 
 .sandbox-result--impossible {
-    --result-bg: var(--color-warning-soft);
-    --result-text: var(--color-text-locked);
-    --result-muted: var(--color-warning-strong);
-    --result-line: var(--color-warning-border);
-    border: 1px solid var(--color-warning-border);
+    --result-bg: var(--warning-soft);
+    --result-text: var(--foreground);
+    --result-muted: var(--destructive);
+    --result-line: var(--warning-border);
+    border: 1px solid var(--warning-border);
 }
 
 .sandbox-result--reached {
-    --result-bg: var(--color-success);
+    --result-bg: var(--success);
 }
 
 .sandbox-result--empty {
-    --result-bg: var(--color-surface-muted);
-    --result-text: var(--color-text-locked);
-    --result-muted: var(--color-muted);
-    --result-line: var(--color-border);
+    --result-bg: var(--muted);
+    --result-text: var(--foreground);
+    --result-muted: var(--muted-foreground);
+    --result-line: var(--border);
     box-shadow: none;
 }
 
@@ -147,9 +147,9 @@
 /* ---- Input cards ---- */
 .sandbox-card {
     padding: 1.15rem 1.25rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .sandbox-chart-card {
@@ -215,7 +215,7 @@
 }
 
 .sandbox-remaining-card .sandbox-table tbody tr:focus-within th:first-child {
-    box-shadow: inset 3px 0 0 var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--primary);
 }
 
 .sandbox-remaining-card .sandbox-number {
@@ -234,13 +234,13 @@
 }
 
 .sandbox-remaining-card .sandbox-number:focus {
-    border-color: var(--color-primary);
+    border-color: var(--primary);
     background: #fbfcff;
-    box-shadow: 0 0 0 3px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--ring);
 }
 
 .sandbox-remaining-card .sandbox-number::placeholder {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     opacity: 1;
 }
 
@@ -253,7 +253,7 @@
     align-items: center;
     gap: 0.55rem;
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-heading);
     font-size: 1.35rem;
     line-height: 1.1;
@@ -266,8 +266,8 @@
     height: 1.6rem;
     flex: 0 0 1.6rem;
     border-radius: 50%;
-    background: var(--color-bg-selected);
-    color: var(--color-primary);
+    background: var(--bg-selected);
+    color: var(--primary);
     font-family: var(--font-body);
     font-size: 0.8rem;
     font-weight: 700;
@@ -275,24 +275,24 @@
 
 .sandbox-help {
     margin: 0.4rem 0 0.9rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
     line-height: 1.5;
 }
 
 .sandbox-muted {
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 0.8rem;
 }
 
 .sandbox-error {
     margin: 0.5rem 0 0;
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 0.78rem;
 }
 
 .sandbox-empty {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
 }
 
 /* Step 1 */
@@ -319,7 +319,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--color-highlight-strong);
+    color: var(--highlight-strong);
     font-size: 12px;
     font-weight: 700;
 }
@@ -328,18 +328,18 @@
     box-sizing: border-box;
     width: 60px;
     padding: 5px 6px;
-    border: 1px solid var(--color-highlight-strong);
+    border: 1px solid var(--highlight-strong);
     border-radius: 7px;
-    background: var(--color-surface);
-    color: var(--color-primary);
+    background: var(--card);
+    color: var(--primary);
     font-family: var(--font-body);
     font-size: 12px;
     font-weight: 700;
 }
 
 .sandbox-target-input input[aria-invalid="true"] {
-    border-color: var(--color-warning-strong);
-    background: var(--color-warning-soft);
+    border-color: var(--destructive);
+    background: var(--warning-soft);
 }
 
 .sandbox-gauges {
@@ -376,8 +376,8 @@
 
 .sandbox-table thead th {
     padding: 0.5rem;
-    border-bottom: 1px solid var(--color-border-soft);
-    color: var(--color-text-faint);
+    border-bottom: 1px solid var(--border-soft);
+    color: var(--faint-foreground);
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -388,7 +388,7 @@
 .sandbox-table tbody th,
 .sandbox-table td {
     padding: 0.7rem 0.5rem;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
     font-weight: 400;
     vertical-align: middle;
 }
@@ -396,7 +396,7 @@
 .sandbox-table small {
     display: block;
     margin-top: 0.15rem;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-size: 0.7rem;
     white-space: nowrap;
 }
@@ -417,30 +417,30 @@
 .sandbox-number {
     width: 4.5rem;
     padding: 0.4rem 0.5rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 6px;
-    background: var(--color-surface);
-    color: var(--color-text-locked);
+    background: var(--card);
+    color: var(--foreground);
     font-size: 0.85rem;
 }
 
 .sandbox-number:focus,
 .sandbox-target-input input:focus,
 .sandbox-draft-input input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 3px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--ring);
 }
 
 .sandbox-percent-input {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
 }
 
 .sandbox-need strong {
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 1rem;
     white-space: nowrap;
 }
@@ -452,7 +452,7 @@
 
 .sandbox-draft-group h3 {
     margin: 0 0 0.35rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -485,7 +485,7 @@
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.65rem 0.75rem;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 1px solid var(--border-soft);
     font-size: 0.85rem;
     transition: background-color 0.18s ease;
 }
@@ -496,7 +496,7 @@
 
 .sandbox-drafts-card .sandbox-draft:focus-within {
     background: #f1f6ff;
-    box-shadow: inset 3px 0 0 var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--primary);
 }
 
 .sandbox-drafts-card .sandbox-draft:last-child {
@@ -515,14 +515,14 @@
 .sandbox-draft-name small,
 .sandbox-draft-locked small {
     display: block;
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
     font-family: var(--font-body);
     font-size: 0.7rem;
     line-height: 1.4;
 }
 
 .sandbox-draft-locked {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-weight: 600;
     text-align: right;
     white-space: nowrap;
@@ -533,7 +533,7 @@
     flex: 0 0 auto;
     align-items: center;
     gap: 0.3rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
 }
 
@@ -541,10 +541,10 @@
 .sandbox-draft-input input {
     width: 5rem;
     padding: 0.4rem 0.5rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--color-surface);
-    color: var(--color-accent);
+    background: var(--card);
+    color: var(--self-reported);
     font-size: 0.85rem;
     text-align: right;
     transition:
@@ -559,19 +559,19 @@
 }
 
 .sandbox-draft-input input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--primary);
     outline: none;
     background: #fbfcff;
-    box-shadow: 0 0 0 3px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--ring);
 }
 
 .sandbox-draft-input input::placeholder {
-    color: var(--color-text-faint);
+    color: var(--faint-foreground);
 }
 
 .sandbox-draft-input input[aria-invalid="true"] {
-    border-color: var(--color-warning-strong);
-    background: var(--color-warning-soft);
+    border-color: var(--destructive);
+    background: var(--warning-soft);
 }
 
 .sandbox-how summary {
@@ -581,7 +581,7 @@
     margin: -0.35rem -0.45rem;
     padding: 0.5rem 0.45rem;
     border-radius: 8px;
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -597,7 +597,7 @@
 
 .sandbox-how summary::before {
     content: "›";
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 1.2rem;
     line-height: 0.8;
     transition: transform 0.18s ease;
@@ -608,19 +608,19 @@
 }
 
 .sandbox-how summary:hover {
-    background: var(--color-primary-soft);
+    background: var(--secondary);
 }
 
 .sandbox-how summary:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
 .sandbox-how p {
     margin: 0.8rem 0 0;
     padding-top: 0.75rem;
-    border-top: 1px solid var(--color-border-soft);
-    color: var(--color-muted);
+    border-top: 1px solid var(--border-soft);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
     line-height: 1.55;
 }
@@ -682,7 +682,7 @@
         grid-template-columns: 1fr 1fr;
         gap: 0.75rem 1rem;
         padding: 0.9rem;
-        border-bottom: 1px solid var(--color-border-soft);
+        border-bottom: 1px solid var(--border-soft);
     }
 
     .sandbox-table tbody tr:last-child {
@@ -705,7 +705,7 @@
     .sandbox-need::before {
         display: block;
         margin-bottom: 0.3rem;
-        color: var(--color-text-faint);
+        color: var(--faint-foreground);
         font-size: 0.66rem;
         font-weight: 600;
         letter-spacing: 0.05em;
@@ -779,7 +779,7 @@
 @keyframes sandbox-draft-highlight {
     0%,
     35% {
-        background: var(--color-highlight-soft);
+        background: var(--highlight-soft);
     }
 
     100% {

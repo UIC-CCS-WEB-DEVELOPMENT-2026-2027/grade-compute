@@ -9,9 +9,9 @@
     gap: 14px;
     margin-top: 28px;
     padding: 22px 24px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .history-section .history-chart {
@@ -27,7 +27,7 @@
 }
 
 .history-section .history-summary strong {
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 24px;
 }
 
@@ -60,7 +60,7 @@
 
 .history-section-heading h2 {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-heading);
     font-size: 1.6rem;
     line-height: 1.1;
@@ -69,7 +69,7 @@
 .history-section-heading p {
     max-width: 62ch;
     margin: 4px 0 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 13px;
     line-height: 1.5;
 }
@@ -87,18 +87,18 @@
     align-items: center;
     gap: 6px;
     padding: 7px 14px;
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
-    background: var(--color-surface);
-    color: var(--color-muted);
+    background: var(--card);
+    color: var(--muted-foreground);
     font-size: 12px;
     font-weight: 600;
 }
 
 .history-toggle[aria-pressed="true"] {
-    border-color: var(--color-primary);
-    background: var(--color-bg-selected);
-    color: var(--color-primary);
+    border-color: var(--primary);
+    background: var(--bg-selected);
+    color: var(--primary);
 }
 
 .history-link {
@@ -106,10 +106,10 @@
     align-items: center;
     justify-content: center;
     padding: 7px 12px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--primary);
     border-radius: 8px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    background: var(--secondary);
+    color: var(--primary);
     font-size: 12px;
     font-weight: 600;
     line-height: 1.3;
@@ -122,13 +122,13 @@
 
 .history-link:hover,
 .history-link:focus-visible {
-    border-color: var(--color-primary);
-    background: var(--color-primary);
-    color: var(--color-white);
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .history-link:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
@@ -137,33 +137,33 @@
     flex-wrap: wrap;
     gap: 2px;
     padding: 3px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 999px;
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .history-scope button {
     padding: 6px 14px;
     border-radius: 999px;
     background: transparent;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 12px;
 }
 
 .history-scope button[aria-pressed="true"] {
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .history-note {
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 12px;
     line-height: 1.5;
 }
 
 .history-note strong {
-    color: var(--color-text-locked);
+    color: var(--foreground);
 }
 
 .history-sr-only {
@@ -187,29 +187,29 @@
     position: relative;
     min-width: 0;
     padding: 8px 4px 0 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background: var(--color-surface);
+    background: var(--card);
 }
 
 .history-summary {
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 14px;
 }
 
 .history-summary strong {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-size: 22px;
     font-variant-numeric: tabular-nums;
 }
 
 .history-summary .is-above {
-    color: var(--color-success);
+    color: var(--success);
 }
 
 .history-summary .is-below {
-    color: var(--color-warning-strong);
+    color: var(--destructive);
 }
 
 .sandbox-chart-card .history-chart {
@@ -225,7 +225,7 @@
 }
 
 .sandbox-chart-card .history-summary strong {
-    color: var(--color-primary);
+    color: var(--primary);
     font-size: 24px;
 }
 
@@ -251,9 +251,9 @@
 .history-empty {
     margin: 0;
     padding: 28px 20px;
-    border: 1px dashed var(--color-border-strong);
+    border: 1px dashed var(--border-strong);
     border-radius: 10px;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 14px;
     text-align: center;
 }
@@ -265,7 +265,7 @@
     flex-wrap: wrap;
     gap: 6px 18px;
     margin: 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 12px;
 }
 
@@ -283,25 +283,25 @@
 }
 
 .history-legend .is-official {
-    background: var(--color-text-locked);
+    background: var(--foreground);
 }
 
 .history-legend .is-self {
-    border: 2.5px solid var(--color-accent);
-    background: var(--color-surface);
+    border: 2.5px solid var(--self-reported);
+    background: var(--card);
 }
 
 .history-legend .is-line {
     width: 18px;
     height: 3px;
     border-radius: 2px;
-    background: var(--color-primary);
+    background: var(--primary);
 }
 
 .history-legend .is-target {
     width: 18px;
     height: 0;
-    border-top: 2px dashed var(--color-text-locked);
+    border-top: 2px dashed var(--foreground);
     border-radius: 0;
 }
 
@@ -318,15 +318,15 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
-    background: var(--color-surface);
-    color: var(--color-muted);
+    background: var(--card);
+    color: var(--muted-foreground);
     font-size: 13px;
 }
 
 .history-chip-all {
-    color: var(--color-primary);
+    color: var(--primary);
 }
 
 .history-chip i {
@@ -337,14 +337,14 @@
 }
 
 .history-chip small {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 11px;
 }
 
 .history-chip[aria-pressed="true"] {
-    border-color: var(--color-primary);
-    background: var(--color-primary-soft);
-    color: var(--color-text-locked);
+    border-color: var(--primary);
+    background: var(--secondary);
+    color: var(--foreground);
 }
 
 .history-chip[aria-pressed="true"] i {
@@ -359,21 +359,21 @@
     gap: 10px;
     max-width: 260px;
     padding: 10px 12px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--color-surface);
-    box-shadow: 0 8px 24px var(--shadow-hover-strong);
-    color: var(--color-text-locked);
+    background: var(--card);
+    box-shadow: 0 8px 24px var(--elevation-hover-strong);
+    color: var(--foreground);
     font-size: 12px;
 }
 
 .history-tooltip p {
     margin: 2px 0 0;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
 }
 
 .history-tooltip .history-tooltip-task {
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-weight: 600;
 }
 
@@ -526,22 +526,22 @@
 /* ---- Additions: overwritten entries, plan, passing line, clicks -------- */
 
 .history-legend .is-ghost {
-    border: 2px dashed var(--color-accent);
-    background: var(--color-surface);
+    border: 2px dashed var(--self-reported);
+    background: var(--card);
     opacity: 0.6;
 }
 
 .history-legend .is-plan {
     width: 18px;
     height: 0;
-    border-top: 2px dashed var(--color-text-faint);
+    border-top: 2px dashed var(--faint-foreground);
     border-radius: 0;
 }
 
 .history-legend .is-passing {
     width: 18px;
     height: 0;
-    border-top: 2px dotted var(--color-warning-strong);
+    border-top: 2px dotted var(--destructive);
     border-radius: 0;
 }
 
@@ -550,11 +550,11 @@
 }
 
 .history-tooltip .history-tooltip-replaced {
-    color: var(--color-accent);
+    color: var(--self-reported);
 }
 
 .history-table .is-plan-row td {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-style: italic;
 }
 
@@ -592,7 +592,7 @@
 .history-legend .is-reached {
     width: 12px;
     height: 12px;
-    border: 2px solid var(--color-success);
+    border: 2px solid var(--success);
     background: transparent;
 }
 

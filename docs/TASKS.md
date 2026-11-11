@@ -410,7 +410,15 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Files: `vite.config.js` (`resolve.alias`), a new `jsconfig.json` (`paths`).
   - Change: no import is changed yet. Vitest picks up the alias from `vite.config.js`.
   - Check: V-same, and a one-off import through `@/` builds.
-- [ ] **T4.3 ⚠ Tailwind v4 without preflight, plus token rename.** (One task, per R3.)
+- [x] **T4.3 ⚠ Tailwind v4 without preflight, plus token rename.** (One task, per R3.)
+  - **As done** (differs from the plan below in four places; all checked with V-same):
+    1. **Only the reset is layered.** `*`, `body`, `html`/`#root`, font inherit, `img`, `h1–h6` went into `@layer base`.
+       - The `button`, `input` and `select` element rules (and their `:hover`/`:focus`) stay unlayered and are scoped with `:where(:not([data-slot]))`, which adds no specificity. The same goes for the 2 bare `select` rules in `GlobalSettings.css`, which loads on every page.
+       - Reason: layering those rules would let the app's class rules beat them on hover and focus, which screenshots can't catch. The scoping keeps them off shadcn components.
+    2. **Criteria tokens keep their names.** `--color-criteria-N` and `-on` went into `@theme static`, because `rules.js` builds those names at runtime and the tests assert them.
+    3. **Shadow colours renamed.** `--shadow-card`, `-hover`, `-hover-strong`, `-dialog` and `-card-dark` hold colours, not shadows; they became `--elevation-*` to free Tailwind's `--shadow-*` namespace for T4.5. `GlobalSettings.css`'s page-wide aliases (`--card`, `--muted`, `--primary`, …) became `--settings-*`, because they collided with the new names.
+    4. **Scanning limited to `src/`.** Tailwind scans `src/` only (`source(none)` plus `@source "./"`). It no longer scans the tooling folders, `docs/` or the Markdown files, which held example class names.
+  - Tokens without a final §4.1 home yet keep transitional names without the `--color-` prefix (for example `--surface-soft`, `--subtle-foreground`, `--dark-*`). T5a.4 and T7.0a merge or remove them.
   - Re-check that `@tailwindcss/vite` supports Vite 8; stop if it doesn't.
   - Install `tailwindcss` and `@tailwindcss/vite` and register the plugin.
   - At the top of `src/index.css`: `@layer theme, base, components, utilities;` then import `tailwindcss/theme.css` and `tailwindcss/utilities.css` only (no preflight).

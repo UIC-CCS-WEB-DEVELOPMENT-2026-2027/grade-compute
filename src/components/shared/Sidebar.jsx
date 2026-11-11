@@ -602,7 +602,7 @@ export default function Sidebar() {
                                         width: "min(20rem, calc(100vw - 2rem))",
                                         padding: "1.65rem 1.35rem 1.55rem",
                                         borderRadius: "0.35rem",
-                                        background: "var(--color-surface)",
+                                        background: "var(--card)",
                                         boxShadow: "0 1rem 2.5rem rgba(38, 50, 65, 0.18)",
                                     }}
                                 >
@@ -617,7 +617,7 @@ export default function Sidebar() {
                                             right: "0.55rem",
                                             padding: "0.25rem",
                                             background: "transparent",
-                                            color: "var(--color-muted)",
+                                            color: "var(--muted-foreground)",
                                             fontSize: "1.25rem",
                                             lineHeight: 1,
                                         }}

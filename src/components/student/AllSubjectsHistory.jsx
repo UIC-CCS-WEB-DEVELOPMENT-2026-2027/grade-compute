@@ -109,11 +109,11 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
         Math.max(1, ...plotted.map((course) => course.points.length)),
     );
     const colors = {
-        grid: resolveColor("var(--color-border)"),
-        muted: resolveColor("var(--color-muted)"),
-        surface: resolveColor("var(--color-surface)"),
-        success: resolveColor("var(--color-success)"),
-        passing: resolveColor("var(--color-warning-strong)"),
+        grid: resolveColor("var(--border)"),
+        muted: resolveColor("var(--muted-foreground)"),
+        surface: resolveColor("var(--card)"),
+        success: resolveColor("var(--success)"),
+        passing: resolveColor("var(--destructive)"),
     };
     const allShown = hiddenIds.size === 0;
 

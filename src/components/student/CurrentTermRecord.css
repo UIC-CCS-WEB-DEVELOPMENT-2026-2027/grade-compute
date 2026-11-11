@@ -960,8 +960,8 @@
 @keyframes record-row-highlight {
     0%,
     35% {
-        background: var(--color-highlight-soft);
-        box-shadow: inset 4px 0 0 var(--color-highlight-strong);
+        background: var(--highlight-soft);
+        box-shadow: inset 4px 0 0 var(--highlight-strong);
     }
 
     100% {
@@ -973,7 +973,7 @@
 @media (prefers-reduced-motion: reduce) {
     .record-row.is-highlighted {
         animation: none;
-        background: var(--color-highlight-soft);
+        background: var(--highlight-soft);
     }
 }
 

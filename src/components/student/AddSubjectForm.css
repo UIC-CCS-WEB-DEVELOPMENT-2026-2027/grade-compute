@@ -5,14 +5,14 @@
 .subject-request-form {
     margin: 0 0 1.5rem;
     padding: 1.25rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background: var(--color-surface-soft);
+    background: var(--surface-soft);
 }
 
 .subject-request-form h2 {
     margin: 0;
-    color: var(--color-text-locked);
+    color: var(--foreground);
     font-family: var(--font-heading);
     font-size: 1.4rem;
     line-height: 1.1;
@@ -20,7 +20,7 @@
 
 .subject-request-form > p {
     margin: 0.3rem 0 1rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
 }
 
@@ -36,35 +36,35 @@
     display: grid;
     align-content: start;
     gap: 0.35rem;
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
 }
 
 .subject-request-fields input,
 .subject-request-fields select {
     padding: 0.55rem 0.7rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     border-radius: 6px;
-    background: var(--color-surface);
-    color: var(--color-text-locked);
+    background: var(--card);
+    color: var(--foreground);
     font-size: 0.875rem;
 }
 
 .subject-request-fields input:focus,
 .subject-request-fields select:focus {
-    border-color: var(--color-primary);
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 3px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--ring);
 }
 
 .subject-request-fields input[aria-invalid="true"],
 .subject-request-fields select[aria-invalid="true"] {
-    border-color: var(--color-warning-strong);
-    background: var(--color-warning-soft);
+    border-color: var(--destructive);
+    background: var(--warning-soft);
 }
 
 .subject-request-rule-formula {
-    color: var(--color-muted);
+    color: var(--muted-foreground);
     font-size: 0.75rem;
     font-variant-numeric: tabular-nums;
 }
@@ -77,9 +77,9 @@
     justify-self: start;
     margin-top: 0.1rem;
     padding: 0.35rem 0.6rem;
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--primary);
     border-radius: 6px;
-    background: var(--color-primary-soft);
+    background: var(--secondary);
     color: #8491a1;
     font-family: var(--font-body);
     font-size: 10px;
@@ -93,25 +93,25 @@
 }
 
 .subject-request-fields label .subject-request-rule-link:hover {
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--primary);
+    color: var(--white);
     transform: translateY(-1px);
 }
 
 .subject-request-fields label .subject-request-rule-link:focus-visible {
-    outline: 3px solid var(--color-focus-ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
 }
 
 .subject-field-error {
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 0.75rem;
     line-height: 1.35;
 }
 
 .subject-request-error {
     margin: 0 0 0.85rem;
-    color: var(--color-warning-strong);
+    color: var(--destructive);
     font-size: 0.85rem;
     line-height: 1.4;
 }
@@ -132,9 +132,9 @@
 }
 
 .subject-request-submit {
-    border: 1px solid var(--color-primary);
-    background: var(--color-primary);
-    color: var(--color-white);
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .subject-request-submit:hover {
@@ -142,13 +142,13 @@
 }
 
 .subject-request-cancel {
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-muted);
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
 }
 
 .subject-request-cancel:hover {
-    background: var(--color-surface-hover);
+    background: var(--surface-hover);
 }
 
 @media (max-width: 640px) {

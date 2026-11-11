@@ -215,16 +215,16 @@ export default function HistoryChart({
     }
 
     const colors = {
-        line: resolveColor("var(--color-primary)"),
-        official: resolveColor("var(--color-text-locked)"),
-        accent: resolveColor("var(--color-accent)"),
-        surface: resolveColor("var(--color-surface)"),
-        plan: resolveColor(emphasizePlan ? "var(--color-primary)" : "var(--color-text-faint)"),
-        success: resolveColor("var(--color-success)"),
-        passing: resolveColor("var(--color-warning-strong)"),
-        target: resolveColor("var(--color-text-locked)"),
-        grid: resolveColor("var(--color-border)"),
-        muted: resolveColor("var(--color-muted)"),
+        line: resolveColor("var(--primary)"),
+        official: resolveColor("var(--foreground)"),
+        accent: resolveColor("var(--self-reported)"),
+        surface: resolveColor("var(--card)"),
+        plan: resolveColor(emphasizePlan ? "var(--primary)" : "var(--faint-foreground)"),
+        success: resolveColor("var(--success)"),
+        passing: resolveColor("var(--destructive)"),
+        target: resolveColor("var(--foreground)"),
+        grid: resolveColor("var(--border)"),
+        muted: resolveColor("var(--muted-foreground)"),
     };
 
     // One row per step. The last real step also starts the plan line, so
