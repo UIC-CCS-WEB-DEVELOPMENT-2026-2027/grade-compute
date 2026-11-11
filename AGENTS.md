@@ -61,6 +61,18 @@ The job in progress is a codebase and UI clean-up. Until the owner lifts the fre
 
 **If you find a bug**, report it and keep the current behaviour. Fixing a bug is a behaviour change and needs the owner's approval.
 
+**Owner-approved exceptions.** These are the only approved behaviour or data changes (Gate 0, 2026-11-11; see `docs/AUDIT.md` §12 and §14). Each one is its own task and its own commit.
+
+- **B9: sandbox drafts become draft-only.**
+  - **Today:** "Try draft scores" in the Target Grade Sandbox writes the real `studentReportedScore`.
+  - **Change:** store drafts in a new optional field, `targetGradeSandbox.terms[term].draftScores` (`{ [taskId]: score }`), and never write them to `studentReportedScore`.
+  - **When:** a dedicated Phase 6 task, after the sandbox logic has moved to `lib/`.
+  - **Tests:** the characterization test for the old behaviour is updated in the same commit.
+  - **No migration:** existing `studentReportedScore` values stay as real scores.
+- **Sidebar breakpoints.** In Phase 8, `PHONE_MAX_WIDTH` moves from 760 to 767 and `TABLET_MAX_WIDTH` from 1100 to 1023, to match the Tailwind breakpoints in section 7.
+
+Every other bug in `docs/AUDIT.md` §12 stays as it is.
+
 ## 4. Project facts
 
 Filled in from the Phase 0 audit. Keep this section accurate; it is the first thing a new agent reads.
@@ -84,36 +96,49 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 ## 5. File structure
 
-Target layout. This was written before anyone inspected the code, so it is a starting point: the audit checks it against the real codebase, proposes changes, and the owner approves the final tree in `docs/TASKS.md`. Update this section to match once approved. Do not create folders that would stay empty.
+Target layout, revised at Gate 0 to match the code (`docs/AUDIT.md` §11, R6). The full move table (old path → new path) goes in `docs/TASKS.md` in Phase 3 and needs the owner's approval. Update this section if that approval changes it. Do not create folders that would stay empty.
 
 ```
 src/
-  app/            App shell, router, providers
-  pages/          One folder per route; page components only compose
-  features/       Code that belongs to one feature (grading, sandbox, analytics…)
+  app/            App shell, router, providers (today: App.jsx, main.jsx)
+  pages/          Page components, grouped by area: auth/, student/, settings/
+                  Pages only compose
+  features/       Code that belongs to one feature:
+    auth/           login and register
+    subjects/       enrolled-subjects table, add subject
+    term-records/   current term records, term navigation
+    grade-rules/    pill editor, rule card and visuals, delete-rule dialog
+    sandbox/        target grade sandbox, subject picker
+    history/        grade history charts and tooltip
+    settings/       account settings sections
     <feature>/    components/, hooks/, and logic for that feature
   components/
     ui/           shadcn/ui components (added through the shadcn CLI)
+    layout/       Sidebar, Header, PageFooter, the page shell
     …             Shared app components used by two or more features
-  hooks/          Shared hooks
-  lib/            Pure logic and helpers, no React (grade computation lives here)
-  services/       Data access: API calls, storage
-  assets/         Logo, images, fonts
+  hooks/          Shared hooks (e.g. useDb, useSidebarState)
+  lib/            Pure logic and helpers, no React. Grade computation lives here
+                  Today in utils/: grades, rules, sandbox, history, subjects, terms
+                  DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
+  services/       Data access and storage
+                  Today in utils/: db, db.json, migrations, session,
+                  localAccountStore, prototypeVerification
+  assets/         Logo, images, fonts, sounds
   index.css       The only global stylesheet
 ```
 
 - A file lives with the feature that uses it. It moves to a shared folder only when a second feature needs it.
-- One component per file. The file name matches the component name.
+- One exported component per file. The file name matches the component name. Small private sub-components that only that file uses may stay in it (for example chart dot renderers, `Gauge`, `PasswordField`).
 - Import across folders with the `@/` alias (maps to `src/`). No `../../..` chains.
 
 ## 6. Code conventions
 
 - Function components and hooks only.
 - Names: `PascalCase` for components and their files, `useCamelCase` for hooks, `camelCase` for functions and variables, `UPPER_SNAKE_CASE` for constants.
-- Named exports. Default exports only where a tool requires them.
+- Named exports. Default exports only where a tool requires them. Today 39 files use default exports. Convert them in dedicated Phase 6 tasks, never inside a file-move commit.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports.
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0).
 - ESLint and Prettier decide formatting. Do not hand-format against them or disable rules inline without a comment giving the reason.
 
 ## 7. UI standards
@@ -122,26 +147,37 @@ src/
 
 - Use shadcn/ui for every primitive it provides (button, input, select, dialog, card, tabs, progress, tooltip, and so on). Do not hand-build what shadcn already has.
 - Add components with the shadcn CLI and follow the installed shadcn skill. Do not copy component code from memory or from other projects.
+- Set up shadcn for **Base UI** (owner decision, Gate 0) in JavaScript (`tsx: false`), with the `@/` alias.
 - Build app-specific components by composing shadcn primitives.
 
 **Styling**
 
-- All global CSS lives in the one global stylesheet: design tokens (CSS variables), theme definitions, base element styles. No other `.css` files, no CSS modules, no CSS-in-JS.
+- All global CSS lives in the one global stylesheet: design tokens (CSS variables), theme definitions, base element styles. No other `.css` files, no CSS modules, no CSS-in-JS. Tooling folders are not app code and are exempt. Keep them out of the lint, format and test globs too: `.agents/`, `.claude/`, `.codestudio/`.
 - Style components with Tailwind utility classes that reference tokens.
 - No hard-coded colors (`#hex`, `rgb()`, named colors) and no arbitrary values (`text-[13px]`, `w-[347px]`) in components. If a value is missing, add a token.
 - Inline `style` is allowed only for values that are user data at runtime, such as a subject's chosen accent color, passed as a CSS variable.
 
 **Consistency**
 
-- Colors: semantic tokens only (`background`, `foreground`, `primary`, `muted`, `destructive`, and the status tokens defined in the stylesheet). Every theme that exists today keeps working; do not add or remove a theme.
-- Typography: one font family set and one fixed scale of text roles (page title, section title, body, small, caption) defined once and reused. No one-off sizes.
+- Colors: semantic tokens only. That means `background`, `foreground`, `primary`, `muted`, `destructive`, and these status tokens, which the stylesheet must define:
+  - `success`, `warning`, `highlight`
+  - the 3-state tokens `official` (locked official scores) and `self-reported` (student entries)
+  - `criteria-1` to `criteria-8`, each with its `-on` pair
+- Themes: the app has one theme (light), and it keeps working. The `.global-settings.dark` rules and `--*-dark` tokens can't be reached, so they are dead code and are deleted in Phase 5a. Do not add a theme.
+- Typography: one font family set and one fixed scale of text roles (page title, section title, body, small, caption) defined once and reused. No one-off sizes. Minimum sizes:
+  - 14px for body text, inputs and buttons.
+  - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
 - Spacing and sizing: the Tailwind spacing scale only. Same element, same size everywhere (one button height per size variant, one input height, one card padding).
 - Branding: out of scope for the current job (see section 3). Keep the existing logo and name exactly as they are, including when moving the files that show them.
 
 **Responsive**
 
-- Mobile-first. Breakpoints: `sm` 640, `md` 768, `lg` 1024, `xl` 1280.
-- Every screen must work at 375 (phone), 768 (tablet), 1024 (laptop), and 1440 (desktop) wide: no horizontal scroll, no clipped or overlapping content, no text below 14px, touch targets at least 44px on phone and tablet.
+- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The code today uses 760/761 and other one-off values. These move to the defaults. The JS sidebar thresholds move as listed under "Owner-approved exceptions" in section 3.
+- Every screen must work at 375 (phone), 768 (tablet), 1024 (laptop), and 1440 (desktop) wide:
+  - no horizontal scroll
+  - no clipped or overlapping content
+  - no text below 14px, except the 12px caption role
+  - touch targets at least 44px on phone and tablet
 - Use relative units and layout utilities (flex, grid, `max-w-*`) rather than fixed pixel widths.
 
 **Accessibility**

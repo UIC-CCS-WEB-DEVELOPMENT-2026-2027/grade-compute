@@ -6,6 +6,8 @@ Out of scope: logo and branding (a separate branch after this job) and anything 
 
 **This workflow and `AGENTS.md` were written without access to the code.** Treat every assumption in them as unverified. Phase 0 checks them against the real codebase and proposes revisions before any other work starts.
 
+**Status:** Phase 0 was done on 2026-11-11, and Gate 0 passed the same day. The approved revisions (R1–R15 in `docs/AUDIT.md` §14) are applied below and in `AGENTS.md`.
+
 Save this file as `docs/REFACTOR_WORKFLOW.md`. It can be archived when the job is finished.
 
 ---
@@ -79,6 +81,8 @@ Fill in section 4 (Project facts) of `AGENTS.md`. Make no other edits to `AGENTS
 
 Draft the project's truth from two sources: the audit (what the code does) and `docs/project_details.md` (what the project intends). Present the draft in the chat first; write the file only through the protocol in `AGENTS.md` section 2.
 
+Before writing anything, confirm with the owner that the `Edit(/SPEC.md)` ask rule in `.claude/settings.json` also prompts when `SPEC.md` is first **created**. If it does not, the owner adds `Write(/SPEC.md)` to that rule. Do this check without creating `SPEC.md` yourself.
+
 Structure:
 
 1. **Purpose and audience**
@@ -112,10 +116,18 @@ Rules for this phase:
 
 Behaviour must be provably unchanged, so capture it before changing anything.
 
-1. **Characterization tests** (Vitest) for the grading logic: for a representative set of inputs (each task state, each weighting scheme found, edge cases such as empty and zero), record what the current code returns and assert it. These tests describe today's behaviour, right or wrong. If the logic is tangled into components, test through the component for now; do not refactor first.
+0. **Make lint pass.** This is the first code task. Lint fails at the Phase 0 baseline (2 errors in `src/pages/GlobalSettings.jsx`), and `AGENTS.md` section 8 requires it to pass before every commit. Make the two smallest fixes that keep behaviour the same:
+   - Replace the `useEffect` that calls `setPasswordIsSet(hasLocalPassword())` with the lazy initializer `useState(hasLocalPassword)`.
+   - Remove the unused `met` binding.
+1. **Characterization tests** (Vitest) for the grading logic: for a representative set of inputs (each task state, each weighting scheme found, edge cases such as empty and zero), record what the current code returns and assert it. These tests describe today's behaviour, right or wrong.
+   - **Where to test:** the logic is already pure in `src/utils/`, so test those functions directly. Test through a component only for the grade-related logic that still lives in one: the Subject Detail target fallback, score-entry validation, and gauge clamping. Do not refactor first.
+   - **Fixed date:** freeze the system date in every test. Semester assignment reads `new Date()` (`docs/AUDIT.md` B12).
 2. **Baseline screenshots** of every screen at 375, 768, 1024, 1440, saved to `docs/baseline/`. These are the "before" reference for the UI work. Add what they reveal to the responsive section of `docs/AUDIT.md`.
+   - **Fixed date:** the same frozen date as the tests.
+   - **Seeded storage:** `localStorage` seeded from `src/utils/db.json` and signed in as `U1`, so every screen behind the login can be reached.
+   - **Stable sidebar:** set `compugrade-sidebar-minimized` explicitly so the sidebar state is the same in every shot.
 3. **Behaviour checklist** `docs/BEHAVIOUR_CHECKLIST.md`: the manual click-through for every user flow (add subject, enter score, set target, and so on) with the expected result.
-4. **Lint and format**: set up ESLint and Prettier. Apply formatting to the whole codebase as one commit that contains nothing else.
+4. **Lint and format**: set up ESLint and Prettier. Apply formatting to the whole codebase as one commit that contains nothing else. Exclude `.agents/`, `.claude/` and `.codestudio/` from ESLint, Prettier and Vitest.
 
 **Gate 2:** tests pass on the untouched code; owner approves.
 
@@ -130,7 +142,7 @@ Write `docs/TASKS.md`. Nothing is implemented in this phase.
 3. **shadcn mapping** — each hand-built element → the shadcn component that replaces it. List anything with no equivalent.
 4. **Design tokens** — colors, type roles, spacing, radius, shadows. Derive them from the existing UI (pick the dominant values and merge near-duplicates); do not invent a new look. Show a before → after table of merged values.
 5. **Responsive fixes** — per screen, from the audit and the baseline screenshots.
-6. **Task list** — phases 4 to 9 broken into small tasks. Each task has: an ID, the files it touches, what changes, and an acceptance check. Each task leaves the app building and running.
+6. **Task list** — phases 4 to 9 (including 5a) broken into small tasks. Each task has: an ID, the files it touches, what changes, and an acceptance check. Each task leaves the app building and running.
 
 Then review the plan before showing it:
 
@@ -149,15 +161,37 @@ Then review the plan before showing it:
 
 Follow `docs/TASKS.md` in order. For each task: implement → lint, build, test → check affected screens → commit → tick the task. Stop at the end of each phase.
 
-**Phase 4 — Foundations.** `@/` import alias. Tailwind and shadcn/ui initialized following the shadcn skill (detect what is already installed; do not overwrite existing config blindly). Tokens and themes defined in the one global stylesheet. No screen changes yet.
+**Phase 4 — Foundations.** Set up the `@/` import alias (`vite.config.js` and a new `jsconfig.json`). Initialize Tailwind and shadcn/ui following the shadcn skill: detect what is already installed, and do not overwrite existing config blindly. Define tokens and themes in the one global stylesheet. No screen changes yet.
+
+- **Check first:** before installing, confirm that `@tailwindcss/vite` supports Vite 8. If it does not, stop and ask.
+- **No preflight yet:** add Tailwind **without preflight** (theme and utilities only). The app relies on its own CSS reset and element rules, so preflight would restyle every screen.
+- **Rename tokens:** the existing `--color-*` variables in `src/assets/index.css` collide with Tailwind v4's theme namespace. In the same task, rename them to shadcn's semantic names (the before → after table comes from Phase 3).
+- **shadcn setup:** **Base UI**, JavaScript (`tsx: false`).
+
+**Phase 5a — Remove dead code.** Before any file moves, delete what `docs/AUDIT.md` §7, §8 and §11 list as unused. Behaviour does not change. One commit per group:
+
+- unused files: `SelectSetting.jsx`, `StudentSettingsPrototype.jsx`, the empty `RuleCompare.jsx`, and the empty `components/ToggleSettings`
+- unused assets
+- dead global CSS classes
+- the unreachable dark-theme CSS and `--*-dark` tokens
+- the never-true `showLogin` state in `App.jsx`
+
+**Keep all non-student code,** including the commented-out professor and admin routes. Phase 9 still does a final sweep.
 
 **Phase 5 — Structure.** Move and rename files to the target tree. Moves only; fix imports. No content changes in these commits.
 
 **Phase 6 — Logic clean-up.** Pull grade computation and data access out of components into `lib/` and `services/`. Characterization tests must pass unchanged.
 
+- **Named exports:** convert default exports to named exports in dedicated tasks, separate from moves and from logic changes.
+- **B9 fix:** a separate task, approved by the owner (`AGENTS.md` section 3). Sandbox draft scores move to `targetGradeSandbox.terms[term].draftScores` and stop writing `studentReportedScore`. Update the affected characterization test in the same commit, and say so in the commit message. This is the only Phase 6 task allowed to change a test's expected values.
+
 **Phase 7 — Components and UI.** One screen at a time: replace hand-built elements with shadcn components, extract shared components, move all styling to tokens and utilities, delete the old CSS for that screen. After the last screen, only the global stylesheet remains.
 
-**Phase 8 — Responsive.** Apply the responsive fixes screen by screen at the four widths.
+- **Settings:** split into a settings-shell task plus one task per section: Profile, Account, Security, Notifications, Account Actions.
+- **Sidebar:** gets its own task group. Phase 3 decides between shadcn `Sidebar` and composed primitives. Either way, focus trapping, Escape handling, the `compugrade-sidebar-minimized` key and the tablet default stay identical.
+- **Preflight:** after the last screen, turn on Tailwind preflight as its own task, and check it against the baseline screenshots.
+
+**Phase 8 — Responsive.** Apply the responsive fixes screen by screen at the four widths. This includes the approved sidebar threshold change: `PHONE_MAX_WIDTH` 760 → 767 and `TABLET_MAX_WIDTH` 1100 → 1023 (`AGENTS.md` section 3).
 
 **Phase 9 — Clean-up and verification.**
 
