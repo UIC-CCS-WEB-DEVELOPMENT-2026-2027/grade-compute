@@ -3,10 +3,15 @@
 // can show it (Dashboard and My Subjects use it through EnrolledSubjectsTable).
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { cn } from "@/lib/utils";
 import { getDb, saveDb } from "@/services/db";
 import { getRuleFormulaText } from "@/lib/rules";
 import { addSubject, getInitialRuleId } from "@/lib/subjects";
-import "./AddSubjectForm.css";
 
 const FIELD_LABELS = {
     subjectCode: "subject code",
@@ -103,93 +108,74 @@ export function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdd
         setFormError("");
     }
 
+    const textField = (name, label, value, setValue, errorId, placeholder) => (
+        <Field data-invalid={Boolean(fieldErrors[name])} className="gap-1.5">
+            <FieldLabel htmlFor={name} className="font-normal text-muted-foreground">
+                {label}
+            </FieldLabel>
+            <Input
+                id={name}
+                name={name}
+                value={value}
+                aria-invalid={Boolean(fieldErrors[name])}
+                aria-describedby={fieldErrors[name] ? errorId : undefined}
+                onChange={(event) => updateField(name, event.target.value, setValue)}
+                placeholder={placeholder}
+                className="bg-card"
+            />
+            {fieldErrors[name] && <FieldError id={errorId}>{fieldErrors[name]}</FieldError>}
+        </Field>
+    );
+
     return (
-        <form className="subject-request-form" onSubmit={handleSubmit} noValidate>
-            <h2>New Subject Request</h2>
-            <p>
-                You can view all three terms and add private sandbox entries while your request
-                awaits verification.
-            </p>
-            <div className="subject-request-fields">
-                <label>
-                    Subject code
-                    <input
-                        name="subjectCode"
-                        value={subjectCode}
-                        aria-invalid={Boolean(fieldErrors.subjectCode)}
-                        aria-describedby={
-                            fieldErrors.subjectCode ? "subject-code-error" : undefined
-                        }
-                        onChange={(event) =>
-                            updateField("subjectCode", event.target.value, setSubjectCode)
-                        }
-                        placeholder="e.g. IT102"
-                    />
-                    {fieldErrors.subjectCode && (
-                        <span className="subject-field-error" id="subject-code-error">
-                            {fieldErrors.subjectCode}
-                        </span>
-                    )}
-                </label>
-                <label>
-                    Subject name
-                    <input
-                        name="subjectName"
-                        value={subjectName}
-                        aria-invalid={Boolean(fieldErrors.subjectName)}
-                        aria-describedby={
-                            fieldErrors.subjectName ? "subject-name-error" : undefined
-                        }
-                        onChange={(event) =>
-                            updateField("subjectName", event.target.value, setSubjectName)
-                        }
-                        placeholder="e.g. Data Structures"
-                    />
-                    {fieldErrors.subjectName && (
-                        <span className="subject-field-error" id="subject-name-error">
-                            {fieldErrors.subjectName}
-                        </span>
-                    )}
-                </label>
-                <label>
-                    Professor
-                    <input
-                        name="professorName"
-                        value={professorName}
-                        aria-invalid={Boolean(fieldErrors.professorName)}
-                        aria-describedby={
-                            fieldErrors.professorName ? "professor-name-error" : undefined
-                        }
-                        onChange={(event) =>
-                            updateField("professorName", event.target.value, setProfessorName)
-                        }
-                        placeholder="e.g. Prof. Maria Santos"
-                    />
-                    {fieldErrors.professorName && (
-                        <span className="subject-field-error" id="professor-name-error">
-                            {fieldErrors.professorName}
-                        </span>
-                    )}
-                </label>
-                <label>
-                    Program / section
-                    <input
-                        name="section"
-                        value={section}
-                        aria-invalid={Boolean(fieldErrors.section)}
-                        aria-describedby={fieldErrors.section ? "section-error" : undefined}
-                        onChange={(event) => updateField("section", event.target.value, setSection)}
-                    />
-                    {fieldErrors.section && (
-                        <span className="subject-field-error" id="section-error">
-                            {fieldErrors.section}
-                        </span>
-                    )}
-                </label>
-                <label>
-                    Grading rule
+        <form
+            className="flex flex-col gap-4 rounded-xl border border-border bg-muted p-5"
+            onSubmit={handleSubmit}
+            noValidate
+        >
+            <div>
+                <h2 className="m-0 type-card-title text-foreground">New Subject Request</h2>
+                <p className="mt-1 type-small text-muted-foreground">
+                    You can view all three terms and add private sandbox entries while your request
+                    awaits verification.
+                </p>
+            </div>
+            <FieldGroup className="grid grid-cols-2 items-start gap-3.5 max-sm:grid-cols-1">
+                {textField(
+                    "subjectCode",
+                    "Subject code",
+                    subjectCode,
+                    setSubjectCode,
+                    "subject-code-error",
+                    "e.g. IT102",
+                )}
+                {textField(
+                    "subjectName",
+                    "Subject name",
+                    subjectName,
+                    setSubjectName,
+                    "subject-name-error",
+                    "e.g. Data Structures",
+                )}
+                {textField(
+                    "professorName",
+                    "Professor",
+                    professorName,
+                    setProfessorName,
+                    "professor-name-error",
+                    "e.g. Prof. Maria Santos",
+                )}
+                {textField("section", "Program / section", section, setSection, "section-error")}
+                <Field data-invalid={Boolean(fieldErrors.computationRuleId)} className="gap-1.5">
+                    <FieldLabel
+                        htmlFor="computationRuleId"
+                        className="font-normal text-muted-foreground"
+                    >
+                        Grading rule
+                    </FieldLabel>
                     {rules.length > 0 ? (
-                        <select
+                        <NativeSelect
+                            id="computationRuleId"
                             name="computationRuleId"
                             value={computationRuleId}
                             aria-invalid={Boolean(fieldErrors.computationRuleId)}
@@ -205,50 +191,64 @@ export function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdd
                                     setComputationRuleId,
                                 )
                             }
+                            className="w-full bg-card"
                         >
                             {rules.map((rule) => (
-                                <option key={rule.id} value={rule.id}>
+                                <NativeSelectOption key={rule.id} value={rule.id}>
                                     {rule.ruleName}
-                                </option>
+                                </NativeSelectOption>
                             ))}
-                        </select>
+                        </NativeSelect>
                     ) : (
-                        <span className="subject-field-error" id="computation-rule-error">
+                        <FieldError id="computation-rule-error">
                             No grading rules yet. Create one first.
-                        </span>
+                        </FieldError>
                     )}
                     {selectedRule && !fieldErrors.computationRuleId && (
                         <span
-                            className="subject-request-rule-formula"
+                            className="type-small text-muted-foreground tabular-nums"
                             id="computation-rule-formula"
                         >
                             {getRuleFormulaText(selectedRule)}
                         </span>
                     )}
                     {fieldErrors.computationRuleId && rules.length > 0 && (
-                        <span className="subject-field-error" id="computation-rule-error">
+                        <FieldError id="computation-rule-error">
                             {fieldErrors.computationRuleId}
-                        </span>
+                        </FieldError>
                     )}
-                    <Link className="subject-request-rule-link" to="/student/rules">
-                        {rules.length > 0
-                            ? "View or create grading rules"
-                            : "Create a grading rule"}
-                    </Link>
-                </label>
-            </div>
+                    <div>
+                        <Link
+                            to="/student/rules"
+                            className={cn(
+                                buttonVariants({ variant: "outline", size: "sm" }),
+                                "w-fit border-primary bg-secondary font-normal text-muted-foreground no-underline hover:bg-primary hover:text-primary-foreground",
+                            )}
+                        >
+                            {rules.length > 0
+                                ? "View or create grading rules"
+                                : "Create a grading rule"}
+                        </Link>
+                    </div>
+                </Field>
+            </FieldGroup>
             {formError && (
-                <p className="subject-request-error" role="alert" aria-live="assertive">
-                    {formError}
-                </p>
+                <Alert variant="destructive" aria-live="assertive">
+                    <AlertDescription className="text-destructive">{formError}</AlertDescription>
+                </Alert>
             )}
-            <div className="subject-request-actions">
-                <button type="submit" className="subject-request-submit">
+            <div className="flex items-center gap-2">
+                <Button type="submit" className="max-md:h-control-touch">
                     Add Subject
-                </button>
-                <button type="button" className="subject-request-cancel" onClick={onCancel}>
+                </Button>
+                <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-card text-muted-foreground max-md:h-control-touch"
+                    onClick={onCancel}
+                >
                     Cancel
-                </button>
+                </Button>
             </div>
         </form>
     );

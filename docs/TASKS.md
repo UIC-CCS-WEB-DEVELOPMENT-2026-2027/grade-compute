@@ -641,7 +641,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - `Card`, `Table` (cards below `md`), filter `ToggleGroup` (G17), search `Input`, status `Badge`, `Empty`.
     - Delete its CSS.
     - Check: C6–C9, D1.
-  - [ ] **T7.E2 AddSubjectForm.**
+  - [x] **T7.E2 AddSubjectForm.**
     - `Field`, `Input`, `NativeSelect`, `Button`, `Alert`.
     - Delete its CSS.
     - Check: E1–E7.
