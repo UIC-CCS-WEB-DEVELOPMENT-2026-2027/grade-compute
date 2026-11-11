@@ -2,12 +2,43 @@
 
 import { PageShell } from "@/components/layout/PageShell";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemGroup,
+    ItemMedia,
+    ItemTitle,
+} from "@/components/ui/item";
 import { EnrolledSubjectsTable } from "@/features/subjects/components/EnrolledSubjectsTable";
 import { AllSubjectsHistory } from "@/features/history/components/AllSubjectsHistory";
 import { getActiveStudentId } from "@/services/session";
 import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
 import { useDb } from "@/hooks/useDb";
-import "./StudentDashboard.css";
+
+// Sample entries shown under Recent Updates (fixed text, AUDIT B13).
+const RECENT_UPDATES = [
+    {
+        professor: "Prof. Ana Cruz",
+        subject: "Introduction to Programming",
+        grade: "86%",
+        time: "Today, 10:30 AM",
+    },
+    {
+        professor: "Prof. Maria Santos",
+        subject: "Computer Systems",
+        grade: "72%",
+        time: "Yesterday, 2:15 PM",
+    },
+    {
+        professor: "Prof. Carlo Reyes",
+        subject: "General Mathematics",
+        grade: "78%",
+        time: "Oct 3, 9:00 AM",
+    },
+];
 
 export function StudentDashboard() {
     // Live, so it refreshes when any page saves the database (e.g. a subject is added).
@@ -55,80 +86,51 @@ export function StudentDashboard() {
                 initialSection={student?.programSection ?? ""}
             />
 
-            {/* --- RECENT UPDATES SECTION --- */}
-            <div className="recent-updates-section">
-                <div className="updates-header">
+            {/* --- RECENT UPDATES SECTION --- fixed sample entries, not real data (AUDIT B13). */}
+            <div className="mt-10">
+                <div className="mb-5 flex items-end justify-between gap-3">
                     <div>
-                        <h2 className="updates-title">Recent Updates</h2>
-                        <p className="updates-subtitle">The latest from your professors.</p>
+                        <h2 className="m-0 type-section-title text-foreground">Recent Updates</h2>
+                        <p className="mt-1.5 type-small text-muted-foreground">
+                            The latest from your professors.
+                        </p>
                     </div>
-                    <div className="grade-activity-indicator">
-                        <span className="grade-activity-dot" aria-hidden="true" />
+                    <div className="flex items-center gap-1.5 type-small text-muted-foreground">
+                        <span
+                            className="size-1.75 shrink-0 rounded-full bg-self-reported-foreground"
+                            aria-hidden="true"
+                        />
                         Grade activity
                     </div>
                 </div>
 
-                <div className="updates-card">
-                    {/* Update Item 1 */}
-                    <div className="update-row">
-                        <div className="update-left">
-                            <div className="check-icon-circle">✓</div>
-                            <div className="update-info">
-                                <p className="update-text">
-                                    Prof. Ana Cruz posted an official grade
-                                </p>
-                                <p className="update-subtext">
-                                    Introduction to Programming <span className="dot-sep">•</span>{" "}
-                                    Prelim grade: 86%
-                                </p>
-                            </div>
-                        </div>
-                        <div className="update-right">
-                            <span className="update-time">Today, 10:30 AM</span>
-                            <span className="update-arrow">↗</span>
-                        </div>
-                    </div>
-
-                    {/* Update Item 2 */}
-                    <div className="update-row">
-                        <div className="update-left">
-                            <div className="check-icon-circle">✓</div>
-                            <div className="update-info">
-                                <p className="update-text">
-                                    Prof. Maria Santos posted an official grade
-                                </p>
-                                <p className="update-subtext">
-                                    Computer Systems <span className="dot-sep">•</span> Prelim
-                                    grade: 72%
-                                </p>
-                            </div>
-                        </div>
-                        <div className="update-right">
-                            <span className="update-time">Yesterday, 2:15 PM</span>
-                            <span className="update-arrow">↗</span>
-                        </div>
-                    </div>
-
-                    {/* Update Item 3 */}
-                    <div className="update-row">
-                        <div className="update-left">
-                            <div className="check-icon-circle">✓</div>
-                            <div className="update-info">
-                                <p className="update-text">
-                                    Prof. Carlo Reyes posted an official grade
-                                </p>
-                                <p className="update-subtext">
-                                    General Mathematics <span className="dot-sep">•</span> Prelim
-                                    grade: 78%
-                                </p>
-                            </div>
-                        </div>
-                        <div className="update-right">
-                            <span className="update-time">Oct 3, 9:00 AM</span>
-                            <span className="update-arrow">↗</span>
-                        </div>
-                    </div>
-                </div>
+                <Card className="gap-0 py-0">
+                    <ItemGroup className="gap-0">
+                        {RECENT_UPDATES.map((update) => (
+                            <Item
+                                key={update.professor}
+                                className="cursor-pointer rounded-none border-0 border-b border-border px-6 py-4.5 last:border-b-0 hover:bg-muted max-sm:gap-2.5 max-sm:p-4"
+                            >
+                                <ItemMedia className="size-9 rounded-full bg-secondary type-small font-semibold text-self-reported-foreground">
+                                    ✓
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle className="text-foreground">
+                                        {update.professor} posted an official grade
+                                    </ItemTitle>
+                                    <ItemDescription>
+                                        {update.subject} <span className="mx-1 text-input">•</span>{" "}
+                                        Prelim grade: {update.grade}
+                                    </ItemDescription>
+                                </ItemContent>
+                                <ItemActions className="gap-3.5 type-small text-muted-foreground max-sm:basis-full max-sm:justify-between">
+                                    <span>{update.time}</span>
+                                    <span className="text-self-reported-foreground">↗</span>
+                                </ItemActions>
+                            </Item>
+                        ))}
+                    </ItemGroup>
+                </Card>
             </div>
         </PageShell>
     );
