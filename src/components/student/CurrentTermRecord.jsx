@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DraftInput from "../shared/DraftInput";
+import DraftInput from "@/components/DraftInput";
 import { getDb, saveDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";

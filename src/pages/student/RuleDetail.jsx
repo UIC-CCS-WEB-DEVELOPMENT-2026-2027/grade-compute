@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
-import PillEditor from "../../components/shared/PillEditor";
-import RuleFormula from "../../components/shared/RuleFormula";
-import RulePieChart from "../../components/shared/RulePieChart";
-import RuleHierarchyTable from "../../components/shared/RuleHierarchyTable";
-import Dialog from "../../components/shared/Dialog";
-import DeleteRuleDialog from "../../components/shared/DeleteRuleDialog";
+import PillEditor from "@/features/grade-rules/components/PillEditor";
+import RuleFormula from "@/features/grade-rules/components/RuleFormula";
+import RulePieChart from "@/features/grade-rules/components/RulePieChart";
+import RuleHierarchyTable from "@/features/grade-rules/components/RuleHierarchyTable";
+import Dialog from "@/components/Dialog";
+import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
 import { getDb, saveDb } from "@/services/db";
 import {
     DEFAULT_TAGS,

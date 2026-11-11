@@ -4,7 +4,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import PageFooter from "@/components/layout/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
-import DraftInput from "../../components/shared/DraftInput";
+import DraftInput from "@/components/DraftInput";
 import TermNavigation from "../../components/student/TermNavigation";
 import SubjectGradeHistory from "../../components/student/SubjectGradeHistory";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
