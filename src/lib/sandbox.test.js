@@ -424,6 +424,12 @@ describe("withDraftScores", () => {
         expect(task(record, "AT", "a2").studentReportedScore).toBe(45);
     });
 
+    it("marks drafted tasks so the chart can draw them after the real scores", () => {
+        const record = drafted({ t2: "30" });
+        expect(task(record, "TLA", "t2").isDraftScore).toBe(true);
+        expect(task(record, "AT", "a2")).not.toHaveProperty("isDraftScore");
+    });
+
     it("keeps official tasks as they are", () => {
         const record = drafted({ a1: "1", t1: "1" });
         expect(task(record, "AT", "a1")).toEqual(makeMixedRecord().grades.prelim.AT[0]);

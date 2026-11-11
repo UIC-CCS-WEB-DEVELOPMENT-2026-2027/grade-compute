@@ -560,7 +560,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - **As done:**
     - Drafts are written by `setDraftScore` in `lib/sandbox.js`, through `services/records.js`. `setDraftScore` touches only `draftScores`; `updateSandboxSettings` would also add an empty `criteria`.
     - The official gauge and the target read the real record. The result card, the expected gauge and the chart read `withDraftScores`.
-    - A draft has no score time. On the sandbox chart, a task scored only by a draft is drawn in rule order among the untimed tasks; before, the B9 write stamped it "now" and drew it last. Only the order of points on the solid line changes; the result and the end point do not. Raised at the Phase 6 gate.
+    - A draft has no score time. Owner decision (2026-11-11, option B): the sandbox chart draws draft-scored tasks after all real scores, in rule order, close to the old B9 look where a draft was stamped "now" and drawn last. `withDraftScores` marks them `isDraftScore` (never saved), and `getScoredTasks` sorts them last. Done in a follow-up commit during Phase 7.
     - Checked in a browser: I9 as updated, and the other sandbox and records flows unchanged.
 - [x] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
 - [x] **T6.14 Named exports: `components/` and `components/layout/`.**

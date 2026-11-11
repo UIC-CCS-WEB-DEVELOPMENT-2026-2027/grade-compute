@@ -71,16 +71,20 @@ export function getScoredTasks(studentRecord, rule, termKey) {
                     official !== null && entry !== null && entry !== official
                         ? { score: entry, maxScore, percent: (entry / maxScore) * 100 }
                         : null,
-                sortKey: [scoreTime(task), criterionIndex, taskIndex],
+                // Draft scores (sandbox only) go last, in rule order.
+                sortKey: task.isDraftScore
+                    ? [1, null, criterionIndex, taskIndex]
+                    : [0, scoreTime(task), criterionIndex, taskIndex],
             });
         });
     });
 
     // Tasks with a known time go in time order after the ones without
-    // (older seed data), which keep rule order.
+    // (older seed data), which keep rule order. Draft scores come last.
     return tasks.sort((a, b) => {
-        const [timeA, critA, indexA] = a.sortKey;
-        const [timeB, critB, indexB] = b.sortKey;
+        const [draftA, timeA, critA, indexA] = a.sortKey;
+        const [draftB, timeB, critB, indexB] = b.sortKey;
+        if (draftA !== draftB) return draftA - draftB;
         if (timeA !== timeB) {
             if (timeA === null) return -1;
             if (timeB === null) return 1;

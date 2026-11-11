@@ -66,6 +66,17 @@ describe("getScoredTasks", () => {
         expect(tasks.map((item) => item.task.id)).toEqual(["a2", "t1", "a3", "a1"]);
     });
 
+    it("puts sandbox draft scores after every real score, in rule order", () => {
+        const record = makeTimedRecord();
+        const { AT, TLA, Exam } = record.grades.prelim;
+        Exam[0] = { ...Exam[0], studentReportedScore: "70", isDraftScore: true };
+        TLA[1] = { ...TLA[1], studentReportedScore: "30", isDraftScore: true };
+        // A drafted task that had a real score and time still goes with the drafts.
+        AT[2] = { ...AT[2], studentReportedScore: "8", isDraftScore: true };
+        const tasks = getScoredTasks(record, rule, "prelim");
+        expect(tasks.map((item) => item.task.id)).toEqual(["a2", "t1", "a1", "a3", "t2", "e1"]);
+    });
+
     it("describes each scored task", () => {
         const [a2, t1] = getScoredTasks(makeTimedRecord(), rule, "prelim");
         expect(a2).toMatchObject({
@@ -77,7 +88,7 @@ describe("getScoredTasks", () => {
             percent: 90,
             isOfficial: false,
             replacedEntry: null,
-            sortKey: [null, 0, 1],
+            sortKey: [0, null, 0, 1],
         });
         expect(t1).toMatchObject({
             criterionId: "TLA",
@@ -86,7 +97,7 @@ describe("getScoredTasks", () => {
             percent: 80,
             isOfficial: true,
             replacedEntry: { score: 60, maxScore: 100, percent: 60 },
-            sortKey: [Date.parse("2026-09-01T00:00:00.000Z"), 1, 0],
+            sortKey: [0, Date.parse("2026-09-01T00:00:00.000Z"), 1, 0],
         });
     });
 

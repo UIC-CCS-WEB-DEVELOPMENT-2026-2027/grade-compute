@@ -190,6 +190,8 @@ function hasOfficialScore(task) {
 // The record the sandbox calculates with: this term's tasks with the
 // student's draft scores in place of their self-reported scores. A draft of
 // "" means no score. Tasks with an official score keep everything as it is.
+// Drafted tasks are marked isDraftScore, so the sandbox chart draws them after
+// the real scores (owner decision, 2026-11-11). This record is never saved.
 // Returns the same record when the term has no drafts.
 export function withDraftScores(studentRecord, termKey) {
     const drafts = studentRecord?.targetGradeSandbox?.terms?.[termKey]?.draftScores;
@@ -201,7 +203,7 @@ export function withDraftScores(studentRecord, termKey) {
         task?.id !== undefined &&
         Object.hasOwn(drafts, task.id) &&
         !hasOfficialScore(task)
-            ? { ...task, studentReportedScore: drafts[task.id] }
+            ? { ...task, studentReportedScore: drafts[task.id], isDraftScore: true }
             : task;
     const draftedTerm = Object.fromEntries(
         Object.entries(termGrades).map(([criterionId, tasks]) => [
