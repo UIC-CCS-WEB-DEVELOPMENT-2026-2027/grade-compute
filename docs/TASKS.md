@@ -660,7 +660,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       2. `DraftInput` gained an `as` prop (default a plain `<input>`), so the target box renders `InputGroupInput`. CurrentTermRecords still gets the plain input until T7.G4.
       3. The expected gauge's number uses `highlight-text` (the ring stays yellow) for WCAG AA. The yellow number was 1.9:1.
       4. The four-part summary row starts at `xl`. Below it the gauges take a full row and the two notes sit side by side (one column on phones). Arial is gone from the page container, so Subject Detail and the sandbox page use General Sans.
-  - [ ] **T7.G3 ⚠ Celebration → `Dialog`.**
+  - [x] **T7.G3 ⚠ Celebration → `Dialog`.**
     - Keep confetti (tokens), audio, the 6-second close and the backdrop close.
     - Check: G8–G10; SubjectDetail tests.
   - [ ] **T7.G4 ⚠ CurrentTermRecords.**
