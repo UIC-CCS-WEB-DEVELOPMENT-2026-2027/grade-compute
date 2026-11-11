@@ -475,7 +475,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T5a.3 Dead global CSS classes.**
   - Remove: `.student-switcher*`, `.student-role-*` (D1), `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
   - Check: V-same, plus a grep of JSX for each class name.
-- [ ] **T5a.4 Unreachable dark theme.**
+- [x] **T5a.4 Unreachable dark theme.**
   - Remove all `.global-settings.dark` rules (`GlobalSettings.css`), the `--*-dark` tokens (`index.css`), and any token used only by them.
   - Check: V-same.
 - [ ] **T5a.5 `showLogin`.**

@@ -87,8 +87,6 @@
     --highlight-soft: #fff7d9;
     --highlight-strong: #e9c936;
     --success: #36754a;
-    --dark-success: #91d2a3;
-    --dark-danger: #f0968c;
     --white: #ffffff;
 
     /* Backgrounds & Neutrals */
@@ -119,21 +117,11 @@
     --elevation-hover-strong: rgba(30, 36, 44, 0.09);
     --elevation-dialog: rgba(24, 28, 34, 0.17);
 
-    /* Dark theme surfaces and text */
-    --dark-bg: #191b1f;
-    --dark-surface: #22252a;
+    /* Leftovers of the removed dark theme that live light-theme rules in
+       GlobalSettings.css still use (a toggle background and two hover text
+       colours). They go when Settings is converted (T7.L0). */
     --dark-surface-soft: #292d33;
-    --dark-surface-raised: #2e3239;
-    --dark-border: #353941;
-    --dark-border-highlight: #665b2b;
     --dark-text: #f0f1f3;
-    --dark-text-muted: #afb4bc;
-    --dark-text-soft: #d4d7dc;
-    --dark-primary: #4c8ce4;
-    --dark-primary-soft: #23354d;
-    --dark-warning-soft: #302b1a;
-    --dark-warning-text: #ede1a6;
-    --elevation-card-dark: rgba(0, 0, 0, 0.14);
     --bg-alt: #fff79a; /* Yellow background for alternative */
     --bg-selected: #edf1fa; /* Light blue background for selected items */
 
