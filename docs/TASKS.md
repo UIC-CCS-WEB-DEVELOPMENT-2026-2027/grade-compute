@@ -562,7 +562,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - The official gauge and the target read the real record. The result card, the expected gauge and the chart read `withDraftScores`.
     - A draft has no score time. On the sandbox chart, a task scored only by a draft is drawn in rule order among the untimed tasks; before, the B9 write stamped it "now" and drew it last. Only the order of points on the solid line changes; the result and the end point do not. Raised at the Phase 6 gate.
     - Checked in a browser: I9 as updated, and the other sandbox and records flows unchanged.
-- [ ] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
+- [x] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
 - [ ] **T6.14 Named exports: `components/` and `components/layout/`.**
 - [ ] **T6.15 Named exports: `features/*`.**
 - [ ] **T6.16 Named exports: `pages/*` and `app/`.**

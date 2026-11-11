@@ -2,7 +2,7 @@ import "./Header.css";
 import { getDb } from "@/services/db";
 import { getInitials } from "@/lib/format";
 import { getActiveUser } from "@/services/session";
-import useSidebarState, { setSidebarMenuOpen } from "@/hooks/useSidebarState";
+import { setSidebarMenuOpen, useSidebarState } from "@/hooks/useSidebarState";
 
 function BellIcon() {
     return (

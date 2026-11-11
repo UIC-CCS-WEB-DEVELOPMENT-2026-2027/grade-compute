@@ -6,10 +6,11 @@ import { getEnrolledSubjects } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "@/services/session";
 import SandboxSubjectPicker from "@/features/sandbox/components/SandboxSubjectPicker";
-import useSidebarState, {
+import {
     PHONE_MAX_WIDTH,
     setSidebarMenuOpen,
     setSidebarMinimized,
+    useSidebarState,
 } from "@/hooks/useSidebarState";
 import { useDb } from "@/hooks/useDb";
 
