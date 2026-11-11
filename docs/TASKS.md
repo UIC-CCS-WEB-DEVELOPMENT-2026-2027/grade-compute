@@ -584,7 +584,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Add the font files to `src/assets/` from the official source, after a licence check. Add their `@font-face` rules in `src/index.css`.
   - Check: V-visual. Expected: 600/700 body text drawn with real bold glyphs instead of synthesized ones.
 - **Sidebar group (R5; shadcn `Sidebar`, §3.2, D7).** The appearance stays the same. The behaviour changes only as listed in §3.2 (S1–S5) and approved by the owner.
-  - [ ] **T7.S0 ⚠ Add the shadcn `sidebar` component and adapt it.**
+  - [x] **T7.S0 ⚠ Add the shadcn `sidebar` component and adapt it.**
     - Add it, and review the generated file.
     - Control `SidebarProvider` from `useSidebarState` (key `compugrade-sidebar-minimized`, no cookie; S1).
     - Set `--sidebar-width` / `--sidebar-width-icon` to the current 310px / 76px as tokens.
