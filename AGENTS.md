@@ -76,6 +76,7 @@ The job in progress is a codebase and UI clean-up. Until the owner lifts the fre
   - **Behaviour:** only as listed and confirmed in `docs/TASKS.md` §3.2 (S1–S5).
 - **Rule editor confirm** (Gate 3). PillLevel's `window.confirm` becomes a shadcn `AlertDialog` with the same wording.
 - **Dead settings prototype** (Gate 3). `src/pages/StudentSettingsPrototype.jsx` and its `.student-switcher*` / `.student-role-*` CSS are deleted in Phase 5a, once `SPEC.md` §6 (f) has been updated.
+- **Settings on the shared shell** (Gate 4). Settings drops its own layout and styling for the shared page shell and global styles (T7.L0). The "Workspace: Student" label, a leftover of the discontinued workspace switcher, is removed (`SPEC.md` §6 g).
 
 Every other bug in `docs/AUDIT.md` §12 stays as it is.
 

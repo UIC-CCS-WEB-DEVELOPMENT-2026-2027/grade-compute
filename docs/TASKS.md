@@ -659,7 +659,8 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - [ ] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**
     - **Shell:** Settings drops its own layout, its own yellow navigation sidebar and its own colour aliases. It uses `PageShell`, like the other pages: the shared Sidebar, Header and PageFooter, the global tokens and the `type-*` roles.
     - **Section navigation:** Profile, Account, Security, Notifications and Account Actions become `Tabs` at the top of the page content.
-    - **Kept:** the "Back" link (`BackLink`, same wording), the "Workspace: Student" label (`SPEC.md` §6 g), the page heading and the status message.
+    - **Kept:** the "Back" link (`BackLink`, same wording), the page heading and the status message.
+    - **Removed:** the "Workspace: Student" label, a leftover of the discontinued workspace switcher (`SPEC.md` §6 g, updated through the protocol).
     - **Brand mark:** removed from Settings; the shared Sidebar already shows it.
     - **Reduced motion:** move the unscoped rule from `GlobalSettings.css` to `index.css` **unchanged** (B19: same reach, now explicit).
     - **Afterwards:** `SPEC.md` F14 ("its own layout") needs an owner-approved SPEC update, and checklist L1 is updated.
@@ -766,6 +767,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 | --- | --- |
 | Hover and focus styles may change, so that every element rule is in Tailwind's layer system | Done after T4.5 (T4.3 note) |
 | Settings looks like the other pages and uses the global stylesheet and shared shell | T7.L0–T7.L5s, §5 Settings row |
+| Remove the "Workspace: Student" label (discontinued workspace switcher). `SPEC.md` §6 (g) updated | T7.L0 |
 | Generated shadcn components are edited to use tokens (no one-off values; control heights from §4.3) | §3.1, every Phase 7 task that adds a component; `AGENTS.md` §7 |
 
 ## 8. Gate 3 decisions
