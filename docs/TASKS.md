@@ -500,7 +500,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T5.9** TargetGradeSandbox (+CSS, test) and SandboxSubjectPicker (+CSS) → `features/sandbox/components/`.
 - [x] **T5.10** History components (+CSS) → `features/history/components/`. `usePointHover.js` → `features/history/hooks/`.
 - [x] **T5.11** SettingRow and ToggleSetting → `features/settings/components/`. GlobalSettings (+CSS) → `pages/settings/`.
-- [ ] **T5.12** `RuleDetail.jsx` → `RuleDetailPage.jsx` (+CSS). `congrats_voice .mp3` → `congrats-voice.mp3`. Then remove the empty `components/shared/`, `components/student/` and `utils/`.
+- [x] **T5.12** `RuleDetail.jsx` → `RuleDetailPage.jsx` (+CSS). `congrats_voice .mp3` → `congrats-voice.mp3`. Then remove the empty `components/shared/`, `components/student/` and `utils/`.
 
 ### Phase 6 — Logic clean-up (V-tests and V-same for every task unless stated)
 

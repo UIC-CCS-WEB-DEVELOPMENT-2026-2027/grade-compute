@@ -8,7 +8,7 @@ import DraftInput from "@/components/DraftInput";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
 import SubjectGradeHistory from "@/features/history/components/SubjectGradeHistory";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
-import congratulationAudio from "../../assets/congrats_voice .mp3";
+import congratulationAudio from "@/assets/congrats-voice.mp3";
 import {
     calculateOfficialGrade,
     calculateUnofficialGrade,

@@ -13,7 +13,7 @@ import SubjectDetail from "@/pages/student/SubjectDetail";
 import SubjectMenu from "@/pages/student/SubjectMenu";
 import TargetGradeSandboxPage from "@/pages/student/TargetGradeSandboxPage";
 import GradeRules from "@/pages/student/GradeRules";
-import RuleDetail from "@/pages/student/RuleDetail";
+import RuleDetail from "@/pages/student/RuleDetailPage";
 import RequireStudent from "./RequireStudent";
 /* PHASE 2
 // Professor Workspace

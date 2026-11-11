@@ -28,7 +28,7 @@ import {
     validateRuleDetails,
 } from "@/lib/rules";
 import "./GradeRules.css";
-import "./RuleDetail.css";
+import "./RuleDetailPage.css";
 
 function detailsOf(rule) {
     return {
