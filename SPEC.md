@@ -159,13 +159,13 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
 
 ### F13. Navigation: sidebar, header, footer — [BUILT]
 
-- **Desktop sidebar:** collapsible. The minimised state is remembered in `compugrade-sidebar-minimized`.
-- **Widths:** the sidebar starts minimised at 1100px or less, and becomes a phone menu at 760px or less.
+- **Desktop sidebar:** collapsible to icons, with its toggle or Ctrl/⌘+B. The minimised state is remembered in `compugrade-sidebar-minimized`.
+- **Widths:** the sidebar starts minimised from 768 to 1023px and expanded at 1024px and wider, and becomes a phone menu at 767px or less (owner-approved change).
 - **Contents:** enrolled subjects by semester, the sandbox button, and a Help popup.
 - **Header:** user initials.
 - **Known issues (AUDIT B13):** the Help text promises a CSV export that doesn't exist. The header's bell and profile-chevron buttons do nothing. The features behind them are planned for a follow-up branch (§2).
 - **Footer:** not shown on the Grade Rules pages.
-- **Files:** `src/components/layout/{Sidebar,Header,PageFooter}.jsx`, `src/hooks/useSidebarState.js`
+- **Files:** `src/components/layout/{Sidebar,Header,PageFooter}.jsx`, `src/hooks/useSidebarState.js`, `src/components/layout/AppSidebarProvider.jsx`, `src/components/ui/sidebar.jsx`
 
 ### F14. Account settings (`/settings`) — [PARTIAL]
 
@@ -447,3 +447,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-11:** §6 (g): the "Workspace: Student" label in Settings is marked for removal in T7.L0 (owner decision).
 - **2026-11-12:** §3, §5 and §6: file paths updated after the Phase 5 moves and the Phase 6 extractions (owner approved).
 - **2026-11-12:** F9, §4 and §5: the B9 fix has shipped. Sandbox drafts are draft-only (`draftScores`), and the chart draws them after the real scores (owner approved).
+- **2026-11-12:** F13: sidebar thresholds (767/1023) and the Ctrl/⌘+B shortcut, after the sidebar rebuild (owner approved).
