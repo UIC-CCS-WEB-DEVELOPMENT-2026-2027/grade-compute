@@ -1,13 +1,10 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
-import { PageFooter } from "@/components/layout/PageFooter";
+import { PageShell } from "@/components/layout/PageShell";
 import { TargetGradeSandbox } from "@/features/sandbox/components/TargetGradeSandbox";
 import { TermNavigation } from "@/features/term-records/components/TermNavigation";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
 import { useDb } from "@/hooks/useDb";
-import "./SubjectDetail.css";
 
 export function TargetGradeSandboxPage() {
     const { subjectId } = useParams();
@@ -25,61 +22,54 @@ export function TargetGradeSandboxPage() {
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
     return (
-        <div className="subject-detail-layout">
-            <Sidebar />
-            <div className="subject-detail-main">
-                <Header title="Target Grade Sandbox" subtitle={null} />
-                <main className="student-dashboard">
-                    {classItem && subject && hasStudentRecord ? (
-                        <>
-                            <div className="sandbox-back-row">
-                                <Link
-                                    className="term-nav-link sandbox-back-link"
-                                    to={`/student/subject/${classItem.id}?term=${termKey}`}
-                                >
-                                    <span aria-hidden="true">
-                                        <svg viewBox="0 0 16 16" fill="none">
-                                            <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
-                                        </svg>
-                                    </span>
-                                    Back
-                                </Link>
-                            </div>
+        <PageShell headerProps={{ title: "Target Grade Sandbox", subtitle: null }}>
+            {classItem && subject && hasStudentRecord ? (
+                <>
+                    <div className="sandbox-back-row">
+                        <Link
+                            className="term-nav-link sandbox-back-link"
+                            to={`/student/subject/${classItem.id}?term=${termKey}`}
+                        >
+                            <span aria-hidden="true">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
+                                </svg>
+                            </span>
+                            Back
+                        </Link>
+                    </div>
 
-                            <section className="subject-overview sandbox-page-heading">
-                                <div className="subject-semester">
-                                    TARGET GRADE SANDBOX
-                                    {rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
-                                </div>
-                                <div className="subject-title-row">
-                                    <h1>
-                                        {subject.subjectCode} - {subject.subjectName}
-                                    </h1>
-                                    <TermNavigation
-                                        className="mb-0 ml-auto flex-none flex-col items-end gap-1.5"
-                                        termKey={termKey}
-                                        onTermChange={(nextTerm) =>
-                                            setSearchParams({ term: nextTerm }, { replace: true })
-                                        }
-                                        note="Private planning space. Official records stay untouched."
-                                    />
-                                </div>
-                            </section>
+                    <section className="subject-overview sandbox-page-heading">
+                        <div className="subject-semester">
+                            TARGET GRADE SANDBOX
+                            {rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
+                        </div>
+                        <div className="subject-title-row">
+                            <h1>
+                                {subject.subjectCode} - {subject.subjectName}
+                            </h1>
+                            <TermNavigation
+                                className="mb-0 ml-auto flex-none flex-col items-end gap-1.5"
+                                termKey={termKey}
+                                onTermChange={(nextTerm) =>
+                                    setSearchParams({ term: nextTerm }, { replace: true })
+                                }
+                                note="Private planning space. Official records stay untouched."
+                            />
+                        </div>
+                    </section>
 
-                            <TargetGradeSandbox classId={classItem.id} termKey={termKey} />
-                        </>
-                    ) : (
-                        <section className="subject-target-grade-section">
-                            <h2>Sandbox unavailable</h2>
-                            <p>This subject is not available for your account.</p>
-                            <Link to="/student/subject" className="target-grade-button">
-                                Back to My Subjects
-                            </Link>
-                        </section>
-                    )}
-                </main>
-                <PageFooter />
-            </div>
-        </div>
+                    <TargetGradeSandbox classId={classItem.id} termKey={termKey} />
+                </>
+            ) : (
+                <section className="subject-target-grade-section">
+                    <h2>Sandbox unavailable</h2>
+                    <p>This subject is not available for your account.</p>
+                    <Link to="/student/subject" className="target-grade-button">
+                        Back to My Subjects
+                    </Link>
+                </section>
+            )}
+        </PageShell>
     );
 }

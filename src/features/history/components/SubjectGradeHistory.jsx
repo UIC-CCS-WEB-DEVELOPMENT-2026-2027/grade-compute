@@ -5,6 +5,10 @@
 // sandbox. Clicking a point scrolls to that task.
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { Toggle } from "@/components/ui/toggle";
+import { cn } from "@/lib/utils";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history";
 import { getTermTarget } from "@/lib/targets";
@@ -39,80 +43,93 @@ export function SubjectGradeHistory({ classId, termKey }) {
     const sandboxLink = `/student/subject/${classId}/sandbox?term=${termKey}`;
 
     return (
-        <section className="history-section" aria-labelledby="subject-history-title">
-            <div className="history-section-heading">
+        <Card className="mt-7 gap-3.5" role="region" aria-labelledby="subject-history-title">
+            <CardHeader className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                    <h2 id="subject-history-title">{termLabel} Grade History</h2>
-                    <p>
+                    <h2
+                        id="subject-history-title"
+                        className="m-0 type-section-title text-foreground"
+                    >
+                        {termLabel} Grade History
+                    </h2>
+                    <CardDescription className="mt-1 max-w-prose">
                         Your {termLabel} grade after each scored task. Official scores replace your
                         own entries. Click a point to jump to its task.
-                    </p>
+                    </CardDescription>
                 </div>
-                <div className="history-section-actions">
+                <div className="flex flex-wrap items-center gap-2">
                     {planPoints.length > 0 && (
-                        <button
-                            type="button"
-                            className="history-toggle"
-                            aria-pressed={showPlan}
-                            onClick={() => setShowPlan((shown) => !shown)}
+                        <Toggle
+                            variant="outline"
+                            pressed={showPlan}
+                            onPressedChange={setShowPlan}
+                            className="rounded-full bg-card px-3.5 text-primary aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-primary max-md:h-control-touch"
                         >
                             {showPlan ? "Hide plan" : "Show plan"}
-                        </button>
+                        </Toggle>
                     )}
-                    <Link className="history-link" to={sandboxLink}>
+                    <Link
+                        className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            "rounded-full border-primary bg-secondary px-3.5 text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
+                        )}
+                        to={sandboxLink}
+                    >
                         Plan in sandbox
                     </Link>
                 </div>
-            </div>
+            </CardHeader>
 
-            <HistoryChart
-                points={points}
-                planPoints={planPoints}
-                showPlan={showPlan}
-                target={target}
-                targetLabel="Target"
-                termLabel={termLabel}
-                onSelect={(point) => focusTaskRow(point.taskId)}
-            />
+            <CardContent className="flex flex-col gap-3.5">
+                <HistoryChart
+                    points={points}
+                    planPoints={planPoints}
+                    showPlan={showPlan}
+                    target={target}
+                    targetLabel="Target"
+                    termLabel={termLabel}
+                    onSelect={(point) => focusTaskRow(point.taskId)}
+                />
 
-            {showPlan && planPoints.length > 0 && (
-                <p className="history-note">
-                    {plan.status === "required" && (
-                        <>
-                            Plan: score <strong>{formatGrade(plan.required)}</strong> on each
-                            remaining task to end at your target.{" "}
-                        </>
-                    )}
-                    {plan.status === "impossible" && (
-                        <>
-                            Plan: even 100% on every remaining task ends at{" "}
-                            <strong>{formatGrade(plan.best)}</strong>.{" "}
-                        </>
-                    )}
-                    {plan.status === "reached" && (
-                        <>
-                            You&apos;re already above target. The plan assumes you keep scoring
-                            around your current grade.{" "}
-                        </>
-                    )}
-                    Remaining tasks come from your sandbox settings; their order is a guess, so the
-                    end point is what matters.
-                </p>
-            )}
+                {showPlan && planPoints.length > 0 && (
+                    <p className="m-0 type-small text-muted-foreground *:text-foreground">
+                        {plan.status === "required" && (
+                            <>
+                                Plan: score <strong>{formatGrade(plan.required)}</strong> on each
+                                remaining task to end at your target.{" "}
+                            </>
+                        )}
+                        {plan.status === "impossible" && (
+                            <>
+                                Plan: even 100% on every remaining task ends at{" "}
+                                <strong>{formatGrade(plan.best)}</strong>.{" "}
+                            </>
+                        )}
+                        {plan.status === "reached" && (
+                            <>
+                                You&apos;re already above target. The plan assumes you keep scoring
+                                around your current grade.{" "}
+                            </>
+                        )}
+                        Remaining tasks come from your sandbox settings; their order is a guess, so
+                        the end point is what matters.
+                    </p>
+                )}
 
-            {accuracy && (
-                <p className="history-note">
-                    Your own entries were{" "}
-                    <strong>
-                        {Math.abs(accuracy.averageGap) < 0.05
-                            ? "spot on"
-                            : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
-                    </strong>
-                    {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the official
-                    scores that replaced them ({accuracy.count} task
-                    {accuracy.count === 1 ? "" : "s"}).
-                </p>
-            )}
-        </section>
+                {accuracy && (
+                    <p className="m-0 type-small text-muted-foreground *:text-foreground">
+                        Your own entries were{" "}
+                        <strong>
+                            {Math.abs(accuracy.averageGap) < 0.05
+                                ? "spot on"
+                                : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
+                        </strong>
+                        {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the
+                        official scores that replaced them ({accuracy.count} task
+                        {accuracy.count === 1 ? "" : "s"}).
+                    </p>
+                )}
+            </CardContent>
+        </Card>
     );
 }

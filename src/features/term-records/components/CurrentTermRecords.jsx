@@ -230,7 +230,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                 </p>
             </header>
 
-            <div className="relative flex flex-wrap items-center justify-between gap-5 rounded-lg border border-border bg-muted px-5 py-4 max-sm:gap-2 max-sm:px-3">
+            <div className="relative flex flex-wrap items-center justify-between gap-5 rounded-lg border border-border bg-card px-5 py-4 max-sm:gap-2 max-sm:px-3">
                 {topLevel.map((group, index) => (
                     <div className="flex items-center gap-5 max-sm:gap-2" key={group.id}>
                         {index > 0 && (

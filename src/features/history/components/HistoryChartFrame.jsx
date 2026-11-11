@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
 // scale: from getChartScale. plotRef: for the point tooltips (usePointHover).
 // ariaLabel: the chart described in words. overlay: drawn over the plot (the
 // tooltip). emptyMessage: shown instead of the plot when nothing is plotted.
-// heightClass: the plot height as a Tailwind class.
+// heightClass: the plot height as a Tailwind class. marginTop: room above
+// the plot (for labels drawn over the top line).
 export function HistoryChartFrame({
     scale,
     plotRef,
@@ -24,6 +25,7 @@ export function HistoryChartFrame({
     legend,
     table,
     heightClass = "h-80",
+    marginTop = 16,
     children,
 }) {
     const colors = {
@@ -46,7 +48,7 @@ export function HistoryChartFrame({
                     className="relative min-w-0 rounded-lg border border-border bg-linear-to-b from-muted to-card to-45% pt-3 pr-1"
                 >
                     <ChartContainer config={{}} className={cn("aspect-auto w-full", heightClass)}>
-                        <LineChart margin={{ top: 16, right: 16, bottom: 8, left: 0 }}>
+                        <LineChart margin={{ top: marginTop, right: 16, bottom: 8, left: 0 }}>
                             <CartesianGrid stroke={colors.grid} vertical={false} />
                             <XAxis
                                 dataKey="step"

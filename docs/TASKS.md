@@ -672,11 +672,15 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       2. The per-criterion headings stay hidden (`display: none` before, `hidden` now), so the accessibility tree is unchanged.
       3. The test helper that found the add-task form by its old class now takes the only `form`.
       4. Rows stack below `sm` (before: below 380px), with 44px inputs and buttons below `md`.
-  - [ ] **T7.G5 SubjectGradeHistory + HistoryChart.**
+  - [x] **T7.G5 SubjectGradeHistory + HistoryChart.**
     - Change: `ChartContainer`, the frame, legend `Badge`s, `Collapsible` table, toggles.
     - Delete `HistoryChart.css` (the dashboard was converted in T7.D2).
     - Delete `SubjectDetail.css`.
     - Check: G12.
+    - **As done:**
+      1. Deleting `SubjectDetail.css` took the layout of both pages that used it. Subject Detail and the sandbox page now use `PageShell`, so their background is the shared `muted` one. The sandbox page's heading, Back link and "unavailable" box rules moved to `TargetGradeSandbox.css` for T7.I1.
+      2. `HistoryChart` is built on `HistoryChartFrame` (which gained a `marginTop` prop for the "Target reached" label). Its `height` prop became `heightClass`. `HistoryTooltip` uses utilities.
+      3. The dashboard chart's dots lost an unused `history-dot-mark` class (it had no effect there).
 - **Sandbox**
   - [ ] **T7.I1** Page header, `BackLink`, the result card (`Card`, tones from tokens), the target input. Check: I1–I5.
   - [ ] **T7.I2 ⚠** Criteria table (`Table`, stacked rows) and the draft-score inputs (`Input`). Check: I6–I12; sandbox tests.

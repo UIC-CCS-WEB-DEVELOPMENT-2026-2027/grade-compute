@@ -54,10 +54,9 @@ function SubjectDot({ cx, cy, payload, course, reached, surface, success, onSele
                 <circle cx={cx} cy={cy} r={9} fill="none" stroke={success} strokeWidth={2} />
             )}
             {payload.isOfficial ? (
-                <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={course.color} />
+                <circle cx={cx} cy={cy} r={4} fill={course.color} />
             ) : (
                 <circle
-                    className="history-dot-mark"
                     cx={cx}
                     cy={cy}
                     r={4}

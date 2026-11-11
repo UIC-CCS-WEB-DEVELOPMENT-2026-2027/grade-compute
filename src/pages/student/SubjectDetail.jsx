@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { TargetIcon, XIcon } from "lucide-react";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
-import { PageFooter } from "@/components/layout/PageFooter";
+import { PageShell } from "@/components/layout/PageShell";
 import { CurrentTermRecords } from "@/features/term-records/components/CurrentTermRecords";
 import { DraftInput } from "@/components/DraftInput";
 import { GradeGauge } from "@/components/GradeGauge";
@@ -43,7 +41,6 @@ import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
-import "./SubjectDetail.css";
 
 // Confetti in the palette tokens.
 const CONFETTI_COLORS = [
@@ -158,15 +155,10 @@ export function SubjectDetail() {
 
     if (!classItem || !subject || !studentRecord) {
         return (
-            <div className="subject-detail-layout">
-                <Sidebar />
-                <div className="subject-detail-main">
-                    <main className="student-dashboard">
-                        <h1>Subject not found</h1>
-                        <p>This subject is not available for your account.</p>
-                    </main>
-                </div>
-            </div>
+            <PageShell showHeader={false} showFooter={false}>
+                <h1>Subject not found</h1>
+                <p>This subject is not available for your account.</p>
+            </PageShell>
         );
     }
 
@@ -208,169 +200,159 @@ export function SubjectDetail() {
     }
 
     return (
-        <div className="subject-detail-layout">
+        <PageShell>
             <audio ref={celebrationAudioRef} src={congratulationAudio} preload="auto" />
-            <Sidebar />
-            <div className="subject-detail-main">
-                <Header />
+            {/* Term Navigation */}
+            <TermNavigation
+                termKey={termKey}
+                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                note="Official scores and draft notes are separate for each term."
+            />
 
-                <main className="student-dashboard">
-                    {/* Term Navigation */}
-                    <TermNavigation
-                        termKey={termKey}
-                        onTermChange={(nextTerm) =>
-                            setSearchParams({ term: nextTerm }, { replace: true })
-                        }
-                        note="Official scores and draft notes are separate for each term."
-                    />
+            {/* Subject Heading */}
+            <section className="mb-8 w-full">
+                <div className="mb-2 type-caption tracking-wide text-muted-foreground">
+                    FIRST SEMESTER · 2026–2027
+                </div>
 
-                    {/* Subject Heading */}
-                    <section className="mb-8 w-full">
-                        <div className="mb-2 type-caption tracking-wide text-muted-foreground">
-                            FIRST SEMESTER · 2026–2027
+                <div className="mb-5 flex items-start justify-between gap-5 max-md:flex-col max-md:gap-4">
+                    <div>
+                        <h1 className="m-0 mb-3 type-page-title text-foreground">
+                            {subject.subjectCode} - {subject.subjectName}
+                        </h1>
+
+                        <div className="flex flex-wrap items-center gap-2 type-small text-muted-foreground">
+                            <Avatar size="sm">
+                                <AvatarFallback className="bg-secondary font-semibold text-primary">
+                                    {getSpaceSplitInitials(professor)}
+                                </AvatarFallback>
+                            </Avatar>
+                            <span>{professor}</span>
+                            <span className="text-border">·</span>
+                            <span>{classItem.units ?? 3} units</span>
                         </div>
+                    </div>
+                    <Link
+                        className={cn(
+                            buttonVariants({ variant: "outline" }),
+                            "shrink-0 rounded-full border-primary bg-secondary text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
+                        )}
+                        to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
+                    >
+                        <TargetIcon data-icon="inline-start" aria-hidden="true" />
+                        Target grade sandbox
+                    </Link>
+                </div>
 
-                        <div className="mb-5 flex items-start justify-between gap-5 max-md:flex-col max-md:gap-4">
-                            <div>
-                                <h1 className="m-0 mb-3 type-page-title text-foreground">
-                                    {subject.subjectCode} - {subject.subjectName}
-                                </h1>
-
-                                <div className="flex flex-wrap items-center gap-2 type-small text-muted-foreground">
-                                    <Avatar size="sm">
-                                        <AvatarFallback className="bg-secondary font-semibold text-primary">
-                                            {getSpaceSplitInitials(professor)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <span>{professor}</span>
-                                    <span className="text-border">·</span>
-                                    <span>{classItem.units ?? 3} units</span>
-                                </div>
-                            </div>
-                            <Link
-                                className={cn(
-                                    buttonVariants({ variant: "outline" }),
-                                    "shrink-0 rounded-full border-primary bg-secondary text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
-                                )}
-                                to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
+                {/* Official Grade Summary */}
+                <Card className="grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
+                    <div
+                        className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-[1.7] xl:justify-start xl:gap-4"
+                        aria-label={`${term} grades`}
+                    >
+                        <Field className="w-auto shrink-0 gap-1.5 max-sm:w-full">
+                            <FieldLabel
+                                htmlFor="subject-target-grade"
+                                className="font-semibold text-foreground"
                             >
-                                <TargetIcon data-icon="inline-start" aria-hidden="true" />
-                                Target grade sandbox
-                            </Link>
-                        </div>
-
-                        {/* Official Grade Summary */}
-                        <Card className="grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
-                            <div
-                                className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-[1.7] xl:justify-start xl:gap-4"
-                                aria-label={`${term} grades`}
-                            >
-                                <Field className="w-auto shrink-0 gap-1.5 max-sm:w-full">
-                                    <FieldLabel
-                                        htmlFor="subject-target-grade"
-                                        className="font-semibold text-foreground"
-                                    >
-                                        Target grade
-                                    </FieldLabel>
-                                    <InputGroup className="w-24 border-highlight-strong bg-card max-md:h-control-touch">
-                                        {/* Saved on blur / Enter, so a half-typed target
+                                Target grade
+                            </FieldLabel>
+                            <InputGroup className="w-24 border-highlight-strong bg-card max-md:h-control-touch">
+                                {/* Saved on blur / Enter, so a half-typed target
                                         (e.g. "8" on the way to "85") can't trigger
                                         the celebration. */}
-                                        <DraftInput
-                                            as={InputGroupInput}
-                                            id="subject-target-grade"
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            step="1"
-                                            value={targetGrade}
-                                            aria-label={`${term} target grade`}
-                                            onCommit={updateTargetGrade}
-                                            className="font-bold"
-                                        />
-                                        <InputGroupAddon align="inline-end">
-                                            <InputGroupText
-                                                className="text-highlight-text"
-                                                aria-hidden="true"
-                                            >
-                                                %
-                                            </InputGroupText>
-                                        </InputGroupAddon>
-                                    </InputGroup>
-                                    <small className="max-w-32 type-small text-highlight-text max-sm:max-w-none">
-                                        Yellow marker shows your target
-                                    </small>
-                                    {targetGradeError && (
-                                        <small
-                                            className="max-w-32 type-small text-destructive"
-                                            role="alert"
-                                        >
-                                            {targetGradeError}
-                                        </small>
-                                    )}
-                                </Field>
-                                <GradeGauge
-                                    label={`${term} official`}
-                                    grade={officialAverage}
-                                    target={targetGrade}
-                                    ariaLabelPrefix="Official grade"
-                                    ariaDecimals={2}
-                                    focusable
-                                    className="shrink-0"
-                                    details="Professor-recorded scores only. These grades are locked."
+                                <DraftInput
+                                    as={InputGroupInput}
+                                    id="subject-target-grade"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    value={targetGrade}
+                                    aria-label={`${term} target grade`}
+                                    onCommit={updateTargetGrade}
+                                    className="font-bold"
                                 />
-                                <GradeGauge
-                                    label={`${term} expected`}
-                                    grade={expectedAverage}
-                                    target={targetGrade}
-                                    tone="expected"
-                                    ariaLabelPrefix="Expected grade"
-                                    ariaDecimals={2}
-                                    focusable
-                                    className="shrink-0"
-                                    details="Includes student-reported draft scores with official scores taking priority."
-                                />
-                            </div>
-
-                            <Separator orientation="vertical" className="hidden h-12 xl:block" />
-
-                            <div className="flex min-w-0 flex-col gap-2 xl:flex-1">
-                                <p className="m-0 flex items-center gap-2 type-small text-muted-foreground">
-                                    <span className="size-2 shrink-0 rounded-full bg-self-reported" />
-                                    {officialTasks.length} official assessment
-                                    {officialTasks.length === 1 ? "" : "s"} recorded
-                                </p>
-
-                                <small className="type-small text-muted-foreground">
-                                    Official records never include sandbox drafts.
+                                <InputGroupAddon align="inline-end">
+                                    <InputGroupText
+                                        className="text-highlight-text"
+                                        aria-hidden="true"
+                                    >
+                                        %
+                                    </InputGroupText>
+                                </InputGroupAddon>
+                            </InputGroup>
+                            <small className="max-w-32 type-small text-highlight-text max-sm:max-w-none">
+                                Yellow marker shows your target
+                            </small>
+                            {targetGradeError && (
+                                <small
+                                    className="max-w-32 type-small text-destructive"
+                                    role="alert"
+                                >
+                                    {targetGradeError}
                                 </small>
-                            </div>
+                            )}
+                        </Field>
+                        <GradeGauge
+                            label={`${term} official`}
+                            grade={officialAverage}
+                            target={targetGrade}
+                            ariaLabelPrefix="Official grade"
+                            ariaDecimals={2}
+                            focusable
+                            className="shrink-0"
+                            details="Professor-recorded scores only. These grades are locked."
+                        />
+                        <GradeGauge
+                            label={`${term} expected`}
+                            grade={expectedAverage}
+                            target={targetGrade}
+                            tone="expected"
+                            ariaLabelPrefix="Expected grade"
+                            ariaDecimals={2}
+                            focusable
+                            className="shrink-0"
+                            details="Includes student-reported draft scores with official scores taking priority."
+                        />
+                    </div>
 
-                            <div className="flex min-w-0 flex-col gap-2.5 border-t border-highlight pt-3 type-small text-muted-foreground md:border-0 md:pt-0 xl:flex-1">
-                                <span className="flex items-center gap-2">
-                                    <i className="size-2 shrink-0 rounded-full bg-official" />
-                                    Locked official scores
-                                </span>
+                    <Separator orientation="vertical" className="hidden h-12 xl:block" />
 
-                                <span className="flex items-center gap-2">
-                                    <i className="size-2 shrink-0 rounded-full bg-self-reported" />
-                                    Private sandbox drafts
-                                </span>
-                            </div>
-                        </Card>
-                    </section>
+                    <div className="flex min-w-0 flex-col gap-2 xl:flex-1">
+                        <p className="m-0 flex items-center gap-2 type-small text-muted-foreground">
+                            <span className="size-2 shrink-0 rounded-full bg-self-reported" />
+                            {officialTasks.length} official assessment
+                            {officialTasks.length === 1 ? "" : "s"} recorded
+                        </p>
 
-                    {/* Current Term Records */}
-                    <CurrentTermRecords classId={classItem.id} term={term} />
+                        <small className="type-small text-muted-foreground">
+                            Official records never include sandbox drafts.
+                        </small>
+                    </div>
 
-                    <SubjectGradeHistory classId={classItem.id} termKey={termKey} />
-                </main>
-                <PageFooter />
-            </div>
+                    <div className="flex min-w-0 flex-col gap-2.5 border-t border-highlight pt-3 type-small text-muted-foreground md:border-0 md:pt-0 xl:flex-1">
+                        <span className="flex items-center gap-2">
+                            <i className="size-2 shrink-0 rounded-full bg-official" />
+                            Locked official scores
+                        </span>
+
+                        <span className="flex items-center gap-2">
+                            <i className="size-2 shrink-0 rounded-full bg-self-reported" />
+                            Private sandbox drafts
+                        </span>
+                    </div>
+                </Card>
+            </section>
+
+            {/* Current Term Records */}
+            <CurrentTermRecords classId={classItem.id} term={term} />
+
+            <SubjectGradeHistory classId={classItem.id} termKey={termKey} />
             {celebration && (
                 <CelebrationDialog message={celebration} onClose={() => setCelebration("")} />
             )}
-        </div>
+        </PageShell>
     );
 }
 

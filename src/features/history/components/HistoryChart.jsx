@@ -7,21 +7,28 @@
 // - optionally the sandbox plan for the remaining tasks (dotted line).
 // Used on Subject Detail (SubjectGradeHistory) and in the sandbox.
 // Data comes from utils/history.js.
+import { Line, ReferenceLine } from "recharts";
+import { Button } from "@/components/ui/button";
 import {
-    CartesianGrid,
-    Line,
-    LineChart,
-    ReferenceLine,
-    ResponsiveContainer,
-    XAxis,
-    YAxis,
-} from "recharts";
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
+import { HistoryChartFrame } from "./HistoryChartFrame";
 import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
-import "./HistoryChart.css";
+
+// A dot grows when hovered (CSS only, so the chart is not redrawn).
+const DOT_MARK =
+    "origin-center transform-fill transition group-hover/dot:scale-140 motion-reduce:transition-none";
 
 // Keep the "Target reached" label inside the chart: below the point when
 // the point is near the top edge, and inward at the first/last step.
@@ -64,7 +71,7 @@ function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, hov
     const clickable = Boolean(onSelect && payload.taskId);
     const key = `real-${payload.step}`;
     return (
-        <g className={clickable ? "history-dot is-clickable" : "history-dot"}>
+        <g className={cn("group/dot", clickable && "cursor-pointer")}>
             {payload.step === reachedStep && (
                 <>
                     <circle
@@ -88,10 +95,10 @@ function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, hov
                 </>
             )}
             {payload.isOfficial ? (
-                <circle className="history-dot-mark" cx={cx} cy={cy} r={5} fill={colors.official} />
+                <circle className={DOT_MARK} cx={cx} cy={cy} r={5} fill={colors.official} />
             ) : (
                 <circle
-                    className="history-dot-mark"
+                    className={DOT_MARK}
                     cx={cx}
                     cy={cy}
                     r={5}
@@ -123,9 +130,9 @@ function GhostDot({ cx, cy, payload, colors, hover }) {
         return null;
     const key = `ghost-${payload.step}`;
     return (
-        <g className="history-dot is-ghost">
+        <g className="group/dot">
             <circle
-                className="history-dot-mark"
+                className={cn(DOT_MARK, "opacity-55 group-hover/dot:opacity-95")}
                 cx={cx}
                 cy={cy}
                 r={4.5}
@@ -150,7 +157,7 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
     if (cx === undefined || cy === undefined || !payload?.isPlan) return null;
     const key = `plan-${payload.step}`;
     return (
-        <g className="history-dot">
+        <g className="group/dot">
             {payload.step === reachedStep && (
                 <text
                     x={cx}
@@ -164,7 +171,7 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
                 </text>
             )}
             <circle
-                className="history-dot-mark"
+                className={DOT_MARK}
                 cx={cx}
                 cy={cy}
                 r={4}
@@ -183,10 +190,21 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
     );
 }
 
+// The legend marks, drawn like the lines and dots on the chart.
+const LEGEND_MARKS = {
+    official: "size-2.5 rounded-full bg-foreground",
+    self: "size-2.5 rounded-full border-2 border-self-reported bg-card",
+    ghost: "size-2.5 rounded-full border-2 border-dashed border-self-reported bg-card opacity-60",
+    plan: "w-4.5 border-0 border-t-2 border-dashed border-muted-foreground",
+    target: "w-4.5 border-0 border-t-2 border-dashed border-foreground",
+    passing: "w-4.5 border-0 border-t-2 border-dotted border-destructive",
+};
+
 // points: real history (getGradeHistory). planPoints: getPlanPoints().points.
 // showPlan: draw planPoints. emphasizePlan: thicker plan line (sandbox).
 // target / targetLabel: the dashed target line. termLabel: e.g. "Prelim".
 // onSelect(point): called when a real point is clicked (go to that task).
+// heightClass: the plot height as a Tailwind class.
 export function HistoryChart({
     points,
     planPoints = [],
@@ -196,7 +214,7 @@ export function HistoryChart({
     targetLabel = "Target",
     termLabel,
     onSelect,
-    height = 300,
+    heightClass = "h-75",
 }) {
     const { plotRef, store, show, hide } = usePointHover();
     // What each dot needs to open and close the tooltip.
@@ -204,7 +222,7 @@ export function HistoryChart({
     const plan = showPlan ? planPoints : [];
     if (points.length === 0 && plan.length === 0) {
         return (
-            <p className="history-empty">
+            <p className="m-0 rounded-lg border border-dashed border-border px-5 py-7 text-center type-small text-muted-foreground">
                 No scored tasks for {termLabel} yet. Add a score in Current Term Records and it will
                 appear here.
             </p>
@@ -218,10 +236,7 @@ export function HistoryChart({
         surface: resolveColor("var(--card)"),
         plan: resolveColor(emphasizePlan ? "var(--primary)" : "var(--muted-foreground)"),
         success: resolveColor("var(--success)"),
-        passing: resolveColor("var(--destructive)"),
         target: resolveColor("var(--foreground)"),
-        grid: resolveColor("var(--border)"),
-        muted: resolveColor("var(--muted-foreground)"),
     };
 
     // One row per step. The last real step also starts the plan line, so
@@ -251,18 +266,108 @@ export function HistoryChart({
         (point) => point.ghostGrade !== null && point.ghostGrade !== undefined,
     );
 
+    const legendItems = [
+        ["official", "Official score"],
+        ["self", "Your score"],
+        hasGhosts && ["ghost", "Your entry before the official score"],
+        plan.length > 0 && ["plan", "Plan for remaining tasks"],
+        target !== null && ["target", `${targetLabel} ${formatGrade(target)}`],
+        ["passing", `Passing ${PASSING_GRADE}%`],
+    ].filter(Boolean);
+    const legend = (
+        <p className="m-0 flex flex-wrap gap-2 type-caption font-normal text-muted-foreground">
+            {legendItems.map(([mark, text]) => (
+                <span
+                    key={mark}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2 py-1"
+                >
+                    <i className={cn("inline-block", LEGEND_MARKS[mark])} aria-hidden="true" />{" "}
+                    {text}
+                </span>
+            ))}
+        </p>
+    );
+
+    const table = (
+        <Table className="rounded-lg border border-border">
+            <TableCaption className="mt-0 mb-2 caption-top text-left text-foreground">
+                {termLabel} grade after each task
+            </TableCaption>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Step</TableHead>
+                    <TableHead>Task</TableHead>
+                    <TableHead>Score</TableHead>
+                    <TableHead>Grade so far</TableHead>
+                    {onSelect && (
+                        <TableHead>
+                            <span className="sr-only">Go to task</span>
+                        </TableHead>
+                    )}
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {points.map((point) => (
+                    <TableRow key={`real-${point.step}`}>
+                        <TableCell>{point.step}</TableCell>
+                        <TableCell className="whitespace-normal">
+                            {point.criterionName} · {point.label}
+                        </TableCell>
+                        <TableCell className="whitespace-normal">
+                            {point.percent.toFixed(1)}%{" "}
+                            {point.isOfficial ? "(official)" : "(yours)"}
+                            {point.replacedEntry &&
+                                ` · you entered ${point.replacedEntry.percent.toFixed(1)}%`}
+                        </TableCell>
+                        <TableCell>{formatGrade(point.grade)}</TableCell>
+                        {onSelect && (
+                            <TableCell className="text-right">
+                                {point.taskId && (
+                                    <Button
+                                        variant="link"
+                                        className="h-auto p-0 max-md:h-control-touch"
+                                        onClick={() => onSelect(point)}
+                                    >
+                                        Go to task
+                                    </Button>
+                                )}
+                            </TableCell>
+                        )}
+                    </TableRow>
+                ))}
+                {plan.map((point) => (
+                    <TableRow key={`plan-${point.step}`} className="text-muted-foreground italic">
+                        <TableCell>{point.step}</TableCell>
+                        <TableCell className="whitespace-normal">
+                            {point.criterionName} · {point.label} (planned)
+                        </TableCell>
+                        <TableCell className="whitespace-normal">
+                            {formatGrade(point.percent)}{" "}
+                            {point.isExpected ? "(your estimate)" : "(needed)"}
+                        </TableCell>
+                        <TableCell>{formatGrade(point.planGrade)}</TableCell>
+                        {onSelect && <TableCell />}
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+
     return (
-        <div className="history-chart">
+        <div className="flex flex-col gap-3">
             {latest !== null && (
-                <p className="history-summary">
-                    <strong>{formatGrade(latest)}</strong> after {points.length} task
+                <p className="m-0 rounded-lg border border-border bg-muted px-3 py-2.5 type-small text-muted-foreground">
+                    <strong className="type-section-title text-primary tabular-nums">
+                        {formatGrade(latest)}
+                    </strong>{" "}
+                    after {points.length} task
                     {points.length === 1 ? "" : "s"}
                     {target !== null && (
                         <>
                             {" · "}
                             {targetLabel.toLowerCase()} {formatGrade(target)}
                             {" · "}
-                            <span className={gap >= 0 ? "is-above" : "is-below"}>
+                            <span className={gap >= 0 ? "text-success" : "text-destructive"}>
                                 {Math.abs(gap) < 0.005
                                     ? "on target"
                                     : gap > 0
@@ -274,205 +379,76 @@ export function HistoryChart({
                 </p>
             )}
 
-            <div
-                className="history-plot"
-                ref={plotRef}
-                role="img"
-                aria-label={`${termLabel} grade after each task${latest !== null ? `, latest ${formatGrade(latest)}` : ""}${target !== null ? `, ${targetLabel.toLowerCase()} ${formatGrade(target)}` : ""}${plan.length ? `, with a plan for ${plan.length} remaining tasks ending at ${formatGrade(plan[plan.length - 1].planGrade)}` : ""}. The same data is in the table below.`}
+            <HistoryChartFrame
+                scale={scale}
+                plotRef={plotRef}
+                ariaLabel={`${termLabel} grade after each task${latest !== null ? `, latest ${formatGrade(latest)}` : ""}${target !== null ? `, ${targetLabel.toLowerCase()} ${formatGrade(target)}` : ""}${plan.length ? `, with a plan for ${plan.length} remaining tasks ending at ${formatGrade(plan[plan.length - 1].planGrade)}` : ""}. The same data is in the table below.`}
+                overlay={<HistoryTooltip store={store} />}
+                legend={legend}
+                table={table}
+                heightClass={heightClass}
+                marginTop={26}
             >
-                <ResponsiveContainer width="100%" height={height}>
-                    <LineChart data={rows} margin={{ top: 26, right: 16, bottom: 8, left: 0 }}>
-                        <CartesianGrid stroke={colors.grid} vertical={false} />
-                        <XAxis
-                            dataKey="step"
-                            type="number"
-                            domain={scale.xDomain}
-                            ticks={scale.xTicks}
-                            allowDecimals={false}
-                            tick={{ fill: colors.muted, fontSize: 12 }}
-                            stroke={colors.grid}
-                            label={{
-                                value: "Tasks",
-                                position: "insideBottomRight",
-                                offset: -4,
-                                fill: colors.muted,
-                                fontSize: 12,
-                            }}
-                        />
-                        <YAxis
-                            domain={scale.yDomain}
-                            ticks={scale.yTicks}
-                            allowDataOverflow
-                            unit="%"
-                            width={48}
-                            tick={{ fill: colors.muted, fontSize: 12 }}
-                            stroke={colors.grid}
-                        />
-                        <ReferenceLine
-                            y={PASSING_GRADE}
-                            stroke={colors.passing}
-                            strokeDasharray="2 4"
-                            strokeWidth={1.5}
-                            label={{
-                                value: `Passing ${PASSING_GRADE}%`,
-                                position: "insideBottomLeft",
-                                fill: colors.passing,
-                                fontSize: 11,
-                            }}
-                        />
-                        {target !== null && (
-                            <ReferenceLine
-                                y={target}
-                                stroke={colors.target}
-                                strokeDasharray="7 5"
-                                strokeWidth={1.5}
-                            />
-                        )}
-                        {plan.length > 0 && (
-                            <Line
-                                dataKey="planGrade"
-                                type="linear"
-                                stroke={colors.plan}
-                                strokeWidth={emphasizePlan ? 3 : 2}
-                                strokeDasharray="6 5"
-                                dot={
-                                    <PlanDot
-                                        colors={colors}
-                                        reachedStep={planReachedStep}
-                                        lastStep={rows.length}
-                                        hover={hover}
-                                    />
-                                }
-                                activeDot={false}
-                                isAnimationActive={false}
-                                connectNulls={false}
-                            />
-                        )}
-                        {hasGhosts && (
-                            <Line
-                                dataKey="ghostGrade"
-                                stroke="none"
-                                dot={<GhostDot colors={colors} hover={hover} />}
-                                activeDot={false}
-                                isAnimationActive={false}
-                                legendType="none"
-                            />
-                        )}
-                        <Line
-                            dataKey="grade"
-                            type="linear"
-                            stroke={colors.line}
-                            strokeWidth={3}
-                            dot={
-                                <RealDot
-                                    colors={colors}
-                                    reachedStep={reachedStep}
-                                    lastStep={rows.length}
-                                    onSelect={onSelect}
-                                    hover={hover}
-                                />
-                            }
-                            activeDot={false}
-                            isAnimationActive={false}
-                            connectNulls={false}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-                <HistoryTooltip store={store} />
-            </div>
-
-            <p className="history-legend">
-                <span>
-                    <i className="is-official" aria-hidden="true" /> Official score
-                </span>
-                <span>
-                    <i className="is-self" aria-hidden="true" /> Your score
-                </span>
-                {hasGhosts && (
-                    <span>
-                        <i className="is-ghost" aria-hidden="true" /> Your entry before the official
-                        score
-                    </span>
+                {target !== null && (
+                    <ReferenceLine
+                        y={target}
+                        stroke={colors.target}
+                        strokeDasharray="7 5"
+                        strokeWidth={1.5}
+                    />
                 )}
                 {plan.length > 0 && (
-                    <span>
-                        <i className="is-plan" aria-hidden="true" /> Plan for remaining tasks
-                    </span>
+                    <Line
+                        data={rows}
+                        dataKey="planGrade"
+                        type="linear"
+                        stroke={colors.plan}
+                        strokeWidth={emphasizePlan ? 3 : 2}
+                        strokeDasharray="6 5"
+                        dot={
+                            <PlanDot
+                                colors={colors}
+                                reachedStep={planReachedStep}
+                                lastStep={rows.length}
+                                hover={hover}
+                            />
+                        }
+                        activeDot={false}
+                        isAnimationActive={false}
+                        connectNulls={false}
+                    />
                 )}
-                {target !== null && (
-                    <span>
-                        <i className="is-target" aria-hidden="true" /> {targetLabel}{" "}
-                        {formatGrade(target)}
-                    </span>
+                {hasGhosts && (
+                    <Line
+                        data={rows}
+                        dataKey="ghostGrade"
+                        stroke="none"
+                        dot={<GhostDot colors={colors} hover={hover} />}
+                        activeDot={false}
+                        isAnimationActive={false}
+                        legendType="none"
+                    />
                 )}
-                <span>
-                    <i className="is-passing" aria-hidden="true" /> Passing {PASSING_GRADE}%
-                </span>
-            </p>
-
-            <details className="history-table">
-                <summary>Show as a table</summary>
-                <table>
-                    <caption>{termLabel} grade after each task</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">Step</th>
-                            <th scope="col">Task</th>
-                            <th scope="col">Score</th>
-                            <th scope="col">Grade so far</th>
-                            {onSelect && (
-                                <th scope="col">
-                                    <span className="history-sr-only">Go to task</span>
-                                </th>
-                            )}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {points.map((point) => (
-                            <tr key={`real-${point.step}`}>
-                                <td>{point.step}</td>
-                                <td>
-                                    {point.criterionName} · {point.label}
-                                </td>
-                                <td>
-                                    {point.percent.toFixed(1)}%{" "}
-                                    {point.isOfficial ? "(official)" : "(yours)"}
-                                    {point.replacedEntry &&
-                                        ` · you entered ${point.replacedEntry.percent.toFixed(1)}%`}
-                                </td>
-                                <td>{formatGrade(point.grade)}</td>
-                                {onSelect && (
-                                    <td>
-                                        {point.taskId && (
-                                            <button
-                                                type="button"
-                                                className="history-table-link"
-                                                onClick={() => onSelect(point)}
-                                            >
-                                                Go to task
-                                            </button>
-                                        )}
-                                    </td>
-                                )}
-                            </tr>
-                        ))}
-                        {plan.map((point) => (
-                            <tr key={`plan-${point.step}`} className="is-plan-row">
-                                <td>{point.step}</td>
-                                <td>
-                                    {point.criterionName} · {point.label} (planned)
-                                </td>
-                                <td>
-                                    {formatGrade(point.percent)}{" "}
-                                    {point.isExpected ? "(your estimate)" : "(needed)"}
-                                </td>
-                                <td>{formatGrade(point.planGrade)}</td>
-                                {onSelect && <td />}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </details>
+                <Line
+                    data={rows}
+                    dataKey="grade"
+                    type="linear"
+                    stroke={colors.line}
+                    strokeWidth={3}
+                    dot={
+                        <RealDot
+                            colors={colors}
+                            reachedStep={reachedStep}
+                            lastStep={rows.length}
+                            onSelect={onSelect}
+                            hover={hover}
+                        />
+                    }
+                    activeDot={false}
+                    isAnimationActive={false}
+                    connectNulls={false}
+                />
+            </HistoryChartFrame>
         </div>
     );
 }

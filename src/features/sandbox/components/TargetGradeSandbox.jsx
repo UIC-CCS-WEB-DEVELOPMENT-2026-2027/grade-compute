@@ -289,7 +289,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                             targetLabel="Target"
                             termLabel={termLabel}
                             onSelect={(point) => focusTaskRow(point.taskId)}
-                            height={280}
+                            heightClass="h-70"
                         />
                     </section>
 

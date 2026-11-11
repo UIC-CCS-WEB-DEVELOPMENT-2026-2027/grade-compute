@@ -4,13 +4,11 @@
 // replaced or the planned score, and the grade right after it.
 import { useEffect, useState } from "react";
 import { formatGrade } from "@/lib/format";
-// Styled by HistoryChart.css until the history charts are converted (T7.G5).
-import "./HistoryChart.css";
 
 function ReplacedLine({ point }) {
     const change = point.percent - point.replacedEntry.percent;
     return (
-        <p className="history-tooltip-replaced">
+        <p className="text-self-reported-foreground">
             You entered {point.replacedEntry.score}/{point.replacedEntry.maxScore} (
             {point.replacedEntry.percent.toFixed(1)}%)
             {" → "}official {point.percent.toFixed(1)}% ({change > 0 ? "+" : ""}
@@ -24,7 +22,7 @@ function PointDetails({ point, kind, seriesName, color }) {
         return (
             <>
                 <p>Step {point.step} · planned</p>
-                <p className="history-tooltip-task">{point.label}</p>
+                <p className="font-semibold text-foreground">{point.label}</p>
                 <p>
                     {point.isExpected ? "Your estimate" : "Score needed"}{" "}
                     {formatGrade(point.percent)}
@@ -39,7 +37,7 @@ function PointDetails({ point, kind, seriesName, color }) {
         return (
             <>
                 <p>Task {point.step} · your entry before the official score</p>
-                <p className="history-tooltip-task">{point.label}</p>
+                <p className="font-semibold text-foreground">{point.label}</p>
                 <ReplacedLine point={point} />
                 <p>
                     Grade with your entry <strong>{formatGrade(point.ghostGrade)}</strong>
@@ -51,14 +49,14 @@ function PointDetails({ point, kind, seriesName, color }) {
     return (
         <>
             {seriesName && (
-                <strong className="history-tooltip-series" style={{ color }}>
+                <strong className="text-(--series-color)" style={{ "--series-color": color }}>
                     {seriesName}
                 </strong>
             )}
             <p>
                 Task {point.step} · {point.termLabel} · {point.criterionName}
             </p>
-            <p className="history-tooltip-task">{point.label}</p>
+            <p className="font-semibold text-foreground">{point.label}</p>
             <p>
                 Score {point.percent.toFixed(1)}% ({point.isOfficial ? "official" : "yours"})
             </p>
@@ -81,7 +79,7 @@ export function HistoryTooltip({ store }) {
     const offsetY = hover.below ? "14px" : "calc(-100% - 14px)";
     return (
         <div
-            className="history-tooltip history-tooltip-float"
+            className="pointer-events-none absolute z-(--z-chart-tooltip) flex w-max max-w-72 flex-col gap-1 rounded-lg border border-border bg-card px-3 py-2.5 type-small text-muted-foreground shadow-hover *:m-0"
             role="status"
             style={{ left: hover.x, top: hover.y, transform: `translate(${offsetX}, ${offsetY})` }}
         >
