@@ -150,7 +150,7 @@ Write **Pass** or **Fail** (with a note) next to each item.
 | I6 | Upcoming tasks: type 3 for AT | Saved at once. The result and the "You need" column update. Values are rounded and kept within 0–20 |
 | I7 | Upcoming tasks: clear the box | It shows 0 at once and can't be left empty (B16) |
 | I8 | Expected %: type 130, then clear it | Saved as 100. Cleared, it goes back to "Auto" (null) |
-| I9 | **Draft scores** (step 3): type 7 then 75 on TLA 1 | **Today:** every keystroke writes the real self-reported score. Subject Detail then shows 75 in Current Term Records (B9). **After the approved Phase 6 fix:** the draft is stored only in `targetGradeSandbox.terms.prelim.draftScores` and Current Term Records is unchanged |
+| I9 | **Draft scores** (step 3): type 7 then 75 on TLA 1, then clear AT 2 | Each keystroke is stored only as a draft, in `targetGradeSandbox.terms.prelim.draftScores` (`{ "TLA-1": "75" }`). The result card, the expected gauge and the plan chart use it. The real score is unchanged: Current Term Records on Subject Detail still shows TLA 1 empty. AT 2's box starts at its real score, 45. Cleared, it counts as no score in the sandbox only (B9, fixed in T6.12) |
 | I10 | Draft score 101 on a /100 task | Not saved: "Enter a score between 0 and 100." |
 | I11 | Draft placeholders | The grey number is the raw score that matches the result (for example 90 on a /100 task) |
 | I12 | Official tasks in step 3 | Shown as "18 / 20 official", locked |

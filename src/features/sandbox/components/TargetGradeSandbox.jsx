@@ -2,14 +2,22 @@
 // Target Grade Sandbox for one subject and term. Works with any grading
 // rule: each deepest criterion of the rule gets its own row.
 // The math lives in utils/sandbox.js. Sandbox settings and draft scores
-// are private to the student and never change official scores.
+// are private to the student and never change official scores. Draft
+// scores are stored apart from the real scores and are used only here.
 import { useState } from "react";
 import { getDb, saveDb } from "@/services/db";
 import { updateStudentRecord } from "@/services/records";
-import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
+import { calculateOfficialGrade, calculateUnofficialGrade } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
 import { getActiveStudentId } from "@/services/session";
-import { getSandboxPlan, MAX_UPCOMING, requiredScore, updateSandboxSettings } from "@/lib/sandbox";
+import {
+    getSandboxPlan,
+    MAX_UPCOMING,
+    requiredScore,
+    setDraftScore,
+    updateSandboxSettings,
+    withDraftScores,
+} from "@/lib/sandbox";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import { validateScore } from "@/lib/scores";
@@ -139,14 +147,17 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
         );
     }
 
+    // Draft scores feed the sandbox only: the result, the gauges and the
+    // chart use this record. Saved records and official grades never see them.
+    const sandboxRecord = withDraftScores(studentRecord, termKey);
     const target = getSandboxTarget(studentRecord, termKey);
-    const plan = getSandboxPlan(studentRecord, rule, termKey, target);
+    const plan = getSandboxPlan(sandboxRecord, rule, termKey, target);
     const officialGrade = calculateOfficialGrade(studentRecord, termKey, rule);
-    const expectedGrade = calculateUnofficialGrade(studentRecord, termKey, rule);
+    const expectedGrade = calculateUnofficialGrade(sandboxRecord, termKey, rule);
     const suggestion = plan.status === "required" ? plan.required : null;
-    const historyPoints = getGradeHistory(studentRecord, rule, termKey);
+    const historyPoints = getGradeHistory(sandboxRecord, rule, termKey);
     const planPoints = getPlanPoints(
-        studentRecord,
+        sandboxRecord,
         rule,
         termKey,
         target,
@@ -191,7 +202,8 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
         saveSettings({ sandboxDesiredFinalGrade: value });
     }
 
-    function saveDraftScore(criterionId, task, value) {
+    // Stores a draft for the task. The real self-reported score is untouched.
+    function saveDraftScore(task, value) {
         const check = validateScore(value, task.maxScore ?? 100);
         if (!check.ok) {
             setInvalidScoreId(task.id);
@@ -199,23 +211,10 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
             return;
         }
         setInvalidScoreId("");
-        saveRecord((record) => {
-            const grades = record.grades ?? {};
-            const termGrades = grades[termKey] ?? {};
-            const tasks = Array.isArray(termGrades[criterionId]) ? termGrades[criterionId] : [];
-            return {
-                ...record,
-                grades: {
-                    ...grades,
-                    [termKey]: {
-                        ...termGrades,
-                        [criterionId]: tasks.map((item) =>
-                            item.id === task.id ? withStudentScore(item, value) : item,
-                        ),
-                    },
-                },
-            };
-        }, "Unable to save draft score");
+        saveRecord(
+            (record) => setDraftScore(record, termKey, task.id, value),
+            "Unable to save draft score",
+        );
     }
 
     const draftCriteria = plan.criteria.filter((criterion) => criterion.tasks.length > 0);
@@ -530,7 +529,6 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                             }
                                                             onChange={(event) =>
                                                                 saveDraftScore(
-                                                                    criterion.id,
                                                                     task,
                                                                     event.target.value,
                                                                 )

@@ -5,7 +5,6 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { readRecord, seedBrowser, setupBrowserTests } from "@/test/browser.js";
-import { FIXED_NOW_ISO } from "@/test/fixedDate.js";
 import { makeSeedDb } from "@/test/fixtures.js";
 import TargetGradeSandbox from "./TargetGradeSandbox";
 
@@ -69,32 +68,47 @@ describe("gauges", () => {
     });
 });
 
-describe("draft scores (current behaviour, docs/AUDIT.md B9)", () => {
-    it("writes the real studentReportedScore on every keystroke", () => {
+// Draft scores are draft-only (the approved B9 fix, AGENTS.md section 3):
+// they are stored in targetGradeSandbox.terms[term].draftScores and never
+// change the real studentReportedScore.
+describe("draft scores", () => {
+    it("stores each keystroke as a draft and leaves the real score alone", () => {
+        const before = makeSeedDb().classes[0].studentRecords[0].grades;
         renderSandbox();
         const input = draftInput("TLA 1");
         expect(input.value).toBe("");
         expect(input.placeholder).toBe("90");
 
         fireEvent.change(input, { target: { value: "7" } });
-        expect(readRecord().grades.prelim.TLA[0]).toMatchObject({
-            studentReportedScore: "7",
-            studentScoredAt: FIXED_NOW_ISO,
-        });
+        expect(termSettings()).toEqual({ draftScores: { "TLA-1": "7" } });
         fireEvent.change(input, { target: { value: "75" } });
-        expect(readRecord().grades.prelim.TLA[0].studentReportedScore).toBe("75");
-        expect(readRecord().targetGradeSandbox).toEqual({ desiredFinalGrade: 90 });
+        expect(termSettings()).toEqual({ draftScores: { "TLA-1": "75" } });
+        expect(input.value).toBe("75");
+        expect(readRecord().grades).toEqual(before);
     });
 
-    it("clearing a draft clears the real score and its time", () => {
+    it("feeds the result card and the expected gauge, not the official gauge", () => {
+        renderSandbox();
+        fireEvent.change(draftInput("TLA 1"), { target: { value: "100" } });
+        // TLA 1 = 100 leaves only the exam: (90 - 63 classwork) needs 83% on it.
+        expect(result().textContent).toContain("Score at least 83% on each of your 1 task left");
+        expect(
+            screen.getByRole("img", { name: /^Prelim expected/ }).getAttribute("aria-label"),
+        ).toBe("Prelim expected: 93 percent");
+        expect(
+            screen.getByRole("img", { name: /^Prelim official/ }).getAttribute("aria-label"),
+        ).toBe("Prelim official: 90 percent");
+    });
+
+    it("starts from the real self-reported score, and a cleared box counts as no score", () => {
         renderSandbox();
         const input = draftInput("AT 2");
         expect(input.value).toBe("45");
         fireEvent.change(input, { target: { value: "" } });
-        expect(readRecord().grades.prelim.AT[1]).toMatchObject({
-            studentReportedScore: "",
-            studentScoredAt: null,
-        });
+        expect(termSettings()).toEqual({ draftScores: { "AT-2": "" } });
+        expect(input.value).toBe("");
+        expect(readRecord().grades.prelim.AT[1].studentReportedScore).toBe(45);
+        expect(result().textContent).toContain("on each of your 3 tasks left this term.");
     });
 
     it("locks official scores", () => {
@@ -108,7 +122,7 @@ describe("draft scores (current behaviour, docs/AUDIT.md B9)", () => {
         const input = draftInput("TLA 1");
         for (const value of ["101", "-1", "abc", "0100", "1e2"]) {
             fireEvent.change(input, { target: { value } });
-            expect(readRecord().grades.prelim.TLA[0].studentReportedScore).toBeNull();
+            expect(termSettings()).toBeUndefined();
             expect(input.getAttribute("aria-invalid")).toBe("true");
             expect(screen.getByRole("alert").textContent).toBe("Enter a score between 0 and 100.");
         }
@@ -119,7 +133,7 @@ describe("draft scores (current behaviour, docs/AUDIT.md B9)", () => {
         const input = draftInput("TLA 1");
         fireEvent.change(input, { target: { value: "101" } });
         fireEvent.change(input, { target: { value: "100" } });
-        expect(readRecord().grades.prelim.TLA[0].studentReportedScore).toBe("100");
+        expect(termSettings()).toEqual({ draftScores: { "TLA-1": "100" } });
         expect(input.getAttribute("aria-invalid")).toBe("false");
         expect(screen.queryByRole("alert")).toBeNull();
     });

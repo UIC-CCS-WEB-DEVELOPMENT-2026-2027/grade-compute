@@ -549,7 +549,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Add unit tests for every message in checklist A3–A13.
   - Check: V-same, checklist A.
   - **As done:** the password requirements are exported as `PASSWORD_REQUIREMENTS` (UPPER_SNAKE_CASE constant, AGENTS §6). Checklist A1–A18 passed in a browser, with identical page text, session and saved users before and after.
-- [ ] **T6.12 ⚠ B9 fix (approved, AGENTS §3).**
+- [x] **T6.12 ⚠ B9 fix (approved, AGENTS §3).**
   - Change: "Try draft scores" writes `targetGradeSandbox.terms[term].draftScores[taskId]` (via `services/records.js`) and never touches `studentReportedScore`. No migration.
   - Tests: update the B9 sandbox test **in the same commit**, and say so in the commit message.
   - **How drafts behave (D5, approved):**
@@ -557,6 +557,11 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - A draft box first shows the task's real self-reported score. Typing stores a draft for that task. A cleared box stores `""`, which counts as "no score" in the sandbox.
   - Also update `docs/BEHAVIOUR_CHECKLIST.md` I9.
   - The SPEC §4 note is updated afterwards through the SPEC protocol (owner).
+  - **As done:**
+    - Drafts are written by `setDraftScore` in `lib/sandbox.js`, through `services/records.js`. `setDraftScore` touches only `draftScores`; `updateSandboxSettings` would also add an empty `criteria`.
+    - The official gauge and the target read the real record. The result card, the expected gauge and the chart read `withDraftScores`.
+    - A draft has no score time. On the sandbox chart, a task scored only by a draft is drawn in rule order among the untimed tasks; before, the B9 write stamped it "now" and drew it last. Only the order of points on the solid line changes; the result and the end point do not. Raised at the Phase 6 gate.
+    - Checked in a browser: I9 as updated, and the other sandbox and records flows unchanged.
 - [ ] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
 - [ ] **T6.14 Named exports: `components/` and `components/layout/`.**
 - [ ] **T6.15 Named exports: `features/*`.**

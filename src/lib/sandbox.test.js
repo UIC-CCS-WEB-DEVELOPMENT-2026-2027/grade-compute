@@ -7,8 +7,10 @@ import {
     MAX_UPCOMING,
     requiredScore,
     roundUp2,
+    setDraftScore,
     taskPercent,
     updateSandboxSettings,
+    withDraftScores,
 } from "./sandbox.js";
 
 const rule = makeStandardRule();
@@ -377,5 +379,78 @@ describe("updateSandboxSettings", () => {
         );
         const updated = updateSandboxSettings(record, "prelim", { sandboxDesiredFinalGrade: 85 });
         expect(updated.targetGradeSandbox.terms.midterm).toEqual({ sandboxDesiredFinalGrade: 70 });
+    });
+});
+
+// Draft scores (the approved B9 fix): stored per term, used only by the sandbox.
+describe("setDraftScore", () => {
+    it("stores the typed text for one task and keeps the other settings", () => {
+        const record = withTermSettings(makeMixedRecord(), {
+            criteria: { AT: { upcoming: 2 } },
+            draftScores: { e1: "70" },
+        });
+        const next = setDraftScore(record, "prelim", "t2", "30");
+        expect(next.targetGradeSandbox.terms.prelim).toEqual({
+            criteria: { AT: { upcoming: 2 } },
+            draftScores: { e1: "70", t2: "30" },
+        });
+        expect(next.targetGradeSandbox.desiredFinalGrade).toBe(90);
+        expect(next.grades).toBe(record.grades);
+    });
+
+    it("stores a cleared box as an empty string", () => {
+        const next = setDraftScore(makeMixedRecord(), "midterm", "a2", "");
+        expect(next.targetGradeSandbox.terms).toEqual({ midterm: { draftScores: { a2: "" } } });
+    });
+});
+
+describe("withDraftScores", () => {
+    const drafted = (drafts, term = "prelim") =>
+        withDraftScores(withTermSettings(makeMixedRecord(), { draftScores: drafts }, term), term);
+    const task = (record, criterionId, id) =>
+        record.grades.prelim[criterionId].find((item) => item.id === id);
+
+    it("returns the same record when the term has no drafts", () => {
+        const record = makeMixedRecord();
+        expect(withDraftScores(record, "prelim")).toBe(record);
+        const empty = withTermSettings(record, { draftScores: {} });
+        expect(withDraftScores(empty, "prelim")).toBe(empty);
+    });
+
+    it("puts each draft in place of the self-reported score", () => {
+        const record = drafted({ t2: "30", a3: "8" });
+        expect(task(record, "TLA", "t2").studentReportedScore).toBe("30");
+        expect(task(record, "AT", "a3").studentReportedScore).toBe("8");
+        expect(task(record, "AT", "a2").studentReportedScore).toBe(45);
+    });
+
+    it("keeps official tasks as they are", () => {
+        const record = drafted({ a1: "1", t1: "1" });
+        expect(task(record, "AT", "a1")).toEqual(makeMixedRecord().grades.prelim.AT[0]);
+        expect(task(record, "TLA", "t1")).toEqual(makeMixedRecord().grades.prelim.TLA[0]);
+    });
+
+    it("treats an empty draft as no score in the plan", () => {
+        const plan = getSandboxPlan(drafted({ a3: "" }), rule, "prelim", 90);
+        const at = plan.criteria.find((criterion) => criterion.id === "AT");
+        expect(at.scoredCount).toBe(2);
+        expect(at.openTasks).toBe(1);
+    });
+
+    it("changes only this term and never the stored record", () => {
+        const source = withTermSettings(makeMixedRecord(), { draftScores: { t2: "30" } });
+        const before = structuredClone(source);
+        const record = withDraftScores(source, "prelim");
+        expect(source).toEqual(before);
+        expect(record.grades.midterm).toBe(source.grades.midterm);
+        expect(withDraftScores(source, "midterm")).toBe(source);
+    });
+
+    it("handles an exam stored as a single task object", () => {
+        const record = withTermSettings(makeMixedRecord(), { draftScores: { e1: "70" } });
+        record.grades.prelim.Exam = makeTask("e1", 100);
+        expect(withDraftScores(record, "prelim").grades.prelim.Exam.studentReportedScore).toBe(
+            "70",
+        );
     });
 });

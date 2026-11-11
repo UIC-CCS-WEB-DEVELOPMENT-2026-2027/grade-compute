@@ -21,7 +21,11 @@
 //   targetGradeSandbox.terms[term] = {
 //     sandboxDesiredFinalGrade: 90,
 //     criteria: { [leafId]: { upcoming: 2, expected: null } },
+//     draftScores: { [taskId]: "75" },
 //   }
+// Draft scores are "what if" scores for tasks already added. They are used
+// only inside the sandbox (withDraftScores) and never change the task's
+// real studentReportedScore.
 import { toTaskList } from "./grades.js";
 import { clamp, toNumber } from "./number.js";
 import { getRuleLeaves, TOTAL_SHARE } from "./rules.js";
@@ -170,6 +174,62 @@ export function updateSandboxSettings(studentRecord, termKey, updates) {
             terms: {
                 ...(config.terms ?? {}),
                 [termKey]: { ...termConfig, ...updates, criteria },
+            },
+        },
+    };
+}
+
+function hasOfficialScore(task) {
+    return (
+        task?.officialScore !== null &&
+        task?.officialScore !== undefined &&
+        task?.officialScore !== ""
+    );
+}
+
+// The record the sandbox calculates with: this term's tasks with the
+// student's draft scores in place of their self-reported scores. A draft of
+// "" means no score. Tasks with an official score keep everything as it is.
+// Returns the same record when the term has no drafts.
+export function withDraftScores(studentRecord, termKey) {
+    const drafts = studentRecord?.targetGradeSandbox?.terms?.[termKey]?.draftScores;
+    const termGrades = studentRecord?.grades?.[termKey];
+    if (!drafts || !termGrades || Object.keys(drafts).length === 0) return studentRecord;
+
+    const applyDraft = (task) =>
+        task?.id !== null &&
+        task?.id !== undefined &&
+        Object.hasOwn(drafts, task.id) &&
+        !hasOfficialScore(task)
+            ? { ...task, studentReportedScore: drafts[task.id] }
+            : task;
+    const draftedTerm = Object.fromEntries(
+        Object.entries(termGrades).map(([criterionId, tasks]) => [
+            criterionId,
+            Array.isArray(tasks)
+                ? tasks.map(applyDraft)
+                : tasks && typeof tasks === "object"
+                  ? applyDraft(tasks)
+                  : tasks,
+        ]),
+    );
+    return { ...studentRecord, grades: { ...studentRecord.grades, [termKey]: draftedTerm } };
+}
+
+// Saves one draft score (the text typed, "" when cleared) for a task.
+export function setDraftScore(studentRecord, termKey, taskId, value) {
+    const config = studentRecord?.targetGradeSandbox ?? {};
+    const termConfig = config.terms?.[termKey] ?? {};
+    return {
+        ...studentRecord,
+        targetGradeSandbox: {
+            ...config,
+            terms: {
+                ...(config.terms ?? {}),
+                [termKey]: {
+                    ...termConfig,
+                    draftScores: { ...(termConfig.draftScores ?? {}), [taskId]: value },
+                },
             },
         },
     };
