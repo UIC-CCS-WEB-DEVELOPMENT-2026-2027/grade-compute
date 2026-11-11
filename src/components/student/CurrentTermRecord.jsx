@@ -2,8 +2,8 @@ import { useState } from "react";
 import DraftInput from "../shared/DraftInput";
 import { getDb, saveDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
-import { toTaskList, withStudentScore } from "../../utils/grades";
-import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
+import { toTaskList, withStudentScore } from "@/lib/grades";
+import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
 import "./CurrentTermRecord.css";
 
 function termKey(term) {

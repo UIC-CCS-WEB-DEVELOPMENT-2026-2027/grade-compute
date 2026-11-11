@@ -6,7 +6,7 @@ import RuleBar from "./RuleBar";
 import RuleFormula from "./RuleFormula";
 import RuleHierarchyTable from "./RuleHierarchyTable";
 import RulePieChart from "./RulePieChart";
-import { ruleToTree } from "../../utils/rules";
+import { ruleToTree } from "@/lib/rules";
 
 export default function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, onDelete }) {
     const tree = ruleToTree(rule);

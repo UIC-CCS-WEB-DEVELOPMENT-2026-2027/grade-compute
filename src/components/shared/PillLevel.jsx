@@ -20,7 +20,7 @@ import {
     setCriterionPercent,
     shareToPercent,
     splitCriterion,
-} from "../../utils/rules";
+} from "@/lib/rules";
 
 export default function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     const level = findCriterion(tree, levelId);

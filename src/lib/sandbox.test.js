@@ -1,6 +1,6 @@
 // Characterization tests for sandbox.js (Target Grade Sandbox maths).
 import { describe, expect, it } from "vitest";
-import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "../test/fixtures.js";
+import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";
 import {
     DEFAULT_TARGET,
     getCriterionSettings,

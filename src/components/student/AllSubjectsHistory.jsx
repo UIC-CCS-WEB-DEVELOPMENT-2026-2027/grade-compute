@@ -16,9 +16,9 @@ import {
     YAxis,
 } from "recharts";
 import { resolveColor } from "../../utils/cssColor";
-import { getCriteriaColor } from "../../utils/rules";
-import { getChartScale, getCoursesHistory, PASSING_GRADE } from "../../utils/history";
-import { TERMS, getTermLabel } from "../../utils/terms";
+import { getCriteriaColor } from "@/lib/rules";
+import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
+import { TERMS, getTermLabel } from "@/lib/terms";
 import HistoryTooltip from "./HistoryTooltip";
 import usePointHover from "./usePointHover";
 import "./HistoryChart.css";

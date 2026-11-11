@@ -4,8 +4,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getDb, saveDb } from "../../utils/db";
-import { getRuleFormulaText } from "../../utils/rules";
-import { addSubject, getInitialRuleId } from "../../utils/subjects";
+import { getRuleFormulaText } from "@/lib/rules";
+import { addSubject, getInitialRuleId } from "@/lib/subjects";
 import "./AddSubjectForm.css";
 
 const FIELD_LABELS = {

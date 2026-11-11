@@ -1,7 +1,7 @@
 // Characterization tests for rules.js (grade computation rule maths,
 // the editor tree, and rule database operations).
 import { describe, expect, it } from "vitest";
-import { makeSeedDb, makeStandardRule, makeTask } from "../test/fixtures.js";
+import { makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";
 import {
     addCriterion,
     buildRuleMath,

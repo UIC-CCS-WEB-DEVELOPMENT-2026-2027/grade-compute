@@ -1,6 +1,6 @@
 // Characterization tests for history.js (grade history and plan points).
 import { describe, expect, it } from "vitest";
-import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "../test/fixtures.js";
+import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";
 import {
     getChartScale,
     getCoursesHistory,

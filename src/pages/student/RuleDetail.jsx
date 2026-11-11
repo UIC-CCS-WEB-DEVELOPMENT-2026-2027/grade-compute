@@ -26,7 +26,7 @@ import {
     ruleToTree,
     updateRule,
     validateRuleDetails,
-} from "../../utils/rules";
+} from "@/lib/rules";
 import "./GradeRules.css";
 import "./RuleDetail.css";
 

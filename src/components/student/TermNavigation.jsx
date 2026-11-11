@@ -1,7 +1,7 @@
 // src/components/student/TermNavigation.jsx
 // Term buttons shown at the top of Subject Detail and the Target Grade
 // Sandbox. Styles: SubjectDetail.css + TermNavigation.css.
-import { TERMS } from "../../utils/terms";
+import { TERMS } from "@/lib/terms";
 import "./TermNavigation.css";
 
 // termKey: "prelim" | "midterm" | "finals".

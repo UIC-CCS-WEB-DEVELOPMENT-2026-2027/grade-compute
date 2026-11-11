@@ -1,7 +1,7 @@
 // src/components/shared/RuleHierarchyTable.jsx
 // Hierarchy table of a rule (grade-rules-spec.txt, PART 7): each criterion,
 // indented by level, with its share of its parent and of the whole grade.
-import { formatPercent, getHierarchyRows } from "../../utils/rules";
+import { formatPercent, getHierarchyRows } from "@/lib/rules";
 import "./RuleVisuals.css";
 
 export default function RuleHierarchyTable({ tree, compact = false }) {

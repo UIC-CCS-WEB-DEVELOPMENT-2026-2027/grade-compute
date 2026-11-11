@@ -10,7 +10,7 @@ import {
     getCurrentSemester,
     getEnrolledSubjects,
     getSemesterOptions,
-} from "../../utils/subjects";
+} from "@/lib/subjects";
 import "./SubjectMenu.css";
 
 const SEMESTER_OPTIONS = getSemesterOptions();

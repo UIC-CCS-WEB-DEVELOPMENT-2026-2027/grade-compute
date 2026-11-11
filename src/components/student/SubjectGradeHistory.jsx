@@ -7,14 +7,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
 import { focusTaskRow } from "../../utils/focusTask";
-import {
-    getEntryAccuracy,
-    getGradeHistory,
-    getPlanPoints,
-    getTermTarget,
-} from "../../utils/history";
+import { getEntryAccuracy, getGradeHistory, getPlanPoints, getTermTarget } from "@/lib/history";
 import { getActiveStudentId } from "../../utils/session";
-import { getTermLabel } from "../../utils/terms";
+import { getTermLabel } from "@/lib/terms";
 import HistoryChart from "./HistoryChart";
 
 function formatGrade(value) {

@@ -7,7 +7,7 @@ import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
 import TermNavigation from "../../components/student/TermNavigation";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
-import { toTermKey } from "../../utils/terms";
+import { toTermKey } from "@/lib/terms";
 import "./SubjectDetail.css";
 
 export default function TargetGradeSandboxPage() {

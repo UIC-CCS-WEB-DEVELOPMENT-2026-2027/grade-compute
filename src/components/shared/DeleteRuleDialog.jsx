@@ -4,7 +4,7 @@
 // Calls onDeleted(newDb) with the updated database; the page saves it.
 import { useState } from "react";
 import Dialog from "./Dialog";
-import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "../../utils/rules";
+import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
 
 export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
     const otherRules = (db?.computationRules ?? []).filter((item) => item.id !== rule.id);

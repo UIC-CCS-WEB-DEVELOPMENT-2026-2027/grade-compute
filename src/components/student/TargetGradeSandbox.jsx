@@ -5,12 +5,8 @@
 // are private to the student and never change official scores.
 import { useEffect, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
-import {
-    calculateOfficialGrade,
-    calculateUnofficialGrade,
-    withStudentScore,
-} from "../../utils/grades";
-import { formatPercent } from "../../utils/rules";
+import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
+import { formatPercent } from "@/lib/rules";
 import { getActiveStudentId } from "../../utils/session";
 import {
     getSandboxPlan,
@@ -18,9 +14,9 @@ import {
     MAX_UPCOMING,
     requiredScore,
     updateSandboxSettings,
-} from "../../utils/sandbox";
+} from "@/lib/sandbox";
 import { focusTaskRow } from "../../utils/focusTask";
-import { getGradeHistory, getPlanPoints } from "../../utils/history";
+import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import HistoryChart from "./HistoryChart";
 import "./TargetGradeSandbox.css";
 

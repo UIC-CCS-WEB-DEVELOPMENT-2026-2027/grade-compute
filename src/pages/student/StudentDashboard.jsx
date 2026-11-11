@@ -8,7 +8,7 @@ import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTabl
 import AllSubjectsHistory from "../../components/student/AllSubjectsHistory";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
 import { getActiveStudentId } from "../../utils/session";
-import { getCurrentSemester, getEnrolledSubjects } from "../../utils/subjects";
+import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
 import "./StudentDashboard.css";
 
 export default function StudentDashboard() {

@@ -3,7 +3,7 @@
 // is the top-level criteria; each outer ring splits them further. Slice
 // sizes are each criterion's share of the total grade.
 import { Pie, PieChart } from "recharts";
-import { formatPercent, getHierarchyRows, getPieRings } from "../../utils/rules";
+import { formatPercent, getHierarchyRows, getPieRings } from "@/lib/rules";
 import "./RuleVisuals.css";
 
 // SVG fill attributes can't read CSS variables, so read the token's value.

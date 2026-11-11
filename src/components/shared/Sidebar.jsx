@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
-import { getEnrolledSubjects } from "../../utils/subjects";
-import { toTermKey } from "../../utils/terms";
+import { getEnrolledSubjects } from "@/lib/subjects";
+import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "../../utils/session";
 import SandboxSubjectPicker from "../student/SandboxSubjectPicker";
 import useSidebarState, {

@@ -1,8 +1,8 @@
 // Characterization tests for subjects.js: semesters, enrolled subjects,
 // adding a subject. The date is frozen at 11 Nov 2026 (src/test/setup.js).
 import { describe, expect, it } from "vitest";
-import { FIXED_NOW_ISO } from "../test/fixedDate.js";
-import { makeSeedDb, makeTask } from "../test/fixtures.js";
+import { FIXED_NOW_ISO } from "@/test/fixedDate.js";
+import { makeSeedDb, makeTask } from "@/test/fixtures.js";
 import {
     addSubject,
     getClassSemesterId,

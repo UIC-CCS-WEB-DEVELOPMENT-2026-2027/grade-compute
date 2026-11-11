@@ -17,7 +17,7 @@ import {
     YAxis,
 } from "recharts";
 import { resolveColor } from "../../utils/cssColor";
-import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "../../utils/history";
+import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import HistoryTooltip from "./HistoryTooltip";
 import usePointHover from "./usePointHover";
 import "./HistoryChart.css";

@@ -13,8 +13,8 @@ import {
     calculateOfficialGrade,
     calculateUnofficialGrade,
     getOfficialAssessments,
-} from "../../utils/grades";
-import { getTermLabel, toTermKey } from "../../utils/terms";
+} from "@/lib/grades";
+import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "../../utils/session";
 import { focusTaskRow } from "../../utils/focusTask";
 import "./SubjectDetail.css";

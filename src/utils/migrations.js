@@ -2,8 +2,8 @@
 // Upgrades data saved in older formats, so browsers that already have
 // "compugrade_db" in localStorage keep working after a format change.
 // Called by db.js. Safe to run more than once.
-import { buildRuleMath, ruleToTree, TERM_KEYS } from "./rules.js";
-import { toTaskList } from "./grades.js";
+import { buildRuleMath, ruleToTree, TERM_KEYS } from "@/lib/rules.js";
+import { toTaskList } from "@/lib/grades.js";
 
 export const SCHEMA_VERSION = 2;
 

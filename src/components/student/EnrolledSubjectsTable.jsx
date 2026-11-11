@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AddSubjectForm from "./AddSubjectForm";
-import { PASSING_GRADE } from "../../utils/subjects";
+import { PASSING_GRADE } from "@/lib/subjects";
 import "./EnrolledSubjectsTable.css";
 
 const STATUS_LABELS = {
