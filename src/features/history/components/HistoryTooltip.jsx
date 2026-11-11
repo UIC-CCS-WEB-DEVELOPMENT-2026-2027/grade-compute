@@ -4,6 +4,8 @@
 // replaced or the planned score, and the grade right after it.
 import { useEffect, useState } from "react";
 import { formatGrade } from "@/lib/format";
+// Styled by HistoryChart.css until the history charts are converted (T7.G5).
+import "./HistoryChart.css";
 
 function ReplacedLine({ point }) {
     const change = point.percent - point.replacedEntry.percent;

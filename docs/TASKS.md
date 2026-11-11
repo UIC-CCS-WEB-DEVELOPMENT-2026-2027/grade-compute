@@ -631,7 +631,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       - Text uses the roles: the hero heading `display`, the form heading `section-title`, the preview labels `caption`, the rest `small`.
 - **Dashboard**
   - [x] **T7.D1** Page shell, overview header, semester badge (`Badge`). Check: C1.
-  - [ ] **T7.D2 ⚠ AllSubjectsHistory.**
+  - [x] **T7.D2 ⚠ AllSubjectsHistory.**
     - Change: term `ToggleGroup`, chips `Toggle`, `ChartContainer`, the shared `HistoryChartFrame` (G21), and "Show as a table" → `Collapsible` + `Table`.
     - Recharts guard: add `chart` with `--dry-run`. If it would change the Recharts version, keep 3.10.1 (it satisfies the component) and don't accept the downgrade.
     - Check: C2–C5.
