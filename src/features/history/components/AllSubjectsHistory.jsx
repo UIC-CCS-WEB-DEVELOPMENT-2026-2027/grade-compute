@@ -20,7 +20,7 @@ import { getCriteriaColor } from "@/lib/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
 import { TERMS, getTermLabel } from "@/lib/terms";
 import HistoryTooltip from "./HistoryTooltip";
-import usePointHover from "./usePointHover";
+import usePointHover from "@/features/history/hooks/usePointHover";
 import "./HistoryChart.css";
 
 // Strong colors first so the first lines read well on white.

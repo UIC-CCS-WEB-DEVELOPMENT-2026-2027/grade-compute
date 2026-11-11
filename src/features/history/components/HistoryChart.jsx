@@ -19,7 +19,7 @@ import {
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import HistoryTooltip from "./HistoryTooltip";
-import usePointHover from "./usePointHover";
+import usePointHover from "@/features/history/hooks/usePointHover";
 import "./HistoryChart.css";
 
 function formatGrade(value) {

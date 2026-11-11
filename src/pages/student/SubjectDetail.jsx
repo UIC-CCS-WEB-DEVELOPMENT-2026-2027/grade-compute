@@ -6,7 +6,7 @@ import PageFooter from "@/components/layout/PageFooter";
 import CurrentTermRecords from "@/features/term-records/components/CurrentTermRecords";
 import DraftInput from "@/components/DraftInput";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
-import SubjectGradeHistory from "../../components/student/SubjectGradeHistory";
+import SubjectGradeHistory from "@/features/history/components/SubjectGradeHistory";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import congratulationAudio from "../../assets/congrats_voice .mp3";
 import {

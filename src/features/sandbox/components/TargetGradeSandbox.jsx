@@ -17,7 +17,7 @@ import {
 } from "@/lib/sandbox";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
-import HistoryChart from "@/components/student/HistoryChart";
+import HistoryChart from "@/features/history/components/HistoryChart";
 import "./TargetGradeSandbox.css";
 
 const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
