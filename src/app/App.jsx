@@ -2,19 +2,19 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // Auth
-import LoginRegister from "./pages/auth/LoginRegister";
+import LoginRegister from "@/pages/auth/LoginRegister";
 
 // Global Settings
-import GlobalSettings from "./pages/GlobalSettings"; // Put this in src/pages/
+import GlobalSettings from "@/pages/GlobalSettings"; // Put this in src/pages/
 
 // Student Workspace
-import StudentDashboard from "./pages/student/StudentDashboard";
-import SubjectDetail from "./pages/student/SubjectDetail";
-import SubjectMenu from "./pages/student/SubjectMenu";
-import TargetGradeSandboxPage from "./pages/student/TargetGradeSandboxPage";
-import GradeRules from "./pages/student/GradeRules";
-import RuleDetail from "./pages/student/RuleDetail";
-import RequireStudent from "./components/shared/RequireStudent";
+import StudentDashboard from "@/pages/student/StudentDashboard";
+import SubjectDetail from "@/pages/student/SubjectDetail";
+import SubjectMenu from "@/pages/student/SubjectMenu";
+import TargetGradeSandboxPage from "@/pages/student/TargetGradeSandboxPage";
+import GradeRules from "@/pages/student/GradeRules";
+import RuleDetail from "@/pages/student/RuleDetail";
+import RequireStudent from "./RequireStudent";
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
