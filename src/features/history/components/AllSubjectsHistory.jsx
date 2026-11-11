@@ -19,8 +19,8 @@ import { resolveColor } from "@/lib/dom/cssColor";
 import { getCriteriaColor } from "@/lib/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
 import { TERMS, getTermLabel } from "@/lib/terms";
-import HistoryTooltip from "./HistoryTooltip";
-import usePointHover from "@/features/history/hooks/usePointHover";
+import { HistoryTooltip } from "./HistoryTooltip";
+import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import "./HistoryChart.css";
 
@@ -82,7 +82,7 @@ function SubjectDot({ cx, cy, payload, course, reached, surface, success, onSele
 
 // db: the database. studentId: the signed-in student.
 // semesterId: only this semester's subjects. initialTerm: "prelim" etc.
-export default function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "prelim" }) {
+export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "prelim" }) {
     const navigate = useNavigate();
     const { plotRef, store, show, hide } = usePointHover();
     // What each dot needs to open and close the tooltip.

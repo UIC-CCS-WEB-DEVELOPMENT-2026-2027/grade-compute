@@ -4,7 +4,7 @@
 import { formatPercent, getHierarchyRows } from "@/lib/rules";
 import "./RuleVisuals.css";
 
-export default function RuleHierarchyTable({ tree, compact = false }) {
+export function RuleHierarchyTable({ tree, compact = false }) {
     const rows = getHierarchyRows(tree);
 
     return (

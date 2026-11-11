@@ -18,8 +18,8 @@ import {
 } from "recharts";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
-import HistoryTooltip from "./HistoryTooltip";
-import usePointHover from "@/features/history/hooks/usePointHover";
+import { HistoryTooltip } from "./HistoryTooltip";
+import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import "./HistoryChart.css";
 
@@ -187,7 +187,7 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
 // showPlan: draw planPoints. emphasizePlan: thicker plan line (sandbox).
 // target / targetLabel: the dashed target line. termLabel: e.g. "Prelim".
 // onSelect(point): called when a real point is clicked (go to that task).
-export default function HistoryChart({
+export function HistoryChart({
     points,
     planPoints = [],
     showPlan = false,

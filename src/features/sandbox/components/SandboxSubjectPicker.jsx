@@ -14,12 +14,7 @@ function formatExpectedGrade(grade) {
 // currentClassId: the subject the student is viewing, listed first.
 // termKey: term to open, e.g. "midterm" (optional).
 // onClose(): closes the picker.
-export default function SandboxSubjectPicker({
-    subjects,
-    currentClassId = null,
-    termKey = null,
-    onClose,
-}) {
+export function SandboxSubjectPicker({ subjects, currentClassId = null, termKey = null, onClose }) {
     const ordered = [
         ...subjects.filter((row) => row.classId === currentClassId),
         ...subjects.filter((row) => row.classId !== currentClassId),

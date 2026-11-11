@@ -2,13 +2,13 @@
 // One rule in the rules collection. The whole card opens the rule; the
 // thumbnail shows the rule as a bar, pie chart, or table.
 import { Link } from "react-router-dom";
-import RuleBar from "./RuleBar";
-import RuleFormula from "./RuleFormula";
-import RuleHierarchyTable from "./RuleHierarchyTable";
-import RulePieChart from "./RulePieChart";
+import { RuleBar } from "./RuleBar";
+import { RuleFormula } from "./RuleFormula";
+import { RuleHierarchyTable } from "./RuleHierarchyTable";
+import { RulePieChart } from "./RulePieChart";
 import { ruleToTree } from "@/lib/rules";
 
-export default function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, onDelete }) {
+export function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, onDelete }) {
     const tree = ruleToTree(rule);
     const tags = rule.tags ?? [];
     const schools = rule.schools ?? [];

@@ -3,8 +3,8 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { PageFooter } from "@/components/layout/PageFooter";
-import EnrolledSubjectsTable from "@/features/subjects/components/EnrolledSubjectsTable";
-import AllSubjectsHistory from "@/features/history/components/AllSubjectsHistory";
+import { EnrolledSubjectsTable } from "@/features/subjects/components/EnrolledSubjectsTable";
+import { AllSubjectsHistory } from "@/features/history/components/AllSubjectsHistory";
 import { getActiveStudentId } from "@/services/session";
 import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
 import { useDb } from "@/hooks/useDb";

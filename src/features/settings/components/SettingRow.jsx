@@ -1,4 +1,4 @@
-export default function SettingRow({ title, description, children }) {
+export function SettingRow({ title, description, children }) {
     return (
         <div className="simple-row">
             <div>

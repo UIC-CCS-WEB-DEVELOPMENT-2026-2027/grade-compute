@@ -25,7 +25,7 @@ function missingFieldMessage(field) {
 // initialSection: prefilled program / section (usually the student's own).
 // onAdded(classItem): called after the subject is saved.
 // onCancel(): called when the student closes the form.
-export default function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdded }) {
+export function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdded }) {
     // Rules are read once when the form opens. The form starts on the rule of
     // the student's most recently added subject (see getInitialRuleId).
     const [{ rules, initialRuleId }] = useState(() => {

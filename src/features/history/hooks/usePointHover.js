@@ -31,7 +31,7 @@ function createHoverStore() {
     };
 }
 
-export default function usePointHover() {
+export function usePointHover() {
     const plotRef = useRef(null);
     const [store] = useState(createHoverStore);
 

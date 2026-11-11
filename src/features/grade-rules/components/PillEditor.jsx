@@ -7,7 +7,7 @@
 // - tree: criteria tree from rules.js (ruleToTree() or createDefaultTree())
 // - onChange(newTree): called with the updated tree after every valid edit
 // - structureLocked: true hides add, delete, rename, and split (Phase 1)
-import PillLevel from "./PillLevel";
+import { PillLevel } from "./PillLevel";
 import "./PillEditor.css";
 
 function getLevels(node, depth = 0) {
@@ -18,7 +18,7 @@ function getLevels(node, depth = 0) {
     ];
 }
 
-export default function PillEditor({ tree, onChange, structureLocked = true }) {
+export function PillEditor({ tree, onChange, structureLocked = true }) {
     const levels = getLevels(tree);
 
     return (

@@ -7,7 +7,7 @@ import { resolveColor } from "@/lib/dom/cssColor";
 import { formatPercent, getHierarchyRows, getPieRings } from "@/lib/rules";
 import "./RuleVisuals.css";
 
-export default function RulePieChart({ tree, size = 220, showLegend = false }) {
+export function RulePieChart({ tree, size = 220, showLegend = false }) {
     const rings = getPieRings(tree);
     const rows = getHierarchyRows(tree);
     const outer = size / 2 - 2;

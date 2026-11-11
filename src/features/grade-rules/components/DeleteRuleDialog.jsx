@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/Dialog";
 import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
 
-export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
+export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
     const otherRules = (db?.computationRules ?? []).filter((item) => item.id !== rule.id);
     const usage = getRuleUsage(db, rule.id);
     const [replacementId, setReplacementId] = useState(otherRules[0]?.id ?? "");

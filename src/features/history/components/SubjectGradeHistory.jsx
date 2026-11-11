@@ -10,11 +10,11 @@ import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history"
 import { getTermTarget } from "@/lib/targets";
 import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
-import HistoryChart from "./HistoryChart";
+import { HistoryChart } from "./HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { useDb } from "@/hooks/useDb";
 
-export default function SubjectGradeHistory({ classId, termKey }) {
+export function SubjectGradeHistory({ classId, termKey }) {
     // Live, so it redraws when a score is saved (Current Term Records saves on blur).
     const [dbData] = useDb();
     const [showPlan, setShowPlan] = useState(true);

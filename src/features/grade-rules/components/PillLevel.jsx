@@ -22,7 +22,7 @@ import {
     splitCriterion,
 } from "@/lib/rules";
 
-export default function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
+export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     const level = findCriterion(tree, levelId);
     const segments = getLevelSegments(tree, levelId);
 

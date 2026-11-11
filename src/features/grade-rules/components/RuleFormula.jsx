@@ -3,7 +3,7 @@
 // Pass "tree" while editing (updates live) or "rule" for a saved rule.
 import { getFormulaText, getRuleFormulaText } from "@/lib/rules";
 
-export default function RuleFormula({ tree, rule }) {
+export function RuleFormula({ tree, rule }) {
     const text = tree ? getFormulaText(tree) : getRuleFormulaText(rule);
 
     return <p className="rule-formula">{text}</p>;

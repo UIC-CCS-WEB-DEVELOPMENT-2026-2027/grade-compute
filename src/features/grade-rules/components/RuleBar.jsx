@@ -4,7 +4,7 @@
 import { formatPercent, getFlattenedSegments } from "@/lib/rules";
 import "./RuleVisuals.css";
 
-export default function RuleBar({ tree, showLegend = true }) {
+export function RuleBar({ tree, showLegend = true }) {
     const segments = getFlattenedSegments(tree);
     const summary = segments
         .map((segment) => `${segment.name} ${formatPercent(segment.effectiveShare)}`)

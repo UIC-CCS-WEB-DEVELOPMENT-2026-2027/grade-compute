@@ -70,7 +70,7 @@ function PointDetails({ point, kind, seriesName, color }) {
 
 // store: from usePointHover(). It sends { x, y, flipX, below, data } where
 // data is { point, kind: "real" | "ghost" | "plan", seriesName?, color? }.
-export default function HistoryTooltip({ store }) {
+export function HistoryTooltip({ store }) {
     const [hover, setHover] = useState(null);
     useEffect(() => store.subscribe(setHover), [store]);
 

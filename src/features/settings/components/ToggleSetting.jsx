@@ -1,4 +1,4 @@
-export default function ToggleSetting({
+export function ToggleSetting({
     enabled,
     onToggle,
     enabledLabel = "On",

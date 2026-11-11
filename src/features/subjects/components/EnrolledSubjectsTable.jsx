@@ -5,7 +5,7 @@
 // subjects the same way.
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AddSubjectForm from "./AddSubjectForm";
+import { AddSubjectForm } from "./AddSubjectForm";
 import { formatGrade } from "@/lib/format";
 import { PASSING_GRADE } from "@/lib/subjects";
 import "./EnrolledSubjectsTable.css";
@@ -26,7 +26,7 @@ function subjectInitials(subjectCode) {
 // subtitle: line under the title.
 // studentId / initialSection: passed to AddSubjectForm.
 // onSubjectAdded(classItem): called after the form saves a subject.
-export default function EnrolledSubjectsTable({
+export function EnrolledSubjectsTable({
     subjects = [],
     subtitle = "All your subjects for the current semester.",
     studentId,

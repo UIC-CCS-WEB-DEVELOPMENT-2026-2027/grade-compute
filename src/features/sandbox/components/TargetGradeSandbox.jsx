@@ -23,7 +23,7 @@ import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
-import HistoryChart from "@/features/history/components/HistoryChart";
+import { HistoryChart } from "@/features/history/components/HistoryChart";
 import { formatGrade, getGaugeProgress } from "@/lib/format";
 import { useDb } from "@/hooks/useDb";
 import "./TargetGradeSandbox.css";
@@ -121,7 +121,7 @@ function SandboxResult({ plan, termLabel }) {
 }
 
 // classId: the class to plan. termKey: "prelim" | "midterm" | "finals".
-export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
+export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const [dbData, setDbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const [saveError, setSaveError] = useState("");

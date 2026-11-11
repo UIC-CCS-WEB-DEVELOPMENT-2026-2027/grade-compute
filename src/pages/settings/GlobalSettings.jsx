@@ -14,8 +14,8 @@ import {
     verifyPrototypeChallenge,
 } from "@/services/prototypeVerification";
 import { getSpaceSplitInitials } from "@/lib/format";
-import SettingRow from "@/features/settings/components/SettingRow";
-import ToggleSetting from "@/features/settings/components/ToggleSetting";
+import { SettingRow } from "@/features/settings/components/SettingRow";
+import { ToggleSetting } from "@/features/settings/components/ToggleSetting";
 import "./GlobalSettings.css";
 
 const sidebarItems = [

@@ -25,7 +25,7 @@ function hasOfficialScore(task) {
 // Sections come from the subject's grading rule: one per deepest criterion
 // (e.g. AT, TLA, Exam, or any custom criterion). Tasks are stored under the
 // criterion's id in each term (see grades-guide.txt).
-function CurrentTermRecords({ classId, term = "Prelim" }) {
+export function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [dbData, setDbData] = useDb({ live: false });
     const studentId = getActiveStudentId(dbData);
     const [taskNameInput, setTaskNameInput] = useState("");
@@ -551,5 +551,3 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         </section>
     );
 }
-
-export default CurrentTermRecords;

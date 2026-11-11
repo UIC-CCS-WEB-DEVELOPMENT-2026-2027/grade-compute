@@ -6,7 +6,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { readRecord, seedBrowser, setupBrowserTests } from "@/test/browser.js";
 import { makeSeedDb } from "@/test/fixtures.js";
-import TargetGradeSandbox from "./TargetGradeSandbox";
+import { TargetGradeSandbox } from "./TargetGradeSandbox";
 
 setupBrowserTests();
 

@@ -7,7 +7,7 @@ import "./TermNavigation.css";
 // termKey: "prelim" | "midterm" | "finals".
 // onTermChange(termKey): called when a term button is pressed.
 // note: optional text after the term buttons.
-export default function TermNavigation({ termKey, onTermChange, note = null, className = "" }) {
+export function TermNavigation({ termKey, onTermChange, note = null, className = "" }) {
     return (
         <div className={`subject-term-navigation ${className}`.trim()}>
             <div className="term-nav-terms">
