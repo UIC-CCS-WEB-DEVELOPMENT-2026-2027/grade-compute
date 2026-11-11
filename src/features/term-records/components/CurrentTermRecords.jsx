@@ -4,6 +4,7 @@ import { getDb, saveDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
+import { validateScore } from "@/lib/scores";
 import "./CurrentTermRecords.css";
 
 function termKey(term) {
@@ -105,24 +106,13 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
             return false;
         }
 
-        if (value !== "") {
-            const score = Number(value);
-            const maxScore = Number(selectedAssessment?.maxScore);
-            const integerDigits = value.split(".")[0].length;
-            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
-            if (
-                !/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
-                !Number.isFinite(score) ||
-                score < 0 ||
-                score > maxScore ||
-                integerDigits > maxIntegerDigits
-            ) {
-                setInvalidScoreId(scoreId);
-                setSaveError(
-                    `Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`,
-                );
-                return false;
-            }
+        const check = validateScore(value, selectedAssessment?.maxScore);
+        if (!check.ok) {
+            setInvalidScoreId(scoreId);
+            setSaveError(
+                `Enter a score between 0 and ${check.maxScore}, using no more than ${check.maxIntegerDigits} digits before the decimal.`,
+            );
+            return false;
         }
 
         setInvalidScoreId("");

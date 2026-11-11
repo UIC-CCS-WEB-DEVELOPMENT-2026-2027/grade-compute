@@ -11,6 +11,7 @@ import { getActiveStudentId } from "@/services/session";
 import { getSandboxPlan, MAX_UPCOMING, requiredScore, updateSandboxSettings } from "@/lib/sandbox";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
+import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
@@ -210,21 +211,11 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     }
 
     function saveDraftScore(criterionId, task, value) {
-        const maxScore = Number(task.maxScore ?? 100);
-        if (value !== "") {
-            const score = Number(value);
-            const maxIntegerDigits = String(Math.trunc(maxScore)).length;
-            if (
-                !/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
-                !Number.isFinite(score) ||
-                score < 0 ||
-                score > maxScore ||
-                value.split(".")[0].length > maxIntegerDigits
-            ) {
-                setInvalidScoreId(task.id);
-                setSaveError(`Enter a score between 0 and ${maxScore}.`);
-                return;
-            }
+        const check = validateScore(value, task.maxScore ?? 100);
+        if (!check.ok) {
+            setInvalidScoreId(task.id);
+            setSaveError(`Enter a score between 0 and ${check.maxScore}.`);
+            return;
         }
         setInvalidScoreId("");
         saveRecord((record) => {
