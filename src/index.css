@@ -225,6 +225,9 @@
        its own --confetti-duration and --confetti-delay. */
     --animate-celebration-confetti: celebration-confetti-fall var(--confetti-duration)
         var(--confetti-delay) ease-in forwards;
+
+    /* Inline for the same reason: each login bar sets its own --bar-delay. */
+    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--bar-delay, 180ms) var(--ease-auth) both;
 }
 
 @theme {
@@ -247,7 +250,6 @@
     --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;
     --animate-auth-content-enter: auth-content-enter 300ms ease-out both;
     --animate-auth-fade-in: auth-fade-in 240ms ease-out both;
-    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--bar-delay, 180ms) var(--ease-auth) both;
     --animate-auth-note-enter: auth-note-enter 650ms 650ms ease-out both;
     --animate-auth-sparkle: auth-sparkle 5s ease-in-out infinite;
     --animate-auth-float: auth-float 6s 800ms ease-in-out infinite;
