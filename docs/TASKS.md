@@ -615,7 +615,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - The Target Grade Sandbox menu item opens `SandboxSubjectPicker`.
     - Check: B8, B9.
   - **Afterwards:** `SPEC.md` F13 (sidebar thresholds and the keyboard shortcut) needs an owner-approved SPEC update.
-- [ ] **T7.H Header and footer.**
+- [x] **T7.H Header and footer.**
   - `Avatar`, `Button size="icon"` for the bell and chevron (still no action, B13), tokens.
   - Delete `Header.css` and `PageFooter.css`.
   - Check: B11, B12.
