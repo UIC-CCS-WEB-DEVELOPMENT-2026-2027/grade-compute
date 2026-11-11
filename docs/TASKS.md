@@ -402,7 +402,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 
 ### Phase 4 — Foundations (no screen changes)
 
-- [ ] **T4.1 Move the global stylesheet.**
+- [x] **T4.1 Move the global stylesheet.**
   - Files: `src/assets/index.css` → `src/index.css`; `src/main.jsx` (import); font `url()` paths inside the file.
   - Change: move only.
   - Check: V-same.

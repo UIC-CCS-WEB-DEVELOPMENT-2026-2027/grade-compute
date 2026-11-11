@@ -1,4 +1,4 @@
-/* src/assets/index.css */
+/* src/index.css */
 
 /* =========================================
    Typography (Local Fonts)
@@ -7,7 +7,7 @@
 /* Heading Font: Khand (SemiBold) */
 @font-face {
     font-family: "Khand";
-    src: url("./Khand-SemiBold.ttf") format("truetype");
+    src: url("./assets/Khand-SemiBold.ttf") format("truetype");
     font-weight: 600; /* SemiBold */
     font-style: normal;
 }
@@ -15,7 +15,7 @@
 /* Body Font: General Sans (Regular) */
 @font-face {
     font-family: "General Sans";
-    src: url("./GeneralSans-Regular.otf") format("opentype");
+    src: url("./assets/GeneralSans-Regular.otf") format("opentype");
     font-weight: 400; /* Regular */
     font-style: normal;
 }
