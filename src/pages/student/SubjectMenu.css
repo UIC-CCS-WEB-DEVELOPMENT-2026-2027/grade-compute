@@ -1,7 +1,7 @@
 .subject-menu-layout {
     min-height: 100vh;
     gap: 0;
-    background: #ffffff;
+    background: var(--card);
 }
 
 .subject-menu-main {
@@ -23,13 +23,13 @@
 
 .subject-menu-heading h1 {
     margin: 0;
-    color: #292929;
+    color: var(--foreground);
     font-size: 34px;
 }
 
 .subject-menu-heading p {
     margin-top: 5px;
-    color: #8491a1;
+    color: var(--muted-foreground);
     font-size: 10px;
 }
 
@@ -41,7 +41,7 @@
     max-width: 100%;
     height: 39px;
     padding: 0 13px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 6px;
     color: #52657f;
     font-size: 9px;
@@ -50,7 +50,7 @@
 }
 
 .subject-menu-semester span {
-    color: #41649b;
+    color: var(--primary);
     font-size: 8px;
 }
 
@@ -74,7 +74,7 @@
 }
 
 .subject-menu-semester select option:disabled {
-    color: #a2a8b0;
+    color: var(--muted-foreground);
 }
 
 .subject-menu-semester select:focus {
@@ -83,7 +83,7 @@
 }
 
 .subject-menu-semester:focus-within {
-    border-color: #41649b;
+    border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(65, 100, 155, 0.2);
 }
 
@@ -93,14 +93,14 @@
 
 .subject-menu-section > h2 {
     margin: 0;
-    color: #292929;
+    color: var(--foreground);
     font-size: 21px;
 }
 
 .subject-menu-pending-section ul {
     margin: 10px 0 0;
     padding-left: 18px;
-    color: #8491a1;
+    color: var(--muted-foreground);
     font-size: 10px;
     line-height: 1.8;
 }

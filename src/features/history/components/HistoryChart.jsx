@@ -216,7 +216,7 @@ export function HistoryChart({
         official: resolveColor("var(--foreground)"),
         accent: resolveColor("var(--self-reported)"),
         surface: resolveColor("var(--card)"),
-        plan: resolveColor(emphasizePlan ? "var(--primary)" : "var(--faint-foreground)"),
+        plan: resolveColor(emphasizePlan ? "var(--primary)" : "var(--muted-foreground)"),
         success: resolveColor("var(--success)"),
         passing: resolveColor("var(--destructive)"),
         target: resolveColor("var(--foreground)"),

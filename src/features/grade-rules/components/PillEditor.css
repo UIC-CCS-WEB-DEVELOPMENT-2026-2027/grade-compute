@@ -215,7 +215,7 @@
     max-width: calc(100% - 8px);
     margin-top: 10px;
     padding: 3px 8px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
     border-radius: 6px;
     background: var(--card);
     color: var(--foreground);

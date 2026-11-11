@@ -82,7 +82,7 @@
     --foreground: #2c2c2c; /* Deep Navy: Official locked scores, standard text */
     --secondary: #e6edf9;
     --warning-soft: #f9e7e2;
-    --destructive: #c95d50;
+    --destructive: #ab4f44;
     --warning-border: rgba(216, 106, 93, 0.35);
     --highlight-soft: #fff7d9;
     --highlight-strong: #e9c936;
@@ -92,22 +92,13 @@
     /* Backgrounds & Neutrals */
     --background: #f4f7f9; /* Light grayish-blue for the app background */
     --card: #ffffff; /* White for cards, modals, and tables */
-    --surface-soft: #fafbfc;
-    --surface-hover: #f5f6f8;
-    --muted: #f1f2f4;
+    --muted: #f1f5f9;
     --border: #e2e8f0; /* Light border color for dividers and standard inputs */
-    --border-soft: #edf0f2;
-    --border-strong: #e3e6ea;
-    --muted-foreground: #64748b; /* Muted text for helpers and effective multipliers */
-    --subtle-foreground: #777e88;
-    --faint-foreground: #a2a8b0;
+    --muted-foreground: #5d6c81; /* Muted text for helpers and effective multipliers */
 
     /* Shared feedback, overlay, and elevation colors */
-    --overlay: rgba(24, 28, 34, 0.34);
-    --ring: rgba(76, 140, 228, 0.36);
-    --border-overlay: rgba(26, 29, 34, 0.08);
-    --border-overlay-strong: rgba(26, 29, 34, 0.12);
-    --border-overlay-subtle: rgba(26, 29, 34, 0.06);
+    --overlay: #181c2257;
+    --ring: #4c8ce45c;
     --surface-overlay: rgba(255, 255, 255, 0.45);
     --surface-overlay-soft: rgba(255, 255, 255, 0.22);
     --surface-overlay-subtle: rgba(255, 255, 255, 0.14);
@@ -122,8 +113,6 @@
        colours). They go when Settings is converted (T7.L0). */
     --dark-surface-soft: #292d33;
     --dark-text: #f0f1f3;
-    --bg-alt: #fff79a; /* Yellow background for alternative */
-    --bg-selected: #edf1fa; /* Light blue background for selected items */
 
     /* Typography Variables */
     --font-heading: "Khand", sans-serif;
@@ -460,11 +449,11 @@
     line-height: 1;
     letter-spacing: -0.05em;
     font-weight: 600;
-    color: #1d2130;
+    color: var(--foreground);
 }
 
 .brand-name-dot {
-    color: #1d2130;
+    color: var(--foreground);
 }
 
 .sidebar-nav {
@@ -489,7 +478,7 @@
     align-items: center;
     width: 100%;
     gap: 0.7rem;
-    color: #1f2430;
+    color: var(--foreground);
     text-decoration: none;
     border-radius: 0.7rem;
     padding: 0.7rem 0.7rem;
@@ -553,7 +542,7 @@
     height: 1.25rem;
     padding: 0 0.35rem;
     border-radius: 0.35rem;
-    background: #5b7bc7;
+    background: var(--self-reported);
     color: #f5f7ff;
     font-size: 0.68rem;
     font-weight: 700;
@@ -569,7 +558,7 @@
     padding: 0;
     border-radius: 0.4rem;
     background: transparent;
-    color: #1f2430;
+    color: var(--foreground);
 }
 
 .sidebar-subject-toggle:hover {
@@ -695,7 +684,7 @@
 .subject-remove-dialog {
     width: min(100%, 19rem);
     padding: 1.25rem 1.1rem 1.1rem;
-    border: 1px solid var(--border-soft);
+    border: 1px solid var(--border);
     border-radius: 0.85rem;
     background: var(--card);
     box-shadow: 0 1rem 2.5rem var(--elevation-dialog);
@@ -867,7 +856,7 @@
     padding: 0;
     border-radius: 0.6rem;
     background: transparent;
-    color: #1f2430;
+    color: var(--foreground);
 }
 
 .sidebar-minimize-toggle:hover,
@@ -1003,7 +992,7 @@
 .sidebar-popout-all span {
     padding: 0 0.4rem;
     border-radius: 0.35rem;
-    background: #5b7bc7;
+    background: var(--self-reported);
     color: #f5f7ff;
     font-size: 0.7rem;
 }
@@ -1011,7 +1000,7 @@
 .sidebar-popout ul {
     margin: 0.25rem 0 0;
     padding: 0.25rem 0 0;
-    border-top: 1px solid var(--border-soft);
+    border-top: 1px solid var(--border);
     list-style: none;
 }
 
@@ -1042,7 +1031,7 @@
 .sidebar-popout a:hover,
 .sidebar-popout a:focus-visible,
 .sidebar-popout a.is-active {
-    background: var(--bg-selected);
+    background: var(--secondary);
     outline: none;
 }
 

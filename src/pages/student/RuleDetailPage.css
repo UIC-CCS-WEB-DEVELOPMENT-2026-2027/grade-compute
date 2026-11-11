@@ -167,9 +167,9 @@
 .rule-readonly-value {
     min-height: 38px;
     padding: 9px 12px;
-    border: 1px solid var(--border-soft);
+    border: 1px solid var(--border);
     border-radius: 6px;
-    background: var(--surface-soft);
+    background: var(--muted);
     color: var(--foreground);
     line-height: 1.4;
 }
@@ -303,7 +303,7 @@
 .app-dialog.rule-impact-dialog {
     width: min(700px, calc(100vw - 32px));
     padding: 24px 30px;
-    border-color: #f1e7b8;
+    border-color: var(--highlight-strong);
     border-radius: 12px;
 }
 
@@ -360,9 +360,9 @@
     gap: 2px;
     min-height: 72px;
     padding: 12px 16px;
-    border: 1px solid #f1e7b8;
+    border: 1px solid var(--highlight-strong);
     border-radius: 12px;
-    background: #fffdf5;
+    background: var(--highlight-soft);
     transition:
         border-color 0.16s ease,
         background-color 0.16s ease;

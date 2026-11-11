@@ -11,7 +11,7 @@
     min-width: 0;
     padding: 0 !important;
     margin: 0 !important;
-    background-color: #f8fafc;
+    background-color: var(--muted);
 }
 /* Remove extra margins from header container */
 .dashboard-content-wrapper > header,
@@ -25,7 +25,7 @@
     display: flex;
     min-height: 100vh;
     width: 100%;
-    background-color: #f8fafc;
+    background-color: var(--muted);
 }
 
 /* The sidebar keeps its width instead of being squeezed by the content. */
@@ -62,13 +62,13 @@
 
 .overview-title {
     margin: 0;
-    color: #292929;
+    color: var(--foreground);
     font-size: 34px;
 }
 
 .overview-subtitle {
     margin-top: 5px;
-    color: #8491a1;
+    color: var(--muted-foreground);
     font-size: 10px;
 }
 
@@ -82,14 +82,14 @@
     border: 1px solid #dbe5f0;
     border-radius: 8px;
     padding: 0.65rem 0.75rem;
-    background-color: #ffffff;
+    background-color: var(--card);
     font-size: 0.7rem;
-    color: #334155;
+    color: var(--foreground);
     white-space: nowrap;
 }
 
 .badge-dot {
-    color: #2563eb;
+    color: var(--self-reported-foreground);
     font-size: 0.8rem;
     line-height: 0;
 }
@@ -130,24 +130,24 @@
     font-family: "Khand", sans-serif, system-ui;
     font-size: 2rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--foreground);
     margin: 0;
 }
 
 .focus-subtitle {
-    color: #64748b;
+    color: var(--muted-foreground);
     font-size: 0.875rem;
     margin: 0.25rem 0 0 0;
 }
 
 .passing-grade-label {
-    color: #64748b;
+    color: var(--muted-foreground);
     font-size: 0.875rem;
 }
 
 .grade-val {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--foreground);
 }
 
 .subject-focus-grid {
@@ -162,7 +162,7 @@
 }
 
 .focus-card {
-    background-color: #fafaf9;
+    background-color: var(--muted);
     border: 1px solid #e7e5e4;
     border-radius: 12px;
     padding: 1.5rem;
@@ -173,7 +173,7 @@
 }
 
 .focus-card.card-needs-attention {
-    border-top: 3px solid #ef4444;
+    border-top: 3px solid var(--destructive);
 }
 
 .card-top {
@@ -186,8 +186,8 @@
     width: 38px;
     height: 38px;
     border-radius: 8px;
-    background-color: #eff6ff;
-    color: #2563eb;
+    background-color: var(--secondary);
+    color: var(--self-reported-foreground);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -205,12 +205,12 @@
 
 .status-alert {
     background-color: #fef2f2;
-    color: #dc2626;
+    color: var(--destructive);
 }
 
 .status-warning {
-    background-color: #eff6ff;
-    color: #2563eb;
+    background-color: var(--secondary);
+    color: var(--self-reported-foreground);
 }
 
 .status-success {
@@ -221,7 +221,7 @@
 /* Subject Information */
 .subject-code {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--muted-foreground);
     font-weight: 600;
     letter-spacing: 0.05em;
 }
@@ -230,7 +230,7 @@
     font-family: "Khand", sans-serif, system-ui;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--foreground);
     margin: 0.2rem 0 0 0;
     line-height: 1.1;
 }
@@ -247,13 +247,13 @@
     font-family: "Khand", sans-serif, system-ui;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--foreground);
     line-height: 1;
 }
 
 .grade-label {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--muted-foreground);
 }
 
 .progress-bar-track {
@@ -272,7 +272,7 @@
 
 .progress-bar-fill.fill-72 {
     width: 72%;
-    background-color: #ef4444;
+    background-color: var(--destructive);
 }
 
 .progress-bar-fill.fill-78 {
@@ -289,11 +289,11 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--muted-foreground);
 }
 
 .text-alert {
-    color: #dc2626;
+    color: var(--destructive);
 }
 
 .card-footer {
@@ -303,13 +303,13 @@
     border-top: 1px solid #f1f5f9;
     padding-top: 1rem;
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--muted-foreground);
     cursor: pointer;
     transition: color 0.2s ease;
 }
 
 .card-footer:hover {
-    color: #0f172a;
+    color: var(--foreground);
 }
 
 /* ==========================================================================
@@ -363,20 +363,20 @@
     font-family: "Khand", sans-serif, system-ui;
     font-size: 2rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--foreground);
     margin: 0;
     line-height: 1;
 }
 
 .updates-subtitle {
-    color: #64748b;
+    color: var(--muted-foreground);
     font-size: 10px;
     margin: 0.35rem 0 0 0;
 }
 
 .grade-activity-indicator {
     font-size: 0.825rem;
-    color: #64748b;
+    color: var(--muted-foreground);
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -391,8 +391,8 @@
 }
 
 .updates-card {
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
 }
@@ -412,7 +412,7 @@
 }
 
 .update-row:hover {
-    background-color: #fafaf9;
+    background-color: var(--muted);
 }
 
 .update-left {
@@ -425,8 +425,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #eff6ff;
-    color: #2563eb;
+    background-color: var(--secondary);
+    color: var(--self-reported-foreground);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -444,14 +444,14 @@
 .update-text {
     margin: 0;
     font-size: 0.875rem;
-    color: #334155;
+    color: var(--foreground);
     font-weight: 500;
 }
 
 .update-subtext {
     margin: 0;
     font-size: 0.775rem;
-    color: #64748b;
+    color: var(--muted-foreground);
 }
 
 .dot-sep {
@@ -467,11 +467,11 @@
 
 .update-time {
     font-size: 0.775rem;
-    color: #94a3b8;
+    color: var(--muted-foreground);
 }
 
 .update-arrow {
-    color: #2563eb;
+    color: var(--self-reported-foreground);
     font-size: 0.85rem;
     cursor: pointer;
 }
@@ -486,7 +486,7 @@
 
 .disclaimer-text {
     font-size: 0.775rem;
-    color: #94a3b8;
+    color: var(--muted-foreground);
     margin: 0 0 2rem 0;
 }
 
@@ -495,7 +495,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.775rem;
-    color: #94a3b8;
+    color: var(--muted-foreground);
 }
 
 @media (max-width: 640px) {

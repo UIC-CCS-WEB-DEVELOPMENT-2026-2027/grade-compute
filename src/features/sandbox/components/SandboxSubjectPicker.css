@@ -16,7 +16,7 @@
 .app-dialog.sandbox-picker-dialog {
     width: min(560px, calc(100vw - 32px));
     padding: 24px;
-    border-color: #f1e7b8;
+    border-color: var(--highlight-strong);
     border-radius: 12px;
 }
 
@@ -83,9 +83,9 @@
     gap: 14px;
     min-height: 78px;
     padding: 14px 16px;
-    border: 1px solid #f1e7b8;
+    border: 1px solid var(--highlight-strong);
     border-radius: 12px;
-    background: #fffdf5;
+    background: var(--highlight-soft);
     color: var(--foreground);
     text-decoration: none;
     transition:
@@ -171,7 +171,7 @@
 
 .sandbox-picker-cancel {
     padding: 8px 16px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--card);
     color: var(--muted-foreground);

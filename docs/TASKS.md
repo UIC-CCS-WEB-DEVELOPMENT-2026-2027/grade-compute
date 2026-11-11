@@ -571,7 +571,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 
 ### Phase 7 — Components and UI (V-visual and the listed V-check items; delete each screen's CSS when it is converted)
 
-- [ ] **T7.0a ⚠ Apply the merged token values.**
+- [x] **T7.0a ⚠ Apply the merged token values.**
   - Change the renamed tokens to their §4.1 values (the AA fixes and merges).
   - Replace hard-coded hex values that equal a merged value with the token, in all CSS files.
   - Check: V-visual on all 56 shots. Expected differences: slightly darker muted and error text, unified blues and greys.

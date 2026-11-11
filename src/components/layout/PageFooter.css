@@ -5,8 +5,8 @@
     gap: 16px;
     min-height: 48px;
     padding: 12px 40px;
-    border-top: 1px solid #e2e8f0;
-    color: #9aa5b4;
+    border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
     font-size: 9px;
 }
 

@@ -7,7 +7,7 @@
     padding: 1.25rem;
     border: 1px solid var(--border);
     border-radius: 10px;
-    background: var(--surface-soft);
+    background: var(--muted);
 }
 
 .subject-request-form h2 {
@@ -80,7 +80,7 @@
     border: 1px solid var(--primary);
     border-radius: 6px;
     background: var(--secondary);
-    color: #8491a1;
+    color: var(--muted-foreground);
     font-family: var(--font-body);
     font-size: 10px;
     font-weight: 400;
@@ -148,7 +148,7 @@
 }
 
 .subject-request-cancel:hover {
-    background: var(--surface-hover);
+    background: var(--muted);
 }
 
 @media (max-width: 640px) {

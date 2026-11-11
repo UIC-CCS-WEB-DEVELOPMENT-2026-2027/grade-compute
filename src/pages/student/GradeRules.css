@@ -70,7 +70,7 @@
     padding: 3px;
     border: 1px solid var(--border);
     border-radius: 6px;
-    background: var(--surface-soft);
+    background: var(--muted);
 }
 
 .rules-toggle > span {
@@ -168,7 +168,7 @@
 
 .rule-card-thumb.is-table {
     align-items: flex-start;
-    background: var(--surface-soft);
+    background: var(--muted);
 }
 
 .rule-card-body {
@@ -339,7 +339,7 @@
 /* ---- Shared buttons and formula ----------------------------------------- */
 
 .btn-secondary {
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
     background: var(--card);
     color: var(--foreground);
 }

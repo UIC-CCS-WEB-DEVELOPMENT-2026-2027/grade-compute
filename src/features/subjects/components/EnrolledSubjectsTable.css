@@ -102,7 +102,7 @@
 }
 
 .enrolled-tab.active {
-    background: var(--bg-selected);
+    background: var(--secondary);
     color: var(--primary);
     font-weight: 500;
 }
@@ -127,7 +127,7 @@
 }
 
 .enrolled-search::placeholder {
-    color: var(--faint-foreground);
+    color: var(--muted-foreground);
 }
 
 .enrolled-search:focus {
@@ -150,8 +150,8 @@
 
 .enrolled-table th {
     padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--border-soft);
-    color: var(--faint-foreground);
+    border-bottom: 1px solid var(--border);
+    color: var(--muted-foreground);
     font-size: 0.725rem;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -161,7 +161,7 @@
 
 .enrolled-table td {
     padding: 1.15rem 0.5rem;
-    border-bottom: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
 
@@ -171,7 +171,7 @@
 }
 
 .enrolled-table tbody tr:hover {
-    background: var(--surface-soft);
+    background: var(--muted);
 }
 
 .enrolled-table tbody tr.enrolled-empty-row {
@@ -198,9 +198,9 @@
     flex-shrink: 0;
     width: 38px;
     height: 38px;
-    border: 1px solid var(--border-soft);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--surface-soft);
+    background: var(--muted);
     color: var(--primary);
     font-size: 0.85rem;
     font-weight: 700;
@@ -212,7 +212,7 @@
 }
 
 .enrolled-code {
-    color: var(--faint-foreground);
+    color: var(--muted-foreground);
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -249,7 +249,7 @@
 .enrolled-grade-label {
     display: block;
     margin-top: 2px;
-    color: var(--faint-foreground);
+    color: var(--muted-foreground);
     font-size: 0.725rem;
     white-space: nowrap;
 }
@@ -264,7 +264,7 @@
 }
 
 .enrolled-status.passing {
-    background: var(--bg-selected);
+    background: var(--secondary);
     color: var(--primary);
 }
 
@@ -284,7 +284,7 @@
 
 .enrolled-arrow {
     padding: 0.25rem 0.4rem;
-    color: var(--faint-foreground);
+    color: var(--muted-foreground);
     font-size: 1.1rem;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -297,7 +297,7 @@
 
 .enrolled-empty {
     padding: 2rem !important;
-    color: var(--faint-foreground);
+    color: var(--muted-foreground);
     text-align: center;
 }
 
@@ -310,7 +310,7 @@
     margin-top: 1rem;
     width: 100%;
     padding: 1.25rem 1.5rem 0 0;
-    border-top: 1px solid var(--border-soft);
+    border-top: 1px solid var(--border);
     color: var(--muted-foreground);
     font-size: 10px;
     line-height: 1.5;
@@ -408,7 +408,7 @@
     .enrolled-cell-expected::before {
         display: block;
         margin-bottom: 0.25rem;
-        color: var(--faint-foreground);
+        color: var(--muted-foreground);
         font-size: 0.68rem;
         font-weight: 600;
         letter-spacing: 0.05em;
