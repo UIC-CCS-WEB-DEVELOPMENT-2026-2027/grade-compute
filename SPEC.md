@@ -126,7 +126,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - **Where:** `/student/subject/:subjectId/sandbox`. The sidebar's "Target Grade Sandbox" button opens a subject picker that leads here.
 - **What the student sets:** a sandbox target per term, the number of upcoming tasks (0–20) and an expected % for each criterion, and draft scores ("Try draft scores").
 - **What it shows:** a result card (required score, reached, out of reach, complete or empty) and a plan chart.
-- **Draft scores** currently change real data. See the note in §4.
+- **Draft scores** are draft-only: stored apart from the real scores and used only inside the sandbox. See the note in §4.
 - **Files:** `src/lib/sandbox.js`, `src/features/sandbox/components/TargetGradeSandbox.jsx`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/features/sandbox/components/SandboxSubjectPicker.jsx`
 
 ### F10. Grade computation rules (dynamic syllabus computation) — [BUILT]
@@ -310,16 +310,13 @@ See §6.
 - An `officialScore` of `""` counts as official in Current Term Records but as empty in the engine (AUDIT B10).
 - The sandbox "Upcoming tasks" input forces 0 as soon as it is cleared (AUDIT B16).
 
-> **Sandbox draft scores: current behaviour (AUDIT B9, a confirmed bug).**
-> "Try draft scores" writes the real `studentReportedScore`, the same field Current Term Records edits, on every keystroke.
+> **Sandbox draft scores (AUDIT B9, fixed 2026-11-11).**
+> "Try draft scores" stores each draft in `targetGradeSandbox.terms[term].draftScores` (`{ [taskId]: score }`, the typed text) and never writes `studentReportedScore`.
 >
-> **Approved fix, not built yet** (Gate 0, 2026-11-11; `AGENTS.md` §3):
->
-> - Drafts become draft-only and are stored in a new optional field, `targetGradeSandbox.terms[term].draftScores` (`{ [taskId]: score }`).
-> - They are never written to `studentReportedScore`.
-> - Scheduled as its own task in Phase 6 of the clean-up job. There is no migration.
->
-> Update this note through the protocol once the fix ships.
+> - Drafts feed the sandbox only: its result card, its expected gauge and its plan chart. Subject Detail, Current Term Records and the official grade never see them.
+> - A draft box starts from the task's real self-reported score. A cleared box stores `""`, which counts as no score in the sandbox.
+> - On the sandbox chart, tasks scored by a draft are drawn after all real scores, in rule order (owner decision, 2026-11-11).
+> - There was no migration: scores saved by the old behaviour stay real scores.
 
 ## 5. Data model (as implemented)
 
@@ -336,7 +333,7 @@ See §6.
 | `computationRules[]` | `id` (`CR-n`), `ruleName`, `tags[]` (`Graduate` or `Undergraduate`), `schools[]`, `criteria` (a tree of `{id, name, weight (fraction of parent), children}`), `effectiveMultipliers {leafId: fraction}`, `isCopy?`, `copiedFromRuleId?`, legacy `hierarchy` |
 | `subjects[]` | `id` (`SUB-n`), `subjectCode`, `subjectName`, `defaultComputationRuleId` |
 | `classes[]` (one enrolment) | `id` (seed `C101`, new ones `C-<n>`), `subjectId`, `semester?`, `academicYear?`, `programSection`, `units` (always 3), `professorId`, `professorName?`, `status` (`verified` or `pending`), `computationRuleId`, `studentRecords[]` |
-| `studentRecords[]` | `studentId`, `targetGradeSandbox {desiredFinalGrade, terms{[term]: {desiredFinalGrade, sandboxDesiredFinalGrade, criteria{[leafId]: {upcoming, expected}}, legacy upcomingAT/upcomingTLA/expectedExamScore}}}`, `grades {prelim, midterm, finals: {[leafId]: Task[]}}` |
+| `studentRecords[]` | `studentId`, `targetGradeSandbox {desiredFinalGrade, terms{[term]: {desiredFinalGrade, sandboxDesiredFinalGrade, criteria{[leafId]: {upcoming, expected}}, draftScores?{[taskId]: score}, legacy upcomingAT/upcomingTLA/expectedExamScore}}}`, `grades {prelim, midterm, finals: {[leafId]: Task[]}}` |
 | Task | `id`, `type`, `sequenceNumber`, `title`, `description`, `maxScore`, `officialScore`, `studentReportedScore`, `isCustomTask`, `studentScoredAt?`, `officialScoredAt?`, `createdAt?` |
 | `verificationQueue[]` | `id` (`REQ-n`), `requestedByStudentId`, `subjectId`, `subjectCode`, `subjectName`, `programSection`, `requestedProfessorId`, `requestedProfessorName`, `computationRuleId`, `status`, `createdAt` |
 
@@ -364,8 +361,6 @@ See §6.
 - `compugrade_rule_thumbnail`
 - `compugrade-account`: the Settings profile, sessions and a PBKDF2 `passwordCredential`, per browser
 - legacy keys deleted when read: `compugrade-profile`, `compugrade-password`, `compugrade-settings-theme`
-
-The B9 change in §4 adds the optional `draftScores` field. It isn't in the code yet.
 
 ## 6. Roles and access (today)
 
@@ -451,3 +446,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-11:** §9: added the owner's interactive-homepage idea to the Backlog.
 - **2026-11-11:** §6 (g): the "Workspace: Student" label in Settings is marked for removal in T7.L0 (owner decision).
 - **2026-11-12:** §3, §5 and §6: file paths updated after the Phase 5 moves and the Phase 6 extractions (owner approved).
+- **2026-11-12:** F9, §4 and §5: the B9 fix has shipped. Sandbox drafts are draft-only (`draftScores`), and the chart draws them after the real scores (owner approved).
