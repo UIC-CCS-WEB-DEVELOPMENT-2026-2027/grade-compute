@@ -13,8 +13,8 @@ import {
     getVerifiedMethods,
     verifyPrototypeChallenge,
 } from "@/services/prototypeVerification";
-import SettingRow from "../components/SettingRow";
-import ToggleSetting from "../components/ToggleSetting";
+import SettingRow from "@/features/settings/components/SettingRow";
+import ToggleSetting from "@/features/settings/components/ToggleSetting";
 import "./GlobalSettings.css";
 
 const sidebarItems = [

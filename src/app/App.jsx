@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import LoginRegister from "@/pages/auth/LoginRegister";
 
 // Global Settings
-import GlobalSettings from "@/pages/GlobalSettings"; // Put this in src/pages/
+import GlobalSettings from "@/pages/settings/GlobalSettings"; // Put this in src/pages/
 
 // Student Workspace
 import StudentDashboard from "@/pages/student/StudentDashboard";
