@@ -5,7 +5,8 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // Tooling folders are not app code (AGENTS.md section 7).
+  globalIgnores(['dist', '.agents', '.claude', '.codestudio']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
