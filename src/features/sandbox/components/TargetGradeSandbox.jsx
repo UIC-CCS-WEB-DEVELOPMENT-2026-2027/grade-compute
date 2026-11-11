@@ -17,10 +17,9 @@ import {
 } from "@/lib/sandbox";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
+import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
 import "./TargetGradeSandbox.css";
-
-const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
 
 function formatGrade(value) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(2))}%`;

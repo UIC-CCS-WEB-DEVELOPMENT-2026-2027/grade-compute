@@ -23,6 +23,7 @@
 
 import { toTaskList } from "./grades.js";
 import { clamp } from "./number.js";
+import { TERM_KEYS } from "./terms.js";
 
 export const TOTAL_SHARE = 10000;
 export const MIN_SHARE = 100;
@@ -31,7 +32,6 @@ export const MAX_DEPTH = 3;
 export const MAX_NAME_LENGTH = 30;
 export const CRITERIA_COLOR_COUNT = 8;
 export const DEFAULT_TAGS = ["Graduate", "Undergraduate"];
-export const TERM_KEYS = ["prelim", "midterm", "finals"];
 
 const ROOT_ID = "grade";
 

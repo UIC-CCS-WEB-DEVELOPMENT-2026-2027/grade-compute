@@ -508,7 +508,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - `toNumber`, `clamp` (G10). Used by `grades.js`, `sandbox.js`, `history.js`, `rules.js`.
   - Add unit tests.
   - **As done:** RulePieChart's private `resolveColor` (also G10) now imports the one in `lib/dom/cssColor.js`. The two gave the same result for every input.
-- [ ] **T6.2 One term list.**
+- [x] **T6.2 One term list.**
   - `lib/terms.js` exports `TERMS`, `TERM_KEYS`, `TERM_LABELS`.
   - Replace the copies in `grades.js`, `rules.js`, `history.js` and `TargetGradeSandbox.jsx`.
 - [ ] **T6.3 ⚠ `lib/targets.js`.**

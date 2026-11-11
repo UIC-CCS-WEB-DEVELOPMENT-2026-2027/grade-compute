@@ -1,6 +1,6 @@
 // Characterization tests for terms.js.
 import { describe, expect, it } from "vitest";
-import { getTermLabel, TERMS, toTermKey } from "./terms.js";
+import { getTermLabel, TERM_KEYS, TERM_LABELS, TERMS, toTermKey } from "./terms.js";
 
 describe("terms", () => {
     it("lists the three terms in order", () => {
@@ -9,6 +9,11 @@ describe("terms", () => {
             { key: "midterm", label: "Midterm" },
             { key: "finals", label: "Finals" },
         ]);
+    });
+
+    it("derives the term keys and labels from the list", () => {
+        expect(TERM_KEYS).toEqual(["prelim", "midterm", "finals"]);
+        expect(TERM_LABELS).toEqual({ prelim: "Prelim", midterm: "Midterm", finals: "Finals" });
     });
 
     it("toTermKey lower-cases a known term", () => {

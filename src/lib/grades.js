@@ -7,8 +7,7 @@
 //   studentRecord.grades.prelim = { AT: [tasks], TLA: [tasks], Exam: [tasks] }
 
 import { toNumber } from "./number.js";
-
-const TERM_KEYS = ["prelim", "midterm", "finals"];
+import { TERM_KEYS } from "./terms.js";
 
 // Every criterion holds a list of tasks. Older data stored the exam as a
 // single object; treat that as a one-task list.

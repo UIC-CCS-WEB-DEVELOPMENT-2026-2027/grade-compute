@@ -54,7 +54,6 @@ import {
     setCriterionShare,
     shareToPercent,
     splitCriterion,
-    TERM_KEYS,
     TOTAL_SHARE,
     updateRule,
     validateRuleDetails,
@@ -107,7 +106,6 @@ describe("constants", () => {
         expect(MAX_NAME_LENGTH).toBe(30);
         expect(CRITERIA_COLOR_COUNT).toBe(8);
         expect(DEFAULT_TAGS).toEqual(["Graduate", "Undergraduate"]);
-        expect(TERM_KEYS).toEqual(["prelim", "midterm", "finals"]);
     });
 });
 

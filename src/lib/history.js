@@ -17,10 +17,10 @@ import { toNumber } from "./number.js";
 import { getRuleLeaves } from "./rules.js";
 import { getSandboxPlan } from "./sandbox.js";
 import { getClassSemesterId, PASSING_GRADE } from "./subjects.js";
+import { TERM_LABELS } from "./terms.js";
 
 export { PASSING_GRADE };
 
-const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
 const DEFAULT_TARGET = 90;
 
 function toTime(value) {
