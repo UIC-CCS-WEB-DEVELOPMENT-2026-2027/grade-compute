@@ -86,7 +86,7 @@ function SettingsIcon({ name }) {
     );
 }
 
-function GlobalSettings({ onLogout }) {
+export function GlobalSettings({ onLogout }) {
     const [activeSection, setActiveSection] = useState("Profile");
     const [profile, setProfile] = useState(loadLocalAccount);
     const [isAccountEditing, setIsAccountEditing] = useState(true);
@@ -1507,5 +1507,3 @@ function GlobalSettings({ onLogout }) {
         </div>
     );
 }
-
-export default GlobalSettings;

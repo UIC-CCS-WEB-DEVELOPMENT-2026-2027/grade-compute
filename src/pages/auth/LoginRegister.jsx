@@ -156,7 +156,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
     );
 }
 
-export default function LoginRegister() {
+export function LoginRegister() {
     const navigate = useNavigate();
     const location = useLocation();
     const [activeTab, setActiveTab] = useState("login");

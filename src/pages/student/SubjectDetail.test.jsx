@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 import { readRecord, seedBrowser, setupBrowserTests } from "../../test/browser.js";
 import { FIXED_NOW } from "../../test/fixedDate.js";
 import { makeSeedDb, makeTask } from "../../test/fixtures.js";
-import SubjectDetail from "./SubjectDetail";
+import { SubjectDetail } from "./SubjectDetail";
 
 setupBrowserTests();
 

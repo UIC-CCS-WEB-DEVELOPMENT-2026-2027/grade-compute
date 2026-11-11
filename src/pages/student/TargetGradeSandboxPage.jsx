@@ -9,7 +9,7 @@ import { toTermKey } from "@/lib/terms";
 import { useDb } from "@/hooks/useDb";
 import "./SubjectDetail.css";
 
-export default function TargetGradeSandboxPage() {
+export function TargetGradeSandboxPage() {
     const { subjectId } = useParams();
     // Same ?term= as Subject Detail, so both pages stay on the same term.
     const [searchParams, setSearchParams] = useSearchParams();

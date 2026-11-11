@@ -33,7 +33,7 @@ const CONFETTI_PIECES = Array.from({ length: 44 }, (_, index) => ({
     rotation: `${(index * 53) % 360}deg`,
 }));
 
-function SubjectDetail() {
+export function SubjectDetail() {
     // The selected term lives in the URL (?term=midterm), so the sandbox
     // can link back to the same term.
     const [searchParams, setSearchParams] = useSearchParams();
@@ -410,5 +410,3 @@ function SubjectDetail() {
         </div>
     );
 }
-
-export default SubjectDetail;

@@ -16,7 +16,7 @@ import "./SubjectMenu.css";
 const SEMESTER_OPTIONS = getSemesterOptions();
 const DEFAULT_SEMESTER_ID = getCurrentSemester().id;
 
-export default function SubjectMenu() {
+export function SubjectMenu() {
     const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const student = dbData?.users?.find((user) => user.id === studentId);

@@ -41,7 +41,7 @@ function detailsOf(rule) {
 
 // Remounts the editor when the URL changes to another rule, so its state
 // always starts from that rule.
-export default function RuleDetailPage({ isNew = false }) {
+export function RuleDetailPage({ isNew = false }) {
     const { ruleId } = useParams();
     return <RuleDetail key={isNew ? "new" : ruleId} ruleId={isNew ? null : ruleId} />;
 }

@@ -10,7 +10,7 @@ import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
 import { useDb } from "@/hooks/useDb";
 import "./StudentDashboard.css";
 
-export default function StudentDashboard() {
+export function StudentDashboard() {
     // Live, so it refreshes when any page saves the database (e.g. a subject is added).
     const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);

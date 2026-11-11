@@ -565,7 +565,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T6.13 Named exports: `lib/`, `services/`, `hooks/`** (check what is still default).
 - [x] **T6.14 Named exports: `components/` and `components/layout/`.**
 - [x] **T6.15 Named exports: `features/*`.**
-- [ ] **T6.16 Named exports: `pages/*` and `app/`.**
+- [x] **T6.16 Named exports: `pages/*` and `app/`.**
   - `main.jsx` and `App.jsx` imports follow.
   - Each of T6.13–T6.16 is checked with V-same and V-tests.
 

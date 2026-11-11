@@ -5,7 +5,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 
-export default function RequireStudent({ children }) {
+export function RequireStudent({ children }) {
     const location = useLocation();
     if (!getActiveStudentId(getDb())) {
         return <Navigate to="/" replace state={{ from: location.pathname }} />;

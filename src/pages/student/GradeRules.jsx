@@ -38,7 +38,7 @@ function writeThumbnail(value) {
     }
 }
 
-export default function GradeRules() {
+export function GradeRules() {
     const navigate = useNavigate();
     const [dbData, setDbData] = useDb({ live: false });
     const [query, setQuery] = useState("");
