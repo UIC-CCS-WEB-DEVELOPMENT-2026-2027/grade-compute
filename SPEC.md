@@ -57,14 +57,14 @@ All data stays in the browser. There is no backend.
 - **Register** as Student (the new user is signed in) or as Professor (see §6).
 - **Route guard:** every route except `/` needs a signed-in student. Anyone else is sent to `/`, and only the pathname is kept for the return trip (AUDIT B14).
 - **Passwords** are stored in plaintext (AUDIT B15).
-- **Files:** `src/pages/auth/LoginRegister.jsx`, `src/components/shared/RequireStudent.jsx`, `src/utils/session.js`, `src/utils/db.js`
+- **Files:** `src/pages/auth/LoginRegister.jsx`, `src/features/auth/lib/accounts.js`, `src/app/RequireStudent.jsx`, `src/services/session.js`, `src/services/db.js`
 
 ### F2. Student Hub (`/student/dashboard`) — [BUILT]
 
 - current-semester badge
 - all-subjects grade-history chart: term switch, subject chips, and clicking a point opens that task
 - enrolled-subjects table for the current semester: filter, search, add subject. Each row shows code, name, professor ("Awaiting assignment" if there is none), official grade, expected grade and status
-- **Files:** `src/pages/student/StudentDashboard.jsx`, `src/components/student/EnrolledSubjectsTable.jsx`, `src/components/student/AllSubjectsHistory.jsx`
+- **Files:** `src/pages/student/StudentDashboard.jsx`, `src/features/subjects/components/EnrolledSubjectsTable.jsx`, `src/features/history/components/AllSubjectsHistory.jsx`
 
 ### F2a. "Recent Updates" list — [PARTIAL]
 
@@ -84,11 +84,11 @@ The Dashboard shows a "Recent Updates" list, but its content is fixed sample tex
 - **What it creates:**
   - a class in the current semester, with status `pending`, 3 units and a target of 90
   - a `verificationQueue` request
-- **Files:** `src/components/student/AddSubjectForm.jsx`, `src/utils/subjects.js` (`addSubject`, `getInitialRuleId`)
+- **Files:** `src/features/subjects/components/AddSubjectForm.jsx`, `src/lib/subjects.js` (`addSubject`, `getInitialRuleId`)
 
 ### F5. Remove subject — [BUILT]
 
-From the sidebar, after a confirmation dialog, removes the student's enrolment. `src/components/shared/Sidebar.jsx` (`removeSubjectEnrollment`)
+From the sidebar, after a confirmation dialog, removes the student's enrolment. `src/components/layout/Sidebar.jsx` (`removeSubjectEnrollment`)
 
 ### F6. 3-state grading engine — [PARTIAL]
 
@@ -96,7 +96,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - **"Empty"** means a recorded task with no official or self-reported score. Tasks that haven't been created yet are represented only by the sandbox's upcoming count (F9).
 - **Missing:** nobody can enter an official score in the app. Official scores come only from stored data (the seed class `C101`).
 - **Planned:** the professor enters official scores for their subjects (§6).
-- **Files:** `src/utils/grades.js`, `src/components/student/CurrentTermRecord.jsx`
+- **Files:** `src/lib/grades.js`, `src/features/term-records/components/CurrentTermRecords.jsx`
 
 ### F7. Subject Detail (`/student/subject/:subjectId`) — [BUILT]
 
@@ -109,7 +109,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - target-reached celebration (F12)
 - `?task=` scrolls to that task and highlights it
 - **Known issue:** the semester label is hard-coded as "FIRST SEMESTER · 2026–2027" (AUDIT B7). The fix is planned for a follow-up branch (§2).
-- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/components/student/SubjectGradeHistory.jsx`, `src/components/student/TermNavigation.jsx`, `src/utils/focusTask.js`
+- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/features/history/components/SubjectGradeHistory.jsx`, `src/features/term-records/components/TermNavigation.jsx`, `src/lib/targets.js`, `src/lib/dom/focusTask.js`
 
 ### F8. Current Term Records — [BUILT]
 
@@ -119,7 +119,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - the student can add custom tasks
   - an official breakdown is shown
 - **Validation:** see §4.
-- **Files:** `src/components/student/CurrentTermRecord.jsx` (exports `CurrentTermRecords`), `src/components/shared/DraftInput.jsx`
+- **Files:** `src/features/term-records/components/CurrentTermRecords.jsx`, `src/components/DraftInput.jsx`, `src/lib/scores.js`
 
 ### F9. Target Grade Sandbox — [BUILT]
 
@@ -127,7 +127,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - **What the student sets:** a sandbox target per term, the number of upcoming tasks (0–20) and an expected % for each criterion, and draft scores ("Try draft scores").
 - **What it shows:** a result card (required score, reached, out of reach, complete or empty) and a plan chart.
 - **Draft scores** currently change real data. See the note in §4.
-- **Files:** `src/utils/sandbox.js`, `src/components/student/TargetGradeSandbox.jsx`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/components/student/SandboxSubjectPicker.jsx`
+- **Files:** `src/lib/sandbox.js`, `src/features/sandbox/components/TargetGradeSandbox.jsx`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/features/sandbox/components/SandboxSubjectPicker.jsx`
 
 ### F10. Grade computation rules (dynamic syllabus computation) — [BUILT]
 
@@ -143,7 +143,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - A subject a professor creates uses that professor's rule.
   - A subject a student creates uses a rule the student makes.
   - If a student-made subject is later linked to a professor-made one, it is overwritten by the professor-made subject and its rule (see §10).
-- **Files:** `src/utils/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetail.jsx`, `src/components/shared/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,DeleteRuleDialog,Dialog}.jsx`
+- **Files:** `src/lib/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/features/grade-rules/components/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,DeleteRuleDialog}.jsx`, `src/components/Dialog.jsx`
 
 ### F11. Historical analytics — [PARTIAL]
 
@@ -151,11 +151,11 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - per subject and term, a line of the expected term grade after each task, with ghost points, the target-reached marker, the 75% passing line, the plan line and a table fallback
   - the all-subjects chart on the Dashboard
 - **Missing:** semester-over-semester GPA growth, and trends across subject categories.
-- **Files:** `src/utils/history.js`, `src/components/student/{HistoryChart,AllSubjectsHistory,SubjectGradeHistory,HistoryTooltip}.jsx`, `src/components/student/usePointHover.js`, `src/utils/cssColor.js`
+- **Files:** `src/lib/history.js`, `src/features/history/components/{HistoryChart,AllSubjectsHistory,SubjectGradeHistory,HistoryTooltip}.jsx`, `src/features/history/hooks/usePointHover.js`, `src/lib/dom/cssColor.js`
 
 ### F12. Target-reached celebration — [BUILT]
 
-Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/student/SubjectDetail.jsx`, `src/assets/congrats_voice .mp3`
+Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/student/SubjectDetail.jsx`, `src/lib/celebration.js`, `src/assets/congrats-voice.mp3`
 
 ### F13. Navigation: sidebar, header, footer — [BUILT]
 
@@ -165,7 +165,7 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
 - **Header:** user initials.
 - **Known issues (AUDIT B13):** the Help text promises a CSV export that doesn't exist. The header's bell and profile-chevron buttons do nothing. The features behind them are planned for a follow-up branch (§2).
 - **Footer:** not shown on the Grade Rules pages.
-- **Files:** `src/components/shared/{Sidebar,Header,PageFooter}.jsx`, `src/components/shared/useSidebarState.js`
+- **Files:** `src/components/layout/{Sidebar,Header,PageFooter}.jsx`, `src/hooks/useSidebarState.js`
 
 ### F14. Account settings (`/settings`) — [PARTIAL]
 
@@ -180,11 +180,11 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
   - Help opens only from Security (B2)
   - Download and Clear do nothing, and the toggles aren't saved (B3)
   - the account is stored per browser, not per user, and changing the password here doesn't change the login password (B4)
-- **Files:** `src/pages/GlobalSettings.jsx`, `src/utils/localAccountStore.js`, `src/utils/prototypeVerification.js`, `src/components/SettingRow.jsx`, `src/components/ToggleSetting.jsx`
+- **Files:** `src/pages/settings/GlobalSettings.jsx`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js`, `src/features/settings/components/SettingRow.jsx`, `src/features/settings/components/ToggleSetting.jsx`
 
 ### F15. Stored-data upgrade — [BUILT]
 
-Data saved in schema v1 is upgraded to v2 when it is read. `src/utils/migrations.js`, `src/utils/db.js`
+Data saved in schema v1 is upgraded to v2 when it is read. `src/services/migrations.js`, `src/services/db.js`
 
 ### F16. Personalised subject emoji and accent colour — [PLANNED]
 
@@ -194,11 +194,11 @@ Data saved in schema v1 is upgraded to v2 when it is read. `src/utils/migrations
 - **Subject Detail:** two ring gauges, official and expected. Each is filled with the term grade, clamped to 0–100, and has a marker at the target.
 - **Sandbox:** the same gauge.
 - **Planned:** enhancements to the gauge after the clean-up job (§2).
-- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/components/student/TargetGradeSandbox.jsx` (`Gauge`)
+- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/features/sandbox/components/TargetGradeSandbox.jsx` (`Gauge`)
 
 ### F18. Conversational sandbox copy — [PARTIAL]
 
-The result messages are plain instructions, for example "Score at least {x} on each of your {n} tasks left this term." There is no encouraging phrasing like the example in the project details. `src/components/student/TargetGradeSandbox.jsx` (`SandboxResult`)
+The result messages are plain instructions, for example "Score at least {x} on each of your {n} tasks left this term." There is no encouraging phrasing like the example in the project details. `src/features/sandbox/components/TargetGradeSandbox.jsx` (`SandboxResult`)
 
 ### F19. Supportive mascot in empty states and predictions — [PLANNED]
 
@@ -327,7 +327,7 @@ See §6.
 
 - There is no backend and no network call.
 - The whole database lives in the browser's `localStorage` under `compugrade_db` (`schemaVersion: 2`).
-- It is seeded from `src/utils/db.json` on first load.
+- It is seeded from `src/services/db.json` on first load.
 - Hosted on Vercel as a single-page app.
 
 | Entity | Attributes |
@@ -382,7 +382,7 @@ The code already contains these non-student pieces. All except (f) and (g) are k
 
 - (a) **Registering as a Professor** saves the account and shows "Professor account created. Your workspace is coming soon."
 - (b) **Professor and admin logins** are checked and then stopped, with "Login verified. The Professor Workspace is coming soon." or "Login verified. This workspace is not available yet."
-- (c) **Commented-out routes and imports** in `src/App.jsx` point to professor and admin pages that don't exist.
+- (c) **Commented-out routes and imports** in `src/app/App.jsx` point to professor and admin pages that don't exist.
 - (d) **Seed accounts:** professor `U2` and admin `U3`.
 - (e) **Verification data:** `verificationQueue` requests and the class `status` field. `addSubject` writes them, but no one can act on them yet.
 - (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It is dead code and is deleted in Phase 5a of the clean-up job (owner decision, Gate 3, 2026-11-11).
@@ -450,3 +450,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-11:** §6 (f): the unused settings prototype is marked as dead code to delete in Phase 5a (owner decision, Gate 3).
 - **2026-11-11:** §9: added the owner's interactive-homepage idea to the Backlog.
 - **2026-11-11:** §6 (g): the "Workspace: Student" label in Settings is marked for removal in T7.L0 (owner decision).
+- **2026-11-12:** §3, §5 and §6: file paths updated after the Phase 5 moves and the Phase 6 extractions (owner approved).
