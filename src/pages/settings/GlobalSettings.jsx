@@ -13,6 +13,7 @@ import {
     getVerifiedMethods,
     verifyPrototypeChallenge,
 } from "@/services/prototypeVerification";
+import { getSpaceSplitInitials } from "@/lib/format";
 import SettingRow from "@/features/settings/components/SettingRow";
 import ToggleSetting from "@/features/settings/components/ToggleSetting";
 import "./GlobalSettings.css";
@@ -352,12 +353,7 @@ function GlobalSettings({ onLogout }) {
         onLogout?.();
     };
 
-    const profileInitials = profile.fullName
-        .split(" ")
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
+    const profileInitials = getSpaceSplitInitials(profile.fullName);
     const passwordRequirements = [
         { label: "At least 1 uppercase", met: /[A-Z]/.test(passwordForm.next) },
         { label: "At least 1 number", met: /\d/.test(passwordForm.next) },

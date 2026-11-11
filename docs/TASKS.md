@@ -521,8 +521,9 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T6.5 `lib/format.js` `formatGrade`** (G4).
   - Replace the 5 identical copies. The 1-decimal and "Expected" variants are built on it with the same output.
   - Add unit tests.
-- [ ] **T6.6 Initials (G5).**
+- [x] **T6.6 Initials (G5).**
   - Add tests comparing the three versions. Merge only if they match; otherwise document why they stay separate.
+  - **As done:** the Settings and Subject Detail versions were identical and are now one function, `getSpaceSplitInitials`. Header's version differs on extra spaces (`"Ana  Cruz"` → `"AC"` vs `"A"`), so it stays a separate function, `getInitials`. Both are in `lib/format.js`, with a comment and tests showing where they differ. They agree on every name in the seed data.
 - [ ] **T6.7 ⚠ `services/records.js` `updateStudentRecord`** (G11).
   - Used by SubjectDetail, CurrentTermRecords, TargetGradeSandbox and Sidebar's remove-subject code.
   - Check: V-tests, V-same, checklist F3, G4, H3, H8, I6–I9.

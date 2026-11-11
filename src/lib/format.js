@@ -5,3 +5,31 @@
 export function formatGrade(value, { decimals = 2 } = {}) {
     return value === null || value === undefined ? "—" : `${Number(value.toFixed(decimals))}%`;
 }
+
+// Avatar initials: the first letters of the first two words, upper-cased.
+// There are two versions because they treat extra spaces differently, and
+// merging them would change what some typed names show (AUDIT G5):
+//   "Ana  Cruz" (two spaces) -> getInitials "AC", getSpaceSplitInitials "A"
+//   " Ana Cruz" (leading space) -> getInitials "AC", getSpaceSplitInitials "A"
+
+// Header avatar. Splits on any whitespace and skips empty parts.
+export function getInitials(name) {
+    return name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase();
+}
+
+// Settings profile avatar and Subject Detail instructor avatar. Splits on
+// single spaces, so each extra space counts as an empty word.
+export function getSpaceSplitInitials(name) {
+    return name
+        .split(" ")
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+}

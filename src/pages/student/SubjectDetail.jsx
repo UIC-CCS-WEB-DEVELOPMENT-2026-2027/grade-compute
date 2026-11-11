@@ -14,6 +14,7 @@ import {
     calculateUnofficialGrade,
     getOfficialAssessments,
 } from "@/lib/grades";
+import { getSpaceSplitInitials } from "@/lib/format";
 import { getSubjectDetailTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
@@ -247,12 +248,7 @@ function SubjectDetail() {
 
                                 <div className="subject-meta">
                                     <span className="instructor-avatar">
-                                        {professor
-                                            .split(" ")
-                                            .map((part) => part[0])
-                                            .slice(0, 2)
-                                            .join("")
-                                            .toUpperCase()}
+                                        {getSpaceSplitInitials(professor)}
                                     </span>
                                     <span>{professor}</span>
                                     <span className="meta-divider">·</span>

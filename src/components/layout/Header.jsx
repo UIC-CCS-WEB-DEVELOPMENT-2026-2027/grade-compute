@@ -1,5 +1,6 @@
 import "./Header.css";
 import { getDb } from "@/services/db";
+import { getInitials } from "@/lib/format";
 import { getActiveUser } from "@/services/session";
 import useSidebarState, { setSidebarMenuOpen } from "@/hooks/useSidebarState";
 
@@ -18,16 +19,6 @@ function ChevronDownIcon() {
             <path d="m7 10 5 5 5-5" />
         </svg>
     );
-}
-
-function getInitials(name) {
-    return name
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0])
-        .join("")
-        .toUpperCase();
 }
 
 export default function Header({ title, subtitle = "A little progress, every day." }) {
