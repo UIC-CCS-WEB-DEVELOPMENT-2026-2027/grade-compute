@@ -378,7 +378,7 @@ The B9 change in §4 adds the optional `draftScores` field. It isn't in the code
   - the professor creates subjects with their own rules and enters official scores (F6, F10)
   - the administrator verifies subjects (F3)
 
-The code already contains these non-student pieces. All except (f) are kept. None of them gives access to anything:
+The code already contains these non-student pieces. All except (f) and (g) are kept. None of them gives access to anything:
 
 - (a) **Registering as a Professor** saves the account and shows "Professor account created. Your workspace is coming soon."
 - (b) **Professor and admin logins** are checked and then stopped, with "Login verified. The Professor Workspace is coming soon." or "Login verified. This workspace is not available yet."
@@ -386,7 +386,7 @@ The code already contains these non-student pieces. All except (f) are kept. Non
 - (d) **Seed accounts:** professor `U2` and admin `U3`.
 - (e) **Verification data:** `verificationQueue` requests and the class `status` field. `addSubject` writes them, but no one can act on them yet.
 - (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It is dead code and is deleted in Phase 5a of the clean-up job (owner decision, Gate 3, 2026-11-11).
-- (g) **Settings** shows the label "Workspace: Student".
+- (g) **Settings** shows the label "Workspace: Student", left over from a discontinued workspace-switching feature. It is removed when Settings moves onto the shared page shell (Phase 7, T7.L0; owner decision, 2026-11-11).
 
 ## 7. UX principles (from the project details)
 
@@ -449,3 +449,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-11:** Created from `docs/AUDIT.md` (code at `7c3178a`) and `docs/project_details.md` in Phase 1 of the clean-up job. Owner decisions on D1–D15 are recorded in §10.
 - **2026-11-11:** §6 (f): the unused settings prototype is marked as dead code to delete in Phase 5a (owner decision, Gate 3).
 - **2026-11-11:** §9: added the owner's interactive-homepage idea to the Backlog.
+- **2026-11-11:** §6 (g): the "Workspace: Student" label in Settings is marked for removal in T7.L0 (owner decision).
