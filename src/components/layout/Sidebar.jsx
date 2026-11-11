@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -6,6 +6,17 @@ import { ChevronRightIcon } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogMedia,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
     Sidebar as SidebarRoot,
@@ -61,16 +72,9 @@ export function Sidebar() {
     const [isPopoutOpen, setIsPopoutOpen] = useState(false);
     const usePopout = minimized && !isMobile;
 
-    useEffect(() => {
-        if (!subjectToRemove) return undefined;
-
-        const handleKeyDown = (event) => {
-            if (event.key === "Escape") setSubjectToRemove(null);
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [subjectToRemove]);
+    // The subject stays set while the confirmation closes, so its text
+    // doesn't disappear during the closing animation.
+    const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
     const activeStudentId = getActiveStudentId(dbData);
 
@@ -444,6 +448,7 @@ export function Sidebar() {
                                                                     event.stopPropagation();
                                                                     setOpenMobile(false);
                                                                     setSubjectToRemove(sub);
+                                                                    setIsRemoveOpen(true);
                                                                 }}
                                                             >
                                                                 <svg
@@ -720,68 +725,43 @@ export function Sidebar() {
                 />
             )}
 
-            {subjectToRemove &&
-                createPortal(
-                    <div
-                        className="subject-remove-backdrop"
-                        role="presentation"
-                        onMouseDown={(event) => {
-                            if (event.target === event.currentTarget) setSubjectToRemove(null);
-                        }}
-                    >
-                        <section
-                            className="subject-remove-dialog"
-                            role="alertdialog"
-                            aria-modal="true"
-                            aria-labelledby="subject-remove-title"
-                            aria-describedby="subject-remove-description"
+            {/* Remove-subject confirmation. Cancel, Escape or a backdrop click
+                keep the subject; focus starts on "No, keep it". */}
+            <AlertDialog open={isRemoveOpen} onOpenChange={setIsRemoveOpen}>
+                <AlertDialogContent onOverlayClick={() => setIsRemoveOpen(false)}>
+                    <AlertDialogHeader>
+                        <AlertDialogMedia className="bg-destructive/10 text-destructive">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path
+                                    d="M12 8v5m0 3.5h.01M10.3 3.9 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3l-7.5-13.1a2 2 0 0 0-3.4 0Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.7"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </AlertDialogMedia>
+                        <AlertDialogTitle>Remove this subject?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Remove “{subjectToRemove?.subjectCode} - {subjectToRemove?.subjectName}”
+                            and its personal grade records from your list? Other students will not
+                            be affected.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>No, keep it</AlertDialogCancel>
+                        <AlertDialogAction
+                            variant="destructive"
+                            onClick={() => {
+                                removeSubjectEnrollment(subjectToRemove);
+                                setIsRemoveOpen(false);
+                            }}
                         >
-                            <div className="subject-remove-heading">
-                                <span className="subject-remove-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M12 8v5m0 3.5h.01M10.3 3.9 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3l-7.5-13.1a2 2 0 0 0-3.4 0Z"
-                                            stroke="currentColor"
-                                            strokeWidth="1.7"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                </span>
-                                <h2 id="subject-remove-title">Remove this subject?</h2>
-                            </div>
-                            <p
-                                id="subject-remove-description"
-                                className="subject-remove-description"
-                            >
-                                Remove “{subjectToRemove.subjectCode} -{" "}
-                                {subjectToRemove.subjectName}” and its personal grade records from
-                                your list? Other students will not be affected.
-                            </p>
-                            <div className="subject-remove-actions">
-                                <button
-                                    type="button"
-                                    className="subject-remove-cancel"
-                                    onClick={() => setSubjectToRemove(null)}
-                                    autoFocus
-                                >
-                                    No, keep it
-                                </button>
-                                <button
-                                    type="button"
-                                    className="subject-remove-confirm"
-                                    onClick={() => {
-                                        removeSubjectEnrollment(subjectToRemove);
-                                        setSubjectToRemove(null);
-                                    }}
-                                >
-                                    Yes, remove it
-                                </button>
-                            </div>
-                        </section>
-                    </div>,
-                    document.body,
-                )}
+                            Yes, remove it
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }

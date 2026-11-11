@@ -607,7 +607,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       - Settings' brand block keeps its old layout rule (moved into `GlobalSettings.css`) until T7.L0.
       - Checked in a browser: B1–B8 and B10, the phone menu (Escape, backdrop, focus back to ☰, picking a page closes it) and Ctrl/⌘+B (S2).
   - [x] **T7.S3 Minimised subject pop-out → `Popover` (S5).** Check: B6.
-  - [ ] **T7.S4 Remove-subject alert → `AlertDialog`.** Check: F1–F4.
+  - [x] **T7.S4 Remove-subject alert → `AlertDialog`.** Check: F1–F4.
   - [ ] **T7.S5 Help popup → `Dialog`.**
     - Remove its inline styles and the 2 `rgba()` values.
     - Check: B7.
