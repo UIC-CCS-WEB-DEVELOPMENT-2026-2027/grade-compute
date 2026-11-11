@@ -645,7 +645,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - `Field`, `Input`, `NativeSelect`, `Button`, `Alert`.
     - Delete its CSS.
     - Check: E1–E7.
-  - [ ] **T7.E3 SubjectMenu page.**
+  - [x] **T7.E3 SubjectMenu page.**
     - Semester `NativeSelect` (disabled options kept), page shell.
     - Delete `SubjectMenu.css`.
     - Check: D1–D4.
