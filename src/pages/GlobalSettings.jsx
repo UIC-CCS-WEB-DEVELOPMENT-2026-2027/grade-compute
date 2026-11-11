@@ -62,7 +62,7 @@ function GlobalSettings({ onLogout }) {
   const [passwordForm, setPasswordForm] = useState({ current: '', next: '', confirm: '' });
   const [passwordFieldErrors, setPasswordFieldErrors] = useState({});
   const [visiblePasswords, setVisiblePasswords] = useState({});
-  const [passwordIsSet, setPasswordIsSet] = useState(false);
+  const [passwordIsSet, setPasswordIsSet] = useState(hasLocalPassword);
   const [securityView, setSecurityView] = useState('overview');
   const [passwordStep, setPasswordStep] = useState('current');
   const [verificationMethod, setVerificationMethod] = useState('email');
@@ -79,10 +79,6 @@ function GlobalSettings({ onLogout }) {
     system: true,
     assignments: true,
   });
-  useEffect(() => {
-    setPasswordIsSet(hasLocalPassword());
-  }, []);
-
   useEffect(() => {
     localStorage.removeItem(legacySettingsThemeStorageKey);
   }, []);
@@ -634,7 +630,7 @@ function GlobalSettings({ onLogout }) {
                       role="img"
                       aria-label={`Password requirements met: ${passwordStrength} of 3`}
                     >
-                      {passwordRequirements.map(({ label, met }, index) => (
+                      {passwordRequirements.map(({ label }, index) => (
                         <span
                           key={label}
                           className={index < passwordStrength ? 'is-filled' : ''}
