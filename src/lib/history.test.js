@@ -9,7 +9,6 @@ import {
     getPlanPoints,
     getScoredTasks,
     getTargetReachedIndex,
-    getTermTarget,
     PASSING_GRADE,
     scoreTime,
 } from "./history.js";
@@ -53,39 +52,6 @@ describe("scoreTime", () => {
         expect(scoreTime({ id: "CUSTOM-123" })).toBeNull();
         expect(scoreTime({ studentScoredAt: "not a date" })).toBeNull();
         expect(scoreTime(null)).toBeNull();
-    });
-});
-
-describe("getTermTarget", () => {
-    it("follows the chain: term target, record target, 90", () => {
-        const record = {
-            targetGradeSandbox: {
-                desiredFinalGrade: 85,
-                terms: { prelim: { desiredFinalGrade: 92 } },
-            },
-        };
-        expect(getTermTarget(record, "prelim")).toBe(92);
-        expect(getTermTarget(record, "midterm")).toBe(85);
-        expect(getTermTarget({}, "prelim")).toBe(90);
-        expect(getTermTarget(null, "prelim")).toBe(90);
-    });
-
-    it("ignores the sandbox target", () => {
-        const record = {
-            targetGradeSandbox: { terms: { prelim: { sandboxDesiredFinalGrade: 70 } } },
-        };
-        expect(getTermTarget(record, "prelim")).toBe(90);
-    });
-
-    it("skips values outside 0–100", () => {
-        const record = {
-            targetGradeSandbox: {
-                desiredFinalGrade: 85,
-                terms: { prelim: { desiredFinalGrade: 150 } },
-            },
-        };
-        expect(getTermTarget(record, "prelim")).toBe(85);
-        expect(getTermTarget({ targetGradeSandbox: { desiredFinalGrade: -5 } }, "prelim")).toBe(90);
     });
 });
 

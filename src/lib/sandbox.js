@@ -25,8 +25,8 @@
 import { toTaskList } from "./grades.js";
 import { clamp, toNumber } from "./number.js";
 import { getRuleLeaves, TOTAL_SHARE } from "./rules.js";
+import { getSandboxTarget } from "./targets.js";
 
-export const DEFAULT_TARGET = 90;
 export const MAX_UPCOMING = 20;
 
 // Round up to 2 decimals, so scoring the shown value always reaches the target.
@@ -40,22 +40,6 @@ export function taskPercent(task) {
     if (maxScore === null || maxScore <= 0) return null;
     const score = toNumber(task?.officialScore) ?? toNumber(task?.studentReportedScore);
     return score === null ? null : (score / maxScore) * 100;
-}
-
-// The sandbox target for a term: the sandbox's own target if the student
-// set one, otherwise the subject's target for that term, otherwise 90.
-export function getSandboxTarget(studentRecord, termKey) {
-    const config = studentRecord?.targetGradeSandbox ?? {};
-    const termConfig = config.terms?.[termKey] ?? {};
-    const target = [
-        termConfig.sandboxDesiredFinalGrade,
-        termConfig.desiredFinalGrade,
-        config.sandboxDesiredFinalGrade,
-        config.desiredFinalGrade,
-    ]
-        .map(toNumber)
-        .find((value) => value !== null && value >= 0 && value <= 100);
-    return target ?? DEFAULT_TARGET;
 }
 
 // Upcoming count and expected % for one criterion of a term.

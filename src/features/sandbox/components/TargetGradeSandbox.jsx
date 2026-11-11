@@ -8,15 +8,10 @@ import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
 import { getActiveStudentId } from "@/services/session";
-import {
-    getSandboxPlan,
-    getSandboxTarget,
-    MAX_UPCOMING,
-    requiredScore,
-    updateSandboxSettings,
-} from "@/lib/sandbox";
+import { getSandboxPlan, MAX_UPCOMING, requiredScore, updateSandboxSettings } from "@/lib/sandbox";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
+import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
 import "./TargetGradeSandbox.css";

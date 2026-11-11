@@ -2,10 +2,8 @@
 import { describe, expect, it } from "vitest";
 import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";
 import {
-    DEFAULT_TARGET,
     getCriterionSettings,
     getSandboxPlan,
-    getSandboxTarget,
     MAX_UPCOMING,
     requiredScore,
     roundUp2,
@@ -50,55 +48,6 @@ describe("taskPercent", () => {
         expect(taskPercent(makeTask("a", 0, 5))).toBeNull();
         expect(taskPercent(makeTask("a", null, 5))).toBeNull();
         expect(taskPercent(null)).toBeNull();
-    });
-});
-
-describe("getSandboxTarget", () => {
-    const record = {
-        targetGradeSandbox: {
-            desiredFinalGrade: 85,
-            sandboxDesiredFinalGrade: 88,
-            terms: { prelim: { desiredFinalGrade: 92, sandboxDesiredFinalGrade: 95 } },
-        },
-    };
-
-    it("follows the chain: term sandbox, term subject, record sandbox, record subject, 90", () => {
-        expect(getSandboxTarget(record, "prelim")).toBe(95);
-
-        const noTermSandbox = structuredClone(record);
-        delete noTermSandbox.targetGradeSandbox.terms.prelim.sandboxDesiredFinalGrade;
-        expect(getSandboxTarget(noTermSandbox, "prelim")).toBe(92);
-
-        expect(getSandboxTarget(record, "midterm")).toBe(88);
-        expect(getSandboxTarget({ targetGradeSandbox: { desiredFinalGrade: 85 } }, "prelim")).toBe(
-            85,
-        );
-        expect(getSandboxTarget({}, "prelim")).toBe(90);
-        expect(getSandboxTarget(null, "prelim")).toBe(90);
-        expect(DEFAULT_TARGET).toBe(90);
-    });
-
-    it("skips values outside 0–100 and values that are not numbers", () => {
-        const outOfRange = structuredClone(record);
-        outOfRange.targetGradeSandbox.terms.prelim.sandboxDesiredFinalGrade = 150;
-        expect(getSandboxTarget(outOfRange, "prelim")).toBe(92);
-
-        const invalid = {
-            targetGradeSandbox: { sandboxDesiredFinalGrade: "abc", desiredFinalGrade: -1 },
-        };
-        expect(getSandboxTarget(invalid, "prelim")).toBe(90);
-    });
-
-    it("accepts text numbers and the limits 0 and 100", () => {
-        expect(
-            getSandboxTarget({ targetGradeSandbox: { desiredFinalGrade: "80" } }, "prelim"),
-        ).toBe(80);
-        expect(getSandboxTarget({ targetGradeSandbox: { desiredFinalGrade: 0 } }, "prelim")).toBe(
-            0,
-        );
-        expect(getSandboxTarget({ targetGradeSandbox: { desiredFinalGrade: 100 } }, "prelim")).toBe(
-            100,
-        );
     });
 });
 

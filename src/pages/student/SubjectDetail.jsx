@@ -14,6 +14,7 @@ import {
     calculateUnofficialGrade,
     getOfficialAssessments,
 } from "@/lib/grades";
+import { getSubjectDetailTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
@@ -62,11 +63,7 @@ function SubjectDetail() {
         if (!currentRecord) return;
 
         const currentTerm = term.toLowerCase();
-        const currentTarget = Number(
-            currentRecord.targetGradeSandbox?.terms?.[currentTerm]?.desiredFinalGrade ??
-                currentRecord.targetGradeSandbox?.desiredFinalGrade ??
-                90,
-        );
+        const currentTarget = getSubjectDetailTarget(currentRecord, currentTerm);
         const officialGrade = calculateOfficialGrade(currentRecord, term, currentRule);
         const expectedGrade = calculateUnofficialGrade(currentRecord, term, currentRule);
         const officialReached = officialGrade !== null && officialGrade >= currentTarget;
@@ -173,12 +170,7 @@ function SubjectDetail() {
         officialAverage === null ? 0 : Math.min(100, Math.max(0, officialAverage));
     const expectedProgress =
         expectedAverage === null ? 0 : Math.min(100, Math.max(0, expectedAverage));
-    const targetGradeConfig = studentRecord.targetGradeSandbox ?? {};
-    const targetGrade = Number(
-        targetGradeConfig.terms?.[selectedTermKey]?.desiredFinalGrade ??
-            targetGradeConfig.desiredFinalGrade ??
-            90,
-    );
+    const targetGrade = getSubjectDetailTarget(studentRecord, selectedTermKey);
 
     function updateTargetGrade(value) {
         if (value === "") return;

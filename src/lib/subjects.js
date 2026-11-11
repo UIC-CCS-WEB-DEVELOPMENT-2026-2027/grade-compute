@@ -4,6 +4,7 @@
 // Pure functions only (no React, no localStorage). Save results with saveDb().
 import { calculateOfficialFinalGrade, calculateUnofficialFinalGrade } from "./grades.js";
 import { nextId } from "./rules.js";
+import { DEFAULT_TARGET } from "./targets.js";
 
 export const PASSING_GRADE = 75;
 
@@ -189,7 +190,7 @@ export function addSubject(db, studentId, values, date = new Date()) {
         studentRecords: [
             {
                 studentId,
-                targetGradeSandbox: { desiredFinalGrade: 90 },
+                targetGradeSandbox: { desiredFinalGrade: DEFAULT_TARGET },
                 // Tasks are added per criterion of the rule, so terms start empty.
                 grades: { prelim: {}, midterm: {}, finals: {} },
             },

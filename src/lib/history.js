@@ -17,11 +17,10 @@ import { toNumber } from "./number.js";
 import { getRuleLeaves } from "./rules.js";
 import { getSandboxPlan } from "./sandbox.js";
 import { getClassSemesterId, PASSING_GRADE } from "./subjects.js";
+import { getTermTarget } from "./targets.js";
 import { TERM_LABELS } from "./terms.js";
 
 export { PASSING_GRADE };
-
-const DEFAULT_TARGET = 90;
 
 function toTime(value) {
     const stamp = Date.parse(value ?? "");
@@ -43,15 +42,6 @@ export function scoreTime(task) {
 function taskLabel(task, criterionName, index) {
     const title = task.title || `${criterionName} ${task.sequenceNumber ?? index + 1}`;
     return task.description ? `${title} - ${task.description}` : title;
-}
-
-// The subject's target for a term (the one set on Subject Detail).
-export function getTermTarget(studentRecord, termKey) {
-    const config = studentRecord?.targetGradeSandbox ?? {};
-    const target = [config.terms?.[termKey]?.desiredFinalGrade, config.desiredFinalGrade]
-        .map(toNumber)
-        .find((value) => value !== null && value >= 0 && value <= 100);
-    return target ?? DEFAULT_TARGET;
 }
 
 // Every scored task of one term, in the order it was scored.

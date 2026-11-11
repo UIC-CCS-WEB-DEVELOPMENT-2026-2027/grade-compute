@@ -511,9 +511,10 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T6.2 One term list.**
   - `lib/terms.js` exports `TERMS`, `TERM_KEYS`, `TERM_LABELS`.
   - Replace the copies in `grades.js`, `rules.js`, `history.js` and `TargetGradeSandbox.jsx`.
-- [ ] **T6.3 ⚠ `lib/targets.js`.**
+- [x] **T6.3 ⚠ `lib/targets.js`.**
   - Contents: `DEFAULT_TARGET`, `getTermTarget` (from history), `getSandboxTarget` (from sandbox), and `getSubjectDetailTarget`, which is **not range-checked** (keeps B11; the SubjectDetail tests cover it).
   - Replaces the 5 copies of `90` and the 3 lookups.
+  - **As done:** the `getTermTarget` and `getSandboxTarget` tests moved unchanged to `lib/targets.test.js`, with new tests for `getSubjectDetailTarget` (including B11's unchecked values).
 - [ ] **T6.4 `lib/scores.js`.**
   - `validateScore` (G7), used by CurrentTermRecords and TargetGradeSandbox. Messages stay in the components.
   - Add unit tests. Component tests unchanged.
