@@ -329,6 +329,54 @@ There are no backend calls.
 
 **Text below 14px** is widespread (§8).
 
+### Screenshot findings (Phase 2)
+
+**Setup.** `npm run screenshots` (`scripts/screenshots.mjs`) saves 56 full-page shots to `docs/baseline/<screen>-<width>.png`: 14 screens (including the 5 Settings sections and two Subject Detail terms) at 375, 768, 1024 and 1440 wide. Every shot uses:
+- the clock frozen at 2026-11-11, the same date as the tests
+- the seed database, signed in as `U1`
+- `compugrade-sidebar-minimized` set to the state a new user gets at that width: `"1"` at 768 and 1024, `"0"` at 375 and 1440
+
+The same pages were also measured in the browser (overflow, font sizes, target sizes).
+
+**Confirmed from the code checks above:**
+- At 768 the app is on the desktop side of 760, with the sidebar minimised.
+- The enrolled-subjects table becomes cards only at 640 or less.
+- The sandbox table scrolls sideways.
+- Settings has its own layout and its own navigation, which wraps into two rows at 768.
+
+**Horizontal scroll:**
+- **Page level: none.** No screen scrolls sideways at any of the four widths.
+- **Inside a container:**
+  - Enrolled-subjects table (Dashboard and My Subjects) at 768: 609px of content in 557px, so the row arrow is hidden until the table is scrolled.
+  - Sandbox "Tell us what is left" table at 1024: 540px in 494px.
+
+**Overlap:**
+- **Subject Detail gauges at 768 with the sidebar expanded.** The "Prelim official" and "Prelim expected" labels and rings run into each other. With the default minimised sidebar they fit. The same happens whenever the main column is about 460px wide.
+- **No other overlapping or clipped content** was found at the default sidebar state. The only clipped elements are screen-reader-only text and the hidden labels of the minimised sidebar, both intended.
+
+**Text below 14px:** on every screen at every width.
+- **Sizes found:** 7, 8, 9, 10, 11, 12 and 13px, plus rem values that work out between 10.7 and 13.6px.
+- **Smallest:** 7px, on Subject Detail and the sandbox.
+- **Text elements below 14px per screen:** Subject Detail about 112–116, sandbox about 110–114, Dashboard about 84, login 8 (phone) and 34 (wider), Grade Rules pages 16–25, Settings sections 8–19.
+
+**Touch targets below 44px** (phone and tablet):
+- **Login:** the Log In / Create Account tabs are 164×36 on phones and 29×22 / 79×22 from 768 up. The show-password button is 26×28, and the inputs and submit button are 40–42px tall.
+- **Header:** the bell (34×34) and the profile chevron (23×30).
+- **Sidebar:** the minimise toggle (36×36). When expanded, the enrolled-subject rows are 28px tall and their delete buttons 23×23.
+- **Subject Detail:** term tabs 37px tall, the target input (52×30 at 768, 54×40 on phones), score inputs 56×23 at 768, the breakdown toggle 26px tall, and the "Add custom task" button 38px tall.
+- **Charts:** history chips 34px tall, "Show as a table" 27px tall, the table summary 32px tall, and the plan toggles 32–34px tall.
+- **Subjects table:** row arrow 30×30, search 37px tall, filter tabs 33px tall.
+- **Sandbox:** back link 36px tall, term tabs 38px tall, number inputs 35px tall, "How this is calculated" 36px tall.
+- **Grade Rules:** the thumbnail toggles and card actions are 30px tall, the card link 35px tall, and the back link 36px tall.
+- **Rule editor:**
+  - pill icon buttons 24×24 and the pill % input 25×26
+  - tag checkboxes 13×13
+  - the name and school inputs and "Add school" are 38px tall
+  - the view toggles are 30px tall
+- **Settings:** nav items 42px tall, toggles 39px, buttons and inputs 41px.
+
+**Screenshot artifact, not a bug:** the sidebar is `position: sticky` with `height: 100vh`, so in full-page shots it ends at the 900px window height.
+
 ## 11. Structure problems
 
 **Misplaced files:**
