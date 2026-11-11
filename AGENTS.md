@@ -93,7 +93,7 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 | Tailwind version | Not installed yet. Tailwind v4 is planned for Phase 4 |
 | Global stylesheet | `src/assets/index.css`. Phase 0 also found 19 per-component and per-page CSS files, which are to be merged into it |
 
-**Approved dependencies for this job:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library, Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
+**Approved dependencies for this job:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
 
 ## 5. File structure
 
@@ -140,7 +140,15 @@ src/
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
 - No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0).
-- ESLint and Prettier decide formatting. Do not hand-format against them or disable rules inline without a comment giving the reason.
+- **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
+  - 4-space indentation
+  - double quotes
+  - semicolons
+  - trailing commas wherever possible
+  - lines up to 100 characters
+- Every JavaScript, JSX, CSS, JSON and HTML file follows it, including tests and scripts. Markdown is written by hand and is not formatted.
+- Run `npm run format` before committing. `npm run format:check` must pass.
+- ESLint and Prettier decide formatting. Do not hand-format against them, change `.prettierrc.json`, or disable rules inline without a comment giving the reason. Changing the style needs the owner's approval.
 
 ## 7. UI standards
 
@@ -188,7 +196,7 @@ src/
 ## 8. Working rules
 
 - Work from `docs/TASKS.md`. One task, one commit. Tick the task off in the same commit.
-- Before every commit: lint, build, and tests all pass.
+- Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
 - Commit messages: `type(scope): summary` — types `refactor`, `style`, `test`, `chore`, `docs`.
 - Never push, force-push, rewrite history, or delete branches. The owner does that.
@@ -198,7 +206,7 @@ src/
 ## 9. Definition of done for any task
 
 1. The task's acceptance check in `docs/TASKS.md` is met.
-2. Lint, build, and tests pass.
+2. Lint, format check, build, and tests pass.
 3. Behaviour is unchanged; any screen touched was checked at 375, 768, 1024, and 1440.
 4. No rule in sections 5 to 7 is newly broken.
 5. The commit contains only what the task describes.
