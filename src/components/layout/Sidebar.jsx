@@ -19,7 +19,7 @@ function isPhoneWidth() {
     return window.matchMedia(`(max-width: ${PHONE_MAX_WIDTH}px)`).matches;
 }
 
-export default function Sidebar() {
+export function Sidebar() {
     const location = useLocation();
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const navigate = useNavigate();

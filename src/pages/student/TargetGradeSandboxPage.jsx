@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
-import PageFooter from "@/components/layout/PageFooter";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Header } from "@/components/layout/Header";
+import { PageFooter } from "@/components/layout/PageFooter";
 import TargetGradeSandbox from "@/features/sandbox/components/TargetGradeSandbox";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
 import { getActiveStudentId } from "@/services/session";

@@ -4,13 +4,13 @@
 // /student/rules/:ruleId.
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Header } from "@/components/layout/Header";
 import PillEditor from "@/features/grade-rules/components/PillEditor";
 import RuleFormula from "@/features/grade-rules/components/RuleFormula";
 import RulePieChart from "@/features/grade-rules/components/RulePieChart";
 import RuleHierarchyTable from "@/features/grade-rules/components/RuleHierarchyTable";
-import Dialog from "@/components/Dialog";
+import { Dialog } from "@/components/Dialog";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
 import { saveDbSafely } from "@/services/db";
 import {

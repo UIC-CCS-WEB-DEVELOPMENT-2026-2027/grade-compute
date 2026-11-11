@@ -12,14 +12,7 @@
 // Any other props (type, aria-*, placeholder, ...) go to the <input>.
 import { useRef, useState } from "react";
 
-export default function DraftInput({
-    value,
-    onCommit,
-    acceptTyping,
-    onBlur,
-    onKeyDown,
-    ...inputProps
-}) {
+export function DraftInput({ value, onCommit, acceptTyping, onBlur, onKeyDown, ...inputProps }) {
     const savedText = value === null || value === undefined ? "" : String(value);
     const [draft, setDraft] = useState(null);
     const cancelled = useRef(false);

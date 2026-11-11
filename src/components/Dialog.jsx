@@ -4,7 +4,7 @@
 import { useEffect, useId, useRef } from "react";
 import "./Dialog.css";
 
-export default function Dialog({ title, onClose, children, actions, className = "" }) {
+export function Dialog({ title, onClose, children, actions, className = "" }) {
     const dialogRef = useRef(null);
     const titleId = useId();
 

@@ -2,7 +2,7 @@
 // Asks which subject to open in the Target Grade Sandbox (opened from the
 // sidebar). Render it only while it should be open.
 import { Link } from "react-router-dom";
-import Dialog from "@/components/Dialog";
+import { Dialog } from "@/components/Dialog";
 import { formatGrade } from "@/lib/format";
 import "./SandboxSubjectPicker.css";
 

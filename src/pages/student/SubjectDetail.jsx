@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
-import PageFooter from "@/components/layout/PageFooter";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Header } from "@/components/layout/Header";
+import { PageFooter } from "@/components/layout/PageFooter";
 import CurrentTermRecords from "@/features/term-records/components/CurrentTermRecords";
-import DraftInput from "@/components/DraftInput";
+import { DraftInput } from "@/components/DraftInput";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
 import SubjectGradeHistory from "@/features/history/components/SubjectGradeHistory";
 import { getDb, saveDb } from "@/services/db";

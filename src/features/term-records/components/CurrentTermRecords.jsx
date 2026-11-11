@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DraftInput from "@/components/DraftInput";
+import { DraftInput } from "@/components/DraftInput";
 import { getDb, saveDb } from "@/services/db";
 import { updateStudentRecord } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";

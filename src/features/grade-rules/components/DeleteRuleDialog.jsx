@@ -3,7 +3,7 @@
 // be deleted, and subjects that use the rule must move to another rule.
 // Calls onDeleted(newDb) with the updated database; the page saves it.
 import { useState } from "react";
-import Dialog from "@/components/Dialog";
+import { Dialog } from "@/components/Dialog";
 import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
 
 export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {

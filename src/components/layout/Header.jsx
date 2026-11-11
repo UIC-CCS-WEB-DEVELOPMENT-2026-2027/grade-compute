@@ -21,7 +21,7 @@ function ChevronDownIcon() {
     );
 }
 
-export default function Header({ title, subtitle = "A little progress, every day." }) {
+export function Header({ title, subtitle = "A little progress, every day." }) {
     const dbData = getDb();
     const activeUser = getActiveUser(dbData);
     const profile = activeUser ?? {

@@ -3,8 +3,8 @@
 // Cards open the view/edit page (RuleDetail.jsx).
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Header } from "@/components/layout/Header";
 import RuleCard from "@/features/grade-rules/components/RuleCard";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
 import { saveDbSafely } from "@/services/db";
