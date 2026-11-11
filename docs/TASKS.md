@@ -637,7 +637,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Check: C2–C5.
   - [x] **T7.D3** Recent Updates → `Card` + `Item`. Delete `StudentDashboard.css`. Check: C10.
 - **Subjects**
-  - [ ] **T7.E1 EnrolledSubjectsTable.**
+  - [x] **T7.E1 EnrolledSubjectsTable.**
     - `Card`, `Table` (cards below `md`), filter `ToggleGroup` (G17), search `Input`, status `Badge`, `Empty`.
     - Delete its CSS.
     - Check: C6–C9, D1.

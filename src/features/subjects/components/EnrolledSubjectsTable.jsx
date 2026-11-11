@@ -6,14 +6,34 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AddSubjectForm } from "./AddSubjectForm";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Empty } from "@/components/ui/empty";
+import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 import { formatGrade } from "@/lib/format";
 import { PASSING_GRADE } from "@/lib/subjects";
-import "./EnrolledSubjectsTable.css";
 
 const STATUS_LABELS = {
     passing: "Passing",
     below: "Below passing",
     none: "No grades yet",
+};
+
+const STATUS_VARIANTS = {
+    passing: "secondary",
+    below: "destructive",
+    none: "secondary",
 };
 
 // Short label for the icon box: the letters of the subject code ("IT101" -> "IT").
@@ -52,168 +72,214 @@ export function EnrolledSubjectsTable({
     }
 
     return (
-        <section className="enrolled-subjects" aria-labelledby="enrolled-subjects-title">
-            <div className="enrolled-header">
+        <Card className="mt-8 gap-6" role="region" aria-labelledby="enrolled-subjects-title">
+            <CardHeader className="flex items-start justify-between gap-4 max-sm:flex-col max-sm:items-stretch">
                 <div>
-                    <div className="enrolled-title-row">
-                        <h2 className="enrolled-title" id="enrolled-subjects-title">
+                    <div className="flex items-center gap-2">
+                        <h2
+                            className="m-0 type-section-title text-foreground"
+                            id="enrolled-subjects-title"
+                        >
                             Enrolled Subjects
                         </h2>
-                        <span className="enrolled-count">{subjects.length}</span>
+                        <Badge
+                            variant="secondary"
+                            className="rounded-md bg-muted text-muted-foreground"
+                        >
+                            {subjects.length}
+                        </Badge>
                     </div>
-                    <p className="enrolled-subtitle">{subtitle}</p>
+                    <p className="mt-1.5 type-small text-muted-foreground">{subtitle}</p>
                 </div>
-                <button
-                    type="button"
-                    className="enrolled-add-button"
+                <Button
+                    variant={showForm ? "outline" : "default"}
+                    className={cn("shrink-0 max-md:h-control-touch", showForm && "text-primary")}
                     onClick={() => setShowForm((open) => !open)}
                     aria-expanded={showForm}
                 >
                     {showForm ? "Close form" : "+ Add subject"}
-                </button>
-            </div>
+                </Button>
+            </CardHeader>
 
-            {showForm && (
-                <AddSubjectForm
-                    studentId={studentId}
-                    initialSection={initialSection}
-                    onCancel={() => setShowForm(false)}
-                    onAdded={handleAdded}
-                />
-            )}
+            <CardContent className="flex flex-col gap-6">
+                {showForm && (
+                    <AddSubjectForm
+                        studentId={studentId}
+                        initialSection={initialSection}
+                        onCancel={() => setShowForm(false)}
+                        onAdded={handleAdded}
+                    />
+                )}
 
-            <div className="enrolled-controls">
-                <div className="enrolled-tabs" role="tablist" aria-label="Filter subjects">
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={activeFilter === "all"}
-                        className={`enrolled-tab${activeFilter === "all" ? " active" : ""}`}
-                        onClick={() => setActiveFilter("all")}
+                <div className="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-stretch">
+                    <ToggleGroup
+                        aria-label="Filter subjects"
+                        value={[activeFilter]}
+                        onValueChange={(value) => {
+                            if (value[0]) setActiveFilter(value[0]);
+                        }}
+                        className="flex-wrap gap-2"
                     >
-                        All subjects
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={activeFilter === "attention"}
-                        className={`enrolled-tab${activeFilter === "attention" ? " active" : ""}`}
-                        onClick={() => setActiveFilter("attention")}
-                    >
-                        Needs attention
-                        {needsAttentionCount > 0 && (
-                            <span className="enrolled-tab-count">{needsAttentionCount}</span>
-                        )}
-                    </button>
+                        <ToggleGroupItem
+                            value="all"
+                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary max-md:h-control-touch"
+                        >
+                            All subjects
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                            value="attention"
+                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary max-md:h-control-touch"
+                        >
+                            Needs attention
+                            {needsAttentionCount > 0 && (
+                                <Badge variant="destructive">{needsAttentionCount}</Badge>
+                            )}
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+                    <Input
+                        type="search"
+                        className="w-55 max-md:h-control-touch max-sm:w-full"
+                        placeholder="Search subjects..."
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        aria-label="Search subjects"
+                    />
                 </div>
-                <input
-                    type="search"
-                    className="enrolled-search"
-                    placeholder="Search subjects..."
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    aria-label="Search subjects"
-                />
-            </div>
 
-            <div className="enrolled-table-wrapper">
-                <table className="enrolled-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Subject / Professor</th>
-                            <th scope="col">Official grade</th>
-                            <th scope="col">Expected grade</th>
-                            <th scope="col">Status</th>
-                            <th scope="col" aria-label="Open subject" />
-                        </tr>
-                    </thead>
-                    <tbody>
+                <Table className="max-md:block">
+                    <TableHeader className="max-md:sr-only">
+                        <TableRow className="hover:bg-transparent">
+                            {[
+                                "Subject / Professor",
+                                "Official grade",
+                                "Expected grade",
+                                "Status",
+                            ].map((label) => (
+                                <TableHead
+                                    key={label}
+                                    className="type-caption tracking-wide text-muted-foreground uppercase"
+                                >
+                                    {label}
+                                </TableHead>
+                            ))}
+                            <TableHead aria-label="Open subject" />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody className="max-md:flex max-md:flex-col max-md:gap-3">
                         {visibleSubjects.map((row) => {
                             const detailPath = `/student/subject/${row.classId}`;
                             return (
                                 // The row is clickable with a mouse; the links
                                 // inside are what keyboards and screen readers use.
-                                <tr key={row.classId} onClick={() => navigate(detailPath)}>
-                                    <td className="enrolled-cell-subject">
+                                <TableRow
+                                    key={row.classId}
+                                    onClick={() => navigate(detailPath)}
+                                    className="cursor-pointer hover:bg-muted max-md:grid max-md:grid-cols-3 max-md:gap-x-4 max-md:gap-y-3 max-md:rounded-xl max-md:border max-md:p-4"
+                                >
+                                    <TableCell className="py-4.5 max-md:col-span-2 max-md:p-0 max-md:whitespace-normal">
                                         <Link
-                                            className="enrolled-subject"
+                                            className="flex min-w-55 items-center gap-3.5 text-inherit no-underline hover:text-primary max-md:min-w-0"
                                             to={detailPath}
                                             onClick={(event) => event.stopPropagation()}
                                         >
-                                            <span className="enrolled-icon" aria-hidden="true">
+                                            <span
+                                                className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted type-small font-bold text-primary"
+                                                aria-hidden="true"
+                                            >
                                                 {subjectInitials(row.subjectCode)}
                                             </span>
-                                            <span className="enrolled-subject-text">
-                                                <span className="enrolled-code">
+                                            <span className="flex flex-col whitespace-normal">
+                                                <span className="type-caption tracking-wide text-muted-foreground">
                                                     {row.subjectCode}
                                                 </span>
-                                                <span className="enrolled-name">
+                                                <span className="type-body font-semibold">
                                                     {row.subjectName}
                                                 </span>
-                                                <span className="enrolled-prof">
+                                                <span className="type-small text-muted-foreground">
                                                     {row.professor}
                                                 </span>
                                             </span>
                                         </Link>
-                                    </td>
-                                    <td className="enrolled-cell-official">
-                                        <span className="enrolled-grade-num">
+                                    </TableCell>
+                                    <TableCell className="py-4.5 max-md:order-1 max-md:p-0 max-md:whitespace-normal">
+                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase md:hidden">
+                                            Official
+                                        </span>
+                                        <span className="block type-card-title text-foreground">
                                             {formatGrade(row.officialGrade, { decimals: 1 })}
                                         </span>
-                                        <span className="enrolled-grade-label">
+                                        <span className="block type-small text-muted-foreground">
                                             {row.officialGrade === null
                                                 ? "Not posted yet"
                                                 : "Posted by professor"}
                                         </span>
-                                    </td>
-                                    <td className="enrolled-cell-expected">
-                                        <span className="enrolled-grade-num expected">
+                                    </TableCell>
+                                    <TableCell className="py-4.5 max-md:order-1 max-md:col-span-2 max-md:p-0 max-md:whitespace-normal">
+                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase md:hidden">
+                                            Expected
+                                        </span>
+                                        {/* Expected grades use the self-reported color. */}
+                                        <span className="block type-card-title text-self-reported-foreground">
                                             {formatGrade(row.expectedGrade, { decimals: 1 })}
                                         </span>
-                                        <span className="enrolled-grade-label">
+                                        <span className="block type-small text-muted-foreground">
                                             {row.expectedGrade === null
                                                 ? "No scores yet"
                                                 : "With your scores"}
                                         </span>
-                                    </td>
-                                    <td className="enrolled-cell-status">
-                                        <span className={`enrolled-status ${row.status}`}>
+                                    </TableCell>
+                                    <TableCell className="py-4.5 max-md:order-2 max-md:col-span-3 max-md:p-0 max-md:whitespace-normal">
+                                        <Badge
+                                            variant={STATUS_VARIANTS[row.status]}
+                                            className={cn(
+                                                "h-auto px-3 py-1",
+                                                row.status === "none" &&
+                                                    "bg-muted text-muted-foreground",
+                                            )}
+                                        >
                                             {STATUS_LABELS[row.status]}
-                                        </span>
-                                    </td>
-                                    <td className="enrolled-action">
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="py-4.5 text-right max-md:self-center max-md:p-0 max-md:whitespace-normal">
                                         <Link
-                                            className="enrolled-arrow"
+                                            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground no-underline hover:text-primary focus-visible:text-primary max-md:size-11"
                                             to={detailPath}
                                             onClick={(event) => event.stopPropagation()}
                                             aria-label={`Open ${row.subjectCode}`}
                                         >
                                             →
                                         </Link>
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             );
                         })}
                         {visibleSubjects.length === 0 && (
-                            <tr className="enrolled-empty-row">
-                                <td className="enrolled-empty" colSpan="5">
-                                    {subjects.length === 0
-                                        ? "No subjects yet. Use + Add subject to add your first one."
-                                        : "No subjects match this filter."}
-                                </td>
-                            </tr>
+                            <TableRow className="hover:bg-transparent max-md:block">
+                                <TableCell
+                                    colSpan={5}
+                                    className="max-md:block max-md:p-0 max-md:whitespace-normal"
+                                >
+                                    <Empty className="type-small text-muted-foreground">
+                                        {subjects.length === 0
+                                            ? "No subjects yet. Use + Add subject to add your first one."
+                                            : "No subjects match this filter."}
+                                    </Empty>
+                                </TableCell>
+                            </TableRow>
                         )}
-                    </tbody>
-                </table>
-            </div>
+                    </TableBody>
+                </Table>
 
-            <div className="enrolled-footer">
-                <span>
-                    • Official grades are posted by your professors. Expected grades fill the gaps
-                    with your own scores.
-                </span>
-                <span>Passing grade: {PASSING_GRADE}%</span>
-            </div>
-        </section>
+                <div className="flex items-start gap-6 border-t border-border pt-5 type-small text-muted-foreground max-sm:flex-col max-sm:gap-1">
+                    <span className="min-w-0 flex-1">
+                        • Official grades are posted by your professors. Expected grades fill the
+                        gaps with your own scores.
+                    </span>
+                    <span className="shrink-0 whitespace-nowrap max-sm:whitespace-normal">
+                        Passing grade: {PASSING_GRADE}%
+                    </span>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
