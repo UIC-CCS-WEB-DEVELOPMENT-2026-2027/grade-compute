@@ -650,7 +650,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Delete `SubjectMenu.css`.
     - Check: D1–D4.
 - **Subject Detail**
-  - [ ] **T7.G1** TermNavigation → `ToggleGroup`. Delete its CSS. Check: G2, I1.
+  - [x] **T7.G1** TermNavigation → `ToggleGroup`. Delete its CSS. Check: G2, I1.
   - [ ] **T7.G2 ⚠ Overview and gauges.**
     - Change: `GradeGauge` (G6) for both pages, the target `DraftInput` → `InputGroup`, the legend and card.
     - Remove Arial.

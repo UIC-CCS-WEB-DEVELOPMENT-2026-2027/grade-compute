@@ -162,49 +162,92 @@
     font-family: Arial, sans-serif;
 }
 
-/* TERM NAVIGATION */
+/* PAGE LINKS (Subject Detail <-> Sandbox), until T7.G2 and T7.I1 */
 
-.subject-term-navigation {
-    display: flex;
+.term-nav-link {
+    display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.term-selector {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.term-selector button {
-    min-width: 60px;
+    gap: 0.4rem;
     padding: 9px 15px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--primary);
     border-radius: 22px;
-    background: var(--card);
-    color: #667b9a;
+    background: var(--secondary);
+    color: var(--primary);
     font-size: 11px;
-    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
     transition:
         background 0.2s ease,
         color 0.2s ease;
 }
 
-.term-selector button:hover {
-    background: #f0f4fa;
-}
-
-.term-selector button.selected {
-    border-color: var(--primary);
+.term-nav-link:hover,
+.term-nav-link:focus-visible {
     background: var(--primary);
-    color: #ffffff;
+    color: var(--white);
 }
 
-.term-note {
-    color: #8b98aa;
-    font-size: 9px;
+.term-nav-link svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+.sandbox-back-link {
+    gap: 6px;
+    padding: 7px 13px 7px 9px;
+    border-color: transparent;
+    background: var(--secondary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.sandbox-back-link > span {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--card);
+}
+
+.sandbox-back-link > span svg {
+    display: block;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+}
+
+.sandbox-back-link > span svg path {
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.4;
+}
+
+.sandbox-back-link:hover,
+.sandbox-back-link:focus-visible {
+    border-color: var(--primary);
+    background: var(--card);
+    color: var(--primary);
+}
+
+.sandbox-back-link:hover > span,
+.sandbox-back-link:focus-visible > span {
+    background: var(--card);
+}
+
+.sandbox-back-link:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.sandbox-back-row {
+    display: flex;
+    margin-bottom: 10px;
 }
 
 /* BREADCRUMP */
@@ -799,12 +842,6 @@
         padding: 20px 16px;
     }
 
-    .subject-term-navigation {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 10px;
-    }
-
     .subject-title-row {
         align-items: flex-start;
         flex-direction: column;
@@ -874,15 +911,6 @@
         padding: 18px 12px;
     }
 
-    .term-selector {
-        gap: 5px;
-    }
-
-    .term-selector button {
-        min-width: 0;
-        padding: 9px 13px;
-    }
-
     .subject-title-row h1 {
         font-size: 22px;
     }
@@ -914,8 +942,8 @@
 
 /* Phones: comfortable tap targets (at least 44px tall). */
 @media (max-width: 760px) {
-    .term-selector button,
-    .term-nav-link {
+    .term-nav-link,
+    .sandbox-back-link {
         min-height: 44px;
     }
 

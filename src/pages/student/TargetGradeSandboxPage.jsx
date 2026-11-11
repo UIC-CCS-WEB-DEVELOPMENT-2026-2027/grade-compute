@@ -56,7 +56,7 @@ export function TargetGradeSandboxPage() {
                                         {subject.subjectCode} - {subject.subjectName}
                                     </h1>
                                     <TermNavigation
-                                        className="sandbox-term-navigation"
+                                        className="mb-0 ml-auto flex-none flex-col items-end gap-1.5"
                                         termKey={termKey}
                                         onTermChange={(nextTerm) =>
                                             setSearchParams({ term: nextTerm }, { replace: true })
