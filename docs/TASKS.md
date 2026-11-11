@@ -219,10 +219,10 @@ The sidebar becomes the shadcn `Sidebar` (`SidebarProvider`, `Sidebar collapsibl
 
 **The new behaviour is worked on during the clean-up**, as an approved exception. Today's behaviour differs from the component's in these places:
 
-| Item | Today | shadcn `Sidebar` | Proposed handling (S1–S5 need owner confirmation; see §8) |
+| Item | Today | shadcn `Sidebar` | Handling (all confirmed by the owner, Gate 3) |
 | --- | --- | --- | --- |
 | S1 Remembered state | `localStorage` `compugrade-sidebar-minimized` (`"1"`/`"0"`) | Writes a `sidebar_state` cookie | Control the provider (`open` / `onOpenChange`) from `useSidebarState`. Keep the existing key and drop the cookie, so no new stored data |
-| S2 Keyboard shortcut | None | Ctrl/⌘+B toggles the sidebar | Accept it as new behaviour |
+| S2 Keyboard shortcut | None | Ctrl/⌘+B toggles the sidebar | Keep it as new behaviour. It writes the same `compugrade-sidebar-minimized` key (S1) |
 | S3 Phone switch | 760px | `useIsMobile` at 768, so phone means 767 or less | Move `PHONE_MAX_WIDTH` to 767 (the approved threshold change) inside the sidebar group (T7.S1), so both agree |
 | S4 Tablet default | Minimised at 1100 or less | Open by default | Keep: `defaultOpen` comes from `useSidebarState`, with the approved 1023 threshold (T7.S1) |
 | S5 Minimised subject list | A pop-out list (Escape or an outside click closes it) | No pop-out; sub-menus are hidden in icon mode | Keep the pop-out with a `Popover` on the My Subjects button |
@@ -739,7 +739,9 @@ The owner answered on 2026-11-11:
 | D6 | Remove `@types/react*` | T9.1 |
 | D7 | Use the shadcn `Sidebar`, keeping the current look; its new behaviour is worked on during the clean-up | §3.2, T7.S0–S6 |
 
+| S1–S5 | Sidebar behaviour as in §3.2: keep the `compugrade-sidebar-minimized` key with no cookie, keep the Ctrl/⌘+B shortcut, phone switch at 767, tablet default kept, minimised pop-out kept | T7.S0–S3 |
+| D8 | The design tokens in §4 are approved as listed, including the AA darkening | T4.5, T7.0a |
+
 **Still open:**
-- **S1–S5 in §3.2:** the concrete sidebar behaviour; needs owner confirmation.
-- **D8:** the token values in §4.
+- **SPEC proposals 1 and 2** (the D1 note in §6 (f), and the homepage idea for §9) await the owner's approval through the SPEC protocol. T5a.1 and T5a.3 stay blocked until proposal 1 is written.
 - **The owner's homepage idea** (an interactive grade-calculator hero, switching to a grade inputter for professors): a new feature, so it goes to the `SPEC.md` Backlog through the protocol, not into this job.
