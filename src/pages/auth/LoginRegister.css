@@ -360,75 +360,9 @@
     font-size: 10px;
     line-height: 15px;
 }
-.auth-field {
-    display: grid;
-    gap: 6px;
-    margin-bottom: 14px;
-    color: var(--muted-foreground);
-    font-size: 12px;
-    line-height: 17px;
-}
-.auth-field input {
-    display: block;
-    width: 100%;
-    height: 50px;
-    padding: 0 11px;
-    border: 1px solid #60738f;
-    border-radius: 5px;
-    outline: none;
-    background: var(--card);
-    color: var(--auth-ink);
-    font: 10px/1.5 var(--font-body);
-    box-shadow: 0 3px 4px #293b5633;
-}
-.auth-field input::placeholder {
-    color: var(--muted-foreground);
-    opacity: 1;
-}
-.auth-field input:focus-visible {
-    border-color: var(--auth-primary);
-    outline: 2px solid #4c8ce430;
-    outline-offset: 2px;
-}
-.auth-field input.has-error {
-    border-color: #c66b7b;
-    box-shadow: none;
-}
-.auth-input-wrap {
-    position: relative;
-    display: block;
-}
-.auth-input-wrap input {
-    height: 45px;
-    padding-right: 42px;
-}
-.visibility-button {
-    position: absolute;
-    top: 50%;
-    right: 7px;
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 28px;
-    padding: 0;
-    transform: translateY(-50%);
-    border-radius: 3px;
-    background: transparent;
-}
-.visibility-button .visibility-icon {
-    display: block;
-    width: 18px;
-    height: 18px;
-    color: #5f7598;
-}
 .auth-page button:focus-visible {
     outline: 2px solid var(--self-reported);
     outline-offset: 3px;
-}
-.field-error {
-    color: var(--auth-error);
-    font-size: 11px;
-    line-height: 15px;
 }
 .password-hints {
     display: grid;
@@ -445,34 +379,6 @@
 }
 .password-hints .unmet {
     color: var(--auth-error);
-}
-.form-message {
-    margin: 0 0 14px;
-    font-size: 11px;
-    line-height: 16px;
-}
-.form-message.error {
-    color: var(--auth-error);
-}
-.form-message.info {
-    color: var(--auth-primary);
-}
-.submit-button {
-    display: block;
-    width: 100%;
-    min-height: 46px;
-    margin-top: 2px;
-    padding: 10px 16px;
-    border-radius: 17px;
-    background: var(--auth-primary);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 20px;
-}
-.submit-button:hover {
-    background: #35547f;
-    opacity: 1;
 }
 .switch-copy {
     margin: 24px 0 0;
@@ -614,41 +520,10 @@
         font-size: 14px;
         line-height: 21px;
     }
-    .auth-field {
-        gap: 7px;
-        margin-bottom: 22px;
-        font-size: 14px;
-        line-height: 20px;
-    }
-    .auth-field input,
-    .auth-input-wrap input {
-        height: 52px;
-        padding-left: 12px;
-        font-size: 14px;
-    }
-    .visibility-button {
-        right: 9px;
-        width: 32px;
-        height: 36px;
-    }
-    .visibility-button .visibility-icon {
-        width: 20px;
-        height: 20px;
-    }
-    .field-error {
-        font-size: 12px;
-        line-height: 17px;
-    }
     .password-hints {
         margin: -6px 0 21px;
         font-size: 11px;
         line-height: 17px;
-    }
-    .submit-button {
-        min-height: 52px;
-        margin-top: 4px;
-        border-radius: 18px;
-        font-size: 16px;
     }
     .switch-copy {
         margin-top: 24px;
@@ -660,10 +535,6 @@
         padding-top: 16px;
         font-size: 12px;
         line-height: 20px;
-    }
-    .form-message {
-        font-size: 12px;
-        line-height: 18px;
     }
 }
 
@@ -707,37 +578,11 @@
 .form-subtitle {
     margin-top: 6px;
 }
-.auth-field {
-    grid-template-rows: 16px 40px 18px;
-    gap: 4px;
-    margin-bottom: 6px;
-    line-height: 16px;
-}
-.auth-field input,
-.auth-input-wrap input {
-    height: 40px;
-}
-.field-error {
-    display: block;
-    margin: 0;
-    min-height: 18px;
-    font-size: 11px;
-    line-height: 14px;
-}
 .auth-feedback {
     margin: 0 0 10px;
 }
 .auth-feedback:empty {
     display: none;
-}
-.form-message {
-    margin: 0;
-    font-size: 11px;
-    line-height: 16px;
-}
-.submit-button {
-    min-height: 42px;
-    margin-top: 0;
 }
 .switch-copy {
     margin-top: 12px;
@@ -769,9 +614,6 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
 }
-.registration-identity .auth-field {
-    min-width: 0;
-}
 .is-register .auth-form-area {
     margin-top: 4px;
     margin-bottom: 4px;
@@ -789,16 +631,6 @@
 .is-register .form-subtitle {
     margin-top: 2px;
     line-height: 13px;
-}
-.is-register .auth-field {
-    grid-template-rows: 16px 40px 24px;
-    gap: 3px;
-    margin-bottom: 2px;
-}
-.is-register .field-error {
-    min-height: 24px;
-    font-size: 10px;
-    line-height: 12px;
 }
 .registration-feedback {
     min-height: 30px;
@@ -828,23 +660,6 @@
     }
     .hero-content h1 {
         font-size: clamp(34px, 3.65vw, 48px);
-    }
-    .is-register .auth-field {
-        grid-template-rows: 14px 36px 22px;
-        gap: 2px;
-    }
-    .is-register .auth-field input,
-    .is-register .auth-input-wrap input {
-        height: 36px;
-    }
-    .is-register .field-error {
-        min-height: 22px;
-        font-size: 10px;
-        line-height: 11px;
-    }
-    .is-register .submit-button {
-        min-height: 40px;
-        padding-block: 9px;
     }
 }
 
@@ -877,24 +692,6 @@
     .form-subtitle {
         margin-top: 2px;
     }
-    .auth-field {
-        grid-template-rows: 20px 44px 18px;
-        gap: 4px;
-        margin-bottom: 6px;
-        line-height: 20px;
-    }
-    .auth-field input,
-    .auth-input-wrap input {
-        height: 44px;
-    }
-    .field-error {
-        min-height: 18px;
-        font-size: 11px;
-        line-height: 14px;
-    }
-    .submit-button {
-        min-height: 46px;
-    }
     .switch-copy {
         margin-top: 14px;
     }
@@ -920,29 +717,9 @@
         font-size: 12px;
         line-height: 18px;
     }
-    .is-register .auth-field {
-        grid-template-rows: 16px 44px 22px;
-        gap: 2px;
-        margin-bottom: 2px;
-        font-size: 12px;
-        line-height: 16px;
-    }
-    .is-register .auth-field input,
-    .is-register .auth-input-wrap input {
-        height: 44px;
-        font-size: 14px;
-    }
-    .is-register .field-error {
-        min-height: 22px;
-        font-size: 10px;
-        line-height: 11px;
-    }
     .is-register .password-hints {
         font-size: 11px;
         line-height: 14px;
-    }
-    .is-register .submit-button {
-        min-height: 44px;
     }
     .is-register .switch-copy {
         margin-top: 8px;
@@ -964,21 +741,6 @@
     }
     .is-register .form-eyebrow {
         display: none;
-    }
-    .is-register .auth-field {
-        grid-template-rows: 12px 32px 22px;
-        gap: 1px;
-        margin-bottom: 2px;
-        font-size: 11px;
-        line-height: 12px;
-    }
-    .is-register .auth-field input,
-    .is-register .auth-input-wrap input {
-        height: 32px;
-    }
-    .is-register .submit-button {
-        min-height: 34px;
-        padding-block: 6px;
     }
     .hero-content {
         margin-top: 12px;
@@ -1045,21 +807,6 @@
 .auth-page .sparkle-four {
     animation-delay: 1050ms;
 }
-.auth-page .auth-field input {
-    transition:
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        background-color 180ms ease;
-}
-.auth-page .submit-button {
-    transition:
-        background-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
-}
-.auth-page .visibility-button {
-    transition: background-color 180ms ease;
-}
 .auth-page .switch-copy button {
     text-decoration: underline;
     text-decoration-color: transparent;
@@ -1072,20 +819,9 @@
     transition: color 180ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-    .auth-page .submit-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px #40609030;
-    }
-    .auth-page .visibility-button:hover {
-        background-color: var(--secondary);
-    }
     .auth-page .switch-copy button:hover {
         text-decoration-color: currentColor;
     }
-}
-.auth-page .submit-button:active {
-    transform: translateY(0) scale(0.99);
-    box-shadow: none;
 }
 @keyframes auth-enter {
     from {
@@ -1156,19 +892,12 @@
     .auth-page form {
         animation: auth-fade-in 240ms ease-out both !important;
     }
-    .auth-page .auth-field input,
-    .auth-page .submit-button,
-    .auth-page .visibility-button,
     .auth-page .switch-copy button,
     .auth-page .password-hints li {
         transition:
             color 150ms ease,
             background-color 150ms ease,
             border-color 150ms ease !important;
-    }
-    .auth-page .submit-button:hover,
-    .auth-page .submit-button:active {
-        transform: none;
     }
 }
 
@@ -1227,20 +956,6 @@
     }
 }
 /* Keep mobile input text readable without triggering automatic input zoom. */
-@media (max-width: 760px) {
-    .auth-page .auth-field input,
-    .auth-page .auth-input-wrap input {
-        font-size: 16px;
-    }
-    .auth-page .visibility-button {
-        right: 0;
-        width: 44px;
-        height: 44px;
-    }
-    .auth-page .auth-input-wrap input {
-        padding-right: 48px;
-    }
-}
 /* Let short landscape screens scroll with both panel backgrounds intact. */
 @media (min-width: 761px) and (max-height: 540px) {
     .auth-page {

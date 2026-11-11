@@ -2,6 +2,17 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getDb, saveDb } from "@/services/db";
 import { ACTIVE_USER_KEY } from "@/services/session";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -90,12 +101,46 @@ function AcademicPreview() {
     );
 }
 
-function PasswordField({ id, label, value, onChange, visible, onToggle, error, isRegister }) {
+// One line of space is kept under each field for its error, so the form
+// doesn't move when an error appears. The error is announced (role="alert").
+function FieldErrorLine({ id, error }) {
     return (
-        <div className="auth-field">
-            <label htmlFor={id}>{label}</label>
-            <div className="auth-input-wrap">
-                <input
+        <div className="min-h-5">
+            {error && (
+                <FieldError id={`${id}-error`} className="type-small">
+                    {error}
+                </FieldError>
+            )}
+        </div>
+    );
+}
+
+function TextField({ id, label, error, ...inputProps }) {
+    return (
+        <Field data-invalid={Boolean(error)} className="gap-1.5">
+            <FieldLabel htmlFor={id}>{label}</FieldLabel>
+            <Input
+                id={id}
+                name={id}
+                required
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? `${id}-error` : undefined}
+                {...inputProps}
+            />
+            <FieldErrorLine id={id} error={error} />
+        </Field>
+    );
+}
+
+function PasswordField({ id, label, value, onChange, visible, onToggle, error, isRegister }) {
+    const toggleLabel =
+        (visible ? "Hide " : "Show ") +
+        (id === "confirmPassword" ? "confirmed password" : "password");
+    return (
+        <Field data-invalid={Boolean(error)} className="gap-1.5">
+            <FieldLabel htmlFor={id}>{label}</FieldLabel>
+            <InputGroup>
+                <InputGroupInput
                     id={id}
                     name={id}
                     required
@@ -106,56 +151,28 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
                     placeholder={
                         id === "confirmPassword" ? "Confirm your password" : "Enter your password"
                     }
-                    className={error ? "has-error" : undefined}
                     aria-invalid={Boolean(error)}
                     aria-describedby={error ? `${id}-error` : undefined}
                 />
-                <button
-                    type="button"
-                    className="visibility-button"
-                    aria-label={
-                        (visible ? "Hide " : "Show ") +
-                        (id === "confirmPassword" ? "confirmed password" : "password")
-                    }
-                    title={
-                        (visible ? "Hide " : "Show ") +
-                        (id === "confirmPassword" ? "confirmed password" : "password")
-                    }
-                    aria-controls={id}
-                    aria-pressed={visible}
-                    onClick={onToggle}
-                >
-                    <svg
-                        className="visibility-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                        focusable="false"
+                <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                        size="icon-xs"
+                        aria-label={toggleLabel}
+                        title={toggleLabel}
+                        aria-controls={id}
+                        aria-pressed={visible}
+                        onClick={onToggle}
                     >
-                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-                        <circle cx="12" cy="12" r="3" />
-                        {visible && (
-                            <>
-                                <path d="m3 3 18 18" stroke="white" strokeWidth="4" />
-                                <path className="visibility-slash" d="m3 3 18 18" />
-                            </>
+                        {visible ? (
+                            <EyeOffIcon aria-hidden="true" />
+                        ) : (
+                            <EyeIcon aria-hidden="true" />
                         )}
-                    </svg>
-                </button>
-            </div>
-            <small
-                id={`${id}-error`}
-                className="field-error"
-                role={error ? "alert" : undefined}
-                aria-hidden={!error}
-            >
-                {error || "\u00a0"}
-            </small>
-        </div>
+                    </InputGroupButton>
+                </InputGroupAddon>
+            </InputGroup>
+            <FieldErrorLine id={id} error={error} />
+        </Field>
     );
 }
 
@@ -415,71 +432,35 @@ export function LoginRegister() {
                             )}
                             <div className={isRegister ? "registration-identity" : undefined}>
                                 {isRegister && (
-                                    <div className="auth-field">
-                                        <label htmlFor="fullName">Full name</label>
-                                        <input
-                                            id="fullName"
-                                            name="fullName"
-                                            required
-                                            value={fullName}
-                                            autoComplete="name"
-                                            maxLength={120}
-                                            onChange={(event) => {
-                                                setFullName(event.target.value);
-                                                clearFieldError("fullName");
-                                            }}
-                                            placeholder="Your full name"
-                                            className={
-                                                fieldErrors.fullName ? "has-error" : undefined
-                                            }
-                                            aria-invalid={Boolean(fieldErrors.fullName)}
-                                            aria-describedby={
-                                                fieldErrors.fullName ? "fullName-error" : undefined
-                                            }
-                                        />
-                                        <small
-                                            id="fullName-error"
-                                            className="field-error"
-                                            role={fieldErrors.fullName ? "alert" : undefined}
-                                            aria-hidden={!fieldErrors.fullName}
-                                        >
-                                            {fieldErrors.fullName || "\u00a0"}
-                                        </small>
-                                    </div>
-                                )}
-                                <div className="auth-field">
-                                    <label htmlFor="identifier">
-                                        {isRegister ? "Email" : "Email or Student ID"}
-                                    </label>
-                                    <input
-                                        id="identifier"
-                                        name="identifier"
-                                        required
-                                        type={isRegister ? "email" : "text"}
-                                        value={identifier}
-                                        autoComplete="username"
-                                        autoCapitalize="none"
-                                        spellCheck={false}
+                                    <TextField
+                                        id="fullName"
+                                        label="Full name"
+                                        error={fieldErrors.fullName}
+                                        value={fullName}
+                                        autoComplete="name"
+                                        maxLength={120}
                                         onChange={(event) => {
-                                            setIdentifier(event.target.value);
-                                            clearFieldError("identifier");
+                                            setFullName(event.target.value);
+                                            clearFieldError("fullName");
                                         }}
-                                        placeholder="you@university.edu"
-                                        className={fieldErrors.identifier ? "has-error" : undefined}
-                                        aria-invalid={Boolean(fieldErrors.identifier)}
-                                        aria-describedby={
-                                            fieldErrors.identifier ? "identifier-error" : undefined
-                                        }
+                                        placeholder="Your full name"
                                     />
-                                    <small
-                                        id="identifier-error"
-                                        className="field-error"
-                                        role={fieldErrors.identifier ? "alert" : undefined}
-                                        aria-hidden={!fieldErrors.identifier}
-                                    >
-                                        {fieldErrors.identifier || "\u00a0"}
-                                    </small>
-                                </div>
+                                )}
+                                <TextField
+                                    id="identifier"
+                                    label={isRegister ? "Email" : "Email or Student ID"}
+                                    error={fieldErrors.identifier}
+                                    type={isRegister ? "email" : "text"}
+                                    value={identifier}
+                                    autoComplete="username"
+                                    autoCapitalize="none"
+                                    spellCheck={false}
+                                    onChange={(event) => {
+                                        setIdentifier(event.target.value);
+                                        clearFieldError("identifier");
+                                    }}
+                                    placeholder="you@university.edu"
+                                />
                             </div>
                             <PasswordField
                                 id="password"
@@ -542,19 +523,23 @@ export function LoginRegister() {
                                     </ul>
                                 )}
                                 {errorMessage && (
-                                    <p className="form-message error" role="alert">
-                                        {errorMessage}
-                                    </p>
+                                    <Alert variant="destructive">
+                                        <AlertDescription className="text-destructive">
+                                            {errorMessage}
+                                        </AlertDescription>
+                                    </Alert>
                                 )}
                                 {infoMessage && (
-                                    <p className="form-message info" role="status">
-                                        {infoMessage}
-                                    </p>
+                                    <Alert role="status">
+                                        <AlertDescription className="text-foreground">
+                                            {infoMessage}
+                                        </AlertDescription>
+                                    </Alert>
                                 )}
                             </div>
-                            <button className="submit-button" type="submit">
+                            <Button type="submit" size="lg" className="w-full rounded-full">
                                 {isRegister ? "Create account" : "Log In"}
-                            </button>
+                            </Button>
                         </form>
                         <p className="switch-copy">
                             {isRegister ? "Already have an account? " : "New to CompUGrade? "}
