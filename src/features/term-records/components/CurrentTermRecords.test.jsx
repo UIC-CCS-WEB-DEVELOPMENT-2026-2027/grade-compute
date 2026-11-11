@@ -137,7 +137,7 @@ describe("adding a custom task", () => {
     function openForm() {
         const view = renderRecords();
         fireEvent.click(screen.getByRole("button", { name: "+ Add Custom Task" }));
-        return view.container.querySelector("form.add-task-form");
+        return view.container.querySelector("form");
     }
 
     it("needs a name", () => {

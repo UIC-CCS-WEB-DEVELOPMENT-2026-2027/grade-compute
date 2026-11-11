@@ -663,10 +663,15 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - [x] **T7.G3 ⚠ Celebration → `Dialog`.**
     - Keep confetti (tokens), audio, the 6-second close and the backdrop close.
     - Check: G8–G10; SubjectDetail tests.
-  - [ ] **T7.G4 ⚠ CurrentTermRecords.**
+  - [x] **T7.G4 ⚠ CurrentTermRecords.**
     - Change: `Card`, `Badge` tags, `DraftInput` on `Input`, the add-task form (`Field`, `NativeSelect`, `Input`, `Button`), and the breakdown → `Collapsible`.
     - Remove Arial. Delete `CurrentTermRecords.css`.
     - Check: H1–H11; CurrentTermRecords tests.
+    - **As done:**
+      1. The chart-click highlight keeps `lib/dom/focusTask.js` as it is (it adds the `is-highlighted` class). `index.css` gains a `task-highlighted` custom variant and an `animate-record-highlight` token for it.
+      2. The per-criterion headings stay hidden (`display: none` before, `hidden` now), so the accessibility tree is unchanged.
+      3. The test helper that found the add-task form by its old class now takes the only `form`.
+      4. Rows stack below `sm` (before: below 380px), with 44px inputs and buttons below `md`.
   - [ ] **T7.G5 SubjectGradeHistory + HistoryChart.**
     - Change: `ChartContainer`, the frame, legend `Badge`s, `Collapsible` table, toggles.
     - Delete `HistoryChart.css` (the dashboard was converted in T7.D2).

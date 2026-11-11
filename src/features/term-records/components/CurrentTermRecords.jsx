@@ -1,5 +1,14 @@
 import { useState } from "react";
+import { ChevronRightIcon } from "lucide-react";
 import { DraftInput } from "@/components/DraftInput";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Field, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { getDb, saveDb } from "@/services/db";
 import { updateStudentRecord } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
@@ -7,7 +16,7 @@ import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
 import { validateScore } from "@/lib/scores";
 import { useDb } from "@/hooks/useDb";
-import "./CurrentTermRecords.css";
+import { cn } from "@/lib/utils";
 
 function termKey(term) {
     return term.toLowerCase();
@@ -180,7 +189,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
 
     if (!studentRecord) {
         return (
-            <section className="current-term-records" role="alert">
+            <section className="mt-8 w-full type-body text-primary md:mt-10" role="alert">
                 This subject has no student record to display.
             </section>
         );
@@ -188,7 +197,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
 
     if (!rule) {
         return (
-            <section className="current-term-records" role="alert">
+            <section className="mt-8 w-full type-body text-primary md:mt-10" role="alert">
                 This subject&apos;s grading rule no longer exists. Choose another rule on the Grade
                 Rules page.
             </section>
@@ -213,21 +222,31 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
         });
 
     return (
-        <section className="current-term-records">
-            <header className="records-heading">
-                <h2>Current Term Records</h2>
-                <p>Professor records stay locked. Your own entries stay private.</p>
+        <section className="mt-8 w-full md:mt-10">
+            <header>
+                <h2 className="m-0 type-section-title text-foreground">Current Term Records</h2>
+                <p className="mt-2 mb-4 type-small text-muted-foreground">
+                    Professor records stay locked. Your own entries stay private.
+                </p>
             </header>
 
-            <div className="grade-weight">
+            <div className="relative flex flex-wrap items-center justify-between gap-5 rounded-lg border border-border bg-muted px-5 py-4 max-sm:gap-2 max-sm:px-3">
                 {topLevel.map((group, index) => (
-                    <div className="weight-group-wrap" key={group.id}>
-                        {index > 0 && <span className="weight-plus">+</span>}
-                        <div className="weight-group">
-                            <strong>{formatPercent(group.shareOfParent)}</strong>
-                            <div>
-                                <span>{group.name}</span>
-                                <small>
+                    <div className="flex items-center gap-5 max-sm:gap-2" key={group.id}>
+                        {index > 0 && (
+                            <span className="absolute left-1/2 -translate-x-1/2 type-body text-muted-foreground max-sm:static max-sm:translate-x-0">
+                                +
+                            </span>
+                        )}
+                        <div className="flex items-center gap-3 max-sm:gap-2">
+                            <strong className="type-section-title whitespace-nowrap text-primary">
+                                {formatPercent(group.shareOfParent)}
+                            </strong>
+                            <div className="flex flex-col gap-1">
+                                <span className="type-small font-semibold text-foreground">
+                                    {group.name}
+                                </span>
+                                <small className="type-small text-muted-foreground">
                                     {group.children.length
                                         ? group.children
                                               .map(
@@ -243,22 +262,23 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                 ))}
             </div>
 
-            <p className="records-description">
+            <p className="mt-4 mb-5 type-small text-muted-foreground">
                 Review official scores, add your own notes, and create custom tasks for this term.
             </p>
 
-            <div className="records-box">
-                <div className="records-header">
+            <Card className="gap-0 py-0">
+                <div className="flex min-h-10 items-center justify-between gap-2.5 border-b border-border bg-highlight-soft px-4 py-3 type-caption tracking-wide text-muted-foreground">
                     <span>{term.toUpperCase()} · SCORES &amp; TASKS</span>
-                    <span>Score / Max</span>
+                    <span className="whitespace-nowrap">Score / Max</span>
                 </div>
 
                 {criteria.map((criterion) => {
                     const category = criterion.name;
                     const categoryTasks = tasksFor(criterion.id);
                     return (
-                        <section className="term-task-section" key={criterion.id}>
-                            <h3 className="term-task-heading">{criterion.path.join(" › ")}</h3>
+                        <section className="group/section" key={criterion.id}>
+                            {/* Hidden, as before: the rows name their criterion. */}
+                            <h3 className="hidden">{criterion.path.join(" › ")}</h3>
                             {categoryTasks.length ? (
                                 categoryTasks.map((task) => {
                                     const name = taskName(task, category);
@@ -270,25 +290,36 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     const isOfficialLocked = hasOfficialScore(task);
                                     return (
                                         <div
-                                            className={`record-row ${task.isCustomTask ? "custom-record" : ""}`}
+                                            className={cn(
+                                                "flex min-h-20 items-center justify-between gap-4 border-b border-border bg-card px-4 py-3.5 group-last-of-type/section:border-b-0 task-highlighted:animate-record-highlight max-sm:flex-col max-sm:items-start max-sm:gap-2.5 max-sm:px-2.5 motion-reduce:task-highlighted:animate-none motion-reduce:task-highlighted:bg-highlight-soft",
+                                                task.isCustomTask && "bg-secondary/40",
+                                            )}
                                             key={task.id}
                                             data-task-id={task.id}
                                         >
-                                            <div className="record-information">
-                                                <h3>{displayName}</h3>
-                                                <p>
+                                            <div className="min-w-0 flex-1">
+                                                <h3 className="m-0 type-body font-semibold wrap-anywhere text-foreground">
+                                                    {displayName}
+                                                </h3>
+                                                <p className="mt-1.5 type-small text-muted-foreground">
                                                     {task.isCustomTask ? (
                                                         <>
-                                                            <span className="record-tag">
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="mr-1.5 border-self-reported/40 bg-card text-self-reported-foreground"
+                                                            >
                                                                 Custom Addition
-                                                            </span>{" "}
+                                                            </Badge>{" "}
                                                             Student-created · Private
                                                         </>
                                                     ) : !isOfficialLocked ? (
                                                         <>
-                                                            <span className="record-tag">
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="mr-1.5 border-self-reported/40 bg-card text-self-reported-foreground"
+                                                            >
                                                                 Self Reported
-                                                            </span>{" "}
+                                                            </Badge>{" "}
                                                             Student entry · Not an official grade
                                                         </>
                                                     ) : (
@@ -296,22 +327,23 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                     )}
                                                 </p>
                                             </div>
-                                            <div className="official-score">
-                                                <strong>
+                                            <div className="flex min-w-24 shrink-0 flex-col items-end gap-1.5 max-sm:min-w-0 max-sm:items-start">
+                                                <strong className="type-body font-semibold text-foreground tabular-nums">
                                                     {isOfficialLocked
                                                         ? `${task.officialScore} / ${task.maxScore}`
                                                         : "—"}
                                                 </strong>
-                                                <small>
+                                                <small className="type-small text-muted-foreground">
                                                     {isOfficialLocked
                                                         ? "Locked · Official"
                                                         : "No official score"}
                                                 </small>
                                             </div>
                                             {!isOfficialLocked ? (
-                                                <div className="score-editor">
-                                                    <label className="score-input-group">
+                                                <div className="shrink-0">
+                                                    <InputGroup className="w-36 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:h-control-touch max-md:w-44">
                                                         <DraftInput
+                                                            as={InputGroupInput}
                                                             type="text"
                                                             inputMode="decimal"
                                                             min="0"
@@ -338,19 +370,25 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                                     text,
                                                                 )
                                                             }
+                                                            className="text-center text-primary tabular-nums"
                                                         />
-                                                        <span>/</span>
-                                                        <span className="sandbox-max-score">
-                                                            {task.maxScore ?? "Max"}
-                                                        </span>
-                                                    </label>
+                                                        <InputGroupAddon
+                                                            align="inline-end"
+                                                            className="gap-2 text-muted-foreground tabular-nums"
+                                                        >
+                                                            <span>/</span>
+                                                            <span className="min-w-8 text-center">
+                                                                {task.maxScore ?? "Max"}
+                                                            </span>
+                                                        </InputGroupAddon>
+                                                    </InputGroup>
                                                 </div>
                                             ) : null}
                                         </div>
                                     );
                                 })
                             ) : (
-                                <p className="term-empty">
+                                <p className="m-0 px-4 py-3.5 type-small text-muted-foreground">
                                     No {category} records for {term} yet.
                                 </p>
                             )}
@@ -359,7 +397,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                 })}
 
                 {uncountedTasks > 0 && (
-                    <p className="term-empty">
+                    <p className="m-0 px-4 py-3.5 type-small text-muted-foreground">
                         {uncountedTasks} task{uncountedTasks === 1 ? "" : "s"} from criteria that
                         are no longer in this subject&apos;s grading rule{" "}
                         {uncountedTasks === 1 ? "is" : "are"} hidden and not counted.
@@ -367,20 +405,28 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                 )}
 
                 {showAddTask && (
-                    <form className="add-task-form" onSubmit={addCustomTask} noValidate>
-                        <select
+                    <form
+                        className="flex flex-wrap items-start gap-2 border-y border-border bg-muted px-4 py-3.5"
+                        onSubmit={addCustomTask}
+                        noValidate
+                    >
+                        <NativeSelect
                             value={selectedCategory}
                             onChange={(event) => setTaskCategory(event.target.value)}
                             aria-label="Sandbox task category"
+                            className="max-w-full bg-card max-md:*:h-control-touch"
                         >
                             {criteria.map((criterion) => (
-                                <option key={criterion.id} value={criterion.id}>
+                                <NativeSelectOption key={criterion.id} value={criterion.id}>
                                     {criterion.path.join(" › ")}
-                                </option>
+                                </NativeSelectOption>
                             ))}
-                        </select>
-                        <div className="add-task-field task-name-field">
-                            <input
+                        </NativeSelect>
+                        <Field
+                            data-invalid={addTaskError === "Please enter a task name."}
+                            className="min-w-45 flex-1 gap-1"
+                        >
+                            <Input
                                 type="text"
                                 name="taskName"
                                 placeholder="Task name"
@@ -391,15 +437,17 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     setAddTaskError("");
                                 }}
                                 aria-label="Sandbox task name"
+                                className="bg-card max-md:h-control-touch"
                             />
                             {addTaskError === "Please enter a task name." && (
-                                <span className="add-task-field-error" role="alert">
-                                    {addTaskError}
-                                </span>
+                                <FieldError>{addTaskError}</FieldError>
                             )}
-                        </div>
-                        <div className="add-task-field task-max-score-field">
-                            <input
+                        </Field>
+                        <Field
+                            data-invalid={addTaskError.startsWith("Please enter a whole-number")}
+                            className="w-32 gap-1"
+                        >
+                            <Input
                                 type="text"
                                 name="taskMaxScore"
                                 inputMode="numeric"
@@ -417,17 +465,19 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     "Please enter a whole-number",
                                 )}
                                 aria-label="Maximum score"
+                                className="bg-card max-md:h-control-touch"
                             />
                             {addTaskError.startsWith("Please enter a whole-number") && (
-                                <span className="add-task-field-error" role="alert">
-                                    {addTaskError}
-                                </span>
+                                <FieldError>{addTaskError}</FieldError>
                             )}
-                        </div>
-                        <button type="submit">Add</button>
-                        <button
+                        </Field>
+                        <Button type="submit" className="max-md:h-control-touch">
+                            Add
+                        </Button>
+                        <Button
                             type="button"
-                            className="cancel-task-button"
+                            variant="outline"
+                            className="bg-card max-md:h-control-touch"
                             onClick={() => {
                                 setShowAddTask(false);
                                 setTaskNameInput("");
@@ -436,101 +486,108 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                             }}
                         >
                             Cancel
-                        </button>
+                        </Button>
                         {addTaskError.startsWith("This subject") && (
-                            <span className="add-task-field-error" role="alert">
-                                {addTaskError}
-                            </span>
+                            <FieldError className="basis-full">{addTaskError}</FieldError>
                         )}
                     </form>
                 )}
 
                 {saveError && (
-                    <p className="sandbox-error" role="alert">
+                    <p className="m-0 px-4 pt-3 type-small text-destructive" role="alert">
                         {saveError}
                     </p>
                 )}
-                <button
-                    type="button"
-                    className="add-task-button"
-                    onClick={() => {
-                        setSaveError("");
-                        setAddTaskError("");
-                        setShowAddTask((shown) => !shown);
-                    }}
-                    aria-expanded={showAddTask}
-                >
-                    {showAddTask ? "Close" : "+ Add Custom Task"}
-                </button>
-            </div>
+                <div className="p-4">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-dashed border-self-reported text-self-reported-foreground hover:bg-secondary/40 hover:text-self-reported-foreground aria-expanded:bg-transparent max-md:h-control-touch"
+                        onClick={() => {
+                            setSaveError("");
+                            setAddTaskError("");
+                            setShowAddTask((shown) => !shown);
+                        }}
+                        aria-expanded={showAddTask}
+                    >
+                        {showAddTask ? "Close" : "+ Add Custom Task"}
+                    </Button>
+                </div>
+            </Card>
 
-            <button
-                type="button"
-                className="breakdown-button"
-                onClick={() => setShowBreakdown((shown) => !shown)}
-                aria-expanded={showBreakdown}
-            >
-                <svg
-                    className="breakdown-button-icon"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden="true"
+            <Collapsible open={showBreakdown} onOpenChange={setShowBreakdown} className="mt-3">
+                <CollapsibleTrigger
+                    render={
+                        <Button
+                            variant="ghost"
+                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent max-md:h-control-touch"
+                        />
+                    }
                 >
-                    <path
-                        d="m6 3.5 4.5 4.5L6 12.5"
-                        stroke="currentColor"
-                        strokeWidth="1.7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                    <ChevronRightIcon
+                        data-icon="inline-start"
+                        aria-hidden="true"
+                        className="transition-transform group-aria-expanded/breakdown:rotate-90 motion-reduce:transition-none"
                     />
-                </svg>
-                {showBreakdown
-                    ? "Hide Official Grade Breakdown"
-                    : "View Complete Official Grade Breakdown"}
-            </button>
-            <p className="records-privacy">ⓘ Sandbox edits cannot change these records.</p>
+                    {showBreakdown
+                        ? "Hide Official Grade Breakdown"
+                        : "View Complete Official Grade Breakdown"}
+                </CollapsibleTrigger>
+                <p className="m-0 mt-1 type-small text-muted-foreground">
+                    ⓘ Sandbox edits cannot change these records.
+                </p>
 
-            {showBreakdown && (
-                <div className="official-breakdown">
-                    <p className="official-breakdown-intro">
+                <CollapsibleContent className="mt-2 flex flex-col gap-4 pt-2 pb-4.5">
+                    <p className="m-0 type-small text-muted-foreground">
                         All professor-recorded assessments used by the calculator are listed here.
                         Private task notes above are excluded.
                     </p>
                     {criteria.map((criterion) => {
                         const tasks = tasksFor(criterion.id).filter((task) => !task.isCustomTask);
                         return (
-                            <section className="breakdown-section" key={criterion.id}>
-                                <div className="breakdown-section-header">
-                                    <div className="breakdown-section-title">
-                                        <span className="breakdown-section-icon">
+                            <section
+                                className="rounded-lg border border-border bg-card px-4 py-3.5 max-sm:p-3"
+                                key={criterion.id}
+                            >
+                                <div className="mb-2 flex items-center justify-between gap-3 border-b border-border pb-2.5 max-sm:gap-1.5">
+                                    <div className="flex min-w-0 items-center gap-2">
+                                        <span className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-muted type-small font-semibold text-primary">
                                             {criterion.name.charAt(0).toUpperCase()}
                                         </span>
-                                        <h3>{criterion.path.join(" › ")}</h3>
+                                        <h3 className="m-0 type-card-title text-foreground">
+                                            {criterion.path.join(" › ")}
+                                        </h3>
                                     </div>
-                                    <span className="breakdown-weight">
+                                    <Badge
+                                        variant="secondary"
+                                        className="shrink-0 bg-muted text-muted-foreground"
+                                    >
                                         {formatPercent(criterion.effectiveShare)} of term grade
-                                    </span>
+                                    </Badge>
                                 </div>
                                 {tasks.length ? (
                                     tasks.map((task) => (
-                                        <div className="breakdown-task" key={task.id}>
-                                            <div className="breakdown-task-info">
-                                                <p className="breakdown-task-name">
+                                        <div
+                                            className="flex min-h-14 items-center justify-between gap-4 border-b border-border px-0.5 py-2.5 last:border-b-0 max-sm:gap-2.5"
+                                            key={task.id}
+                                        >
+                                            <div className="min-w-0 flex-1">
+                                                <p className="m-0 type-body wrap-anywhere text-foreground">
                                                     {term} · {taskName(task, criterion.name)}
                                                 </p>
-                                                <p className="breakdown-task-status">
+                                                <p className="m-0 mt-1 type-small text-muted-foreground">
                                                     {hasOfficialScore(task)
                                                         ? "Recorded by professor"
                                                         : "Awaiting professor score"}
                                                 </p>
                                             </div>
-                                            <div className="breakdown-task-score">
-                                                <strong>
+                                            <div className="shrink-0 text-right">
+                                                <strong className="block type-body font-semibold text-primary tabular-nums">
                                                     {hasOfficialScore(task)
                                                         ? `${task.officialScore} / ${task.maxScore}`
                                                         : "—"}
                                                 </strong>
-                                                <span>
+                                                <span className="mt-1 block type-small text-muted-foreground">
                                                     {hasOfficialScore(task)
                                                         ? "Locked · Official"
                                                         : "Not yet recorded"}
@@ -539,15 +596,15 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="breakdown-empty">
+                                    <p className="m-0 py-3 type-small text-muted-foreground">
                                         No official {criterion.name} records for {term}.
                                     </p>
                                 )}
                             </section>
                         );
                     })}
-                </div>
-            )}
+                </CollapsibleContent>
+            </Collapsible>
         </section>
     );
 }

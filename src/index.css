@@ -15,6 +15,9 @@
    The app has one light theme and never sets .dark, so they stay inert
    instead of following the operating system's dark mode. */
 @custom-variant dark (&:where(.dark, .dark *));
+/* A task row picked from a History chart: lib/dom/focusTask.js adds the
+   is-highlighted class for 2.4 seconds. */
+@custom-variant task-highlighted (&.is-highlighted);
 
 /* Scan app code only (src/). The tooling folders, docs and Markdown files
    are not app code (AGENTS.md section 7). */
@@ -326,6 +329,20 @@
     --animate-celebration-sparkle: celebration-sparkle 1.3s ease-in-out infinite alternate;
     --animate-celebration-trophy: celebration-trophy 1s ease-in-out infinite alternate;
 
+    /* The task-row highlight (moved from CurrentTermRecords.css, T7.G4). */
+    --animate-record-highlight: record-highlight 2.4s ease-out;
+
+    @keyframes record-highlight {
+        0%,
+        35% {
+            background: var(--highlight-soft);
+            box-shadow: inset 4px 0 0 var(--highlight-strong);
+        }
+        100% {
+            background: transparent;
+            box-shadow: inset 4px 0 0 transparent;
+        }
+    }
     @keyframes celebration-card-in {
         from {
             opacity: 0;
