@@ -8,6 +8,7 @@ import DraftInput from "@/components/DraftInput";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
 import SubjectGradeHistory from "@/features/history/components/SubjectGradeHistory";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
+import { updateStudentRecord } from "@/services/records";
 import congratulationAudio from "@/assets/congrats-voice.mp3";
 import {
     calculateOfficialGrade,
@@ -180,35 +181,19 @@ function SubjectDetail() {
 
         const currentDb = getDb();
         if (!currentDb) return;
-        const updatedDb = {
-            ...currentDb,
-            classes: currentDb.classes.map((item) =>
-                item.id !== classItem.id
-                    ? item
-                    : {
-                          ...item,
-                          studentRecords: item.studentRecords.map((record) =>
-                              record.studentId !== studentId
-                                  ? record
-                                  : {
-                                        ...record,
-                                        targetGradeSandbox: {
-                                            ...(record.targetGradeSandbox ?? {}),
-                                            terms: {
-                                                ...(record.targetGradeSandbox?.terms ?? {}),
-                                                [selectedTermKey]: {
-                                                    ...(record.targetGradeSandbox?.terms?.[
-                                                        selectedTermKey
-                                                    ] ?? {}),
-                                                    desiredFinalGrade: nextGrade,
-                                                },
-                                            },
-                                        },
-                                    },
-                          ),
-                      },
-            ),
-        };
+        const updatedDb = updateStudentRecord(currentDb, classItem.id, studentId, (record) => ({
+            ...record,
+            targetGradeSandbox: {
+                ...(record.targetGradeSandbox ?? {}),
+                terms: {
+                    ...(record.targetGradeSandbox?.terms ?? {}),
+                    [selectedTermKey]: {
+                        ...(record.targetGradeSandbox?.terms?.[selectedTermKey] ?? {}),
+                        desiredFinalGrade: nextGrade,
+                    },
+                },
+            },
+        }));
 
         try {
             saveDb(updatedDb);

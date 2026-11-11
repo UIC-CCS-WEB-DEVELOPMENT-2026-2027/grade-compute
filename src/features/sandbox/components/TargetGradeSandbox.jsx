@@ -5,6 +5,7 @@
 // are private to the student and never change official scores.
 import { useEffect, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
+import { updateStudentRecord } from "@/services/records";
 import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
 import { getActiveStudentId } from "@/services/session";
@@ -161,19 +162,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     function saveRecord(updateRecord, errorPrefix) {
         const currentDb = getDb();
         if (!currentDb) return;
-        const updatedDb = {
-            ...currentDb,
-            classes: currentDb.classes.map((item) =>
-                item.id !== classId
-                    ? item
-                    : {
-                          ...item,
-                          studentRecords: item.studentRecords.map((record) =>
-                              record.studentId === studentId ? updateRecord(record) : record,
-                          ),
-                      },
-            ),
-        };
+        const updatedDb = updateStudentRecord(currentDb, classId, studentId, updateRecord);
         try {
             saveDb(updatedDb);
             setDbData(updatedDb);

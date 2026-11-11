@@ -524,9 +524,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T6.6 Initials (G5).**
   - Add tests comparing the three versions. Merge only if they match; otherwise document why they stay separate.
   - **As done:** the Settings and Subject Detail versions were identical and are now one function, `getSpaceSplitInitials`. Header's version differs on extra spaces (`"Ana  Cruz"` → `"AC"` vs `"A"`), so it stays a separate function, `getInitials`. Both are in `lib/format.js`, with a comment and tests showing where they differ. They agree on every name in the seed data.
-- [ ] **T6.7 ⚠ `services/records.js` `updateStudentRecord`** (G11).
+- [x] **T6.7 ⚠ `services/records.js` `updateStudentRecord`** (G11).
   - Used by SubjectDetail, CurrentTermRecords, TargetGradeSandbox and Sidebar's remove-subject code.
   - Check: V-tests, V-same, checklist F3, G4, H3, H8, I6–I9.
+  - **As done:**
+    - Sidebar's remove-subject code is not converted. It deletes the record, drops the class once it is empty, and cleans up subjects and requests. That is a removal, not an update of one record (AGENTS §6: don't merge things that only look alike).
+    - The React Compiler lint started reporting `Date.now()` in CurrentTermRecords' add-task submit handler as "called during render". It is a false positive, so it is disabled on that line with a comment.
+    - The checklist items passed in a real browser, and the saved data after each flow was byte-identical to before the change.
 - [ ] **T6.8 `saveDbSafely`** (G12) in `services/db.js`, for GradeRules and RuleDetailPage.
   - Check: checklist J4, J6, K9, K11.
 - [ ] **T6.9 ⚠ `hooks/useDb.js`** (G1).

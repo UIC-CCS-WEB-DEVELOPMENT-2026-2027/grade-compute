@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DraftInput from "@/components/DraftInput";
 import { getDb, saveDb } from "@/services/db";
+import { updateStudentRecord } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
@@ -51,19 +52,14 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         .filter(([criterionId]) => !criteriaIds.has(criterionId))
         .reduce((total, [, tasks]) => total + toTaskList(tasks).length, 0);
 
-    function saveChanges(updateClass) {
+    function saveChanges(updateRecord) {
         const currentDb = getDb();
         if (!currentDb) {
             setSaveError("Your changes could not be saved because local data is unavailable.");
             return false;
         }
 
-        const updatedDb = {
-            ...currentDb,
-            classes: currentDb.classes.map((item) =>
-                item.id === classId ? updateClass(item) : item,
-            ),
-        };
+        const updatedDb = updateStudentRecord(currentDb, classId, studentId, updateRecord);
 
         try {
             saveDb(updatedDb);
@@ -78,20 +74,16 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     }
 
     function updateTerm(updateTermGrades) {
-        return saveChanges((item) => ({
-            ...item,
-            studentRecords: item.studentRecords.map((record) => {
-                if (record.studentId !== studentId) return record;
-                const grades = record.grades ?? {};
-                return {
-                    ...record,
-                    grades: {
-                        ...grades,
-                        [termKey(term)]: updateTermGrades(grades[termKey(term)] ?? {}),
-                    },
-                };
-            }),
-        }));
+        return saveChanges((record) => {
+            const grades = record.grades ?? {};
+            return {
+                ...record,
+                grades: {
+                    ...grades,
+                    [termKey(term)]: updateTermGrades(grades[termKey(term)] ?? {}),
+                },
+            };
+        });
     }
 
     // Checks a typed score. Shows the problem and returns false if it is not
@@ -158,6 +150,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
 
         setAddTaskError("");
         const customTask = {
+            // This runs in the form's submit handler, not during render. The
+            // React Compiler lint reports it anyway (a false positive).
+            // eslint-disable-next-line react-hooks/purity
             id: `CUSTOM-${Date.now()}`,
             type: selectedCategory,
             sequenceNumber: null,
