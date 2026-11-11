@@ -30,15 +30,14 @@ function getInitials(name) {
         .toUpperCase();
 }
 
-export default function Header({ title, subtitle = "A little progress, every day.", user }) {
+export default function Header({ title, subtitle = "A little progress, every day." }) {
     const dbData = getDb();
     const activeUser = getActiveUser(dbData);
-    const profile = user ??
-        activeUser ?? {
-            name: "Student",
-            role: "student",
-            programSection: "",
-        };
+    const profile = activeUser ?? {
+        name: "Student",
+        role: "student",
+        programSection: "",
+    };
     const name = profile.name || "Student";
     const role = profile.role
         ? `${profile.role[0].toUpperCase()}${profile.role.slice(1)}`

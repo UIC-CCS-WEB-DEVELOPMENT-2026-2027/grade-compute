@@ -52,13 +52,3 @@ export const saveDb = (updatedData) => {
     localStorage.setItem(DB_KEY, JSON.stringify(updatedData));
     window.dispatchEvent(new Event(DB_UPDATED_EVENT));
 };
-
-/**
- * DEV TOOL: Instantly wipes any changes and restores the original db.json.
- * Useful when prototyping or if the state gets messy.
- */
-export const resetDatabase = () => {
-    localStorage.setItem(DB_KEY, JSON.stringify(mockData));
-    console.log("Database forcibly reset to default db.json");
-    window.location.reload(); // Refresh to show default data
-};

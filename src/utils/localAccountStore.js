@@ -3,7 +3,7 @@ const legacyProfileStorageKey = "compugrade-profile";
 const legacyPasswordStorageKey = "compugrade-password";
 const passwordIterations = 120000;
 
-export const defaultAccount = {
+const defaultAccount = {
     fullName: "Ysa Ang",
     username: "juandelacruz",
     email: "juan.delacruz@university.edu",
@@ -195,21 +195,6 @@ export function hasLocalPassword() {
     return Boolean(getStoredAccount().passwordCredential);
 }
 
-export function getLocalLoginSessions() {
-    return [...loadLocalAccount().loginSessions];
-}
-
 export function saveLocalLoginSessions(loginSessions) {
     updateLocalSecuritySettings({ loginSessions });
-}
-
-export function authenticateLocalAccount(identifier, password) {
-    const account = loadLocalAccount();
-    const normalizedIdentifier = identifier.trim().toLowerCase();
-    const matchesAccount = [account.email, account.username].some(
-        (value) => value.toLowerCase() === normalizedIdentifier,
-    );
-
-    if (!matchesAccount) return Promise.resolve(false);
-    return verifyLocalPassword(password);
 }

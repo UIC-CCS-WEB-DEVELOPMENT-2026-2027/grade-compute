@@ -482,7 +482,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Remove the never-true state and its branch in `App.jsx`.
   - Keep the commented professor/admin imports and routes exactly as they are (R14).
   - Check: V-same; checklist A1, A14, A16.
-- [ ] **T5a.6 Unused exports and props.**
+- [x] **T5a.6 Unused exports and props.**
   - Remove: `resetDatabase` (`db.js`); `getLocalLoginSessions`, `authenticateLocalAccount` and the `defaultAccount` export (`localAccountStore.js`, if unused inside the file the export keyword only); Header's never-passed `user` prop; TermNavigation's never-used `action` prop.
   - Exports used by tests stay.
   - Check: V-same, V-tests.
