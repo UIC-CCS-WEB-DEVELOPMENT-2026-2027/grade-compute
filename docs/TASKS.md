@@ -495,7 +495,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T5.4** `App.jsx`, `main.jsx`, `RequireStudent.jsx` → `app/`. The `index.html` script path changes to `/src/app/main.jsx`; the title is untouched.
 - [x] **T5.5** Sidebar, Header, PageFooter (+CSS) → `components/layout/`. `useSidebarState.js` → `hooks/`.
 - [x] **T5.6** Rule editor and visuals → `features/grade-rules/components/`. `Dialog.jsx` (+CSS) and `DraftInput.jsx` → `components/`.
-- [ ] **T5.7** EnrolledSubjectsTable and AddSubjectForm (+CSS) → `features/subjects/components/`.
+- [x] **T5.7** EnrolledSubjectsTable and AddSubjectForm (+CSS) → `features/subjects/components/`.
 - [ ] **T5.8** `CurrentTermRecord.*` → `features/term-records/components/CurrentTermRecords.*`. TermNavigation (+CSS) → the same folder.
 - [ ] **T5.9** TargetGradeSandbox (+CSS, test) and SandboxSubjectPicker (+CSS) → `features/sandbox/components/`.
 - [ ] **T5.10** History components (+CSS) → `features/history/components/`. `usePointHover.js` → `features/history/hooks/`.
