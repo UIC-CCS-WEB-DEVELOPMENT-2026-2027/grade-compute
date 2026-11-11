@@ -39,6 +39,20 @@
     font-weight: 400; /* Regular */
     font-style: normal;
 }
+/* Semibold and Bold: the official Fontshare web files, unchanged (ITF Free
+   Font License; self-hosted for this app only). */
+@font-face {
+    font-family: "General Sans";
+    src: url("./assets/GeneralSans-Semibold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "General Sans";
+    src: url("./assets/GeneralSans-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
 
 /* Criteria colors (grade computation rules).
    Built from the brand palette: primary and accent blues, the highlight
