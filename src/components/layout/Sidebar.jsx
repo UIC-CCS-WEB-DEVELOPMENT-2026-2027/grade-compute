@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -6,6 +6,7 @@ import { ChevronRightIcon } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
     Sidebar as SidebarRoot,
     SidebarContent,
@@ -55,32 +56,10 @@ export function Sidebar() {
     );
     const { minimized } = useSidebarState();
     const { isMobile, setOpenMobile, toggleSidebar } = useSidebar();
-    // Pop-out subject list for the minimized sidebar: { top, left } or null.
-    const [subjectsPopout, setSubjectsPopout] = useState(null);
-    const popoutRef = useRef(null);
-
-    // Pop-out list: closes on Escape or a click outside it.
-    useEffect(() => {
-        if (!subjectsPopout) return undefined;
-        popoutRef.current?.querySelector("a")?.focus();
-        const handleKeyDown = (event) => {
-            if (event.key === "Escape") setSubjectsPopout(null);
-        };
-        const handlePointerDown = (event) => {
-            if (
-                !popoutRef.current?.contains(event.target) &&
-                !event.target.closest?.("[data-subjects-trigger]")
-            ) {
-                setSubjectsPopout(null);
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("pointerdown", handlePointerDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("pointerdown", handlePointerDown);
-        };
-    }, [subjectsPopout]);
+    // Minimized sidebar (not phones): My Subjects opens a pop-out subject list
+    // (a Popover: Escape or a click outside closes it) instead of the page.
+    const [isPopoutOpen, setIsPopoutOpen] = useState(false);
+    const usePopout = minimized && !isMobile;
 
     useEffect(() => {
         if (!subjectToRemove) return undefined;
@@ -169,6 +148,81 @@ export function Sidebar() {
         if (event.target.closest?.("a")) setOpenMobile(false);
     };
 
+    const subjectsButton = (
+        <SidebarMenuButton
+            render={<Link to="/student/subject" />}
+            isActive={subjectsActive}
+            tooltip="My Subjects"
+            className={cn(MENU_LINK, "relative flex-1")}
+            // With the pop-out, the button opens the list instead of the page
+            // (the list links there).
+            onClick={(event) => {
+                if (usePopout) event.preventDefault();
+            }}
+        >
+            <MenuIcon>
+                <rect
+                    x="4"
+                    y="3"
+                    width="16"
+                    height="18"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                />
+                <path
+                    d="M8 8H16M8 12H16M8 16H13.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                />
+            </MenuIcon>
+            <span className="flex-1 truncate">My Subjects</span>
+            <Badge className="min-w-6 rounded-md px-1.5 group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:top-1 group-data-[collapsible=icon]:right-1 group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:min-w-4 group-data-[collapsible=icon]:px-1">
+                {enrolledSubjects.length}
+            </Badge>
+        </SidebarMenuButton>
+    );
+
+    const popoutLink =
+        "flex rounded-lg px-2.5 text-foreground no-underline outline-none hover:bg-secondary focus-visible:bg-secondary";
+    const subjectsPopoutList = (
+        <>
+            <Link
+                to="/student/subject"
+                className={cn(popoutLink, "items-center justify-between py-2 font-semibold")}
+            >
+                My Subjects <Badge>{enrolledSubjects.length}</Badge>
+            </Link>
+            {enrolledSubjects.length > 0 ? (
+                <ul className="mt-1 border-t border-border pt-1">
+                    {enrolledSubjects.map((sub) => {
+                        const linkPath = `/student/subject/${sub.classId}`;
+                        return (
+                            <li key={sub.classId}>
+                                <Link
+                                    to={linkPath}
+                                    className={cn(
+                                        popoutLink,
+                                        "min-h-11 flex-col justify-center py-1.5",
+                                        location.pathname === linkPath && "bg-secondary",
+                                    )}
+                                >
+                                    <strong className="type-caption tracking-wide text-muted-foreground">
+                                        {sub.subjectCode}
+                                    </strong>
+                                    <span className="truncate">{sub.subjectName}</span>
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
+            ) : (
+                <p className="px-1 pt-2 text-muted-foreground">No subjects yet</p>
+            )}
+        </>
+    );
+
     return (
         <>
             <SidebarRoot
@@ -190,7 +244,7 @@ export function Sidebar() {
                         size="icon"
                         className="hidden size-9 text-sidebar-foreground hover:bg-sidebar-accent aria-expanded:bg-transparent aria-expanded:text-sidebar-foreground aria-expanded:hover:bg-sidebar-accent md:inline-flex [&_svg]:size-5"
                         onClick={() => {
-                            setSubjectsPopout(null);
+                            setIsPopoutOpen(false);
                             toggleSidebar();
                         }}
                         aria-label={minimized ? "Expand sidebar" : "Minimize sidebar"}
@@ -298,55 +352,33 @@ export function Sidebar() {
 
                                 <SidebarMenuItem className="flex flex-col gap-1">
                                     <div className="flex items-center gap-2 group-data-[collapsible=icon]:gap-0">
-                                        <SidebarMenuButton
-                                            render={<Link to="/student/subject" />}
-                                            isActive={subjectsActive}
-                                            tooltip="My Subjects"
-                                            className={cn(MENU_LINK, "relative flex-1")}
-                                            data-subjects-trigger=""
-                                            aria-haspopup={minimized ? "true" : undefined}
-                                            aria-expanded={
-                                                minimized ? Boolean(subjectsPopout) : undefined
-                                            }
-                                            // Minimized sidebar: open the pop-out subject
-                                            // list instead of the page (it links there).
-                                            onClick={(event) => {
-                                                if (!minimized || isMobile) return;
-                                                event.preventDefault();
-                                                if (subjectsPopout) {
-                                                    setSubjectsPopout(null);
-                                                    return;
-                                                }
-                                                const rect =
-                                                    event.currentTarget.getBoundingClientRect();
-                                                setSubjectsPopout({
-                                                    top: rect.top,
-                                                    left: rect.right + 10,
-                                                });
-                                            }}
-                                        >
-                                            <MenuIcon>
-                                                <rect
-                                                    x="4"
-                                                    y="3"
-                                                    width="16"
-                                                    height="18"
-                                                    rx="2"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
+                                        {usePopout ? (
+                                            <Popover
+                                                open={isPopoutOpen}
+                                                onOpenChange={setIsPopoutOpen}
+                                            >
+                                                <PopoverTrigger
+                                                    render={subjectsButton}
+                                                    nativeButton={false}
                                                 />
-                                                <path
-                                                    d="M8 8H16M8 12H16M8 16H13.5"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                />
-                                            </MenuIcon>
-                                            <span className="flex-1 truncate">My Subjects</span>
-                                            <Badge className="min-w-6 rounded-md px-1.5 group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:top-1 group-data-[collapsible=icon]:right-1 group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:min-w-4 group-data-[collapsible=icon]:px-1">
-                                                {enrolledSubjects.length}
-                                            </Badge>
-                                        </SidebarMenuButton>
+                                                <PopoverContent
+                                                    side="right"
+                                                    align="start"
+                                                    sideOffset={10}
+                                                    aria-label="Your subjects"
+                                                    className="max-h-105 w-65 gap-0 overflow-y-auto p-2"
+                                                    onClick={(event) => {
+                                                        if (event.target.closest?.("a")) {
+                                                            setIsPopoutOpen(false);
+                                                        }
+                                                    }}
+                                                >
+                                                    {subjectsPopoutList}
+                                                </PopoverContent>
+                                            </Popover>
+                                        ) : (
+                                            subjectsButton
+                                        )}
                                         <Button
                                             variant="ghost"
                                             size="icon-sm"
@@ -747,47 +779,6 @@ export function Sidebar() {
                                 </button>
                             </div>
                         </section>
-                    </div>,
-                    document.body,
-                )}
-
-            {subjectsPopout &&
-                createPortal(
-                    <div
-                        ref={popoutRef}
-                        className="sidebar-popout"
-                        role="dialog"
-                        aria-label="Your subjects"
-                        style={{ top: subjectsPopout.top, left: subjectsPopout.left }}
-                        onClick={(event) => {
-                            if (event.target.closest?.("a")) setSubjectsPopout(null);
-                        }}
-                    >
-                        <Link to="/student/subject" className="sidebar-popout-all">
-                            My Subjects <span>{enrolledSubjects.length}</span>
-                        </Link>
-                        {enrolledSubjects.length > 0 ? (
-                            <ul>
-                                {enrolledSubjects.map((sub) => (
-                                    <li key={sub.classId}>
-                                        <Link
-                                            to={`/student/subject/${sub.classId}`}
-                                            className={
-                                                location.pathname ===
-                                                `/student/subject/${sub.classId}`
-                                                    ? "is-active"
-                                                    : ""
-                                            }
-                                        >
-                                            <strong>{sub.subjectCode}</strong>
-                                            <span>{sub.subjectName}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="sidebar-empty-state">No subjects yet</p>
-                        )}
                     </div>,
                     document.body,
                 )}
