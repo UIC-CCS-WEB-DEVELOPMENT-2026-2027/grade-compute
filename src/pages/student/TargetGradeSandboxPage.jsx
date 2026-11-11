@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import Sidebar from "../../components/shared/Sidebar";
-import Header from "../../components/shared/Header";
-import PageFooter from "../../components/shared/PageFooter";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
+import PageFooter from "@/components/layout/PageFooter";
 import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
 import TermNavigation from "../../components/student/TermNavigation";
 import { DB_UPDATED_EVENT, getDb } from "@/services/db";

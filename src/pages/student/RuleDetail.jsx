@@ -4,8 +4,8 @@
 // /student/rules/:ruleId.
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import Sidebar from "../../components/shared/Sidebar";
-import Header from "../../components/shared/Header";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
 import PillEditor from "../../components/shared/PillEditor";
 import RuleFormula from "../../components/shared/RuleFormula";
 import RulePieChart from "../../components/shared/RulePieChart";

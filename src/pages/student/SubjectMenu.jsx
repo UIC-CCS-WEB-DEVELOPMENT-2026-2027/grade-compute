@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../../components/shared/Sidebar";
-import Header from "../../components/shared/Header";
-import PageFooter from "../../components/shared/PageFooter";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
+import PageFooter from "@/components/layout/PageFooter";
 import EnrolledSubjectsTable from "../../components/student/EnrolledSubjectsTable";
 import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";

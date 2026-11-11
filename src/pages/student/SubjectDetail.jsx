@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import Sidebar from "../../components/shared/Sidebar";
-import Header from "../../components/shared/Header";
-import PageFooter from "../../components/shared/PageFooter";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
+import PageFooter from "@/components/layout/PageFooter";
 import CurrentTermRecords from "../../components/student/CurrentTermRecord";
 import DraftInput from "../../components/shared/DraftInput";
 import TermNavigation from "../../components/student/TermNavigation";

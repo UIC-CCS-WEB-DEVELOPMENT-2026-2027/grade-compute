@@ -5,12 +5,12 @@ import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
 import { getEnrolledSubjects } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "@/services/session";
-import SandboxSubjectPicker from "../student/SandboxSubjectPicker";
+import SandboxSubjectPicker from "@/components/student/SandboxSubjectPicker";
 import useSidebarState, {
     PHONE_MAX_WIDTH,
     setSidebarMenuOpen,
     setSidebarMinimized,
-} from "./useSidebarState";
+} from "@/hooks/useSidebarState";
 
 // Phones use the slide-in menu; minimizing only applies to wider screens.
 function isPhoneWidth() {

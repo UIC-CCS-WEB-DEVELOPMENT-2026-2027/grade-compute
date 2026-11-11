@@ -3,8 +3,8 @@
 // Cards open the view/edit page (RuleDetail.jsx).
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "../../components/shared/Sidebar";
-import Header from "../../components/shared/Header";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
 import RuleCard from "../../components/shared/RuleCard";
 import DeleteRuleDialog from "../../components/shared/DeleteRuleDialog";
 import { getDb, saveDb } from "@/services/db";
