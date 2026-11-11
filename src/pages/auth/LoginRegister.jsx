@@ -8,19 +8,19 @@ import {
     registerAccount,
     validateAuthFields,
 } from "@/features/auth/lib/accounts";
-import documentIcon from "../../assets/document-icon.svg";
-import graduationCap from "../../assets/graduation-cap.svg";
-import sparkle from "../../assets/decorative-sparkle.svg";
-import sparkleSmall from "../../assets/decorative-sparkle-small.svg";
-import sparkleTiny from "../../assets/decorative-sparkle-tiny.svg";
-import targetStar from "../../assets/target-star.svg";
-import openTargetButton from "../../assets/open-target-button.svg";
-import openArrow from "../../assets/open-arrow.svg";
-import greenStatusDot from "../../assets/green-status-dot.svg";
-import notificationCheckBadge from "../../assets/notification-check-badge.svg";
-import notificationCheck from "../../assets/notification-check.svg";
-import dottedHeaderDivider from "../../assets/dotted-header-divider.svg";
-import chartLowerRule from "../../assets/chart-lower-rule.svg";
+import documentIcon from "@/assets/document-icon.svg";
+import graduationCap from "@/assets/graduation-cap.svg";
+import sparkle from "@/assets/decorative-sparkle.svg";
+import sparkleSmall from "@/assets/decorative-sparkle-small.svg";
+import sparkleTiny from "@/assets/decorative-sparkle-tiny.svg";
+import targetStar from "@/assets/target-star.svg";
+import openTargetButton from "@/assets/open-target-button.svg";
+import openArrow from "@/assets/open-arrow.svg";
+import greenStatusDot from "@/assets/green-status-dot.svg";
+import notificationCheckBadge from "@/assets/notification-check-badge.svg";
+import notificationCheck from "@/assets/notification-check.svg";
+import dottedHeaderDivider from "@/assets/dotted-header-divider.svg";
+import chartLowerRule from "@/assets/chart-lower-rule.svg";
 import "./LoginRegister.css";
 
 const previewScores = [
