@@ -468,7 +468,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T5a.1 Unused files.**
   - Delete: `src/components/SelectSetting.jsx`, `src/components/shared/RuleCompare.jsx` (0 bytes), `src/components/ToggleSettings` (0 bytes), and `src/pages/StudentSettingsPrototype.jsx` (D1).
   - Check: V-same, and nothing imports the deleted files.
-- [ ] **T5a.2 Unused assets.**
+- [x] **T5a.2 Unused assets.**
   - Delete: `src/assets/bell-icon.png`, `user-profile.png`, `visibility-eye.svg`; `public/grade-rules-mark.svg`, `public/icons.svg`.
   - Keep `public/favicon.svg` (branding).
   - Check: V-same, and grep finds no reference to them.
