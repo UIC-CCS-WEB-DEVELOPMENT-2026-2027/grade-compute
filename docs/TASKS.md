@@ -478,7 +478,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 - [x] **T5a.4 Unreachable dark theme.**
   - Remove all `.global-settings.dark` rules (`GlobalSettings.css`), the `--*-dark` tokens (`index.css`), and any token used only by them.
   - Check: V-same.
-- [ ] **T5a.5 `showLogin`.**
+- [x] **T5a.5 `showLogin`.**
   - Remove the never-true state and its branch in `App.jsx`.
   - Keep the commented professor/admin imports and routes exactly as they are (R14).
   - Check: V-same; checklist A1, A14, A16.

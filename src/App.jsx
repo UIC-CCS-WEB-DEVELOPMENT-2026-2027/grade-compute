@@ -1,4 +1,3 @@
-import { useState } from "react";
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -30,12 +29,6 @@ import SystemFormulas from './pages/admin/SystemFormulas';
 */
 
 export default function App() {
-    const [showLogin, setShowLogin] = useState(false);
-
-    if (showLogin) {
-        return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
-    }
-
     return (
         <Router>
             <Routes>
