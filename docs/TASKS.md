@@ -662,6 +662,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - **Kept:** the "Back" link (`BackLink`, same wording), the page heading and the status message.
     - **Removed:** the "Workspace: Student" label, a leftover of the discontinued workspace switcher (`SPEC.md` §6 g, updated through the protocol).
     - **Brand mark:** removed from Settings; the shared Sidebar already shows it.
+    - **Header:** the shared Header with its default title and subtitle ("Welcome back, <first name>!", "A little progress, every day."), with no `title` prop (owner decision, Gate 4).
     - **Reduced motion:** move the unscoped rule from `GlobalSettings.css` to `index.css` **unchanged** (B19: same reach, now explicit).
     - **Afterwards:** `SPEC.md` F14 ("its own layout") needs an owner-approved SPEC update, and checklist L1 is updated.
     - Check: V-visual at all widths; L1; B1–B12 on `/settings` (it now has the shared sidebar).
