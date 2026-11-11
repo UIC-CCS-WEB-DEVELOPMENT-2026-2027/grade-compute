@@ -182,7 +182,10 @@ export function setCriterionShare(tree, id, newShare) {
     if (otherIndex === -1) {
         return newShare === node.share
             ? success(tree)
-            : failure(tree, `${node.name} is the only criterion in this level, so it must stay at 100%.`);
+            : failure(
+                  tree,
+                  `${node.name} is the only criterion in this level, so it must stay at 100%.`,
+              );
     }
 
     const neighbor = siblings[otherIndex];
@@ -194,7 +197,7 @@ export function setCriterionShare(tree, id, newShare) {
     if (newShare > max) {
         return failure(
             tree,
-            `${node.name} can be at most ${formatPercent(max, { fixed: true })}. ${neighbor.name} must keep at least 1%.`
+            `${node.name} can be at most ${formatPercent(max, { fixed: true })}. ${neighbor.name} must keep at least 1%.`,
         );
     }
     if (newShare === node.share) return success(tree);
@@ -232,9 +235,7 @@ export function dragHandle(tree, parentId, handleIndex, positionRatio, step = 10
     const pairTotal = left.share + right.share;
     if (pairTotal < MIN_SHARE * 2) return success(tree);
 
-    const before = children
-        .slice(0, handleIndex)
-        .reduce((total, child) => total + child.share, 0);
+    const before = children.slice(0, handleIndex).reduce((total, child) => total + child.share, 0);
     let leftShare = Math.round(clamp(positionRatio, 0, 1) * TOTAL_SHARE) - before;
     if (step > 1) leftShare = Math.round(leftShare / step) * step;
     leftShare = clamp(leftShare, MIN_SHARE, pairTotal - MIN_SHARE);
@@ -288,7 +289,7 @@ function checkName(siblings, name, excludeId = null) {
         return `Names can be at most ${MAX_NAME_LENGTH} characters.`;
     }
     const duplicate = siblings.some(
-        (child) => child.id !== excludeId && child.name.toLowerCase() === trimmed.toLowerCase()
+        (child) => child.id !== excludeId && child.name.toLowerCase() === trimmed.toLowerCase(),
     );
     return duplicate ? `"${trimmed}" is already used in this level.` : "";
 }
@@ -301,11 +302,17 @@ export function canAddCriterion(tree, parentId) {
         return { allowed: false, reason: "Split this criterion first." };
     }
     if (children.length >= MAX_CRITERIA_PER_LEVEL) {
-        return { allowed: false, reason: `A level can have at most ${MAX_CRITERIA_PER_LEVEL} criteria.` };
+        return {
+            allowed: false,
+            reason: `A level can have at most ${MAX_CRITERIA_PER_LEVEL} criteria.`,
+        };
     }
     const last = children[children.length - 1];
     if (last.share < MIN_SHARE * 2) {
-        return { allowed: false, reason: `${last.name} is too small to split in half. Each criterion needs at least 1%.` };
+        return {
+            allowed: false,
+            reason: `${last.name} is too small to split in half. Each criterion needs at least 1%.`,
+        };
     }
     return { allowed: true, reason: "" };
 }
@@ -335,7 +342,12 @@ export function addCriterion(tree, parentId, name) {
 
 export function canDeleteCriterion(tree, id) {
     const context = siblingContext(tree, id);
-    if (!context) return { allowed: false, reason: "The total grade cannot be deleted.", hasSubcriteria: false };
+    if (!context)
+        return {
+            allowed: false,
+            reason: "The total grade cannot be deleted.",
+            hasSubcriteria: false,
+        };
 
     const hasSubcriteria = (context.node.children ?? []).length > 0;
     if (context.siblings.length === 1 && context.parent.id === tree.id) {
@@ -358,7 +370,7 @@ export function deleteCriterion(tree, id) {
     const receiver = index > 0 ? index - 1 : index + 1;
     const updated = siblings
         .map((child, childIndex) =>
-            childIndex === receiver ? { ...child, share: child.share + node.share } : child
+            childIndex === receiver ? { ...child, share: child.share + node.share } : child,
         )
         .filter((child) => child.id !== id);
     return success(replaceChildren(tree, parent.id, updated));
@@ -377,7 +389,8 @@ export function renameCriterion(tree, id, name) {
 
 export function canSplitCriterion(tree, id) {
     const node = findCriterion(tree, id);
-    if (!node || id === tree.id) return { allowed: false, reason: "This criterion cannot be split." };
+    if (!node || id === tree.id)
+        return { allowed: false, reason: "This criterion cannot be split." };
     if ((node.children ?? []).length > 0) {
         return { allowed: false, reason: `${node.name} already has subcriteria.` };
     }
@@ -400,7 +413,7 @@ export function splitCriterion(tree, id, name = "SubCriteria 1") {
     const child = { id, name: String(name).trim(), share: TOTAL_SHARE, children: [] };
     const newParentId = nextCriterionId(tree);
     return success(
-        updateNode(tree, id, (node) => ({ ...node, id: newParentId, children: [child] }))
+        updateNode(tree, id, (node) => ({ ...node, id: newParentId, children: [child] })),
     );
 }
 
@@ -487,7 +500,9 @@ export function createDefaultTree() {
     const tree = { id: ROOT_ID, name: "Grade", share: TOTAL_SHARE, children: [] };
     return {
         ...tree,
-        children: [{ id: nextCriterionId(tree), name: "Criteria 1", share: TOTAL_SHARE, children: [] }],
+        children: [
+            { id: nextCriterionId(tree), name: "Criteria 1", share: TOTAL_SHARE, children: [] },
+        ],
     };
 }
 
@@ -523,7 +538,12 @@ function nodesToCriteria(nodes) {
 // from "hierarchy", or rebuilt from effectiveMultipliers as a last resort.
 export function ruleToTree(rule) {
     if (Array.isArray(rule?.criteria) && rule.criteria.length > 0) {
-        return { id: ROOT_ID, name: "Grade", share: TOTAL_SHARE, children: criteriaToNodes(rule.criteria) };
+        return {
+            id: ROOT_ID,
+            name: "Grade",
+            share: TOTAL_SHARE,
+            children: criteriaToNodes(rule.criteria),
+        };
     }
 
     const hierarchy = rule?.hierarchy;
@@ -583,7 +603,7 @@ export function buildRuleMath(tree) {
 
     const effective = getEffectiveShares(tree);
     const effectiveMultipliers = Object.fromEntries(
-        getLeaves(tree).map((leaf) => [leaf.id, effective[leaf.id] / TOTAL_SHARE])
+        getLeaves(tree).map((leaf) => [leaf.id, effective[leaf.id] / TOTAL_SHARE]),
     );
 
     return { ok: true, error: "", criteria: nodesToCriteria(tree.children), effectiveMultipliers };
@@ -625,7 +645,7 @@ export function getFormulaText(tree) {
     if (!tree) return "";
     const effective = getEffectiveShares(tree);
     const terms = getLeaves(tree).map(
-        (leaf) => `${formatMultiplier(effective[leaf.id])} × ${leaf.name}`
+        (leaf) => `${formatMultiplier(effective[leaf.id])} × ${leaf.name}`,
     );
     return `${tree.name} = ${terms.join(" + ")}`;
 }
@@ -634,7 +654,10 @@ export function getFormulaText(tree) {
 export function getRuleFormulaText(rule) {
     const leaves = getRuleLeaves(rule);
     const multipliers = rule?.effectiveMultipliers ?? {};
-    if (leaves.length === 0 || leaves.some((leaf) => fractionToShare(multipliers[leaf.id]) === null)) {
+    if (
+        leaves.length === 0 ||
+        leaves.some((leaf) => fractionToShare(multipliers[leaf.id]) === null)
+    ) {
         return "Formula unavailable";
     }
     return `Grade = ${leaves
@@ -674,7 +697,7 @@ export function getCriterionColors(tree) {
         if (index > 0) excluded.add(getColorNumber(index - 1));
         if (index < topLevel.length - 1) excluded.add(getColorNumber(index + 1));
         const pool = Array.from({ length: CRITERIA_COLOR_COUNT }, (_, number) => number + 1).filter(
-            (colorNumber) => !excluded.has(colorNumber)
+            (colorNumber) => !excluded.has(colorNumber),
         );
 
         let leafIndex = 0;
@@ -860,13 +883,17 @@ export function getRuleUsage(db, ruleId) {
 
 // Case-insensitive search on rule name, tags, and school names.
 export function searchRules(rules, query) {
-    const text = String(query ?? "").trim().toLowerCase();
+    const text = String(query ?? "")
+        .trim()
+        .toLowerCase();
     if (!text) return rules ?? [];
 
     return (rules ?? []).filter((rule) =>
         [rule.ruleName, ...(rule.tags ?? []), ...(rule.schools ?? [])].some((value) =>
-            String(value ?? "").toLowerCase().includes(text)
-        )
+            String(value ?? "")
+                .toLowerCase()
+                .includes(text),
+        ),
     );
 }
 
@@ -892,7 +919,7 @@ export function validateRuleDetails(db, { ruleName, tags = [], schools = [] }, r
         errors.ruleName = "Enter a rule name.";
     } else if (
         (db?.computationRules ?? []).some(
-            (rule) => rule.id !== ruleId && rule.ruleName.toLowerCase() === name.toLowerCase()
+            (rule) => rule.id !== ruleId && rule.ruleName.toLowerCase() === name.toLowerCase(),
         )
     ) {
         errors.ruleName = `A rule named "${name}" already exists.`;
@@ -947,12 +974,24 @@ function prepareRule(db, input, ruleId) {
 export function createRule(db, input) {
     const prepared = prepareRule(db, input, null);
     if (!prepared.ok) {
-        return { ok: false, db, rule: null, errors: prepared.errors, error: firstError(prepared.errors) };
+        return {
+            ok: false,
+            db,
+            rule: null,
+            errors: prepared.errors,
+            error: firstError(prepared.errors),
+        };
     }
 
     const rules = db?.computationRules ?? [];
     const rule = { id: nextId(rules, "CR"), ...prepared.fields };
-    return { ok: true, db: { ...db, computationRules: [...rules, rule] }, rule, errors: {}, error: "" };
+    return {
+        ok: true,
+        db: { ...db, computationRules: [...rules, rule] },
+        rule,
+        errors: {},
+        error: "",
+    };
 }
 
 // input: { ruleName, tags, schools, tree }
@@ -968,7 +1007,13 @@ export function updateRule(db, ruleId, input) {
 
     const prepared = prepareRule(db, input, ruleId);
     if (!prepared.ok) {
-        return { ok: false, db, rule: null, errors: prepared.errors, error: firstError(prepared.errors) };
+        return {
+            ok: false,
+            db,
+            rule: null,
+            errors: prepared.errors,
+            error: firstError(prepared.errors),
+        };
     }
 
     const rule = {
@@ -1005,9 +1050,9 @@ export function duplicateRule(db, ruleId) {
 
 export function isCopiedRule(rule) {
     return Boolean(
-        rule?.isCopy
-        || rule?.copiedFromRuleId
-        || /\s\(Copy(?:\s\d+)?\)$/i.test(rule?.ruleName ?? "")
+        rule?.isCopy ||
+        rule?.copiedFromRuleId ||
+        /\s\(Copy(?:\s\d+)?\)$/i.test(rule?.ruleName ?? ""),
     );
 }
 
@@ -1035,7 +1080,9 @@ export function deleteRule(db, ruleId, replacementRuleId = null) {
 
     const moveRule = (items, key) =>
         Array.isArray(items)
-            ? items.map((item) => (item[key] === ruleId ? { ...item, [key]: replacementRuleId } : item))
+            ? items.map((item) =>
+                  item[key] === ruleId ? { ...item, [key]: replacementRuleId } : item,
+              )
             : items;
 
     return {
@@ -1067,7 +1114,8 @@ function countTasksOutside(db, ruleId, keepIds, names) {
                     Object.entries(record.grades?.[term] ?? {}).forEach(([criterionId, tasks]) => {
                         if (keepIds.has(criterionId)) return;
                         const count = toTaskList(tasks).length;
-                        if (count > 0) counts.set(criterionId, (counts.get(criterionId) ?? 0) + count);
+                        if (count > 0)
+                            counts.set(criterionId, (counts.get(criterionId) ?? 0) + count);
                     });
                 });
             });

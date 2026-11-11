@@ -49,5 +49,9 @@ export function setSidebarMenuOpen(menuOpen) {
 
 // { minimized, menuOpen } — re-renders when either changes.
 export default function useSidebarState() {
-    return useSyncExternalStore(subscribe, () => state, () => state);
+    return useSyncExternalStore(
+        subscribe,
+        () => state,
+        () => state,
+    );
 }

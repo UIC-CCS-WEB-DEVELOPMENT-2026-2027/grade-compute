@@ -12,8 +12,10 @@ function ReplacedLine({ point }) {
     const change = point.percent - point.replacedEntry.percent;
     return (
         <p className="history-tooltip-replaced">
-            You entered {point.replacedEntry.score}/{point.replacedEntry.maxScore} ({point.replacedEntry.percent.toFixed(1)}%)
-            {" → "}official {point.percent.toFixed(1)}% ({change > 0 ? "+" : ""}{change.toFixed(1)} pts)
+            You entered {point.replacedEntry.score}/{point.replacedEntry.maxScore} (
+            {point.replacedEntry.percent.toFixed(1)}%)
+            {" → "}official {point.percent.toFixed(1)}% ({change > 0 ? "+" : ""}
+            {change.toFixed(1)} pts)
         </p>
     );
 }
@@ -24,8 +26,13 @@ function PointDetails({ point, kind, seriesName, color }) {
             <>
                 <p>Step {point.step} · planned</p>
                 <p className="history-tooltip-task">{point.label}</p>
-                <p>{point.isExpected ? "Your estimate" : "Score needed"} {formatGrade(point.percent)}</p>
-                <p>Grade then <strong>{formatGrade(point.planGrade)}</strong></p>
+                <p>
+                    {point.isExpected ? "Your estimate" : "Score needed"}{" "}
+                    {formatGrade(point.percent)}
+                </p>
+                <p>
+                    Grade then <strong>{formatGrade(point.planGrade)}</strong>
+                </p>
             </>
         );
     }
@@ -45,13 +52,21 @@ function PointDetails({ point, kind, seriesName, color }) {
     return (
         <>
             {seriesName && (
-                <strong className="history-tooltip-series" style={{ color }}>{seriesName}</strong>
+                <strong className="history-tooltip-series" style={{ color }}>
+                    {seriesName}
+                </strong>
             )}
-            <p>Task {point.step} · {point.termLabel} · {point.criterionName}</p>
+            <p>
+                Task {point.step} · {point.termLabel} · {point.criterionName}
+            </p>
             <p className="history-tooltip-task">{point.label}</p>
-            <p>Score {point.percent.toFixed(1)}% ({point.isOfficial ? "official" : "yours"})</p>
+            <p>
+                Score {point.percent.toFixed(1)}% ({point.isOfficial ? "official" : "yours"})
+            </p>
             {point.replacedEntry && <ReplacedLine point={point} />}
-            <p>Grade so far <strong>{formatGrade(point.grade)}</strong></p>
+            <p>
+                Grade so far <strong>{formatGrade(point.grade)}</strong>
+            </p>
         </>
     );
 }

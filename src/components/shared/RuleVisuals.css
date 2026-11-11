@@ -175,7 +175,9 @@
 }
 
 .rule-table i {
-    transition: box-shadow 0.16s ease, transform 0.16s ease;
+    transition:
+        box-shadow 0.16s ease,
+        transform 0.16s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

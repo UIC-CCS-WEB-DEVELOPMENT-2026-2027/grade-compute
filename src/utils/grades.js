@@ -20,7 +20,9 @@ function toNumber(value) {
 // single object; treat that as a one-task list.
 export function toTaskList(value) {
     if (Array.isArray(value)) return value;
-    return value && typeof value === "object" && ("maxScore" in value || "id" in value) ? [value] : [];
+    return value && typeof value === "object" && ("maxScore" in value || "id" in value)
+        ? [value]
+        : [];
 }
 
 // Official mode: only officialScore counts, and custom tasks are skipped.
@@ -74,7 +76,7 @@ function calculateTermGrade(studentRecord, term, computationRule, includeSelfRep
 
     const weightedTotal = weightedGrades.reduce(
         (total, item) => total + item.grade * item.weight,
-        0
+        0,
     );
     return weightedTotal / totalWeight;
 }
@@ -94,7 +96,7 @@ export function calculateUnofficialGrade(studentRecord, term, computationRule) {
 // Only terms that have a grade are averaged, so this is the final grade so far.
 function calculateFinalGrade(studentRecord, computationRule, includeSelfReported) {
     const termGrades = TERM_KEYS.map((term) =>
-        calculateTermGrade(studentRecord, term, computationRule, includeSelfReported)
+        calculateTermGrade(studentRecord, term, computationRule, includeSelfReported),
     ).filter((grade) => grade !== null);
     return termGrades.length > 0 ? average(termGrades) : null;
 }
@@ -115,7 +117,7 @@ export function withStudentScore(task, value) {
     return {
         ...task,
         studentReportedScore: value,
-        studentScoredAt: cleared ? null : task.studentScoredAt ?? new Date().toISOString(),
+        studentScoredAt: cleared ? null : (task.studentScoredAt ?? new Date().toISOString()),
     };
 }
 
@@ -129,6 +131,6 @@ export function getOfficialAssessments(termGrades) {
             (task) =>
                 !task.isCustomTask &&
                 task.officialScore !== null &&
-                task.officialScore !== undefined
+                task.officialScore !== undefined,
         );
 }

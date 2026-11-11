@@ -35,126 +35,116 @@ export default function StudentDashboard() {
             <div className="dashboard-shell">
                 <Header />
 
-            <main className="dashboard-main">
-                {/* --- STUDENT OVERVIEW BANNER --- */}
-                <div className="overview-banner">
-                    <div className="overview-text">
-                        <h1 className="overview-title">Student Overview</h1>
-                        <p className="overview-subtitle">
-                            Your subjects, progress, and next step.
-                        </p>
-                    </div>
-
-                    <div className="semester-badge">
-                        <span className="badge-dot">•</span>
-                        <span className="badge-term">{semester.semester}</span>
-                        <span className="badge-divider">·</span>
-                        <span className="badge-year">{semester.academicYear}</span>
-                    </div>
-                </div>
-
-                {/* --- GRADE HISTORY (all subjects, one term) --- */}
-                <AllSubjectsHistory db={dbData} studentId={studentId} semesterId={semester.id} />
-
-                {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
-                <EnrolledSubjectsTable
-                    subjects={subjects}
-                    subtitle={`Your subjects for ${semester.semester}, ${semester.academicYear}.`}
-                    studentId={studentId}
-                    initialSection={student?.programSection ?? ""}
-                />
-
-                {/* --- RECENT UPDATES SECTION --- */}
-                <div className="recent-updates-section">
-                    <div className="updates-header">
-                        <div>
-                            <h2 className="updates-title">Recent Updates</h2>
-                            <p className="updates-subtitle">
-                                The latest from your professors.
+                <main className="dashboard-main">
+                    {/* --- STUDENT OVERVIEW BANNER --- */}
+                    <div className="overview-banner">
+                        <div className="overview-text">
+                            <h1 className="overview-title">Student Overview</h1>
+                            <p className="overview-subtitle">
+                                Your subjects, progress, and next step.
                             </p>
                         </div>
-                        <div className="grade-activity-indicator">
-                            <span className="grade-activity-dot" aria-hidden="true" />
-                            Grade activity
+
+                        <div className="semester-badge">
+                            <span className="badge-dot">•</span>
+                            <span className="badge-term">{semester.semester}</span>
+                            <span className="badge-divider">·</span>
+                            <span className="badge-year">{semester.academicYear}</span>
                         </div>
                     </div>
 
-                    <div className="updates-card">
-                        {/* Update Item 1 */}
-                        <div className="update-row">
-                            <div className="update-left">
-                                <div className="check-icon-circle">✓</div>
-                                <div className="update-info">
-                                    <p className="update-text">
-                                        Prof. Ana Cruz posted an official grade
-                                    </p>
-                                    <p className="update-subtext">
-                                        Introduction to Programming{" "}
-                                        <span className="dot-sep">•</span>{" "}
-                                        Prelim grade: 86%
-                                    </p>
-                                </div>
+                    {/* --- GRADE HISTORY (all subjects, one term) --- */}
+                    <AllSubjectsHistory
+                        db={dbData}
+                        studentId={studentId}
+                        semesterId={semester.id}
+                    />
+
+                    {/* --- ENROLLED SUBJECTS TABLE SECTION --- */}
+                    <EnrolledSubjectsTable
+                        subjects={subjects}
+                        subtitle={`Your subjects for ${semester.semester}, ${semester.academicYear}.`}
+                        studentId={studentId}
+                        initialSection={student?.programSection ?? ""}
+                    />
+
+                    {/* --- RECENT UPDATES SECTION --- */}
+                    <div className="recent-updates-section">
+                        <div className="updates-header">
+                            <div>
+                                <h2 className="updates-title">Recent Updates</h2>
+                                <p className="updates-subtitle">The latest from your professors.</p>
                             </div>
-                            <div className="update-right">
-                                <span className="update-time">
-                                    Today, 10:30 AM
-                                </span>
-                                <span className="update-arrow">↗</span>
+                            <div className="grade-activity-indicator">
+                                <span className="grade-activity-dot" aria-hidden="true" />
+                                Grade activity
                             </div>
                         </div>
 
-                        {/* Update Item 2 */}
-                        <div className="update-row">
-                            <div className="update-left">
-                                <div className="check-icon-circle">✓</div>
-                                <div className="update-info">
-                                    <p className="update-text">
-                                        Prof. Maria Santos posted an official
-                                        grade
-                                    </p>
-                                    <p className="update-subtext">
-                                        Computer Systems{" "}
-                                        <span className="dot-sep">•</span>{" "}
-                                        Prelim grade: 72%
-                                    </p>
+                        <div className="updates-card">
+                            {/* Update Item 1 */}
+                            <div className="update-row">
+                                <div className="update-left">
+                                    <div className="check-icon-circle">✓</div>
+                                    <div className="update-info">
+                                        <p className="update-text">
+                                            Prof. Ana Cruz posted an official grade
+                                        </p>
+                                        <p className="update-subtext">
+                                            Introduction to Programming{" "}
+                                            <span className="dot-sep">•</span> Prelim grade: 86%
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="update-right">
+                                    <span className="update-time">Today, 10:30 AM</span>
+                                    <span className="update-arrow">↗</span>
                                 </div>
                             </div>
-                            <div className="update-right">
-                                <span className="update-time">
-                                    Yesterday, 2:15 PM
-                                </span>
-                                <span className="update-arrow">↗</span>
-                            </div>
-                        </div>
 
-                        {/* Update Item 3 */}
-                        <div className="update-row">
-                            <div className="update-left">
-                                <div className="check-icon-circle">✓</div>
-                                <div className="update-info">
-                                    <p className="update-text">
-                                        Prof. Carlo Reyes posted an official
-                                        grade
-                                    </p>
-                                    <p className="update-subtext">
-                                        General Mathematics{" "}
-                                        <span className="dot-sep">•</span>{" "}
-                                        Prelim grade: 78%
-                                    </p>
+                            {/* Update Item 2 */}
+                            <div className="update-row">
+                                <div className="update-left">
+                                    <div className="check-icon-circle">✓</div>
+                                    <div className="update-info">
+                                        <p className="update-text">
+                                            Prof. Maria Santos posted an official grade
+                                        </p>
+                                        <p className="update-subtext">
+                                            Computer Systems <span className="dot-sep">•</span>{" "}
+                                            Prelim grade: 72%
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="update-right">
+                                    <span className="update-time">Yesterday, 2:15 PM</span>
+                                    <span className="update-arrow">↗</span>
                                 </div>
                             </div>
-                            <div className="update-right">
-                                <span className="update-time">
-                                    Oct 3, 9:00 AM
-                                </span>
-                                <span className="update-arrow">↗</span>
+
+                            {/* Update Item 3 */}
+                            <div className="update-row">
+                                <div className="update-left">
+                                    <div className="check-icon-circle">✓</div>
+                                    <div className="update-info">
+                                        <p className="update-text">
+                                            Prof. Carlo Reyes posted an official grade
+                                        </p>
+                                        <p className="update-subtext">
+                                            General Mathematics <span className="dot-sep">•</span>{" "}
+                                            Prelim grade: 78%
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="update-right">
+                                    <span className="update-time">Oct 3, 9:00 AM</span>
+                                    <span className="update-arrow">↗</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                </div>
-            </main>
-            <PageFooter />
+                </main>
+                <PageFooter />
             </div>
         </div>
     );

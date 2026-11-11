@@ -27,7 +27,7 @@ export default function TargetGradeSandboxPage() {
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
     const hasStudentRecord = classItem?.studentRecords?.some(
-        (record) => record.studentId === studentId
+        (record) => record.studentId === studentId,
     );
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
@@ -55,14 +55,19 @@ export default function TargetGradeSandboxPage() {
 
                             <section className="subject-overview sandbox-page-heading">
                                 <div className="subject-semester">
-                                    TARGET GRADE SANDBOX{rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
+                                    TARGET GRADE SANDBOX
+                                    {rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
                                 </div>
                                 <div className="subject-title-row">
-                                    <h1>{subject.subjectCode} - {subject.subjectName}</h1>
+                                    <h1>
+                                        {subject.subjectCode} - {subject.subjectName}
+                                    </h1>
                                     <TermNavigation
                                         className="sandbox-term-navigation"
                                         termKey={termKey}
-                                        onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
+                                        onTermChange={(nextTerm) =>
+                                            setSearchParams({ term: nextTerm }, { replace: true })
+                                        }
                                         note="Private planning space. Official records stay untouched."
                                     />
                                 </div>

@@ -1,1116 +1,1515 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  hasLocalPassword,
-  loadLocalAccount,
-  saveLocalAccount,
-  saveLocalPassword,
-  saveLocalLoginSessions,
-  verifyLocalPassword,
-} from '../utils/localAccountStore';
+    hasLocalPassword,
+    loadLocalAccount,
+    saveLocalAccount,
+    saveLocalPassword,
+    saveLocalLoginSessions,
+    verifyLocalPassword,
+} from "../utils/localAccountStore";
 import {
-  createPrototypeChallenge,
-  getVerifiedMethods,
-  verifyPrototypeChallenge,
-} from '../utils/prototypeVerification';
-import SettingRow from '../components/SettingRow';
-import ToggleSetting from '../components/ToggleSetting';
-import './GlobalSettings.css';
+    createPrototypeChallenge,
+    getVerifiedMethods,
+    verifyPrototypeChallenge,
+} from "../utils/prototypeVerification";
+import SettingRow from "../components/SettingRow";
+import ToggleSetting from "../components/ToggleSetting";
+import "./GlobalSettings.css";
 
 const sidebarItems = [
-  { label: 'Profile', icon: 'profile' },
-  { label: 'Account', icon: 'account' },
-  { label: 'Security', icon: 'security' },
-  { label: 'Notifications', icon: 'notifications' },
-  { label: 'Account Actions', icon: 'actions' },
+    { label: "Profile", icon: "profile" },
+    { label: "Account", icon: "account" },
+    { label: "Security", icon: "security" },
+    { label: "Notifications", icon: "notifications" },
+    { label: "Account Actions", icon: "actions" },
 ];
-const legacySettingsThemeStorageKey = 'compugrade-settings-theme';
+const legacySettingsThemeStorageKey = "compugrade-settings-theme";
 
 function SettingsIcon({ name }) {
-  const iconPaths = {
-    profile: <><circle cx="12" cy="8" r="3.25" /><path d="M5.5 19a6.5 6.5 0 0 1 13 0" /></>,
-    account: <><rect x="4" y="5" width="16" height="14" rx="3" /><circle cx="9" cy="11" r="2" /><path d="M6.5 16a3 3 0 0 1 5 0M14 10h3M14 14h3" /></>,
-    security: <><path d="M12 3.5 19 6v5.2c0 4.4-3 7.6-7 9.3-4-1.7-7-4.9-7-9.3V6l7-2.5Z" /><path d="m9.5 12 1.7 1.7 3.5-3.7" /></>,
-    privacy: <><path d="M3.5 12s3-5 8.5-5 8.5 5 8.5 5-3 5-8.5 5-8.5-5-8.5-5Z" /><circle cx="12" cy="12" r="2" /><path d="m4 4 16 16" /></>,
-    notifications: <><path d="M18 9a6 6 0 0 0-12 0c0 7-2.5 7-2.5 9h17C20.5 16 18 16 18 9ZM10 21h4" /></>,
-    actions: <><path d="M5 7h14M5 12h14M5 17h14" /><circle cx="9" cy="7" r="1.5" /><circle cx="15" cy="12" r="1.5" /><circle cx="11" cy="17" r="1.5" /></>,
-  };
+    const iconPaths = {
+        profile: (
+            <>
+                <circle cx="12" cy="8" r="3.25" />
+                <path d="M5.5 19a6.5 6.5 0 0 1 13 0" />
+            </>
+        ),
+        account: (
+            <>
+                <rect x="4" y="5" width="16" height="14" rx="3" />
+                <circle cx="9" cy="11" r="2" />
+                <path d="M6.5 16a3 3 0 0 1 5 0M14 10h3M14 14h3" />
+            </>
+        ),
+        security: (
+            <>
+                <path d="M12 3.5 19 6v5.2c0 4.4-3 7.6-7 9.3-4-1.7-7-4.9-7-9.3V6l7-2.5Z" />
+                <path d="m9.5 12 1.7 1.7 3.5-3.7" />
+            </>
+        ),
+        privacy: (
+            <>
+                <path d="M3.5 12s3-5 8.5-5 8.5 5 8.5 5-3 5-8.5 5-8.5-5-8.5-5Z" />
+                <circle cx="12" cy="12" r="2" />
+                <path d="m4 4 16 16" />
+            </>
+        ),
+        notifications: (
+            <>
+                <path d="M18 9a6 6 0 0 0-12 0c0 7-2.5 7-2.5 9h17C20.5 16 18 16 18 9ZM10 21h4" />
+            </>
+        ),
+        actions: (
+            <>
+                <path d="M5 7h14M5 12h14M5 17h14" />
+                <circle cx="9" cy="7" r="1.5" />
+                <circle cx="15" cy="12" r="1.5" />
+                <circle cx="11" cy="17" r="1.5" />
+            </>
+        ),
+    };
 
-  return (
-    <svg
-      className="settings-nav-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {iconPaths[name]}
-    </svg>
-  );
+    return (
+        <svg
+            className="settings-nav-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {iconPaths[name]}
+        </svg>
+    );
 }
 
 function GlobalSettings({ onLogout }) {
-  const [activeSection, setActiveSection] = useState('Profile');
-  const [profile, setProfile] = useState(loadLocalAccount);
-  const [isAccountEditing, setIsAccountEditing] = useState(true);
-  const [selectedImage, setSelectedImage] = useState('');
-  const [statusMessage, setStatusMessage] = useState('');
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({ current: '', next: '', confirm: '' });
-  const [passwordFieldErrors, setPasswordFieldErrors] = useState({});
-  const [visiblePasswords, setVisiblePasswords] = useState({});
-  const [passwordIsSet, setPasswordIsSet] = useState(hasLocalPassword);
-  const [securityView, setSecurityView] = useState('overview');
-  const [passwordStep, setPasswordStep] = useState('current');
-  const [verificationMethod, setVerificationMethod] = useState('email');
-  const [verificationChallenge, setVerificationChallenge] = useState(null);
-  const [verificationCode, setVerificationCode] = useState('');
-  const [securityError, setSecurityError] = useState('');
-  const [verificationFeedback, setVerificationFeedback] = useState('');
-  const [sessionDetails, setSessionDetails] = useState(null);
-  const [confirmCurrentLogout, setConfirmCurrentLogout] = useState(false);
-  const [confirmLogoutAll, setConfirmLogoutAll] = useState(false);
-  const [helpDialog, setHelpDialog] = useState(null);
-  const [notifications, setNotifications] = useState({
-    email: true,
-    system: true,
-    assignments: true,
-  });
-  useEffect(() => {
-    localStorage.removeItem(legacySettingsThemeStorageKey);
-  }, []);
+    const [activeSection, setActiveSection] = useState("Profile");
+    const [profile, setProfile] = useState(loadLocalAccount);
+    const [isAccountEditing, setIsAccountEditing] = useState(true);
+    const [selectedImage, setSelectedImage] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({ current: "", next: "", confirm: "" });
+    const [passwordFieldErrors, setPasswordFieldErrors] = useState({});
+    const [visiblePasswords, setVisiblePasswords] = useState({});
+    const [passwordIsSet, setPasswordIsSet] = useState(hasLocalPassword);
+    const [securityView, setSecurityView] = useState("overview");
+    const [passwordStep, setPasswordStep] = useState("current");
+    const [verificationMethod, setVerificationMethod] = useState("email");
+    const [verificationChallenge, setVerificationChallenge] = useState(null);
+    const [verificationCode, setVerificationCode] = useState("");
+    const [securityError, setSecurityError] = useState("");
+    const [verificationFeedback, setVerificationFeedback] = useState("");
+    const [sessionDetails, setSessionDetails] = useState(null);
+    const [confirmCurrentLogout, setConfirmCurrentLogout] = useState(false);
+    const [confirmLogoutAll, setConfirmLogoutAll] = useState(false);
+    const [helpDialog, setHelpDialog] = useState(null);
+    const [notifications, setNotifications] = useState({
+        email: true,
+        system: true,
+        assignments: true,
+    });
+    useEffect(() => {
+        localStorage.removeItem(legacySettingsThemeStorageKey);
+    }, []);
 
-  useEffect(() => {
-    saveLocalAccount(profile);
-  }, [profile]);
+    useEffect(() => {
+        saveLocalAccount(profile);
+    }, [profile]);
 
-  const updateStatus = (message) => {
-    setStatusMessage(message);
-    window.clearTimeout(updateStatus.timeoutId);
-    updateStatus.timeoutId = window.setTimeout(() => setStatusMessage(''), 2400);
-  };
-
-  const handleAccountInput = (event) => {
-    const { name, value } = event.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageSelect = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-      updateStatus('Please choose a JPG, JPEG, or PNG image.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
+    const updateStatus = (message) => {
+        setStatusMessage(message);
+        window.clearTimeout(updateStatus.timeoutId);
+        updateStatus.timeoutId = window.setTimeout(() => setStatusMessage(""), 2400);
     };
-    reader.readAsDataURL(file);
-  };
 
-  const saveProfilePicture = () => {
-    if (!selectedImage) {
-      updateStatus('Choose an image first.');
-      return;
-    }
+    const handleAccountInput = (event) => {
+        const { name, value } = event.target;
+        setProfile((prev) => ({ ...prev, [name]: value }));
+    };
 
-    setProfile((prev) => ({ ...prev, profilePicture: selectedImage }));
-    updateStatus('Profile picture saved.');
-  };
+    const handleImageSelect = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
 
-  const saveAccountChanges = () => {
-    saveLocalAccount(profile);
-    setIsAccountEditing(false);
-    updateStatus('Account details updated.');
-  };
-
-  const toggleNotification = (key) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const togglePasswordVisibility = (field) => {
-    setVisiblePasswords((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
-
-  const continuePasswordChange = async (event) => {
-    event.preventDefault();
-    setSecurityError('');
-    const requiredFields = passwordIsSet
-      ? ['current', 'next', 'confirm']
-      : ['next', 'confirm'];
-    const emptyFields = requiredFields.filter((field) => !passwordForm[field]);
-    if (emptyFields.length) {
-      setPasswordFieldErrors(Object.fromEntries(
-        emptyFields.map((field) => [field, 'Please fill out this field.']),
-      ));
-      return;
-    }
-    setPasswordFieldErrors({});
-
-    if (passwordIsSet) {
-      try {
-        const isCurrentPasswordValid = await verifyLocalPassword(passwordForm.current);
-        if (!isCurrentPasswordValid) {
-          setSecurityError('Current password is incorrect.');
-          return;
+        if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+            updateStatus("Please choose a JPG, JPEG, or PNG image.");
+            return;
         }
-      } catch {
-        setSecurityError('Could not verify your current password. Please try again.');
-        return;
-      }
-    }
 
-    if (passwordForm.next.length < 8) {
-      setSecurityError('Your new password must be at least 8 characters.');
-      return;
-    }
-    if (!/[A-Z]/.test(passwordForm.next) || !/\d/.test(passwordForm.next)) {
-      setSecurityError('Your new password must include at least one uppercase letter and one number.');
-      return;
-    }
-    if (passwordForm.next !== passwordForm.confirm) {
-      setSecurityError('The new passwords do not match.');
-      return;
-    }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
 
-    try {
-      if (passwordIsSet && await verifyLocalPassword(passwordForm.next)) {
-        setSecurityError('Your new password must be different from your current password.');
-        return;
-      }
-      setPasswordStep('verification');
-    } catch {
-      setSecurityError('Could not validate your new password. Please try again.');
-    }
-  };
+    const saveProfilePicture = () => {
+        if (!selectedImage) {
+            updateStatus("Choose an image first.");
+            return;
+        }
 
-  const sendSecurityVerification = () => {
-    try {
-      const challenge = createPrototypeChallenge(verificationMethod);
-      setVerificationChallenge(challenge);
-      setVerificationCode('');
-      setVerificationFeedback('');
-      setSecurityError('');
-    } catch {
-      setSecurityError('Could not create a verification code. Please try again.');
-    }
-  };
+        setProfile((prev) => ({ ...prev, profilePicture: selectedImage }));
+        updateStatus("Profile picture saved.");
+    };
 
-  const completePasswordChange = async (event) => {
-    event.preventDefault();
-    setSecurityError('');
-    if (!verificationChallenge) {
-      setSecurityError('Request a verification code first.');
-      return;
-    }
-    if (!verifyPrototypeChallenge(verificationChallenge.id, verificationCode.trim())) {
-      setSecurityError('That verification code is incorrect or expired. Request a new code.');
-      setVerificationFeedback('');
-      setVerificationChallenge(null);
-      return;
-    }
+    const saveAccountChanges = () => {
+        saveLocalAccount(profile);
+        setIsAccountEditing(false);
+        updateStatus("Account details updated.");
+    };
 
-    try {
-      await saveLocalPassword(passwordForm.next);
-      setPasswordIsSet(true);
-      setPasswordStep('success');
-      setVerificationFeedback('Your password was changed successfully.');
-      setPasswordForm({ current: '', next: '', confirm: '' });
-      setVisiblePasswords({});
-      setVerificationChallenge(null);
-    } catch {
-      setSecurityError('The password could not be updated. Please try again.');
-    }
-  };
+    const toggleNotification = (key) => {
+        setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+    };
 
-  const beginPasswordFlow = () => {
-    setSecurityView('password');
-    setPasswordStep('new');
-    setPasswordForm({ current: '', next: '', confirm: '' });
-    setPasswordFieldErrors({});
-    setVisiblePasswords({});
-    setSecurityError('');
-    setVerificationFeedback('');
-    setVerificationChallenge(null);
-  };
+    const togglePasswordVisibility = (field) => {
+        setVisiblePasswords((prev) => ({ ...prev, [field]: !prev[field] }));
+    };
 
-  const startTwoFactorEnable = () => {
-    const methods = getVerifiedMethods(profile);
-    if (!methods.length) {
-      setSecurityError('Add and verify an email address or phone number before enabling two-factor authentication.');
-      return;
-    }
-    setVerificationMethod(methods[0].id);
-    setVerificationChallenge(null);
-    setVerificationCode('');
-    setVerificationFeedback('');
-    setSecurityError('');
-    setSecurityView('twoFactor');
-  };
+    const continuePasswordChange = async (event) => {
+        event.preventDefault();
+        setSecurityError("");
+        const requiredFields = passwordIsSet ? ["current", "next", "confirm"] : ["next", "confirm"];
+        const emptyFields = requiredFields.filter((field) => !passwordForm[field]);
+        if (emptyFields.length) {
+            setPasswordFieldErrors(
+                Object.fromEntries(
+                    emptyFields.map((field) => [field, "Please fill out this field."]),
+                ),
+            );
+            return;
+        }
+        setPasswordFieldErrors({});
 
-  const finishTwoFactorEnable = (event) => {
-    event.preventDefault();
-    if (!verificationChallenge || !verifyPrototypeChallenge(verificationChallenge.id, verificationCode.trim())) {
-      setSecurityError('That verification code is incorrect or expired. Request a new code.');
-      setVerificationChallenge(null);
-      return;
-    }
-    const updatedAccount = { ...profile, twoFactorEnabled: true };
-    setProfile(updatedAccount);
-    setVerificationFeedback('Two-factor authentication is now enabled.');
-    setVerificationChallenge(null);
-    setVerificationCode('');
-    setSecurityError('');
-  };
+        if (passwordIsSet) {
+            try {
+                const isCurrentPasswordValid = await verifyLocalPassword(passwordForm.current);
+                if (!isCurrentPasswordValid) {
+                    setSecurityError("Current password is incorrect.");
+                    return;
+                }
+            } catch {
+                setSecurityError("Could not verify your current password. Please try again.");
+                return;
+            }
+        }
 
-  const disableTwoFactor = () => {
-    const updatedAccount = { ...profile, twoFactorEnabled: false };
-    setProfile(updatedAccount);
-    setSecurityView('twoFactor');
-    setSecurityError('');
-  };
+        if (passwordForm.next.length < 8) {
+            setSecurityError("Your new password must be at least 8 characters.");
+            return;
+        }
+        if (!/[A-Z]/.test(passwordForm.next) || !/\d/.test(passwordForm.next)) {
+            setSecurityError(
+                "Your new password must include at least one uppercase letter and one number.",
+            );
+            return;
+        }
+        if (passwordForm.next !== passwordForm.confirm) {
+            setSecurityError("The new passwords do not match.");
+            return;
+        }
 
-  const updateSessions = (sessions) => {
-    saveLocalLoginSessions(sessions);
-    setProfile((prev) => ({ ...prev, loginSessions: sessions }));
-  };
+        try {
+            if (passwordIsSet && (await verifyLocalPassword(passwordForm.next))) {
+                setSecurityError("Your new password must be different from your current password.");
+                return;
+            }
+            setPasswordStep("verification");
+        } catch {
+            setSecurityError("Could not validate your new password. Please try again.");
+        }
+    };
 
-  const logoutSession = (session) => {
-    const updatedSessions = profile.loginSessions.map((item) =>
-      item.id === session.id ? { ...item, isActive: false, lastActive: 'Signed out' } : item
+    const sendSecurityVerification = () => {
+        try {
+            const challenge = createPrototypeChallenge(verificationMethod);
+            setVerificationChallenge(challenge);
+            setVerificationCode("");
+            setVerificationFeedback("");
+            setSecurityError("");
+        } catch {
+            setSecurityError("Could not create a verification code. Please try again.");
+        }
+    };
+
+    const completePasswordChange = async (event) => {
+        event.preventDefault();
+        setSecurityError("");
+        if (!verificationChallenge) {
+            setSecurityError("Request a verification code first.");
+            return;
+        }
+        if (!verifyPrototypeChallenge(verificationChallenge.id, verificationCode.trim())) {
+            setSecurityError("That verification code is incorrect or expired. Request a new code.");
+            setVerificationFeedback("");
+            setVerificationChallenge(null);
+            return;
+        }
+
+        try {
+            await saveLocalPassword(passwordForm.next);
+            setPasswordIsSet(true);
+            setPasswordStep("success");
+            setVerificationFeedback("Your password was changed successfully.");
+            setPasswordForm({ current: "", next: "", confirm: "" });
+            setVisiblePasswords({});
+            setVerificationChallenge(null);
+        } catch {
+            setSecurityError("The password could not be updated. Please try again.");
+        }
+    };
+
+    const beginPasswordFlow = () => {
+        setSecurityView("password");
+        setPasswordStep("new");
+        setPasswordForm({ current: "", next: "", confirm: "" });
+        setPasswordFieldErrors({});
+        setVisiblePasswords({});
+        setSecurityError("");
+        setVerificationFeedback("");
+        setVerificationChallenge(null);
+    };
+
+    const startTwoFactorEnable = () => {
+        const methods = getVerifiedMethods(profile);
+        if (!methods.length) {
+            setSecurityError(
+                "Add and verify an email address or phone number before enabling two-factor authentication.",
+            );
+            return;
+        }
+        setVerificationMethod(methods[0].id);
+        setVerificationChallenge(null);
+        setVerificationCode("");
+        setVerificationFeedback("");
+        setSecurityError("");
+        setSecurityView("twoFactor");
+    };
+
+    const finishTwoFactorEnable = (event) => {
+        event.preventDefault();
+        if (
+            !verificationChallenge ||
+            !verifyPrototypeChallenge(verificationChallenge.id, verificationCode.trim())
+        ) {
+            setSecurityError("That verification code is incorrect or expired. Request a new code.");
+            setVerificationChallenge(null);
+            return;
+        }
+        const updatedAccount = { ...profile, twoFactorEnabled: true };
+        setProfile(updatedAccount);
+        setVerificationFeedback("Two-factor authentication is now enabled.");
+        setVerificationChallenge(null);
+        setVerificationCode("");
+        setSecurityError("");
+    };
+
+    const disableTwoFactor = () => {
+        const updatedAccount = { ...profile, twoFactorEnabled: false };
+        setProfile(updatedAccount);
+        setSecurityView("twoFactor");
+        setSecurityError("");
+    };
+
+    const updateSessions = (sessions) => {
+        saveLocalLoginSessions(sessions);
+        setProfile((prev) => ({ ...prev, loginSessions: sessions }));
+    };
+
+    const logoutSession = (session) => {
+        const updatedSessions = profile.loginSessions.map((item) =>
+            item.id === session.id ? { ...item, isActive: false, lastActive: "Signed out" } : item,
+        );
+        updateSessions(updatedSessions);
+        setSessionDetails(null);
+        setConfirmCurrentLogout(false);
+    };
+
+    const logoutAllOtherSessions = () => {
+        const updatedSessions = profile.loginSessions.map((session) =>
+            session.isCurrent ? session : { ...session, isActive: false, lastActive: "Signed out" },
+        );
+        updateSessions(updatedSessions);
+        setConfirmLogoutAll(false);
+        setSessionDetails(null);
+    };
+
+    const handleSettingRowClick = (event) => {
+        if (event.target.closest("button, select, input, textarea, a, label")) return;
+
+        const row = event.target.closest(".simple-row, .danger-box:not(.destructive)");
+        const control = row?.querySelector("button, select");
+        control?.click();
+    };
+
+    const confirmLogout = () => {
+        setShowLogoutConfirm(false);
+        onLogout?.();
+    };
+
+    const profileInitials = profile.fullName
+        .split(" ")
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+    const passwordRequirements = [
+        { label: "At least 1 uppercase", met: /[A-Z]/.test(passwordForm.next) },
+        { label: "At least 1 number", met: /\d/.test(passwordForm.next) },
+        { label: "At least 8 characters", met: passwordForm.next.length >= 8 },
+    ];
+    const passwordStrength = passwordRequirements.filter(({ met }) => met).length;
+
+    const renderProfileSection = () => (
+        <div className="settings-panel" onClick={handleSettingRowClick}>
+            <div className="profile-overview">
+                <div className="profile-avatar-wrap">
+                    {profile.profilePicture ? (
+                        <img
+                            src={profile.profilePicture}
+                            alt="Profile"
+                            className="profile-avatar-large"
+                        />
+                    ) : (
+                        <div className="profile-avatar-placeholder">{profileInitials}</div>
+                    )}
+                </div>
+
+                <div className="profile-info-block">
+                    <h3>{profile.fullName}</h3>
+                    <p>@{profile.username}</p>
+                    <span className="student-badge">Student</span>
+                </div>
+            </div>
+
+            <div className="profile-summary-grid">
+                <div className="summary-card">
+                    <span className="summary-label">Student ID</span>
+                    <strong>{profile.studentId}</strong>
+                </div>
+                <div className="summary-card">
+                    <span className="summary-label">Program</span>
+                    <strong>{profile.program}</strong>
+                </div>
+                <div className="summary-card">
+                    <span className="summary-label">Year level</span>
+                    <strong>{profile.yearLevel}</strong>
+                </div>
+            </div>
+
+            <div className="bio-box">
+                <h4>Short bio</h4>
+                <p>{profile.bio}</p>
+            </div>
+        </div>
     );
-    updateSessions(updatedSessions);
-    setSessionDetails(null);
-    setConfirmCurrentLogout(false);
-  };
 
-  const logoutAllOtherSessions = () => {
-    const updatedSessions = profile.loginSessions.map((session) =>
-      session.isCurrent ? session : { ...session, isActive: false, lastActive: 'Signed out' }
-    );
-    updateSessions(updatedSessions);
-    setConfirmLogoutAll(false);
-    setSessionDetails(null);
-  };
+    const renderAccountSection = () => (
+        <div className="settings-panel" onClick={handleSettingRowClick}>
+            <div className="account-header-row">
+                <div>
+                    <h3>Account details</h3>
+                    <p>Update the information connected to your CompuGrade account.</p>
+                </div>
+            </div>
 
-  const handleSettingRowClick = (event) => {
-    if (event.target.closest('button, select, input, textarea, a, label')) return;
+            <div className="profile-photo-box">
+                <div className="photo-preview-wrap">
+                    {selectedImage || profile.profilePicture ? (
+                        <img
+                            src={selectedImage || profile.profilePicture}
+                            alt="Current profile preview"
+                            className="photo-preview"
+                        />
+                    ) : (
+                        <div className="photo-placeholder">{profileInitials}</div>
+                    )}
+                </div>
 
-    const row = event.target.closest('.simple-row, .danger-box:not(.destructive)');
-    const control = row?.querySelector('button, select');
-    control?.click();
-  };
-
-  const confirmLogout = () => {
-    setShowLogoutConfirm(false);
-    onLogout?.();
-  };
-
-  const profileInitials = profile.fullName
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-  const passwordRequirements = [
-    { label: 'At least 1 uppercase', met: /[A-Z]/.test(passwordForm.next) },
-    { label: 'At least 1 number', met: /\d/.test(passwordForm.next) },
-    { label: 'At least 8 characters', met: passwordForm.next.length >= 8 },
-  ];
-  const passwordStrength = passwordRequirements.filter(({ met }) => met).length;
-
-  const renderProfileSection = () => (
-    <div className="settings-panel" onClick={handleSettingRowClick}>
-      <div className="profile-overview">
-        <div className="profile-avatar-wrap">
-          {profile.profilePicture ? (
-            <img src={profile.profilePicture} alt="Profile" className="profile-avatar-large" />
-          ) : (
-            <div className="profile-avatar-placeholder">{profileInitials}</div>
-          )}
-        </div>
-
-        <div className="profile-info-block">
-          <h3>{profile.fullName}</h3>
-          <p>@{profile.username}</p>
-          <span className="student-badge">Student</span>
-        </div>
-      </div>
-
-      <div className="profile-summary-grid">
-        <div className="summary-card">
-          <span className="summary-label">Student ID</span>
-          <strong>{profile.studentId}</strong>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">Program</span>
-          <strong>{profile.program}</strong>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">Year level</span>
-          <strong>{profile.yearLevel}</strong>
-        </div>
-      </div>
-
-      <div className="bio-box">
-        <h4>Short bio</h4>
-        <p>{profile.bio}</p>
-      </div>
-    </div>
-  );
-
-  const renderAccountSection = () => (
-    <div className="settings-panel" onClick={handleSettingRowClick}>
-      <div className="account-header-row">
-        <div>
-          <h3>Account details</h3>
-          <p>Update the information connected to your CompuGrade account.</p>
-        </div>
-      </div>
-
-      <div className="profile-photo-box">
-        <div className="photo-preview-wrap">
-          {selectedImage || profile.profilePicture ? (
-            <img src={selectedImage || profile.profilePicture} alt="Current profile preview" className="photo-preview" />
-          ) : (
-            <div className="photo-placeholder">{profileInitials}</div>
-          )}
-        </div>
-
-        <div className="photo-controls">
-          <label className="upload-button">
-            <input
-              type="file"
-              accept="image/png, image/jpeg, image/jpg"
-              onChange={handleImageSelect}
-              disabled={!isAccountEditing}
-            />
-            Choose photo
-          </label>
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={saveProfilePicture}
-            disabled={!isAccountEditing}
-          >
-            Save photo
-          </button>
-        </div>
-      </div>
-
-      <div className="form-grid">
-        <label className="field">
-          <span>Full name</span>
-          <input
-            type="text"
-            name="fullName"
-            value={profile.fullName}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field">
-          <span>Student ID</span>
-          <input
-            type="text"
-            name="studentId"
-            value={profile.studentId}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field">
-          <span>Program / Course</span>
-          <input
-            type="text"
-            name="program"
-            value={profile.program}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field">
-          <span>Year level</span>
-          <input
-            type="text"
-            name="yearLevel"
-            value={profile.yearLevel}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field full-width">
-          <span>Short bio</span>
-          <textarea
-            name="bio"
-            rows="4"
-            value={profile.bio}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field">
-          <span>Email address</span>
-          <input
-            type="email"
-            name="email"
-            value={profile.email}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-        <label className="field">
-          <span>Username</span>
-          <input
-            type="text"
-            name="username"
-            value={profile.username}
-            onChange={handleAccountInput}
-            disabled={!isAccountEditing}
-          />
-        </label>
-
-      </div>
-
-      <div className="action-row">
-        {isAccountEditing ? (
-          <button type="button" className="primary-button" onClick={saveAccountChanges}>
-            Save changes
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => setIsAccountEditing(true)}
-          >
-            Edit again
-          </button>
-        )}
-      </div>
-    </div>
-  );
-
-  const renderSecuritySection = () => (
-    <div className="settings-panel security-panel">
-      {securityView === 'overview' && (
-        <>
-          <button type="button" className="security-row" onClick={beginPasswordFlow}>
-            <SettingsIcon name="security" />
-            <span className="security-row-copy">
-              <strong>Password</strong>
-              <span>Change your password securely</span>
-            </span>
-            <span className="security-arrow" aria-hidden="true">›</span>
-          </button>
-          <button
-            type="button"
-            className="security-row"
-            onClick={() => {
-              setSecurityError('');
-              setVerificationFeedback('');
-              setSecurityView('twoFactor');
-            }}
-          >
-            <SettingsIcon name="privacy" />
-            <span className="security-row-copy">
-              <strong>Two-Factor Authentication</strong>
-              <span>Protect your account with an additional verification method</span>
-            </span>
-            <span className="security-arrow" aria-hidden="true">›</span>
-          </button>
-          <button type="button" className="security-row" onClick={() => setSecurityView('sessions')}>
-            <SettingsIcon name="account" />
-            <span className="security-row-copy">
-              <strong>Login Activity</strong>
-              <span>Review where your account is currently signed in</span>
-            </span>
-            <span className="security-arrow" aria-hidden="true">›</span>
-          </button>
-          <p className="security-prototype-note">
-            Password, verification, and session data are simulated in this browser prototype. Production authentication requires a backend.
-          </p>
-        </>
-      )}
-
-      {securityView !== 'overview' && (
-        <div className="security-subview">
-          <button type="button" className="back-link" onClick={() => {
-            setSecurityView('overview');
-            setSecurityError('');
-            setVerificationFeedback('');
-          }}>
-            ‹ Security
-          </button>
-
-          {securityView === 'password' && (
-            <>
-              {passwordStep === 'new' && (
-                <form className="password-form" onSubmit={continuePasswordChange} noValidate>
-                  <div className="password-change-heading">
-                    <span className="password-lock-icon" aria-hidden="true">
-                      <SettingsIcon name="security" />
-                    </span>
-                    <div>
-                      <h3>Change Password</h3>
-                      <p>Update password for enhanced account security.</p>
-                    </div>
-                  </div>
-                  {(passwordIsSet ? ['current', 'next', 'confirm'] : ['next', 'confirm']).map((field) => (
-                    <div className="field password-field" key={field}>
-                      <div className="password-label-row">
-                        <label htmlFor={`${field}-password`}>
-                          {field === 'current'
-                            ? 'Current Password'
-                            : field === 'next' ? 'New Password' : 'Confirm New Password'}
-                          <span aria-hidden="true"> *</span>
-                        </label>
-                        {field === 'confirm' && passwordForm.confirm && (
-                          <button
-                            type="button"
-                            className="password-clear"
-                            onClick={() => {
-                              setPasswordForm((prev) => ({ ...prev, confirm: '' }));
-                              setPasswordFieldErrors((prev) => {
-                                const nextErrors = { ...prev };
-                                delete nextErrors.confirm;
-                                return nextErrors;
-                              });
-                              setSecurityError('');
-                            }}
-                          >
-                            Clear
-                          </button>
-                        )}
-                      </div>
-                      <input
-                        id={`${field}-password`}
-                        type={visiblePasswords[field] ? 'text' : 'password'}
-                        autoComplete={field === 'current' ? 'current-password' : 'new-password'}
-                        value={passwordForm[field]}
-                        minLength={field === 'next' ? 8 : undefined}
-                        aria-invalid={Boolean(passwordFieldErrors[field])}
-                        aria-describedby={passwordFieldErrors[field] ? `${field}-password-error` : undefined}
-                        onChange={(event) => {
-                          setPasswordForm((prev) => ({ ...prev, [field]: event.target.value }));
-                          setPasswordFieldErrors((prev) => {
-                            if (!prev[field]) return prev;
-                            const nextErrors = { ...prev };
-                            delete nextErrors[field];
-                            return nextErrors;
-                          });
-                          setSecurityError('');
-                        }}
-                        required
-                      />
-                      <button type="button" className="password-visibility" onClick={() => togglePasswordVisibility(field)}>
-                        {visiblePasswords[field] ? 'Hide' : 'Show'}
-                      </button>
-                      {passwordFieldErrors[field] && (
-                        <span className="password-field-error" id={`${field}-password-error`} role="alert">
-                          {passwordFieldErrors[field]}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                  <div className="password-strength" aria-live="polite">
-                    <div
-                      className={`password-strength-meter strength-${passwordStrength}`}
-                      role="img"
-                      aria-label={`Password requirements met: ${passwordStrength} of 3`}
+                <div className="photo-controls">
+                    <label className="upload-button">
+                        <input
+                            type="file"
+                            accept="image/png, image/jpeg, image/jpg"
+                            onChange={handleImageSelect}
+                            disabled={!isAccountEditing}
+                        />
+                        Choose photo
+                    </label>
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={saveProfilePicture}
+                        disabled={!isAccountEditing}
                     >
-                      {passwordRequirements.map(({ label }, index) => (
-                        <span
-                          key={label}
-                          className={index < passwordStrength ? 'is-filled' : ''}
-                        />
-                      ))}
-                    </div>
-                    <p className="password-strength-label">
-                      {passwordStrength === 3 ? 'Strong password.' : 'Weak password. Must contain:'}
-                    </p>
-                    <ul className="password-requirements">
-                      {passwordRequirements.map(({ label, met }) => (
-                        <li key={label} className={met ? 'is-met' : ''}>
-                          <span aria-hidden="true">{met ? '✓' : '×'}</span>
-                          {label}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                  <button type="submit" className="primary-button password-submit">Continue to verification</button>
-                </form>
-              )}
-
-              {passwordStep === 'verification' && (
-                <form className="password-form" onSubmit={completePasswordChange}>
-                  <div className="password-form-heading">
-                    <h3>Verify it's you</h3>
-                    <p>We prepared a simulated verification code for your verified contact. No email or SMS was sent.</p>
-                  </div>
-                  <div className="verification-methods">
-                    {getVerifiedMethods(profile).map((method) => (
-                      <label key={method.id}>
-                        <input
-                          type="radio"
-                          name="password-verification-method"
-                          value={method.id}
-                          checked={verificationMethod === method.id}
-                          onChange={() => {
-                            setVerificationMethod(method.id);
-                            setVerificationChallenge(null);
-                            setVerificationFeedback('');
-                          }}
-                        />
-                        <span>{method.label} · {method.masked}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {getVerifiedMethods(profile).length === 0 && (
-                    <p className="security-error">Add a verified email or phone number to your account before changing your password.</p>
-                  )}
-                  <button type="button" className="secondary-button" onClick={sendSecurityVerification} disabled={!getVerifiedMethods(profile).length}>
-                    Generate prototype code
-                  </button>
-                  {verificationChallenge && (
-                    <>
-                      <p className="prototype-code">Prototype code (not sent): <strong>{verificationChallenge.code}</strong></p>
-                      <label className="field">
-                        <span>Verification code</span>
-                        <input
-                          inputMode="numeric"
-                          autoComplete="one-time-code"
-                          maxLength={6}
-                          value={verificationCode}
-                          onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ''))}
-                          required
-                        />
-                      </label>
-                      <button type="submit" className="primary-button password-submit">Verify and change password</button>
-                    </>
-                  )}
-                  {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                </form>
-              )}
-
-              {passwordStep === 'success' && (
-                <div className="security-success">
-                  <h3>Password changed</h3>
-                  <p>{verificationFeedback} Login verification can use the same local account store.</p>
-                  <button type="button" className="primary-button" onClick={() => setSecurityView('overview')}>Done</button>
+                        Save photo
+                    </button>
                 </div>
-              )}
-              <p className="password-note">This frontend prototype stores a salted password hash locally. It is not production authentication.</p>
-            </>
-          )}
+            </div>
 
-          {securityView === 'twoFactor' && (
-            <div className="two-factor-view">
-              <div className="two-factor-heading">
-                <div>
-                  <h3 className="security-subtitle">Two-Factor Authentication</h3>
-                  <p>{profile.twoFactorEnabled ? 'An additional verification step is enabled.' : 'Add a verification step when signing in.'}</p>
-                </div>
-                {profile.twoFactorEnabled ? (
-                  <button type="button" className="danger-button" onClick={() => setConfirmCurrentLogout(true)}>Turn off</button>
+            <div className="form-grid">
+                <label className="field">
+                    <span>Full name</span>
+                    <input
+                        type="text"
+                        name="fullName"
+                        value={profile.fullName}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>Student ID</span>
+                    <input
+                        type="text"
+                        name="studentId"
+                        value={profile.studentId}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>Program / Course</span>
+                    <input
+                        type="text"
+                        name="program"
+                        value={profile.program}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>Year level</span>
+                    <input
+                        type="text"
+                        name="yearLevel"
+                        value={profile.yearLevel}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field full-width">
+                    <span>Short bio</span>
+                    <textarea
+                        name="bio"
+                        rows="4"
+                        value={profile.bio}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>Email address</span>
+                    <input
+                        type="email"
+                        name="email"
+                        value={profile.email}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>Username</span>
+                    <input
+                        type="text"
+                        name="username"
+                        value={profile.username}
+                        onChange={handleAccountInput}
+                        disabled={!isAccountEditing}
+                    />
+                </label>
+            </div>
+
+            <div className="action-row">
+                {isAccountEditing ? (
+                    <button type="button" className="primary-button" onClick={saveAccountChanges}>
+                        Save changes
+                    </button>
                 ) : (
-                  <button type="button" className="primary-button" onClick={startTwoFactorEnable}>Turn on</button>
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => setIsAccountEditing(true)}
+                    >
+                        Edit again
+                    </button>
                 )}
-              </div>
-              <h4>Verification Methods</h4>
-              {getVerifiedMethods(profile).map((method) => (
-                <div className="verified-method" key={method.id}>
-                  <div><strong>{method.label}</strong><span>{method.masked}</span></div>
-                  <span className="method-enabled">Enabled</span>
-                </div>
-              ))}
-              {!getVerifiedMethods(profile).length && <p className="password-note">No verified email or phone is available yet.</p>}
-              {verificationFeedback && <p className="security-success-message">{verificationFeedback}</p>}
-              {!profile.twoFactorEnabled && getVerifiedMethods(profile).length > 0 && (
-                <div className="verification-setup">
-                  <p>To enable 2FA, verify one of your contacts. No real message will be sent.</p>
-                  <div className="verification-methods">
-                    {getVerifiedMethods(profile).map((method) => (
-                      <label key={method.id}>
-                        <input type="radio" name="2fa-method" value={method.id} checked={verificationMethod === method.id} onChange={() => setVerificationMethod(method.id)} />
-                        <span>{method.label} · {method.masked}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <button type="button" className="secondary-button" onClick={() => {
-                    const challenge = createPrototypeChallenge(verificationMethod);
-                    setVerificationChallenge(challenge);
-                    setVerificationCode('');
-                    setSecurityError('');
-                  }}>Generate prototype code</button>
-                  {verificationChallenge && (
-                    <form className="verification-code-form" onSubmit={finishTwoFactorEnable}>
-                      <p className="prototype-code">Prototype code (not sent): <strong>{verificationChallenge.code}</strong></p>
-                      <label className="field"><span>Verification code</span><input inputMode="numeric" maxLength={6} value={verificationCode} onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ''))} required /></label>
-                      <button className="primary-button" type="submit">Verify and enable</button>
-                    </form>
-                  )}
-                  {securityError && <p className="security-error" role="alert">{securityError}</p>}
-                </div>
-              )}
-              {confirmCurrentLogout && (
-                <div className="confirmation-panel">
-                  <p>Turning off two-factor authentication reduces account security. Continue?</p>
-                  <button type="button" className="secondary-button" onClick={() => setConfirmCurrentLogout(false)}>Cancel</button>
-                  <button type="button" className="danger-button" onClick={disableTwoFactor}>Turn off 2FA</button>
-                </div>
-              )}
             </div>
-          )}
+        </div>
+    );
 
-          {securityView === 'sessions' && (
-            <div className="sessions-view">
-              <div className="sessions-heading">
+    const renderSecuritySection = () => (
+        <div className="settings-panel security-panel">
+            {securityView === "overview" && (
+                <>
+                    <button type="button" className="security-row" onClick={beginPasswordFlow}>
+                        <SettingsIcon name="security" />
+                        <span className="security-row-copy">
+                            <strong>Password</strong>
+                            <span>Change your password securely</span>
+                        </span>
+                        <span className="security-arrow" aria-hidden="true">
+                            ›
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        className="security-row"
+                        onClick={() => {
+                            setSecurityError("");
+                            setVerificationFeedback("");
+                            setSecurityView("twoFactor");
+                        }}
+                    >
+                        <SettingsIcon name="privacy" />
+                        <span className="security-row-copy">
+                            <strong>Two-Factor Authentication</strong>
+                            <span>Protect your account with an additional verification method</span>
+                        </span>
+                        <span className="security-arrow" aria-hidden="true">
+                            ›
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        className="security-row"
+                        onClick={() => setSecurityView("sessions")}
+                    >
+                        <SettingsIcon name="account" />
+                        <span className="security-row-copy">
+                            <strong>Login Activity</strong>
+                            <span>Review where your account is currently signed in</span>
+                        </span>
+                        <span className="security-arrow" aria-hidden="true">
+                            ›
+                        </span>
+                    </button>
+                    <p className="security-prototype-note">
+                        Password, verification, and session data are simulated in this browser
+                        prototype. Production authentication requires a backend.
+                    </p>
+                </>
+            )}
+
+            {securityView !== "overview" && (
+                <div className="security-subview">
+                    <button
+                        type="button"
+                        className="back-link"
+                        onClick={() => {
+                            setSecurityView("overview");
+                            setSecurityError("");
+                            setVerificationFeedback("");
+                        }}
+                    >
+                        ‹ Security
+                    </button>
+
+                    {securityView === "password" && (
+                        <>
+                            {passwordStep === "new" && (
+                                <form
+                                    className="password-form"
+                                    onSubmit={continuePasswordChange}
+                                    noValidate
+                                >
+                                    <div className="password-change-heading">
+                                        <span className="password-lock-icon" aria-hidden="true">
+                                            <SettingsIcon name="security" />
+                                        </span>
+                                        <div>
+                                            <h3>Change Password</h3>
+                                            <p>Update password for enhanced account security.</p>
+                                        </div>
+                                    </div>
+                                    {(passwordIsSet
+                                        ? ["current", "next", "confirm"]
+                                        : ["next", "confirm"]
+                                    ).map((field) => (
+                                        <div className="field password-field" key={field}>
+                                            <div className="password-label-row">
+                                                <label htmlFor={`${field}-password`}>
+                                                    {field === "current"
+                                                        ? "Current Password"
+                                                        : field === "next"
+                                                          ? "New Password"
+                                                          : "Confirm New Password"}
+                                                    <span aria-hidden="true"> *</span>
+                                                </label>
+                                                {field === "confirm" && passwordForm.confirm && (
+                                                    <button
+                                                        type="button"
+                                                        className="password-clear"
+                                                        onClick={() => {
+                                                            setPasswordForm((prev) => ({
+                                                                ...prev,
+                                                                confirm: "",
+                                                            }));
+                                                            setPasswordFieldErrors((prev) => {
+                                                                const nextErrors = { ...prev };
+                                                                delete nextErrors.confirm;
+                                                                return nextErrors;
+                                                            });
+                                                            setSecurityError("");
+                                                        }}
+                                                    >
+                                                        Clear
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <input
+                                                id={`${field}-password`}
+                                                type={visiblePasswords[field] ? "text" : "password"}
+                                                autoComplete={
+                                                    field === "current"
+                                                        ? "current-password"
+                                                        : "new-password"
+                                                }
+                                                value={passwordForm[field]}
+                                                minLength={field === "next" ? 8 : undefined}
+                                                aria-invalid={Boolean(passwordFieldErrors[field])}
+                                                aria-describedby={
+                                                    passwordFieldErrors[field]
+                                                        ? `${field}-password-error`
+                                                        : undefined
+                                                }
+                                                onChange={(event) => {
+                                                    setPasswordForm((prev) => ({
+                                                        ...prev,
+                                                        [field]: event.target.value,
+                                                    }));
+                                                    setPasswordFieldErrors((prev) => {
+                                                        if (!prev[field]) return prev;
+                                                        const nextErrors = { ...prev };
+                                                        delete nextErrors[field];
+                                                        return nextErrors;
+                                                    });
+                                                    setSecurityError("");
+                                                }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                className="password-visibility"
+                                                onClick={() => togglePasswordVisibility(field)}
+                                            >
+                                                {visiblePasswords[field] ? "Hide" : "Show"}
+                                            </button>
+                                            {passwordFieldErrors[field] && (
+                                                <span
+                                                    className="password-field-error"
+                                                    id={`${field}-password-error`}
+                                                    role="alert"
+                                                >
+                                                    {passwordFieldErrors[field]}
+                                                </span>
+                                            )}
+                                        </div>
+                                    ))}
+                                    <div className="password-strength" aria-live="polite">
+                                        <div
+                                            className={`password-strength-meter strength-${passwordStrength}`}
+                                            role="img"
+                                            aria-label={`Password requirements met: ${passwordStrength} of 3`}
+                                        >
+                                            {passwordRequirements.map(({ label }, index) => (
+                                                <span
+                                                    key={label}
+                                                    className={
+                                                        index < passwordStrength ? "is-filled" : ""
+                                                    }
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="password-strength-label">
+                                            {passwordStrength === 3
+                                                ? "Strong password."
+                                                : "Weak password. Must contain:"}
+                                        </p>
+                                        <ul className="password-requirements">
+                                            {passwordRequirements.map(({ label, met }) => (
+                                                <li key={label} className={met ? "is-met" : ""}>
+                                                    <span aria-hidden="true">
+                                                        {met ? "✓" : "×"}
+                                                    </span>
+                                                    {label}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    {securityError && (
+                                        <p className="security-error" role="alert">
+                                            {securityError}
+                                        </p>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className="primary-button password-submit"
+                                    >
+                                        Continue to verification
+                                    </button>
+                                </form>
+                            )}
+
+                            {passwordStep === "verification" && (
+                                <form className="password-form" onSubmit={completePasswordChange}>
+                                    <div className="password-form-heading">
+                                        <h3>Verify it's you</h3>
+                                        <p>
+                                            We prepared a simulated verification code for your
+                                            verified contact. No email or SMS was sent.
+                                        </p>
+                                    </div>
+                                    <div className="verification-methods">
+                                        {getVerifiedMethods(profile).map((method) => (
+                                            <label key={method.id}>
+                                                <input
+                                                    type="radio"
+                                                    name="password-verification-method"
+                                                    value={method.id}
+                                                    checked={verificationMethod === method.id}
+                                                    onChange={() => {
+                                                        setVerificationMethod(method.id);
+                                                        setVerificationChallenge(null);
+                                                        setVerificationFeedback("");
+                                                    }}
+                                                />
+                                                <span>
+                                                    {method.label} · {method.masked}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    {getVerifiedMethods(profile).length === 0 && (
+                                        <p className="security-error">
+                                            Add a verified email or phone number to your account
+                                            before changing your password.
+                                        </p>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className="secondary-button"
+                                        onClick={sendSecurityVerification}
+                                        disabled={!getVerifiedMethods(profile).length}
+                                    >
+                                        Generate prototype code
+                                    </button>
+                                    {verificationChallenge && (
+                                        <>
+                                            <p className="prototype-code">
+                                                Prototype code (not sent):{" "}
+                                                <strong>{verificationChallenge.code}</strong>
+                                            </p>
+                                            <label className="field">
+                                                <span>Verification code</span>
+                                                <input
+                                                    inputMode="numeric"
+                                                    autoComplete="one-time-code"
+                                                    maxLength={6}
+                                                    value={verificationCode}
+                                                    onChange={(event) =>
+                                                        setVerificationCode(
+                                                            event.target.value.replace(/\D/g, ""),
+                                                        )
+                                                    }
+                                                    required
+                                                />
+                                            </label>
+                                            <button
+                                                type="submit"
+                                                className="primary-button password-submit"
+                                            >
+                                                Verify and change password
+                                            </button>
+                                        </>
+                                    )}
+                                    {securityError && (
+                                        <p className="security-error" role="alert">
+                                            {securityError}
+                                        </p>
+                                    )}
+                                </form>
+                            )}
+
+                            {passwordStep === "success" && (
+                                <div className="security-success">
+                                    <h3>Password changed</h3>
+                                    <p>
+                                        {verificationFeedback} Login verification can use the same
+                                        local account store.
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="primary-button"
+                                        onClick={() => setSecurityView("overview")}
+                                    >
+                                        Done
+                                    </button>
+                                </div>
+                            )}
+                            <p className="password-note">
+                                This frontend prototype stores a salted password hash locally. It is
+                                not production authentication.
+                            </p>
+                        </>
+                    )}
+
+                    {securityView === "twoFactor" && (
+                        <div className="two-factor-view">
+                            <div className="two-factor-heading">
+                                <div>
+                                    <h3 className="security-subtitle">Two-Factor Authentication</h3>
+                                    <p>
+                                        {profile.twoFactorEnabled
+                                            ? "An additional verification step is enabled."
+                                            : "Add a verification step when signing in."}
+                                    </p>
+                                </div>
+                                {profile.twoFactorEnabled ? (
+                                    <button
+                                        type="button"
+                                        className="danger-button"
+                                        onClick={() => setConfirmCurrentLogout(true)}
+                                    >
+                                        Turn off
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="primary-button"
+                                        onClick={startTwoFactorEnable}
+                                    >
+                                        Turn on
+                                    </button>
+                                )}
+                            </div>
+                            <h4>Verification Methods</h4>
+                            {getVerifiedMethods(profile).map((method) => (
+                                <div className="verified-method" key={method.id}>
+                                    <div>
+                                        <strong>{method.label}</strong>
+                                        <span>{method.masked}</span>
+                                    </div>
+                                    <span className="method-enabled">Enabled</span>
+                                </div>
+                            ))}
+                            {!getVerifiedMethods(profile).length && (
+                                <p className="password-note">
+                                    No verified email or phone is available yet.
+                                </p>
+                            )}
+                            {verificationFeedback && (
+                                <p className="security-success-message">{verificationFeedback}</p>
+                            )}
+                            {!profile.twoFactorEnabled &&
+                                getVerifiedMethods(profile).length > 0 && (
+                                    <div className="verification-setup">
+                                        <p>
+                                            To enable 2FA, verify one of your contacts. No real
+                                            message will be sent.
+                                        </p>
+                                        <div className="verification-methods">
+                                            {getVerifiedMethods(profile).map((method) => (
+                                                <label key={method.id}>
+                                                    <input
+                                                        type="radio"
+                                                        name="2fa-method"
+                                                        value={method.id}
+                                                        checked={verificationMethod === method.id}
+                                                        onChange={() =>
+                                                            setVerificationMethod(method.id)
+                                                        }
+                                                    />
+                                                    <span>
+                                                        {method.label} · {method.masked}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="secondary-button"
+                                            onClick={() => {
+                                                const challenge =
+                                                    createPrototypeChallenge(verificationMethod);
+                                                setVerificationChallenge(challenge);
+                                                setVerificationCode("");
+                                                setSecurityError("");
+                                            }}
+                                        >
+                                            Generate prototype code
+                                        </button>
+                                        {verificationChallenge && (
+                                            <form
+                                                className="verification-code-form"
+                                                onSubmit={finishTwoFactorEnable}
+                                            >
+                                                <p className="prototype-code">
+                                                    Prototype code (not sent):{" "}
+                                                    <strong>{verificationChallenge.code}</strong>
+                                                </p>
+                                                <label className="field">
+                                                    <span>Verification code</span>
+                                                    <input
+                                                        inputMode="numeric"
+                                                        maxLength={6}
+                                                        value={verificationCode}
+                                                        onChange={(event) =>
+                                                            setVerificationCode(
+                                                                event.target.value.replace(
+                                                                    /\D/g,
+                                                                    "",
+                                                                ),
+                                                            )
+                                                        }
+                                                        required
+                                                    />
+                                                </label>
+                                                <button className="primary-button" type="submit">
+                                                    Verify and enable
+                                                </button>
+                                            </form>
+                                        )}
+                                        {securityError && (
+                                            <p className="security-error" role="alert">
+                                                {securityError}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            {confirmCurrentLogout && (
+                                <div className="confirmation-panel">
+                                    <p>
+                                        Turning off two-factor authentication reduces account
+                                        security. Continue?
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="secondary-button"
+                                        onClick={() => setConfirmCurrentLogout(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="danger-button"
+                                        onClick={disableTwoFactor}
+                                    >
+                                        Turn off 2FA
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {securityView === "sessions" && (
+                        <div className="sessions-view">
+                            <div className="sessions-heading">
+                                <div>
+                                    <h3 className="security-subtitle">Login Activity</h3>
+                                    <p>Review sessions simulated for this browser prototype.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={() => setConfirmLogoutAll(true)}
+                                >
+                                    Log Out All Other Sessions
+                                </button>
+                            </div>
+                            {profile.loginSessions.map((session) => (
+                                <button
+                                    type="button"
+                                    className="session-row"
+                                    key={session.id}
+                                    onClick={() => setSessionDetails(session)}
+                                >
+                                    <SettingsIcon name="account" />
+                                    <span className="security-row-copy">
+                                        <strong>
+                                            {session.isCurrent
+                                                ? "Current Session"
+                                                : "Previous Session"}{" "}
+                                            · {session.device} • {session.browser}
+                                        </strong>
+                                        <span>
+                                            {session.location} · {session.lastActive}
+                                        </span>
+                                    </span>
+                                    {session.isActive && (
+                                        <span
+                                            className={
+                                                session.isCurrent
+                                                    ? "session-active"
+                                                    : "session-other"
+                                            }
+                                        >
+                                            {session.isCurrent ? "Active now" : "Active"}
+                                        </span>
+                                    )}
+                                    <span className="security-arrow" aria-hidden="true">
+                                        ›
+                                    </span>
+                                </button>
+                            ))}
+                            {!profile.loginSessions.length && (
+                                <p className="password-note">No session records are available.</p>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {sessionDetails && (
+                <div
+                    className="modal-backdrop"
+                    role="presentation"
+                    onClick={() => setSessionDetails(null)}
+                >
+                    <section
+                        className="session-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="session-modal-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <h3 id="session-modal-title">
+                            {sessionDetails.isCurrent ? "Current Session" : "Session Details"}
+                        </h3>
+                        <dl>
+                            <dt>Device</dt>
+                            <dd>{sessionDetails.device}</dd>
+                            <dt>Browser</dt>
+                            <dd>{sessionDetails.browser}</dd>
+                            <dt>Location</dt>
+                            <dd>{sessionDetails.location}</dd>
+                            <dt>Last active</dt>
+                            <dd>{sessionDetails.lastActive}</dd>
+                            <dt>Login date</dt>
+                            <dd>{sessionDetails.loginDate}</dd>
+                        </dl>
+                        {sessionDetails.isCurrent && confirmCurrentLogout && (
+                            <p className="security-error">
+                                Logging out the current simulated session will end this prototype
+                                session. Continue?
+                            </p>
+                        )}
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={() => {
+                                    setSessionDetails(null);
+                                    setConfirmCurrentLogout(false);
+                                }}
+                            >
+                                Close
+                            </button>
+                            {sessionDetails.isCurrent ? (
+                                confirmCurrentLogout ? (
+                                    <button
+                                        type="button"
+                                        className="danger-button"
+                                        onClick={() => logoutSession(sessionDetails)}
+                                    >
+                                        Confirm Log Out
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="danger-button"
+                                        onClick={() => setConfirmCurrentLogout(true)}
+                                    >
+                                        Log Out
+                                    </button>
+                                )
+                            ) : (
+                                sessionDetails.isActive && (
+                                    <button
+                                        type="button"
+                                        className="danger-button"
+                                        onClick={() => logoutSession(sessionDetails)}
+                                    >
+                                        Log Out
+                                    </button>
+                                )
+                            )}
+                        </div>
+                    </section>
+                </div>
+            )}
+
+            {confirmLogoutAll && (
+                <div
+                    className="modal-backdrop"
+                    role="presentation"
+                    onClick={() => setConfirmLogoutAll(false)}
+                >
+                    <section
+                        className="session-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="logout-all-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <h3 id="logout-all-title">Log Out All Other Sessions?</h3>
+                        <p>
+                            Other simulated active sessions will be marked as signed out. Your
+                            current session will remain active.
+                        </p>
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={() => setConfirmLogoutAll(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className="danger-button"
+                                onClick={logoutAllOtherSessions}
+                            >
+                                Log Out All Other Sessions
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+
+            {helpDialog && (
+                <div
+                    className="modal-backdrop"
+                    role="presentation"
+                    onClick={() => setHelpDialog(null)}
+                >
+                    <section
+                        className="session-modal help-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="help-dialog-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            className="dialog-close"
+                            aria-label="Close help"
+                            onClick={() => setHelpDialog(null)}
+                        >
+                            ×
+                        </button>
+                        <div className="help-tabs" role="tablist" aria-label="Help topics">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={helpDialog === "support"}
+                                className={
+                                    helpDialog === "support" ? "help-tab active" : "help-tab"
+                                }
+                                onClick={() => setHelpDialog("support")}
+                            >
+                                Student support
+                            </button>
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={helpDialog === "guide"}
+                                className={helpDialog === "guide" ? "help-tab active" : "help-tab"}
+                                onClick={() => setHelpDialog("guide")}
+                            >
+                                Quick reference
+                            </button>
+                        </div>
+                        {helpDialog === "support" ? (
+                            <>
+                                <p className="eyebrow">COMPUGRADE HELP</p>
+                                <h3 id="help-dialog-title">Student support</h3>
+                                <p>Try these steps if something is not working as expected:</p>
+                                <ol className="help-steps">
+                                    <li>
+                                        Refresh the page and sign in again if your session has
+                                        expired.
+                                    </li>
+                                    <li>
+                                        Check your course and assignment details before submitting
+                                        work.
+                                    </li>
+                                    <li>
+                                        If grades or course information look incorrect, contact your
+                                        instructor or your school’s designated support team.
+                                    </li>
+                                </ol>
+                                <p className="password-note">
+                                    This prototype does not have a connected help desk or support
+                                    contact.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="eyebrow">STUDENT GUIDE</p>
+                                <h3 id="help-dialog-title">Quick reference</h3>
+                                <div className="guide-topic">
+                                    <strong>Find your courses</strong>
+                                    <p>
+                                        Open your student dashboard and choose a course to view its
+                                        subjects and details.
+                                    </p>
+                                </div>
+                                <div className="guide-topic">
+                                    <strong>Track grades</strong>
+                                    <p>
+                                        Open the relevant course or subject page to review available
+                                        grade information.
+                                    </p>
+                                </div>
+                                <div className="guide-topic">
+                                    <strong>Submit assignments</strong>
+                                    <p>
+                                        Review the assignment instructions and deadline in your
+                                        course before submitting your work.
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="primary-button"
+                                onClick={() => setHelpDialog(null)}
+                            >
+                                Done
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+        </div>
+    );
+
+    const renderNotificationsSection = () => (
+        <div className="settings-panel" onClick={handleSettingRowClick}>
+            <SettingRow
+                title="Email notifications"
+                description="Receive important updates through email."
+            >
+                <ToggleSetting
+                    label="Email notifications"
+                    enabled={notifications.email}
+                    onToggle={() => toggleNotification("email")}
+                />
+            </SettingRow>
+            <SettingRow
+                title="Important system notifications"
+                description="Platform alerts for deadlines, outages, and account changes."
+            >
+                <ToggleSetting
+                    label="Important system notifications"
+                    enabled={notifications.system}
+                    onToggle={() => toggleNotification("system")}
+                />
+            </SettingRow>
+            <SettingRow
+                title="Assignment and grade notifications"
+                description="Get reminded when tasks are graded or submitted."
+            >
+                <ToggleSetting
+                    label="Assignment and grade notifications"
+                    enabled={notifications.assignments}
+                    onToggle={() => toggleNotification("assignments")}
+                />
+            </SettingRow>
+        </div>
+    );
+
+    const renderActionsSection = () => (
+        <div className="settings-panel">
+            <div className="danger-box">
                 <div>
-                  <h3 className="security-subtitle">Login Activity</h3>
-                  <p>Review sessions simulated for this browser prototype.</p>
+                    <h4>Download account data</h4>
+                    <p>Export your profile and academic information for review.</p>
                 </div>
-                <button type="button" className="secondary-button" onClick={() => setConfirmLogoutAll(true)}>Log Out All Other Sessions</button>
-              </div>
-              {profile.loginSessions.map((session) => (
-                <button type="button" className="session-row" key={session.id} onClick={() => setSessionDetails(session)}>
-                  <SettingsIcon name="account" />
-                  <span className="security-row-copy">
-                    <strong>{session.isCurrent ? 'Current Session' : 'Previous Session'} · {session.device} • {session.browser}</strong>
-                    <span>{session.location} · {session.lastActive}</span>
-                  </span>
-                  {session.isActive && <span className={session.isCurrent ? 'session-active' : 'session-other'}>{session.isCurrent ? 'Active now' : 'Active'}</span>}
-                  <span className="security-arrow" aria-hidden="true">›</span>
+                <button type="button" className="secondary-button">
+                    Download
                 </button>
-              ))}
-              {!profile.loginSessions.length && <p className="password-note">No session records are available.</p>}
             </div>
-          )}
-        </div>
-      )}
 
-      {sessionDetails && (
-        <div className="modal-backdrop" role="presentation" onClick={() => setSessionDetails(null)}>
-          <section className="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-modal-title" onClick={(event) => event.stopPropagation()}>
-            <h3 id="session-modal-title">{sessionDetails.isCurrent ? 'Current Session' : 'Session Details'}</h3>
-            <dl>
-              <dt>Device</dt><dd>{sessionDetails.device}</dd>
-              <dt>Browser</dt><dd>{sessionDetails.browser}</dd>
-              <dt>Location</dt><dd>{sessionDetails.location}</dd>
-              <dt>Last active</dt><dd>{sessionDetails.lastActive}</dd>
-              <dt>Login date</dt><dd>{sessionDetails.loginDate}</dd>
-            </dl>
-            {sessionDetails.isCurrent && confirmCurrentLogout && (
-              <p className="security-error">Logging out the current simulated session will end this prototype session. Continue?</p>
+            <div className="danger-box">
+                <div>
+                    <h4>Clear local preferences</h4>
+                    <p>Reset stored browser settings for this prototype.</p>
+                </div>
+                <button type="button" className="secondary-button">
+                    Clear
+                </button>
+            </div>
+
+            <div className="danger-box destructive">
+                <div>
+                    <h4>Log out</h4>
+                    <p>Sign out of your CompuGrade account.</p>
+                </div>
+                <button
+                    type="button"
+                    className="danger-button"
+                    onClick={() => setShowLogoutConfirm(true)}
+                >
+                    Log Out
+                </button>
+            </div>
+
+            {showLogoutConfirm && (
+                <div className="delete-confirmation">
+                    <p>Are you sure you want to log out?</p>
+                    <div className="confirm-actions">
+                        <button
+                            type="button"
+                            className="secondary-button"
+                            onClick={() => setShowLogoutConfirm(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button type="button" className="danger-button" onClick={confirmLogout}>
+                            Log Out
+                        </button>
+                    </div>
+                </div>
             )}
-            <div className="modal-actions">
-              <button type="button" className="secondary-button" onClick={() => {
-                setSessionDetails(null);
-                setConfirmCurrentLogout(false);
-              }}>Close</button>
-              {sessionDetails.isCurrent ? (
-                confirmCurrentLogout
-                  ? <button type="button" className="danger-button" onClick={() => logoutSession(sessionDetails)}>Confirm Log Out</button>
-                  : <button type="button" className="danger-button" onClick={() => setConfirmCurrentLogout(true)}>Log Out</button>
-              ) : sessionDetails.isActive && (
-                <button type="button" className="danger-button" onClick={() => logoutSession(sessionDetails)}>Log Out</button>
-              )}
-            </div>
-          </section>
         </div>
-      )}
+    );
 
-      {confirmLogoutAll && (
-        <div className="modal-backdrop" role="presentation" onClick={() => setConfirmLogoutAll(false)}>
-          <section className="session-modal" role="dialog" aria-modal="true" aria-labelledby="logout-all-title" onClick={(event) => event.stopPropagation()}>
-            <h3 id="logout-all-title">Log Out All Other Sessions?</h3>
-            <p>Other simulated active sessions will be marked as signed out. Your current session will remain active.</p>
-            <div className="modal-actions">
-              <button type="button" className="secondary-button" onClick={() => setConfirmLogoutAll(false)}>Cancel</button>
-              <button type="button" className="danger-button" onClick={logoutAllOtherSessions}>Log Out All Other Sessions</button>
-            </div>
-          </section>
-        </div>
-      )}
+    const renderSectionContent = () => {
+        switch (activeSection) {
+            case "Profile":
+                return renderProfileSection();
+            case "Account":
+                return renderAccountSection();
+            case "Security":
+                return renderSecuritySection();
+            case "Notifications":
+                return renderNotificationsSection();
+            case "Account Actions":
+                return renderActionsSection();
+            default:
+                return null;
+        }
+    };
 
-      {helpDialog && (
-        <div className="modal-backdrop" role="presentation" onClick={() => setHelpDialog(null)}>
-          <section
-            className="session-modal help-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="help-dialog-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="dialog-close"
-              aria-label="Close help"
-              onClick={() => setHelpDialog(null)}
-            >
-              ×
-            </button>
-            <div className="help-tabs" role="tablist" aria-label="Help topics">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={helpDialog === 'support'}
-                className={helpDialog === 'support' ? 'help-tab active' : 'help-tab'}
-                onClick={() => setHelpDialog('support')}
-              >
-                Student support
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={helpDialog === 'guide'}
-                className={helpDialog === 'guide' ? 'help-tab active' : 'help-tab'}
-                onClick={() => setHelpDialog('guide')}
-              >
-                Quick reference
-              </button>
-            </div>
-            {helpDialog === 'support' ? (
-              <>
-                <p className="eyebrow">COMPUGRADE HELP</p>
-                <h3 id="help-dialog-title">Student support</h3>
-                <p>Try these steps if something is not working as expected:</p>
-                <ol className="help-steps">
-                  <li>Refresh the page and sign in again if your session has expired.</li>
-                  <li>Check your course and assignment details before submitting work.</li>
-                  <li>If grades or course information look incorrect, contact your instructor or your school’s designated support team.</li>
-                </ol>
-                <p className="password-note">This prototype does not have a connected help desk or support contact.</p>
-              </>
-            ) : (
-              <>
-                <p className="eyebrow">STUDENT GUIDE</p>
-                <h3 id="help-dialog-title">Quick reference</h3>
-                <div className="guide-topic">
-                  <strong>Find your courses</strong>
-                  <p>Open your student dashboard and choose a course to view its subjects and details.</p>
+    return (
+        <div className="global-settings">
+            <aside className="settings-sidebar">
+                <Link className="back-button" to="/student/dashboard">
+                    <span className="back-button__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+                        </svg>
+                    </span>
+                    <span>Back</span>
+                </Link>
+
+                <div className="brand" aria-label="CompUGrade">
+                    <span className="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
+                                stroke="currentColor"
+                                strokeWidth="1.4"
+                            />
+                            <path
+                                d="M10 8H14M10 11H14M10 14H12.5"
+                                stroke="currentColor"
+                                strokeWidth="1.4"
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </span>
+                    <span className="brand-name">
+                        CompUGrade<span className="brand-name-dot">.</span>
+                    </span>
                 </div>
-                <div className="guide-topic">
-                  <strong>Track grades</strong>
-                  <p>Open the relevant course or subject page to review available grade information.</p>
+
+                <div className="settings-workspace-box">
+                    <span>Workspace</span>
+                    <strong>Student</strong>
                 </div>
-                <div className="guide-topic">
-                  <strong>Submit assignments</strong>
-                  <p>Review the assignment instructions and deadline in your course before submitting your work.</p>
-                </div>
-              </>
-            )}
-            <div className="modal-actions">
-              <button type="button" className="primary-button" onClick={() => setHelpDialog(null)}>Done</button>
-            </div>
-          </section>
+
+                <nav className="settings-menu" aria-label="Global settings navigation">
+                    <p className="settings-menu-label">SETTINGS</p>
+                    {sidebarItems.map(({ label, icon }) => (
+                        <button
+                            key={label}
+                            type="button"
+                            className={
+                                activeSection === label
+                                    ? "settings-nav-item active"
+                                    : "settings-nav-item"
+                            }
+                            onClick={() => setActiveSection(label)}
+                            aria-current={activeSection === label ? "page" : undefined}
+                        >
+                            <SettingsIcon name={icon} />
+                            <span>{label}</span>
+                        </button>
+                    ))}
+                </nav>
+
+                <button
+                    type="button"
+                    className="settings-help-button"
+                    onClick={() => setHelpDialog("support")}
+                >
+                    <span className="settings-help-mark" aria-hidden="true">
+                        ?
+                    </span>
+                    <span>Help &amp; Resources</span>
+                </button>
+            </aside>
+
+            <main className="content-panel">
+                <header className="page-header">
+                    <div>
+                        <p className="eyebrow">YOUR ACCOUNT</p>
+                        <h1>Settings</h1>
+                    </div>
+                </header>
+
+                <section className="main-card">
+                    <div className="section-header-row">
+                        <div>
+                            <h2>{activeSection}</h2>
+                        </div>
+                    </div>
+
+                    <p className="section-description">
+                        {activeSection === "Profile" &&
+                            "Read-only details for your academic identity."}
+                        {activeSection === "Account" &&
+                            "Manage your personal account information and profile picture settings."}
+                        {activeSection === "Security" &&
+                            "Protect your account with password, verification, and session controls."}
+                        {activeSection === "Notifications" &&
+                            "Choose which alerts and updates you want to receive."}
+                        {activeSection === "Account Actions" &&
+                            "Review account data and take higher-risk actions carefully."}
+                    </p>
+
+                    {renderSectionContent()}
+
+                    {statusMessage && <div className="status-message">{statusMessage}</div>}
+                </section>
+            </main>
         </div>
-      )}
-    </div>
-  );
-
-  const renderNotificationsSection = () => (
-    <div className="settings-panel" onClick={handleSettingRowClick}>
-      <SettingRow
-        title="Email notifications"
-        description="Receive important updates through email."
-      >
-        <ToggleSetting
-          label="Email notifications"
-          enabled={notifications.email}
-          onToggle={() => toggleNotification('email')}
-        />
-      </SettingRow>
-      <SettingRow
-        title="Important system notifications"
-        description="Platform alerts for deadlines, outages, and account changes."
-      >
-        <ToggleSetting
-          label="Important system notifications"
-          enabled={notifications.system}
-          onToggle={() => toggleNotification('system')}
-        />
-      </SettingRow>
-      <SettingRow
-        title="Assignment and grade notifications"
-        description="Get reminded when tasks are graded or submitted."
-      >
-        <ToggleSetting
-          label="Assignment and grade notifications"
-          enabled={notifications.assignments}
-          onToggle={() => toggleNotification('assignments')}
-        />
-      </SettingRow>
-    </div>
-  );
-
-  const renderActionsSection = () => (
-    <div className="settings-panel">
-      <div className="danger-box">
-        <div>
-          <h4>Download account data</h4>
-          <p>Export your profile and academic information for review.</p>
-        </div>
-        <button type="button" className="secondary-button">
-          Download
-        </button>
-      </div>
-
-      <div className="danger-box">
-        <div>
-          <h4>Clear local preferences</h4>
-          <p>Reset stored browser settings for this prototype.</p>
-        </div>
-        <button type="button" className="secondary-button">
-          Clear
-        </button>
-      </div>
-
-      <div className="danger-box destructive">
-        <div>
-          <h4>Log out</h4>
-          <p>Sign out of your CompuGrade account.</p>
-        </div>
-        <button type="button" className="danger-button" onClick={() => setShowLogoutConfirm(true)}>
-          Log Out
-        </button>
-      </div>
-
-      {showLogoutConfirm && (
-        <div className="delete-confirmation">
-          <p>Are you sure you want to log out?</p>
-          <div className="confirm-actions">
-            <button type="button" className="secondary-button" onClick={() => setShowLogoutConfirm(false)}>
-              Cancel
-            </button>
-            <button type="button" className="danger-button" onClick={confirmLogout}>
-              Log Out
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderSectionContent = () => {
-    switch (activeSection) {
-      case 'Profile':
-        return renderProfileSection();
-      case 'Account':
-        return renderAccountSection();
-      case 'Security':
-        return renderSecuritySection();
-      case 'Notifications':
-        return renderNotificationsSection();
-      case 'Account Actions':
-        return renderActionsSection();
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="global-settings">
-      <aside className="settings-sidebar">
-        <Link className="back-button" to="/student/dashboard">
-          <span className="back-button__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
-            </svg>
-          </span>
-          <span>Back</span>
-        </Link>
-
-        <div className="brand" aria-label="CompUGrade">
-          <span className="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
-                stroke="currentColor"
-                strokeWidth="1.4"
-              />
-              <path
-                d="M10 8H14M10 11H14M10 14H12.5"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          <span className="brand-name">
-            CompUGrade<span className="brand-name-dot">.</span>
-          </span>
-        </div>
-
-        <div className="settings-workspace-box">
-          <span>Workspace</span>
-          <strong>Student</strong>
-        </div>
-
-        <nav className="settings-menu" aria-label="Global settings navigation">
-          <p className="settings-menu-label">SETTINGS</p>
-          {sidebarItems.map(({ label, icon }) => (
-            <button
-              key={label}
-              type="button"
-              className={activeSection === label ? 'settings-nav-item active' : 'settings-nav-item'}
-              onClick={() => setActiveSection(label)}
-              aria-current={activeSection === label ? 'page' : undefined}
-            >
-              <SettingsIcon name={icon} />
-              <span>{label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <button type="button" className="settings-help-button" onClick={() => setHelpDialog('support')}>
-          <span className="settings-help-mark" aria-hidden="true">?</span>
-          <span>Help &amp; Resources</span>
-        </button>
-      </aside>
-
-      <main className="content-panel">
-        <header className="page-header">
-          <div>
-            <p className="eyebrow">YOUR ACCOUNT</p>
-            <h1>Settings</h1>
-          </div>
-        </header>
-
-        <section className="main-card">
-          <div className="section-header-row">
-            <div>
-              <h2>{activeSection}</h2>
-            </div>
-          </div>
-
-          <p className="section-description">
-            {activeSection === 'Profile' && 'Read-only details for your academic identity.'}
-            {activeSection === 'Account' && 'Manage your personal account information and profile picture settings.'}
-            {activeSection === 'Security' && 'Protect your account with password, verification, and session controls.'}
-            {activeSection === 'Notifications' && 'Choose which alerts and updates you want to receive.'}
-            {activeSection === 'Account Actions' && 'Review account data and take higher-risk actions carefully.'}
-          </p>
-
-          {renderSectionContent()}
-
-          {statusMessage && <div className="status-message">{statusMessage}</div>}
-        </section>
-      </main>
-    </div>
-  );
+    );
 }
 
 export default GlobalSettings;

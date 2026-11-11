@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import { useState } from "react";
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // Auth
-import LoginRegister from './pages/auth/LoginRegister';
+import LoginRegister from "./pages/auth/LoginRegister";
 
 // Global Settings
-import GlobalSettings from './pages/GlobalSettings'; // Put this in src/pages/
+import GlobalSettings from "./pages/GlobalSettings"; // Put this in src/pages/
 
 // Student Workspace
-import StudentDashboard from './pages/student/StudentDashboard';
-import SubjectDetail from './pages/student/SubjectDetail';
-import SubjectMenu from './pages/student/SubjectMenu';
-import TargetGradeSandboxPage from './pages/student/TargetGradeSandboxPage';
-import GradeRules from './pages/student/GradeRules';
-import RuleDetail from './pages/student/RuleDetail';
-import RequireStudent from './components/shared/RequireStudent';
+import StudentDashboard from "./pages/student/StudentDashboard";
+import SubjectDetail from "./pages/student/SubjectDetail";
+import SubjectMenu from "./pages/student/SubjectMenu";
+import TargetGradeSandboxPage from "./pages/student/TargetGradeSandboxPage";
+import GradeRules from "./pages/student/GradeRules";
+import RuleDetail from "./pages/student/RuleDetail";
+import RequireStudent from "./components/shared/RequireStudent";
 /* PHASE 2
 // Professor Workspace
 import ProfessorDashboard from './pages/professor/ProfessorDashboard';
@@ -30,30 +30,86 @@ import SystemFormulas from './pages/admin/SystemFormulas';
 */
 
 export default function App() {
-  const [showLogin, setShowLogin] = useState(false);
+    const [showLogin, setShowLogin] = useState(false);
 
-  if (showLogin) {
-    return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
-  }
+    if (showLogin) {
+        return <LoginRegister onAuthenticated={() => setShowLogin(false)} />;
+    }
 
-  return (
-    <Router>
-      <Routes>
-        {/* Public / Authentication */}
-        <Route path="/" element={<LoginRegister />} />
+    return (
+        <Router>
+            <Routes>
+                {/* Public / Authentication */}
+                <Route path="/" element={<LoginRegister />} />
 
-        {/* Global Authenticated */}
-        <Route path="/settings" element={<RequireStudent><GlobalSettings /></RequireStudent>} />
-        
-        {/* Student Workspace (Phase 1 Focus) */}
-        <Route path="/student/dashboard" element={<RequireStudent><StudentDashboard /></RequireStudent>} />
-        <Route path="/student/subject" element={<RequireStudent><SubjectMenu /></RequireStudent>} />
-        <Route path="/student/subject/:subjectId/sandbox" element={<RequireStudent><TargetGradeSandboxPage /></RequireStudent>} />
-        <Route path="/student/subject/:subjectId" element={<RequireStudent><SubjectDetail /></RequireStudent>} />
-        <Route path="/student/rules" element={<RequireStudent><GradeRules /></RequireStudent>} />
-        <Route path="/student/rules/new" element={<RequireStudent><RuleDetail isNew /></RequireStudent>} />
-        <Route path="/student/rules/:ruleId" element={<RequireStudent><RuleDetail /></RequireStudent>} />
-        {/*
+                {/* Global Authenticated */}
+                <Route
+                    path="/settings"
+                    element={
+                        <RequireStudent>
+                            <GlobalSettings />
+                        </RequireStudent>
+                    }
+                />
+
+                {/* Student Workspace (Phase 1 Focus) */}
+                <Route
+                    path="/student/dashboard"
+                    element={
+                        <RequireStudent>
+                            <StudentDashboard />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/subject"
+                    element={
+                        <RequireStudent>
+                            <SubjectMenu />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/subject/:subjectId/sandbox"
+                    element={
+                        <RequireStudent>
+                            <TargetGradeSandboxPage />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/subject/:subjectId"
+                    element={
+                        <RequireStudent>
+                            <SubjectDetail />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/rules"
+                    element={
+                        <RequireStudent>
+                            <GradeRules />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/rules/new"
+                    element={
+                        <RequireStudent>
+                            <RuleDetail isNew />
+                        </RequireStudent>
+                    }
+                />
+                <Route
+                    path="/student/rules/:ruleId"
+                    element={
+                        <RequireStudent>
+                            <RuleDetail />
+                        </RequireStudent>
+                    }
+                />
+                {/*
         {// Professor Workspace (Phase 2) }
         <Route path="/professor/classes" element={<ProfessorDashboard />} />
         <Route path="/professor/grading/:classId" element={<GradingWorkspace />} />
@@ -65,10 +121,10 @@ export default function App() {
         <Route path="/admin/courses" element={<ManageCourses />} />
         <Route path="/admin/formulas" element={<SystemFormulas />} />
         */}
-        
-        {/* Fallback route for unknown URLs */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
-  );
+
+                {/* Fallback route for unknown URLs */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
+    );
 }

@@ -147,9 +147,15 @@ export default function EnrolledSubjectsTable({
                                                 {subjectInitials(row.subjectCode)}
                                             </span>
                                             <span className="enrolled-subject-text">
-                                                <span className="enrolled-code">{row.subjectCode}</span>
-                                                <span className="enrolled-name">{row.subjectName}</span>
-                                                <span className="enrolled-prof">{row.professor}</span>
+                                                <span className="enrolled-code">
+                                                    {row.subjectCode}
+                                                </span>
+                                                <span className="enrolled-name">
+                                                    {row.subjectName}
+                                                </span>
+                                                <span className="enrolled-prof">
+                                                    {row.professor}
+                                                </span>
                                             </span>
                                         </Link>
                                     </td>
@@ -158,7 +164,9 @@ export default function EnrolledSubjectsTable({
                                             {formatGrade(row.officialGrade)}
                                         </span>
                                         <span className="enrolled-grade-label">
-                                            {row.officialGrade === null ? "Not posted yet" : "Posted by professor"}
+                                            {row.officialGrade === null
+                                                ? "Not posted yet"
+                                                : "Posted by professor"}
                                         </span>
                                     </td>
                                     <td className="enrolled-cell-expected">
@@ -166,7 +174,9 @@ export default function EnrolledSubjectsTable({
                                             {formatGrade(row.expectedGrade)}
                                         </span>
                                         <span className="enrolled-grade-label">
-                                            {row.expectedGrade === null ? "No scores yet" : "With your scores"}
+                                            {row.expectedGrade === null
+                                                ? "No scores yet"
+                                                : "With your scores"}
                                         </span>
                                     </td>
                                     <td className="enrolled-cell-status">
@@ -202,8 +212,8 @@ export default function EnrolledSubjectsTable({
 
             <div className="enrolled-footer">
                 <span>
-                    • Official grades are posted by your professors. Expected
-                    grades fill the gaps with your own scores.
+                    • Official grades are posted by your professors. Expected grades fill the gaps
+                    with your own scores.
                 </span>
                 <span>Passing grade: {PASSING_GRADE}%</span>
             </div>

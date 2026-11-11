@@ -19,7 +19,9 @@ function migrateToV2(db) {
             ...rule,
             tags: rule.tags ?? [],
             schools: rule.schools ?? [],
-            ...(math?.ok ? { criteria: math.criteria, effectiveMultipliers: math.effectiveMultipliers } : {}),
+            ...(math?.ok
+                ? { criteria: math.criteria, effectiveMultipliers: math.effectiveMultipliers }
+                : {}),
         };
         delete upgraded.hierarchy;
         return upgraded;
@@ -31,21 +33,23 @@ function migrateToV2(db) {
             const grades = { ...(record.grades ?? {}) };
             TERM_KEYS.forEach((term) => {
                 const termGrades = grades[term];
-                if (!termGrades || Array.isArray(termGrades.Exam) || !("Exam" in termGrades)) return;
+                if (!termGrades || Array.isArray(termGrades.Exam) || !("Exam" in termGrades))
+                    return;
 
                 const exam = termGrades.Exam;
                 const hasScore = [exam?.officialScore, exam?.studentReportedScore].some(
-                    (score) => score !== null && score !== undefined && score !== ""
+                    (score) => score !== null && score !== undefined && score !== "",
                 );
                 grades[term] = {
                     ...termGrades,
-                    Exam: hasScore || !exam?.id?.endsWith?.("-EXAM")
-                        ? toTaskList(exam).map((task) => ({
-                            ...task,
-                            sequenceNumber: task.sequenceNumber ?? 1,
-                            isCustomTask: task.isCustomTask ?? false,
-                        }))
-                        : [],
+                    Exam:
+                        hasScore || !exam?.id?.endsWith?.("-EXAM")
+                            ? toTaskList(exam).map((task) => ({
+                                  ...task,
+                                  sequenceNumber: task.sequenceNumber ?? 1,
+                                  isCustomTask: task.isCustomTask ?? false,
+                              }))
+                            : [],
                 };
             });
             return { ...record, grades };

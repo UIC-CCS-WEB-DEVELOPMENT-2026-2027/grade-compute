@@ -7,7 +7,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DB_UPDATED_EVENT, getDb } from "../../utils/db";
 import { focusTaskRow } from "../../utils/focusTask";
-import { getEntryAccuracy, getGradeHistory, getPlanPoints, getTermTarget } from "../../utils/history";
+import {
+    getEntryAccuracy,
+    getGradeHistory,
+    getPlanPoints,
+    getTermTarget,
+} from "../../utils/history";
 import { getActiveStudentId } from "../../utils/session";
 import { getTermLabel } from "../../utils/terms";
 import HistoryChart from "./HistoryChart";
@@ -36,7 +41,13 @@ export default function SubjectGradeHistory({ classId, termKey }) {
 
     const points = getGradeHistory(record, rule, termKey);
     const target = getTermTarget(record, termKey);
-    const { plan, points: planPoints } = getPlanPoints(record, rule, termKey, target, points.length);
+    const { plan, points: planPoints } = getPlanPoints(
+        record,
+        rule,
+        termKey,
+        target,
+        points.length,
+    );
     const accuracy = getEntryAccuracy(points);
     const sandboxLink = `/student/subject/${classId}/sandbox?term=${termKey}`;
 
@@ -46,8 +57,8 @@ export default function SubjectGradeHistory({ classId, termKey }) {
                 <div>
                     <h2 id="subject-history-title">{termLabel} Grade History</h2>
                     <p>
-                        Your {termLabel} grade after each scored task. Official scores replace your own
-                        entries. Click a point to jump to its task.
+                        Your {termLabel} grade after each scored task. Official scores replace your
+                        own entries. Click a point to jump to its task.
                     </p>
                 </div>
                 <div className="history-section-actions">
@@ -61,7 +72,9 @@ export default function SubjectGradeHistory({ classId, termKey }) {
                             {showPlan ? "Hide plan" : "Show plan"}
                         </button>
                     )}
-                    <Link className="history-link" to={sandboxLink}>Plan in sandbox</Link>
+                    <Link className="history-link" to={sandboxLink}>
+                        Plan in sandbox
+                    </Link>
                 </div>
             </div>
 
@@ -78,16 +91,25 @@ export default function SubjectGradeHistory({ classId, termKey }) {
             {showPlan && planPoints.length > 0 && (
                 <p className="history-note">
                     {plan.status === "required" && (
-                        <>Plan: score <strong>{formatGrade(plan.required)}</strong> on each remaining task to end at your target. </>
+                        <>
+                            Plan: score <strong>{formatGrade(plan.required)}</strong> on each
+                            remaining task to end at your target.{" "}
+                        </>
                     )}
                     {plan.status === "impossible" && (
-                        <>Plan: even 100% on every remaining task ends at <strong>{formatGrade(plan.best)}</strong>. </>
+                        <>
+                            Plan: even 100% on every remaining task ends at{" "}
+                            <strong>{formatGrade(plan.best)}</strong>.{" "}
+                        </>
                     )}
                     {plan.status === "reached" && (
-                        <>You&apos;re already above target. The plan assumes you keep scoring around your current grade. </>
+                        <>
+                            You&apos;re already above target. The plan assumes you keep scoring
+                            around your current grade.{" "}
+                        </>
                     )}
-                    Remaining tasks come from your sandbox settings; their order is a guess, so the end
-                    point is what matters.
+                    Remaining tasks come from your sandbox settings; their order is a guess, so the
+                    end point is what matters.
                 </p>
             )}
 
@@ -99,8 +121,9 @@ export default function SubjectGradeHistory({ classId, termKey }) {
                             ? "spot on"
                             : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
                     </strong>
-                    {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the official scores that replaced them
-                    ({accuracy.count} task{accuracy.count === 1 ? "" : "s"}).
+                    {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the official
+                    scores that replaced them ({accuracy.count} task
+                    {accuracy.count === 1 ? "" : "s"}).
                 </p>
             )}
         </section>

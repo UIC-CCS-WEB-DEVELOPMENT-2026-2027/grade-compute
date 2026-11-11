@@ -143,7 +143,11 @@
     min-height: 42px;
     padding: 8px 16px;
     border-radius: 8px;
-    transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    transition:
+        border-color 0.16s ease,
+        background-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease;
 }
 
 .rule-delete-dialog .app-dialog-actions .rule-delete-cancel {

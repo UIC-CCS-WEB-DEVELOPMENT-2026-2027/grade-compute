@@ -5,7 +5,11 @@
 // are private to the student and never change official scores.
 import { useEffect, useState } from "react";
 import { DB_UPDATED_EVENT, getDb, saveDb } from "../../utils/db";
-import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "../../utils/grades";
+import {
+    calculateOfficialGrade,
+    calculateUnofficialGrade,
+    withStudentScore,
+} from "../../utils/grades";
 import { formatPercent } from "../../utils/rules";
 import { getActiveStudentId } from "../../utils/session";
 import {
@@ -38,7 +42,10 @@ function Gauge({ label, grade, target, className }) {
             <span
                 className="grade-gauge-ring"
                 role="img"
-                style={{ "--grade-progress": `${progress}%`, "--target-angle": `${target * 3.6}deg` }}
+                style={{
+                    "--grade-progress": `${progress}%`,
+                    "--target-angle": `${target * 3.6}deg`,
+                }}
                 aria-label={`${label}: ${grade === null ? "no grade yet" : `${grade.toFixed(0)} percent`}`}
             >
                 <strong>
@@ -54,7 +61,9 @@ function Gauge({ label, grade, target, className }) {
 // The answer card. Kept separate so it is easy to find in the code too.
 function SandboxResult({ plan, termLabel }) {
     const { status, target, required, projected, best, requiredSlots, criteria } = plan;
-    const requiredCriteria = criteria.filter((criterion) => criterion.counted && criterion.usesRequired);
+    const requiredCriteria = criteria.filter(
+        (criterion) => criterion.counted && criterion.usesRequired,
+    );
 
     let tone = "required";
     let headline = formatGrade(required);
@@ -130,14 +139,20 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
 
     const termLabel = TERM_LABELS[termKey] ?? "Prelim";
     const classItem = dbData?.classes?.find((item) => item.id === classId);
-    const studentRecord = classItem?.studentRecords?.find((record) => record.studentId === studentId);
+    const studentRecord = classItem?.studentRecords?.find(
+        (record) => record.studentId === studentId,
+    );
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
     if (!studentRecord) {
         return <p className="sandbox-empty">This subject is not available for your account.</p>;
     }
     if (!rule) {
-        return <p className="sandbox-empty">This subject has no grading rule yet. Choose one on the Grade Rules page.</p>;
+        return (
+            <p className="sandbox-empty">
+                This subject has no grading rule yet. Choose one on the Grade Rules page.
+            </p>
+        );
     }
 
     const target = getSandboxTarget(studentRecord, termKey);
@@ -146,7 +161,13 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const expectedGrade = calculateUnofficialGrade(studentRecord, termKey, rule);
     const suggestion = plan.status === "required" ? plan.required : null;
     const historyPoints = getGradeHistory(studentRecord, rule, termKey);
-    const planPoints = getPlanPoints(studentRecord, rule, termKey, target, historyPoints.length).points;
+    const planPoints = getPlanPoints(
+        studentRecord,
+        rule,
+        termKey,
+        target,
+        historyPoints.length,
+    ).points;
 
     // Applies a change to this student's record and saves it.
     function saveRecord(updateRecord, errorPrefix) {
@@ -154,12 +175,16 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
         if (!currentDb) return;
         const updatedDb = {
             ...currentDb,
-            classes: currentDb.classes.map((item) => item.id !== classId ? item : {
-                ...item,
-                studentRecords: item.studentRecords.map((record) =>
-                    record.studentId === studentId ? updateRecord(record) : record
-                ),
-            }),
+            classes: currentDb.classes.map((item) =>
+                item.id !== classId
+                    ? item
+                    : {
+                          ...item,
+                          studentRecords: item.studentRecords.map((record) =>
+                              record.studentId === studentId ? updateRecord(record) : record,
+                          ),
+                      },
+            ),
         };
         try {
             saveDb(updatedDb);
@@ -173,7 +198,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     function saveSettings(updates) {
         saveRecord(
             (record) => updateSandboxSettings(record, termKey, updates),
-            "Unable to save sandbox settings"
+            "Unable to save sandbox settings",
         );
     }
 
@@ -199,11 +224,13 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
         if (value !== "") {
             const score = Number(value);
             const maxIntegerDigits = String(Math.trunc(maxScore)).length;
-            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
+            if (
+                !/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
                 !Number.isFinite(score) ||
                 score < 0 ||
                 score > maxScore ||
-                value.split(".")[0].length > maxIntegerDigits) {
+                value.split(".")[0].length > maxIntegerDigits
+            ) {
                 setInvalidScoreId(task.id);
                 setSaveError(`Enter a score between 0 and ${maxScore}.`);
                 return;
@@ -221,7 +248,7 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     [termKey]: {
                         ...termGrades,
                         [criterionId]: tasks.map((item) =>
-                            item.id === task.id ? withStudentScore(item, value) : item
+                            item.id === task.id ? withStudentScore(item, value) : item,
                         ),
                     },
                 },
@@ -236,15 +263,15 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
             <div className="sandbox-layout">
                 {/* Answer first on phones, sticky on the right on wide screens. */}
                 <div className="sandbox-result-column">
-                    <SandboxResult
-                        plan={plan}
-                        termLabel={termLabel}
-                    />
+                    <SandboxResult plan={plan} termLabel={termLabel} />
                 </div>
 
                 <div className="sandbox-inputs">
                     {/* Step 1: target and current grades */}
-                    <section className="sandbox-card sandbox-summary" aria-labelledby="sandbox-step-target">
+                    <section
+                        className="sandbox-card sandbox-summary"
+                        aria-labelledby="sandbox-step-target"
+                    >
                         <div className="sandbox-target">
                             <h2 className="sandbox-step" id="sandbox-step-target">
                                 <span aria-hidden="true">1</span> Set your {termLabel} target
@@ -258,7 +285,9 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                     step="any"
                                     value={targetInput ?? String(target)}
                                     aria-invalid={Boolean(targetError)}
-                                    aria-describedby={targetError ? "sandbox-target-error" : "sandbox-target-hint"}
+                                    aria-describedby={
+                                        targetError ? "sandbox-target-error" : "sandbox-target-hint"
+                                    }
                                     onChange={(event) => {
                                         setTargetInput(event.target.value);
                                         setTargetError("");
@@ -271,26 +300,48 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                 <span aria-hidden="true">%</span>
                             </label>
                             {targetError ? (
-                                <small id="sandbox-target-error" className="sandbox-error" role="alert">
+                                <small
+                                    id="sandbox-target-error"
+                                    className="sandbox-error"
+                                    role="alert"
+                                >
                                     {targetError}
                                 </small>
                             ) : (
-                                <small id="sandbox-target-hint">Yellow marker shows your target</small>
+                                <small id="sandbox-target-hint">
+                                    Yellow marker shows your target
+                                </small>
                             )}
                         </div>
                         <div className="sandbox-gauges">
-                            <Gauge label={`${termLabel} official`} grade={officialGrade} target={target} className="official-gauge" />
-                            <Gauge label={`${termLabel} expected`} grade={expectedGrade} target={target} className="expected-gauge" />
+                            <Gauge
+                                label={`${termLabel} official`}
+                                grade={officialGrade}
+                                target={target}
+                                className="official-gauge"
+                            />
+                            <Gauge
+                                label={`${termLabel} expected`}
+                                grade={expectedGrade}
+                                target={target}
+                                className="expected-gauge"
+                            />
                         </div>
                     </section>
 
                     {/* The plan as a chart: always shown. */}
-                    <section className="sandbox-card sandbox-chart-card" id="sandbox-chart" aria-labelledby="sandbox-chart-title">
-                        <h2 className="sandbox-step" id="sandbox-chart-title">Your plan on a chart</h2>
+                    <section
+                        className="sandbox-card sandbox-chart-card"
+                        id="sandbox-chart"
+                        aria-labelledby="sandbox-chart-title"
+                    >
+                        <h2 className="sandbox-step" id="sandbox-chart-title">
+                            Your plan on a chart
+                        </h2>
                         <p className="sandbox-help">
-                            Solid line: your {termLabel} grade so far. Dotted line: each remaining task at the
-                            score in your result. The order of upcoming tasks is a guess, so the end point is
-                            what matters.
+                            Solid line: your {termLabel} grade so far. Dotted line: each remaining
+                            task at the score in your result. The order of upcoming tasks is a
+                            guess, so the end point is what matters.
                         </p>
                         <HistoryChart
                             points={historyPoints}
@@ -306,14 +357,17 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* Step 2: remaining tasks per criterion */}
-                    <section className="sandbox-card sandbox-remaining-card" aria-labelledby="sandbox-step-remaining">
+                    <section
+                        className="sandbox-card sandbox-remaining-card"
+                        aria-labelledby="sandbox-step-remaining"
+                    >
                         <h2 className="sandbox-step" id="sandbox-step-remaining">
                             <span aria-hidden="true">2</span> Tell us what is left
                         </h2>
                         <p className="sandbox-help">
-                            For each criterion, count the tasks you still expect this term.
-                            If you already know how you will do on one (for example the exam),
-                            enter an expected %. Leave it empty and the sandbox works it out.
+                            For each criterion, count the tasks you still expect this term. If you
+                            already know how you will do on one (for example the exam), enter an
+                            expected %. Leave it empty and the sandbox works it out.
                         </p>
                         <div className="sandbox-table-scroll">
                             <table className="sandbox-table">
@@ -328,18 +382,33 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                 </thead>
                                 <tbody>
                                     {plan.criteria.map((criterion) => (
-                                        <tr key={criterion.id} className={criterion.counted ? "" : "is-not-counted"}>
+                                        <tr
+                                            key={criterion.id}
+                                            className={criterion.counted ? "" : "is-not-counted"}
+                                        >
                                             <th scope="row">
-                                                <span className="sandbox-criterion-name">{criterion.path.join(" › ")}</span>
-                                                <small>{formatPercent(Math.round(criterion.weight * 10000))} of the term</small>
+                                                <span className="sandbox-criterion-name">
+                                                    {criterion.path.join(" › ")}
+                                                </span>
+                                                <small>
+                                                    {formatPercent(
+                                                        Math.round(criterion.weight * 10000),
+                                                    )}{" "}
+                                                    of the term
+                                                </small>
                                             </th>
                                             <td className="sandbox-cell-scored">
                                                 {criterion.scoredCount === 0 ? (
                                                     <span className="sandbox-muted">None yet</span>
                                                 ) : (
                                                     <>
-                                                        <span>{formatGrade(criterion.scoredAverage)}</span>
-                                                        <small>average of {pluralTasks(criterion.scoredCount)}</small>
+                                                        <span>
+                                                            {formatGrade(criterion.scoredAverage)}
+                                                        </span>
+                                                        <small>
+                                                            average of{" "}
+                                                            {pluralTasks(criterion.scoredCount)}
+                                                        </small>
                                                     </>
                                                 )}
                                             </td>
@@ -352,12 +421,27 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                     step="1"
                                                     value={criterion.upcoming}
                                                     aria-label={`Upcoming ${criterion.name} tasks not added yet`}
-                                                    onChange={(event) => saveCriterion(criterion.id, {
-                                                        upcoming: Math.max(0, Math.min(MAX_UPCOMING, Math.round(Number(event.target.value) || 0))),
-                                                    })}
+                                                    onChange={(event) =>
+                                                        saveCriterion(criterion.id, {
+                                                            upcoming: Math.max(
+                                                                0,
+                                                                Math.min(
+                                                                    MAX_UPCOMING,
+                                                                    Math.round(
+                                                                        Number(
+                                                                            event.target.value,
+                                                                        ) || 0,
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        })
+                                                    }
                                                 />
                                                 {criterion.openTasks > 0 && (
-                                                    <small>+ {criterion.openTasks} added without a score</small>
+                                                    <small>
+                                                        + {criterion.openTasks} added without a
+                                                        score
+                                                    </small>
                                                 )}
                                             </td>
                                             <td className="sandbox-cell-expected">
@@ -375,9 +459,14 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                             const raw = event.target.value;
                                                             const value = Number(raw);
                                                             saveCriterion(criterion.id, {
-                                                                expected: raw === "" || !Number.isFinite(value)
-                                                                    ? null
-                                                                    : Math.max(0, Math.min(100, value)),
+                                                                expected:
+                                                                    raw === "" ||
+                                                                    !Number.isFinite(value)
+                                                                        ? null
+                                                                        : Math.max(
+                                                                              0,
+                                                                              Math.min(100, value),
+                                                                          ),
                                                             });
                                                         }}
                                                     />
@@ -386,13 +475,19 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                             </td>
                                             <td className="sandbox-need">
                                                 {!criterion.counted ? (
-                                                    <span className="sandbox-muted">Not counted (no tasks)</span>
+                                                    <span className="sandbox-muted">
+                                                        Not counted (no tasks)
+                                                    </span>
                                                 ) : criterion.slots === 0 ? (
                                                     <span className="sandbox-muted">Done</span>
                                                 ) : criterion.usesRequired ? (
                                                     <strong>
-                                                        {suggestion === null ? "—" : formatGrade(suggestion)}
-                                                        <small>each · {pluralTasks(criterion.slots)}</small>
+                                                        {suggestion === null
+                                                            ? "—"
+                                                            : formatGrade(suggestion)}
+                                                        <small>
+                                                            each · {pluralTasks(criterion.slots)}
+                                                        </small>
                                                     </strong>
                                                 ) : (
                                                     <span>
@@ -409,67 +504,102 @@ export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* Step 3: try draft scores on tasks already added */}
-                    <section className="sandbox-card sandbox-drafts-card" aria-labelledby="sandbox-step-drafts">
+                    <section
+                        className="sandbox-card sandbox-drafts-card"
+                        aria-labelledby="sandbox-step-drafts"
+                    >
                         <h2 className="sandbox-step" id="sandbox-step-drafts">
                             <span aria-hidden="true">3</span> Try draft scores (optional)
                         </h2>
                         <p className="sandbox-help">
-                            Type a score on a task you have already added. The grey number is
-                            the score that matches your result. Official scores are locked.
+                            Type a score on a task you have already added. The grey number is the
+                            score that matches your result. Official scores are locked.
                         </p>
                         {draftCriteria.length === 0 ? (
                             <p className="sandbox-muted">No tasks added for {termLabel} yet.</p>
-                        ) : draftCriteria.map((criterion) => (
-                            <div className="sandbox-draft-group" key={criterion.id}>
-                                <h3>{criterion.path.join(" › ")}</h3>
-                                {criterion.tasks.map(({ task }, index) => {
-                                    const label = task.title || `${criterion.name} ${index + 1}`;
-                                    const hasOfficial = task.officialScore !== null &&
-                                        task.officialScore !== undefined && task.officialScore !== "";
-                                    const placeholder = criterion.usesRequired
-                                        ? requiredScore(suggestion, task.maxScore ?? 100)
-                                        : requiredScore(criterion.expected, task.maxScore ?? 100);
-                                    return (
-                                        <label className="sandbox-draft" key={task.id ?? index} data-task-id={task.id}>
-                                            <span className="sandbox-draft-name">
-                                                {label}
-                                                {task.description && <small>{task.description}</small>}
-                                            </span>
-                                            {hasOfficial ? (
-                                                <span className="sandbox-draft-locked">
-                                                    {task.officialScore} / {task.maxScore ?? 100}
-                                                    <small>official</small>
+                        ) : (
+                            draftCriteria.map((criterion) => (
+                                <div className="sandbox-draft-group" key={criterion.id}>
+                                    <h3>{criterion.path.join(" › ")}</h3>
+                                    {criterion.tasks.map(({ task }, index) => {
+                                        const label =
+                                            task.title || `${criterion.name} ${index + 1}`;
+                                        const hasOfficial =
+                                            task.officialScore !== null &&
+                                            task.officialScore !== undefined &&
+                                            task.officialScore !== "";
+                                        const placeholder = criterion.usesRequired
+                                            ? requiredScore(suggestion, task.maxScore ?? 100)
+                                            : requiredScore(
+                                                  criterion.expected,
+                                                  task.maxScore ?? 100,
+                                              );
+                                        return (
+                                            <label
+                                                className="sandbox-draft"
+                                                key={task.id ?? index}
+                                                data-task-id={task.id}
+                                            >
+                                                <span className="sandbox-draft-name">
+                                                    {label}
+                                                    {task.description && (
+                                                        <small>{task.description}</small>
+                                                    )}
                                                 </span>
-                                            ) : (
-                                                <span className="sandbox-draft-input">
-                                                    <input
-                                                        type="text"
-                                                        inputMode="decimal"
-                                                        value={task.studentReportedScore ?? ""}
-                                                        aria-invalid={invalidScoreId === task.id}
-                                                        placeholder={placeholder === null ? "—" : String(placeholder)}
-                                                        onChange={(event) => saveDraftScore(criterion.id, task, event.target.value)}
-                                                        aria-label={`Draft score for ${label}`}
-                                                    />
-                                                    <span>/ {task.maxScore ?? 100}</span>
-                                                </span>
-                                            )}
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                        ))}
-                        {saveError && <p className="sandbox-error" role="alert">{saveError}</p>}
+                                                {hasOfficial ? (
+                                                    <span className="sandbox-draft-locked">
+                                                        {task.officialScore} /{" "}
+                                                        {task.maxScore ?? 100}
+                                                        <small>official</small>
+                                                    </span>
+                                                ) : (
+                                                    <span className="sandbox-draft-input">
+                                                        <input
+                                                            type="text"
+                                                            inputMode="decimal"
+                                                            value={task.studentReportedScore ?? ""}
+                                                            aria-invalid={
+                                                                invalidScoreId === task.id
+                                                            }
+                                                            placeholder={
+                                                                placeholder === null
+                                                                    ? "—"
+                                                                    : String(placeholder)
+                                                            }
+                                                            onChange={(event) =>
+                                                                saveDraftScore(
+                                                                    criterion.id,
+                                                                    task,
+                                                                    event.target.value,
+                                                                )
+                                                            }
+                                                            aria-label={`Draft score for ${label}`}
+                                                        />
+                                                        <span>/ {task.maxScore ?? 100}</span>
+                                                    </span>
+                                                )}
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                            ))
+                        )}
+                        {saveError && (
+                            <p className="sandbox-error" role="alert">
+                                {saveError}
+                            </p>
+                        )}
                     </section>
 
                     <details className="sandbox-card sandbox-how">
                         <summary>How this is calculated</summary>
                         <p>
-                            Each criterion&apos;s grade is the average of its task percentages, weighted by
-                            your grading rule. Scored tasks stay as they are (official scores first, then
-                            your own). Every remaining task without an expected % gets the same score, and
-                            the sandbox finds the lowest score that reaches your target. Criteria with no
-                            tasks are left out until you add some. Nothing here changes official records.
+                            Each criterion&apos;s grade is the average of its task percentages,
+                            weighted by your grading rule. Scored tasks stay as they are (official
+                            scores first, then your own). Every remaining task without an expected %
+                            gets the same score, and the sandbox finds the lowest score that reaches
+                            your target. Criteria with no tasks are left out until you add some.
+                            Nothing here changes official records.
                         </p>
                     </details>
                 </div>

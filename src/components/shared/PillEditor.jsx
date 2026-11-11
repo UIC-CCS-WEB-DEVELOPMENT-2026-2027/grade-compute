@@ -34,9 +34,9 @@ export default function PillEditor({ tree, onChange, structureLocked = true }) {
                 />
             ))}
             <p className="pill-hint">
-                Type a percentage or drag a handle. The difference comes from the
-                criterion on the right, or from the left for the last one. Hover
-                over, tap, or tab to a parent name to see its full breakdown.
+                Type a percentage or drag a handle. The difference comes from the criterion on the
+                right, or from the left for the last one. Hover over, tap, or tab to a parent name
+                to see its full breakdown.
             </p>
         </div>
     );

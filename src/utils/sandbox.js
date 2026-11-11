@@ -61,7 +61,9 @@ export function getSandboxTarget(studentRecord, termKey) {
         termConfig.desiredFinalGrade,
         config.sandboxDesiredFinalGrade,
         config.desiredFinalGrade,
-    ].map(toNumber).find((value) => value !== null && value >= 0 && value <= 100);
+    ]
+        .map(toNumber)
+        .find((value) => value !== null && value >= 0 && value <= 100);
     return target ?? DEFAULT_TARGET;
 }
 
@@ -95,11 +97,19 @@ export function getCriterionSettings(studentRecord, termKey, criterionId, taskCo
 //   "reached"    - the target is reached even with 0% on the remaining tasks
 //   "complete"   - no task uses the required value (all scored or expected)
 //   "empty"      - nothing to plan yet (no tasks and no upcoming tasks)
-export function getSandboxPlan(studentRecord, rule, termKey, target = getSandboxTarget(studentRecord, termKey)) {
+export function getSandboxPlan(
+    studentRecord,
+    rule,
+    termKey,
+    target = getSandboxTarget(studentRecord, termKey),
+) {
     const termGrades = studentRecord?.grades?.[termKey] ?? {};
 
     const criteria = getRuleLeaves(rule).map((leaf) => {
-        const tasks = toTaskList(termGrades[leaf.id]).map((task) => ({ task, percent: taskPercent(task) }));
+        const tasks = toTaskList(termGrades[leaf.id]).map((task) => ({
+            task,
+            percent: taskPercent(task),
+        }));
         const scored = tasks.filter((item) => item.percent !== null);
         const settings = getCriterionSettings(studentRecord, termKey, leaf.id, tasks.length);
         const openTasks = tasks.length - scored.length;
@@ -124,7 +134,9 @@ export function getSandboxPlan(studentRecord, rule, termKey, target = getSandbox
             usesRequired,
             counted: total > 0 && weight > 0,
             // grade = fixedPart + requiredPart * R (both over this criterion's tasks)
-            fixedPart: total ? (scoredSum + (usesRequired ? 0 : slots * (settings.expected ?? 0))) / total : 0,
+            fixedPart: total
+                ? (scoredSum + (usesRequired ? 0 : slots * (settings.expected ?? 0))) / total
+                : 0,
             requiredPart: total && usesRequired ? slots / total : 0,
         };
     });

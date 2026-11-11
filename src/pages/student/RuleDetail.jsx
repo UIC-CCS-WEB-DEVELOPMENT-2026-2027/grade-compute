@@ -76,7 +76,9 @@ function RuleDetail({ ruleId }) {
                 <div className="rules-main">
                     <Header />
                     <main className="rules-content">
-                        <Link className="rule-back" to="/student/rules">← All rules</Link>
+                        <Link className="rule-back" to="/student/rules">
+                            ← All rules
+                        </Link>
                         <h1>Rule not found</h1>
                         <p>This rule may have been deleted. Go back to see all rules.</p>
                     </main>
@@ -166,7 +168,7 @@ function RuleDetail({ ruleId }) {
         const sameName = details.ruleName.trim().toLowerCase() === rule.ruleName.toLowerCase();
         saveNewRule(
             sameName ? getCopyName(dbData, rule.ruleName) : details.ruleName,
-            "Your changes were successfully saved as a new rule."
+            "Your changes were successfully saved as a new rule.",
         );
     }
 
@@ -208,7 +210,7 @@ function RuleDetail({ ruleId }) {
         setDetails((current) =>
             current.schools.some((item) => item.toLowerCase() === school.toLowerCase())
                 ? current
-                : { ...current, schools: [...current.schools, school] }
+                : { ...current, schools: [...current.schools, school] },
         );
         setSchoolInput("");
     }
@@ -250,8 +252,8 @@ function RuleDetail({ ruleId }) {
                                 {isNew
                                     ? "Split the grade into criteria, then save the rule to use it for your subjects."
                                     : subjectCount === 0
-                                        ? "Not used by any subject yet."
-                                        : `Used by ${usage.classes.map((item) => item.subjectCode).join(", ")}.`}
+                                      ? "Not used by any subject yet."
+                                      : `Used by ${usage.classes.map((item) => item.subjectCode).join(", ")}.`}
                             </p>
                         </div>
                         {!isNew && (
@@ -276,10 +278,18 @@ function RuleDetail({ ruleId }) {
                                         Edit
                                     </button>
                                 )}
-                                <button type="button" className="btn-secondary" onClick={handleDuplicate}>
+                                <button
+                                    type="button"
+                                    className="btn-secondary"
+                                    onClick={handleDuplicate}
+                                >
                                     Duplicate
                                 </button>
-                                <button type="button" className="btn-secondary is-danger" onClick={() => setShowDelete(true)}>
+                                <button
+                                    type="button"
+                                    className="btn-secondary is-danger"
+                                    onClick={() => setShowDelete(true)}
+                                >
                                     Delete
                                 </button>
                             </div>
@@ -300,25 +310,32 @@ function RuleDetail({ ruleId }) {
                                     <input
                                         value={details.ruleName}
                                         onChange={(event) =>
-                                            setDetails((current) => ({ ...current, ruleName: event.target.value }))
+                                            setDetails((current) => ({
+                                                ...current,
+                                                ruleName: event.target.value,
+                                            }))
                                         }
                                         placeholder="e.g. Standard IT Rule (70/30)"
                                         aria-invalid={Boolean(errors.ruleName)}
-                                        aria-describedby={errors.ruleName ? "rule-name-error" : undefined}
+                                        aria-describedby={
+                                            errors.ruleName ? "rule-name-error" : undefined
+                                        }
                                     />
                                 ) : (
                                     <span className="rule-readonly-value">{details.ruleName}</span>
                                 )}
                                 {errors.ruleName && (
-                                    <small id="rule-name-error" className="rule-field-error">{errors.ruleName}</small>
+                                    <small id="rule-name-error" className="rule-field-error">
+                                        {errors.ruleName}
+                                    </small>
                                 )}
                             </label>
 
                             <fieldset className="rule-field">
                                 <legend>Tags</legend>
                                 <div className="rule-tag-options">
-                                    {isEditing
-                                        ? DEFAULT_TAGS.map((tag) => (
+                                    {isEditing ? (
+                                        DEFAULT_TAGS.map((tag) => (
                                             <label key={tag} className="rule-tag-option">
                                                 <input
                                                     type="checkbox"
@@ -328,11 +345,15 @@ function RuleDetail({ ruleId }) {
                                                 {tag}
                                             </label>
                                         ))
-                                        : details.tags.length > 0
-                                            ? details.tags.map((tag) => (
-                                                <span key={tag} className="rule-tag-option is-readonly">{tag}</span>
-                                            ))
-                                            : <span className="rule-readonly-value">No tags</span>}
+                                    ) : details.tags.length > 0 ? (
+                                        details.tags.map((tag) => (
+                                            <span key={tag} className="rule-tag-option is-readonly">
+                                                {tag}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="rule-readonly-value">No tags</span>
+                                    )}
                                 </div>
                             </fieldset>
 
@@ -356,39 +377,55 @@ function RuleDetail({ ruleId }) {
                                         ))}
                                     </ul>
                                 )}
-                                {isEditing
-                                    ? (
-                                        <div className="rule-school-add">
-                                            <input
-                                                id="rule-school-input"
-                                                value={schoolInput}
-                                                onChange={(event) => setSchoolInput(event.target.value)}
-                                                onKeyDown={(event) => {
-                                                    if (event.key === "Enter") {
-                                                        event.preventDefault();
-                                                        addSchool();
-                                                    }
-                                                }}
-                                                placeholder="School name"
-                                            />
-                                            <button type="button" className="btn-secondary" onClick={addSchool}>
-                                                Add school
-                                            </button>
-                                        </div>
+                                {isEditing ? (
+                                    <div className="rule-school-add">
+                                        <input
+                                            id="rule-school-input"
+                                            value={schoolInput}
+                                            onChange={(event) => setSchoolInput(event.target.value)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Enter") {
+                                                    event.preventDefault();
+                                                    addSchool();
+                                                }
+                                            }}
+                                            placeholder="School name"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn-secondary"
+                                            onClick={addSchool}
+                                        >
+                                            Add school
+                                        </button>
+                                    </div>
+                                ) : (
+                                    details.schools.length === 0 && (
+                                        <span className="rule-readonly-value">
+                                            No schools listed
+                                        </span>
                                     )
-                                    : details.schools.length === 0 && (
-                                        <span className="rule-readonly-value">No schools listed</span>
-                                    )}
+                                )}
                             </div>
                         </div>
                     </section>
 
                     <section className="rule-section" aria-labelledby="rule-criteria-title">
                         <h2 id="rule-criteria-title">Criteria</h2>
-                        {isEditing
-                            ? <PillEditor tree={tree} onChange={handleTreeChange} structureLocked={false} />
-                            : <RuleHierarchyTable tree={tree} />}
-                        {errors.tree && <p className="rule-field-error" role="alert">{errors.tree}</p>}
+                        {isEditing ? (
+                            <PillEditor
+                                tree={tree}
+                                onChange={handleTreeChange}
+                                structureLocked={false}
+                            />
+                        ) : (
+                            <RuleHierarchyTable tree={tree} />
+                        )}
+                        {errors.tree && (
+                            <p className="rule-field-error" role="alert">
+                                {errors.tree}
+                            </p>
+                        )}
                         <RuleFormula tree={tree} />
                     </section>
 
@@ -396,7 +433,10 @@ function RuleDetail({ ruleId }) {
                         <div className="rule-section-heading">
                             <h2 id="rule-breakdown-title">Breakdown</h2>
                             <div className="rules-toggle" role="group" aria-label="Breakdown view">
-                                {[["pie", "Pie chart"], ["table", "Table"]].map(([id, label]) => (
+                                {[
+                                    ["pie", "Pie chart"],
+                                    ["table", "Table"],
+                                ].map(([id, label]) => (
                                     <button
                                         key={id}
                                         type="button"
@@ -408,17 +448,25 @@ function RuleDetail({ ruleId }) {
                                 ))}
                             </div>
                         </div>
-                        {view === "pie"
-                            ? <RulePieChart tree={tree} size={240} showLegend />
-                            : <RuleHierarchyTable tree={tree} />}
+                        {view === "pie" ? (
+                            <RulePieChart tree={tree} size={240} showLegend />
+                        ) : (
+                            <RuleHierarchyTable tree={tree} />
+                        )}
                     </section>
 
                     {hasEdits && (
                         <div className="rule-savebar">
-                            <p role="status">{status || (!isNew ? "You have unsaved changes." : "")}</p>
+                            <p role="status">
+                                {status || (!isNew ? "You have unsaved changes." : "")}
+                            </p>
                             <div>
                                 {!isNew && (
-                                    <button type="button" className="btn-secondary" onClick={handleDiscard}>
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        onClick={handleDiscard}
+                                    >
                                         Discard changes
                                     </button>
                                 )}
@@ -461,20 +509,36 @@ function RuleDetail({ ruleId }) {
                     onClose={() => setPendingImpact(null)}
                     actions={
                         <>
-                            <button type="button" className="rule-impact-cancel" onClick={() => setPendingImpact(null)}>
+                            <button
+                                type="button"
+                                className="rule-impact-cancel"
+                                onClick={() => setPendingImpact(null)}
+                            >
                                 Cancel
                             </button>
                             {pendingImpact.classes.length > 0 ? (
                                 <>
-                                    <button type="button" className="rule-impact-new" onClick={handleSaveAsNew}>
+                                    <button
+                                        type="button"
+                                        className="rule-impact-new"
+                                        onClick={handleSaveAsNew}
+                                    >
                                         Save as new rule
                                     </button>
-                                    <button type="button" className="rule-impact-confirm" onClick={applyUpdate}>
+                                    <button
+                                        type="button"
+                                        className="rule-impact-confirm"
+                                        onClick={applyUpdate}
+                                    >
                                         Update anyway
                                     </button>
                                 </>
                             ) : (
-                                <button type="button" className="rule-impact-confirm" onClick={applyUpdate}>
+                                <button
+                                    type="button"
+                                    className="rule-impact-confirm"
+                                    onClick={applyUpdate}
+                                >
                                     Save changes
                                 </button>
                             )}
@@ -485,8 +549,8 @@ function RuleDetail({ ruleId }) {
                         <>
                             <p className="rule-impact-description">
                                 This rule is used by {pendingImpact.classes.length} subject
-                                {pendingImpact.classes.length === 1 ? "" : "s"}. Updating it recalculates
-                                their grades using the new rule:
+                                {pendingImpact.classes.length === 1 ? "" : "s"}. Updating it
+                                recalculates their grades using the new rule:
                             </p>
                             <ul className="rule-impact-subjects">
                                 {pendingImpact.classes.map((item) => (
@@ -510,8 +574,11 @@ function RuleDetail({ ruleId }) {
                             {pendingImpact.lostTaskCount} recorded task
                             {pendingImpact.lostTaskCount === 1 ? "" : "s"} in{" "}
                             {pendingImpact.lostTasks.map((item) => item.name).join(", ")} will stop
-                            counting, because {pendingImpact.lostTasks.length === 1 ? "that criterion was" : "those criteria were"} removed.
-                            The tasks stay saved.
+                            counting, because{" "}
+                            {pendingImpact.lostTasks.length === 1
+                                ? "that criterion was"
+                                : "those criteria were"}{" "}
+                            removed. The tasks stay saved.
                         </p>
                     )}
                     {pendingImpact.classes.length > 0 && (

@@ -25,7 +25,7 @@ export function getActiveStudentId(db) {
 // The signed-in user's record from the database, or null.
 export function getActiveUser(db) {
     const id = readStoredUserId();
-    return id ? db?.users?.find((item) => item.id === id) ?? null : null;
+    return id ? (db?.users?.find((item) => item.id === id) ?? null) : null;
 }
 
 export function signOut() {

@@ -114,7 +114,7 @@
 
 .pill-row {
     --pill-height: 52px;
-    --pill-gap: 18px;            /* space between sections, where the handle sits */
+    --pill-gap: 18px; /* space between sections, where the handle sits */
     --pill-handle-width: 8px;
 }
 
@@ -180,7 +180,10 @@
     background: var(--color-primary);
     cursor: ew-resize;
     touch-action: none;
-    transition: width 0.15s ease, right 0.15s ease, background-color 0.15s ease;
+    transition:
+        width 0.15s ease,
+        right 0.15s ease,
+        background-color 0.15s ease;
 }
 
 .pill-handle::before {

@@ -96,7 +96,9 @@
     color: var(--color-muted);
     font-size: 0.85rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .enrolled-tab.active {

@@ -1,4 +1,3 @@
-
 /* CURRENT TERM RECORDS */
 
 .current-term-records {
@@ -448,7 +447,9 @@
     font-weight: 700;
     line-height: 1.4;
     cursor: pointer;
-    transition: color 0.18s ease, background-color 0.18s ease;
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease;
 }
 
 .breakdown-button:hover,

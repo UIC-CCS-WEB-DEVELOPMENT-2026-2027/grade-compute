@@ -88,7 +88,9 @@
     background: #fffdf5;
     color: var(--color-text-locked);
     text-decoration: none;
-    transition: border-color 0.18s ease, background-color 0.18s ease;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease;
 }
 
 .sandbox-picker-text {
@@ -143,7 +145,10 @@
     font-size: 12px;
     font-weight: 500;
     text-decoration: none;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
 }
 
 .sandbox-picker-option:hover,
@@ -170,7 +175,10 @@
     border-radius: 8px;
     background: var(--color-surface);
     color: var(--color-muted);
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
 }
 
 .sandbox-picker-cancel:hover,

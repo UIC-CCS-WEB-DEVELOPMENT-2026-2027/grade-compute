@@ -13,7 +13,12 @@ function formatGrade(grade) {
 // currentClassId: the subject the student is viewing, listed first.
 // termKey: term to open, e.g. "midterm" (optional).
 // onClose(): closes the picker.
-export default function SandboxSubjectPicker({ subjects, currentClassId = null, termKey = null, onClose }) {
+export default function SandboxSubjectPicker({
+    subjects,
+    currentClassId = null,
+    termKey = null,
+    onClose,
+}) {
     const ordered = [
         ...subjects.filter((row) => row.classId === currentClassId),
         ...subjects.filter((row) => row.classId !== currentClassId),
@@ -41,7 +46,11 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
             </p>
             {ordered.length === 0 ? (
                 <p>
-                    You have no subjects yet. <Link to="/student/subject" onClick={onClose}>Add a subject</Link> first.
+                    You have no subjects yet.{" "}
+                    <Link to="/student/subject" onClick={onClose}>
+                        Add a subject
+                    </Link>{" "}
+                    first.
                 </p>
             ) : (
                 <ul className="sandbox-picker-list">
@@ -57,7 +66,9 @@ export default function SandboxSubjectPicker({ subjects, currentClassId = null, 
                                     <span className="sandbox-picker-code">
                                         {row.subjectCode}
                                         {row.classId === currentClassId && (
-                                            <span className="sandbox-picker-current">Viewing now</span>
+                                            <span className="sandbox-picker-current">
+                                                Viewing now
+                                            </span>
                                         )}
                                     </span>
                                     <span className="sandbox-picker-name">{row.subjectName}</span>

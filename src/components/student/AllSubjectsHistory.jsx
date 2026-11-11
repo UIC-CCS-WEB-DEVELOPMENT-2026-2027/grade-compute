@@ -37,27 +37,45 @@ function formatGrade(value) {
 // One subject's dot. Hovering it shows a tooltip for this point only;
 // clicking opens the task.
 function SubjectDot({ cx, cy, payload, course, reached, surface, success, onSelect, hover }) {
-    if (cx === undefined || cy === undefined || payload?.grade === null || payload?.grade === undefined) return null;
+    if (
+        cx === undefined ||
+        cy === undefined ||
+        payload?.grade === null ||
+        payload?.grade === undefined
+    )
+        return null;
     const key = `${course.classId}-${payload.step}`;
     return (
         <g className="history-dot is-clickable">
-            {reached && <circle cx={cx} cy={cy} r={9} fill="none" stroke={success} strokeWidth={2} />}
+            {reached && (
+                <circle cx={cx} cy={cy} r={9} fill="none" stroke={success} strokeWidth={2} />
+            )}
             {payload.isOfficial ? (
                 <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={course.color} />
             ) : (
-                <circle className="history-dot-mark" cx={cx} cy={cy} r={4} fill={surface} stroke={course.color} strokeWidth={2} />
+                <circle
+                    className="history-dot-mark"
+                    cx={cx}
+                    cy={cy}
+                    r={4}
+                    fill={surface}
+                    stroke={course.color}
+                    strokeWidth={2}
+                />
             )}
             <circle
                 cx={cx}
                 cy={cy}
                 r={11}
                 fill="transparent"
-                onMouseEnter={(event) => hover.show(event, key, {
-                    point: payload,
-                    kind: "real",
-                    seriesName: `${course.subjectCode} · target ${course.target}%`,
-                    color: course.color,
-                })}
+                onMouseEnter={(event) =>
+                    hover.show(event, key, {
+                        point: payload,
+                        kind: "real",
+                        seriesName: `${course.subjectCode} · target ${course.target}%`,
+                        color: course.color,
+                    })
+                }
                 onMouseLeave={() => hover.hide(key)}
                 onClick={() => onSelect(payload)}
             />
@@ -76,8 +94,10 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
     const [hiddenIds, setHiddenIds] = useState(() => new Set());
     const termLabel = getTermLabel(termKey);
 
-    const courses = getCoursesHistory(db, studentId, termKey, semesterId)
-        .map((course, index) => ({ ...course, color: lineColor(index) }));
+    const courses = getCoursesHistory(db, studentId, termKey, semesterId).map((course, index) => ({
+        ...course,
+        color: lineColor(index),
+    }));
     const visible = courses.filter((course) => !hiddenIds.has(course.classId));
     const plotted = visible.filter((course) => course.points.length > 0);
     const scale = getChartScale(
@@ -86,7 +106,7 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
             ...plotted.map((course) => course.target),
             PASSING_GRADE,
         ],
-        Math.max(1, ...plotted.map((course) => course.points.length))
+        Math.max(1, ...plotted.map((course) => course.points.length)),
     );
     const colors = {
         grid: resolveColor("var(--color-border)"),
@@ -117,8 +137,8 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                 <div>
                     <h2 id="all-history-title">{termLabel} Grade History</h2>
                     <p>
-                        Each subject&apos;s {termLabel} grade after every scored task. Dashed lines are
-                        targets in the subject&apos;s color. Click a point to open that task.
+                        Each subject&apos;s {termLabel} grade after every scored task. Dashed lines
+                        are targets in the subject&apos;s color. Click a point to open that task.
                     </p>
                 </div>
                 <div className="history-scope" role="group" aria-label="Term shown">
@@ -136,15 +156,25 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
             </div>
 
             {courses.length === 0 ? (
-                <p className="history-empty">Add a subject below and its grade history will show here.</p>
+                <p className="history-empty">
+                    Add a subject below and its grade history will show here.
+                </p>
             ) : (
                 <div className="history-chart">
-                    <div className="history-filter" role="group" aria-label="Subjects shown in the chart">
+                    <div
+                        className="history-filter"
+                        role="group"
+                        aria-label="Subjects shown in the chart"
+                    >
                         <button
                             type="button"
                             className="history-chip history-chip-all"
                             onClick={() =>
-                                setHiddenIds(allShown ? new Set(courses.map((course) => course.classId)) : new Set())
+                                setHiddenIds(
+                                    allShown
+                                        ? new Set(courses.map((course) => course.classId))
+                                        : new Set(),
+                                )
                             }
                         >
                             {allShown ? "Hide all" : "Show all"}
@@ -163,7 +193,9 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                 <small>
                                     {course.points.length === 0
                                         ? "no scores"
-                                        : course.reachedIndex >= 0 ? "target reached" : `target ${course.target}%`}
+                                        : course.reachedIndex >= 0
+                                          ? "target reached"
+                                          : `target ${course.target}%`}
                                 </small>
                             </button>
                         ))}
@@ -181,7 +213,10 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                             ref={plotRef}
                             role="img"
                             aria-label={`${termLabel} grade after each task for ${plotted
-                                .map((course) => `${course.subjectCode} (latest ${formatGrade(course.points.at(-1).grade)}, target ${course.target}%)`)
+                                .map(
+                                    (course) =>
+                                        `${course.subjectCode} (latest ${formatGrade(course.points.at(-1).grade)}, target ${course.target}%)`,
+                                )
                                 .join(", ")}. The same data is in the table below.`}
                         >
                             <ResponsiveContainer width="100%" height={320}>
@@ -196,7 +231,13 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                         allowDuplicatedCategory={false}
                                         tick={{ fill: colors.muted, fontSize: 12 }}
                                         stroke={colors.grid}
-                                        label={{ value: "Tasks", position: "insideBottomRight", offset: -4, fill: colors.muted, fontSize: 12 }}
+                                        label={{
+                                            value: "Tasks",
+                                            position: "insideBottomRight",
+                                            offset: -4,
+                                            fill: colors.muted,
+                                            fontSize: 12,
+                                        }}
                                     />
                                     <YAxis
                                         domain={scale.yDomain}
@@ -212,7 +253,12 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                         stroke={colors.passing}
                                         strokeDasharray="2 4"
                                         strokeWidth={1.5}
-                                        label={{ value: `Passing ${PASSING_GRADE}%`, position: "insideBottomLeft", fill: colors.passing, fontSize: 11 }}
+                                        label={{
+                                            value: `Passing ${PASSING_GRADE}%`,
+                                            position: "insideBottomLeft",
+                                            fill: colors.passing,
+                                            fontSize: 11,
+                                        }}
                                     />
                                     {plotted.map((course) => (
                                         <ReferenceLine
@@ -224,7 +270,10 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                         />
                                     ))}
                                     {plotted.map((course) => {
-                                        const reachedStep = course.reachedIndex >= 0 ? course.points[course.reachedIndex].step : null;
+                                        const reachedStep =
+                                            course.reachedIndex >= 0
+                                                ? course.points[course.reachedIndex].step
+                                                : null;
                                         const dotProps = {
                                             course,
                                             surface: colors.surface,
@@ -242,7 +291,14 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                                                 stroke={course.color}
                                                 strokeWidth={2.5}
                                                 dot={(props) => (
-                                                    <SubjectDot key={`${course.classId}-${props.index}`} {...props} {...dotProps} reached={props.payload?.step === reachedStep} />
+                                                    <SubjectDot
+                                                        key={`${course.classId}-${props.index}`}
+                                                        {...props}
+                                                        {...dotProps}
+                                                        reached={
+                                                            props.payload?.step === reachedStep
+                                                        }
+                                                    />
                                                 )}
                                                 activeDot={false}
                                                 isAnimationActive={false}
@@ -257,43 +313,69 @@ export default function AllSubjectsHistory({ db, studentId, semesterId, initialT
                     )}
 
                     <p className="history-legend">
-                        <span><i className="is-line" aria-hidden="true" /> Grade so far (filled dot: official, hollow: yours)</span>
-                        <span><i className="is-target" aria-hidden="true" /> Target, in the subject&apos;s color</span>
-                        <span><i className="is-passing" aria-hidden="true" /> Passing grade</span>
-                        <span><i className="is-reached" aria-hidden="true" /> Target reached</span>
+                        <span>
+                            <i className="is-line" aria-hidden="true" /> Grade so far (filled dot:
+                            official, hollow: yours)
+                        </span>
+                        <span>
+                            <i className="is-target" aria-hidden="true" /> Target, in the
+                            subject&apos;s color
+                        </span>
+                        <span>
+                            <i className="is-passing" aria-hidden="true" /> Passing grade
+                        </span>
+                        <span>
+                            <i className="is-reached" aria-hidden="true" /> Target reached
+                        </span>
                     </p>
 
                     <details className="history-table">
                         <summary>Show as a table</summary>
-                        {visible.filter((course) => course.points.length > 0).map((course) => (
-                            <table key={course.classId}>
-                                <caption>{course.subjectCode} {course.subjectName} · target {course.target}%</caption>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Step</th>
-                                        <th scope="col">Task</th>
-                                        <th scope="col">Score</th>
-                                        <th scope="col">Grade so far</th>
-                                        <th scope="col"><span className="history-sr-only">Open task</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {course.points.map((point) => (
-                                        <tr key={point.step}>
-                                            <td>{point.step}</td>
-                                            <td>{point.criterionName} · {point.label}</td>
-                                            <td>{point.percent.toFixed(1)}% {point.isOfficial ? "(official)" : "(yours)"}</td>
-                                            <td>{formatGrade(point.grade)}</td>
-                                            <td>
-                                                <button type="button" className="history-table-link" onClick={() => openTask(course, point)}>
-                                                    Open task
-                                                </button>
-                                            </td>
+                        {visible
+                            .filter((course) => course.points.length > 0)
+                            .map((course) => (
+                                <table key={course.classId}>
+                                    <caption>
+                                        {course.subjectCode} {course.subjectName} · target{" "}
+                                        {course.target}%
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Step</th>
+                                            <th scope="col">Task</th>
+                                            <th scope="col">Score</th>
+                                            <th scope="col">Grade so far</th>
+                                            <th scope="col">
+                                                <span className="history-sr-only">Open task</span>
+                                            </th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        ))}
+                                    </thead>
+                                    <tbody>
+                                        {course.points.map((point) => (
+                                            <tr key={point.step}>
+                                                <td>{point.step}</td>
+                                                <td>
+                                                    {point.criterionName} · {point.label}
+                                                </td>
+                                                <td>
+                                                    {point.percent.toFixed(1)}%{" "}
+                                                    {point.isOfficial ? "(official)" : "(yours)"}
+                                                </td>
+                                                <td>{formatGrade(point.grade)}</td>
+                                                <td>
+                                                    <button
+                                                        type="button"
+                                                        className="history-table-link"
+                                                        onClick={() => openTask(course, point)}
+                                                    >
+                                                        Open task
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ))}
                     </details>
                 </div>
             )}

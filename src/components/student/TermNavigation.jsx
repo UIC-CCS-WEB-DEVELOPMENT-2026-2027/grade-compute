@@ -9,7 +9,13 @@ import "./TermNavigation.css";
 // onTermChange(termKey): called when a term button is pressed.
 // action: optional element placed right of the term buttons.
 // note: optional text after the action.
-export default function TermNavigation({ termKey, onTermChange, action = null, note = null, className = "" }) {
+export default function TermNavigation({
+    termKey,
+    onTermChange,
+    action = null,
+    note = null,
+    className = "",
+}) {
     return (
         <div className={`subject-term-navigation ${className}`.trim()}>
             <div className="term-nav-terms">

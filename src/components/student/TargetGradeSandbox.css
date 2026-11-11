@@ -199,7 +199,9 @@
     padding-top: 0.8rem;
     padding-bottom: 0.8rem;
     border-bottom-color: #e8edf4;
-    transition: background-color 0.18s ease, border-color 0.18s ease;
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease;
 }
 
 .sandbox-remaining-card .sandbox-table tbody tr:hover th,
@@ -220,7 +222,10 @@
     border-color: #dce4ef;
     border-radius: 8px;
     background: #ffffff;
-    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 .sandbox-remaining-card .sandbox-number:hover {
@@ -542,7 +547,10 @@
     color: var(--color-accent);
     font-size: 0.85rem;
     text-align: right;
-    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 .sandbox-draft-input input:hover {
@@ -578,7 +586,9 @@
     font-weight: 600;
     cursor: pointer;
     list-style: none;
-    transition: background-color 0.18s ease, color 0.18s ease;
+    transition:
+        background-color 0.18s ease,
+        color 0.18s ease;
 }
 
 .sandbox-how summary::-webkit-details-marker {

@@ -30,16 +30,15 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                 }
             >
                 <p>
-                    At least one grade computation rule must exist. Create another
-                    rule first, then delete this one.
+                    At least one grade computation rule must exist. Create another rule first, then
+                    delete this one.
                 </p>
             </Dialog>
         );
     }
 
-    const impact = usage.isUsed && replacementId
-        ? getRuleSwitchImpact(db, rule.id, replacementId)
-        : null;
+    const impact =
+        usage.isUsed && replacementId ? getRuleSwitchImpact(db, rule.id, replacementId) : null;
     const subjectCount = usage.classes.length;
 
     function confirmDelete() {
@@ -77,7 +76,10 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                     {subjectCount > 0 && (
                         <>
                             <p>
-                                {subjectCount === 1 ? "1 subject uses" : `${subjectCount} subjects use`} this rule:
+                                {subjectCount === 1
+                                    ? "1 subject uses"
+                                    : `${subjectCount} subjects use`}{" "}
+                                this rule:
                             </p>
                             <ul className="rule-delete-subjects">
                                 {usage.classes.map((item) => (
@@ -93,7 +95,8 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                         </>
                     )}
                     <label>
-                        Move {subjectCount > 0 ? "these subjects" : "everything that uses this rule"} to
+                        Move{" "}
+                        {subjectCount > 0 ? "these subjects" : "everything that uses this rule"} to
                         <select
                             value={replacementId}
                             onChange={(event) => setReplacementId(event.target.value)}
@@ -107,9 +110,11 @@ export default function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                     </label>
                     {impact?.lostTaskCount > 0 && (
                         <p className="app-dialog-warning">
-                            {impact.lostTaskCount} recorded task{impact.lostTaskCount === 1 ? "" : "s"} in{" "}
-                            {impact.lostTasks.map((item) => item.name).join(", ")} won&apos;t count under the new
-                            rule, because it has no matching criteria. The tasks stay saved.
+                            {impact.lostTaskCount} recorded task
+                            {impact.lostTaskCount === 1 ? "" : "s"} in{" "}
+                            {impact.lostTasks.map((item) => item.name).join(", ")} won&apos;t count
+                            under the new rule, because it has no matching criteria. The tasks stay
+                            saved.
                         </p>
                     )}
                 </>

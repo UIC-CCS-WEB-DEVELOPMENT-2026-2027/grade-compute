@@ -6,7 +6,6 @@ import { toTaskList, withStudentScore } from "../../utils/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "../../utils/rules";
 import "./CurrentTermRecord.css";
 
-
 function termKey(term) {
     return term.toLowerCase();
 }
@@ -37,14 +36,12 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
 
     const classItem = dbData?.classes?.find((item) => item.id === classId);
     const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === studentId
+        (record) => record.studentId === studentId,
     );
-    const rule = dbData?.computationRules?.find(
-        (item) => item.id === classItem?.computationRuleId
-    );
+    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
     const criteria = getRuleLeaves(rule);
     const criteriaIds = new Set(criteria.map((criterion) => criterion.id));
-    const selectedCategory = criteriaIds.has(taskCategory) ? taskCategory : criteria[0]?.id ?? "";
+    const selectedCategory = criteriaIds.has(taskCategory) ? taskCategory : (criteria[0]?.id ?? "");
     const currentTerm = studentRecord?.grades?.[termKey(term)] ?? {};
     const tasksFor = (criterionId) => toTaskList(currentTerm[criterionId]);
 
@@ -63,7 +60,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         const updatedDb = {
             ...currentDb,
             classes: currentDb.classes.map((item) =>
-                item.id === classId ? updateClass(item) : item
+                item.id === classId ? updateClass(item) : item,
             ),
         };
 
@@ -113,13 +110,17 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
             const maxScore = Number(selectedAssessment?.maxScore);
             const integerDigits = value.split(".")[0].length;
             const maxIntegerDigits = String(Math.trunc(maxScore)).length;
-            if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
+            if (
+                !/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) ||
                 !Number.isFinite(score) ||
                 score < 0 ||
                 score > maxScore ||
-                integerDigits > maxIntegerDigits) {
+                integerDigits > maxIntegerDigits
+            ) {
                 setInvalidScoreId(scoreId);
-                setSaveError(`Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`);
+                setSaveError(
+                    `Enter a score between 0 and ${maxScore}, using no more than ${maxIntegerDigits} digits before the decimal.`,
+                );
                 return false;
             }
         }
@@ -140,8 +141,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 task.id !== taskId
                     ? task
                     : field === "studentReportedScore"
-                        ? withStudentScore(task, value)
-                        : { ...task, [field]: value }
+                      ? withStudentScore(task, value)
+                      : { ...task, [field]: value },
             ),
         }));
     }
@@ -202,8 +203,8 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
     if (!rule) {
         return (
             <section className="current-term-records" role="alert">
-                This subject&apos;s grading rule no longer exists. Choose another
-                rule on the Grade Rules page.
+                This subject&apos;s grading rule no longer exists. Choose another rule on the Grade
+                Rules page.
             </section>
         );
     }
@@ -215,7 +216,11 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         .filter(({ row }) => row.depth === 1)
         .map(({ row, index }) => {
             const children = [];
-            for (let next = index + 1; next < summaryRows.length && summaryRows[next].depth > 1; next += 1) {
+            for (
+                let next = index + 1;
+                next < summaryRows.length && summaryRows[next].depth > 1;
+                next += 1
+            ) {
                 if (summaryRows[next].depth === 2) children.push(summaryRows[next]);
             }
             return { ...row, children };
@@ -225,9 +230,7 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
         <section className="current-term-records">
             <header className="records-heading">
                 <h2>Current Term Records</h2>
-                <p>
-                    Professor records stay locked. Your own entries stay private.
-                </p>
+                <p>Professor records stay locked. Your own entries stay private.</p>
             </header>
 
             <div className="grade-weight">
@@ -241,8 +244,11 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 <small>
                                     {group.children.length
                                         ? group.children
-                                            .map((child) => `${formatPercent(child.shareOfParent)} ${child.name}`)
-                                            .join(" + ")
+                                              .map(
+                                                  (child) =>
+                                                      `${formatPercent(child.shareOfParent)} ${child.name}`,
+                                              )
+                                              .join(" + ")
                                         : `${term} tasks`}
                                 </small>
                             </div>
@@ -266,68 +272,101 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     const categoryTasks = tasksFor(criterion.id);
                     return (
                         <section className="term-task-section" key={criterion.id}>
-                            <h3 className="term-task-heading">
-                                {criterion.path.join(" › ")}
-                            </h3>
-                            {categoryTasks.length ? categoryTasks.map((task) => {
-                                const name = taskName(task, category);
-                                const displayName = task.isCustomTask &&
-                                    !name.toLowerCase().startsWith(category.toLowerCase())
-                                    ? `${category} - ${name}`
-                                    : name;
-                                const isOfficialLocked = hasOfficialScore(task);
-                                return (
-                                <div className={`record-row ${task.isCustomTask ? "custom-record" : ""}`} key={task.id} data-task-id={task.id}>
-                                    <div className="record-information">
-                                        <h3>{displayName}</h3>
-                                        <p>
-                                            {task.isCustomTask
-                                                ? <><span className="record-tag">Custom Addition</span> Student-created · Private</>
-                                                : !isOfficialLocked
-                                                    ? <><span className="record-tag">Self Reported</span> Student entry · Not an official grade</>
-                                                    : "Professor-recorded assessment"}
-                                        </p>
-                                    </div>
-                                    <div className="official-score">
-                                        <strong>
-                                            {isOfficialLocked
-                                                ? `${task.officialScore} / ${task.maxScore}`
-                                                : "—"}
-                                        </strong>
-                                        <small>
-                                            {isOfficialLocked
-                                                ? "Locked · Official"
-                                                : "No official score"}
-                                        </small>
-                                    </div>
-                                    {!isOfficialLocked ? (
-                                        <div className="score-editor">
-                                            <label className="score-input-group">
-                                                <DraftInput
-                                                    type="text"
-                                                    inputMode="decimal"
-                                                    min="0"
-                                                    max={task.maxScore}
-                                                    placeholder="Add Score"
-                                                    aria-label={`Private score for ${displayName}`}
-                                                    aria-invalid={invalidScoreId === `${criterion.id}-${task.id}`}
-                                                    value={task.studentReportedScore}
-                                                    acceptTyping={(text) => checkScore(criterion.id, task.id, text)}
-                                                    onCommit={(text) =>
-                                                        updateSandbox(criterion.id, task.id, "studentReportedScore", text)
-                                                    }
-                                                />
-                                                <span>/</span>
-                                                <span className="sandbox-max-score">
-                                                    {task.maxScore ?? "Max"}
-                                                </span>
-                                            </label>
+                            <h3 className="term-task-heading">{criterion.path.join(" › ")}</h3>
+                            {categoryTasks.length ? (
+                                categoryTasks.map((task) => {
+                                    const name = taskName(task, category);
+                                    const displayName =
+                                        task.isCustomTask &&
+                                        !name.toLowerCase().startsWith(category.toLowerCase())
+                                            ? `${category} - ${name}`
+                                            : name;
+                                    const isOfficialLocked = hasOfficialScore(task);
+                                    return (
+                                        <div
+                                            className={`record-row ${task.isCustomTask ? "custom-record" : ""}`}
+                                            key={task.id}
+                                            data-task-id={task.id}
+                                        >
+                                            <div className="record-information">
+                                                <h3>{displayName}</h3>
+                                                <p>
+                                                    {task.isCustomTask ? (
+                                                        <>
+                                                            <span className="record-tag">
+                                                                Custom Addition
+                                                            </span>{" "}
+                                                            Student-created · Private
+                                                        </>
+                                                    ) : !isOfficialLocked ? (
+                                                        <>
+                                                            <span className="record-tag">
+                                                                Self Reported
+                                                            </span>{" "}
+                                                            Student entry · Not an official grade
+                                                        </>
+                                                    ) : (
+                                                        "Professor-recorded assessment"
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <div className="official-score">
+                                                <strong>
+                                                    {isOfficialLocked
+                                                        ? `${task.officialScore} / ${task.maxScore}`
+                                                        : "—"}
+                                                </strong>
+                                                <small>
+                                                    {isOfficialLocked
+                                                        ? "Locked · Official"
+                                                        : "No official score"}
+                                                </small>
+                                            </div>
+                                            {!isOfficialLocked ? (
+                                                <div className="score-editor">
+                                                    <label className="score-input-group">
+                                                        <DraftInput
+                                                            type="text"
+                                                            inputMode="decimal"
+                                                            min="0"
+                                                            max={task.maxScore}
+                                                            placeholder="Add Score"
+                                                            aria-label={`Private score for ${displayName}`}
+                                                            aria-invalid={
+                                                                invalidScoreId ===
+                                                                `${criterion.id}-${task.id}`
+                                                            }
+                                                            value={task.studentReportedScore}
+                                                            acceptTyping={(text) =>
+                                                                checkScore(
+                                                                    criterion.id,
+                                                                    task.id,
+                                                                    text,
+                                                                )
+                                                            }
+                                                            onCommit={(text) =>
+                                                                updateSandbox(
+                                                                    criterion.id,
+                                                                    task.id,
+                                                                    "studentReportedScore",
+                                                                    text,
+                                                                )
+                                                            }
+                                                        />
+                                                        <span>/</span>
+                                                        <span className="sandbox-max-score">
+                                                            {task.maxScore ?? "Max"}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            ) : null}
                                         </div>
-                                    ) : null}
-                                </div>
-                            );
-                            }) : (
-                                <p className="term-empty">No {category} records for {term} yet.</p>
+                                    );
+                                })
+                            ) : (
+                                <p className="term-empty">
+                                    No {category} records for {term} yet.
+                                </p>
                             )}
                         </section>
                     );
@@ -335,9 +374,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
 
                 {uncountedTasks > 0 && (
                     <p className="term-empty">
-                        {uncountedTasks} task{uncountedTasks === 1 ? "" : "s"} from criteria that are no
-                        longer in this subject&apos;s grading rule {uncountedTasks === 1 ? "is" : "are"} hidden
-                        and not counted.
+                        {uncountedTasks} task{uncountedTasks === 1 ? "" : "s"} from criteria that
+                        are no longer in this subject&apos;s grading rule{" "}
+                        {uncountedTasks === 1 ? "is" : "are"} hidden and not counted.
                     </p>
                 )}
 
@@ -388,7 +427,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         setAddTaskError("");
                                     }
                                 }}
-                                aria-invalid={addTaskError.startsWith("Please enter a whole-number")}
+                                aria-invalid={addTaskError.startsWith(
+                                    "Please enter a whole-number",
+                                )}
                                 aria-label="Maximum score"
                             />
                             {addTaskError.startsWith("Please enter a whole-number") && (
@@ -419,7 +460,9 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                 )}
 
                 {saveError && (
-                    <p className="sandbox-error" role="alert">{saveError}</p>
+                    <p className="sandbox-error" role="alert">
+                        {saveError}
+                    </p>
                 )}
                 <button
                     type="button"
@@ -447,20 +490,25 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                     fill="none"
                     aria-hidden="true"
                 >
-                    <path d="m6 3.5 4.5 4.5L6 12.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                        d="m6 3.5 4.5 4.5L6 12.5"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
                 </svg>
                 {showBreakdown
                     ? "Hide Official Grade Breakdown"
                     : "View Complete Official Grade Breakdown"}
             </button>
-            <p className="records-privacy">
-                    ⓘ Sandbox edits cannot change these records.
-            </p>
+            <p className="records-privacy">ⓘ Sandbox edits cannot change these records.</p>
 
             {showBreakdown && (
                 <div className="official-breakdown">
                     <p className="official-breakdown-intro">
-                        All professor-recorded assessments used by the calculator are listed here. Private task notes above are excluded.
+                        All professor-recorded assessments used by the calculator are listed here.
+                        Private task notes above are excluded.
                     </p>
                     {criteria.map((criterion) => {
                         const tasks = tasksFor(criterion.id).filter((task) => !task.isCustomTask);
@@ -477,32 +525,34 @@ function CurrentTermRecords({ classId, term = "Prelim" }) {
                                         {formatPercent(criterion.effectiveShare)} of term grade
                                     </span>
                                 </div>
-                                {tasks.length ? tasks.map((task) => (
-                                    <div className="breakdown-task" key={task.id}>
-                                        <div className="breakdown-task-info">
-                                            <p className="breakdown-task-name">
-                                                {term} · {taskName(task, criterion.name)}
-                                            </p>
-                                            <p className="breakdown-task-status">
-                                                {hasOfficialScore(task)
-                                                    ? "Recorded by professor"
-                                                    : "Awaiting professor score"}
-                                            </p>
+                                {tasks.length ? (
+                                    tasks.map((task) => (
+                                        <div className="breakdown-task" key={task.id}>
+                                            <div className="breakdown-task-info">
+                                                <p className="breakdown-task-name">
+                                                    {term} · {taskName(task, criterion.name)}
+                                                </p>
+                                                <p className="breakdown-task-status">
+                                                    {hasOfficialScore(task)
+                                                        ? "Recorded by professor"
+                                                        : "Awaiting professor score"}
+                                                </p>
+                                            </div>
+                                            <div className="breakdown-task-score">
+                                                <strong>
+                                                    {hasOfficialScore(task)
+                                                        ? `${task.officialScore} / ${task.maxScore}`
+                                                        : "—"}
+                                                </strong>
+                                                <span>
+                                                    {hasOfficialScore(task)
+                                                        ? "Locked · Official"
+                                                        : "Not yet recorded"}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="breakdown-task-score">
-                                            <strong>
-                                                {hasOfficialScore(task)
-                                                    ? `${task.officialScore} / ${task.maxScore}`
-                                                    : "—"}
-                                            </strong>
-                                            <span>
-                                                {hasOfficialScore(task)
-                                                    ? "Locked · Official"
-                                                    : "Not yet recorded"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                )) : (
+                                    ))
+                                ) : (
                                     <p className="breakdown-empty">
                                         No official {criterion.name} records for {term}.
                                     </p>

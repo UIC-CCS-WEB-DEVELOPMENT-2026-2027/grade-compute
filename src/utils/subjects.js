@@ -2,10 +2,7 @@
 // Subject helpers shared by the Dashboard and My Subjects pages: semesters,
 // the student's enrolled subjects, and adding a subject.
 // Pure functions only (no React, no localStorage). Save results with saveDb().
-import {
-    calculateOfficialFinalGrade,
-    calculateUnofficialFinalGrade,
-} from "./grades.js";
+import { calculateOfficialFinalGrade, calculateUnofficialFinalGrade } from "./grades.js";
 import { nextId } from "./rules.js";
 
 export const PASSING_GRADE = 75;
@@ -78,19 +75,20 @@ export function getEnrolledSubjects(db, studentId, semesterId = null) {
         // Status follows the expected grade: it already prefers official
         // scores, so it is the most complete picture of where the student is.
         const statusGrade = expectedGrade;
-        const status = statusGrade === null
-            ? "none"
-            : statusGrade >= PASSING_GRADE ? "passing" : "below";
+        const status =
+            statusGrade === null ? "none" : statusGrade >= PASSING_GRADE ? "passing" : "below";
 
-        return [{
-            classId: classItem.id,
-            subjectCode: subject.subjectCode,
-            subjectName: subject.subjectName,
-            professor,
-            officialGrade,
-            expectedGrade,
-            status,
-        }];
+        return [
+            {
+                classId: classItem.id,
+                subjectCode: subject.subjectCode,
+                subjectName: subject.subjectName,
+                professor,
+                officialGrade,
+                expectedGrade,
+                status,
+            },
+        ];
     });
 }
 
@@ -105,9 +103,10 @@ export function getInitialRuleId(db, studentId) {
     const rules = db?.computationRules ?? [];
     const lastUsed = [...(db?.classes ?? [])]
         .reverse()
-        .find((classItem) =>
-            classItem.studentRecords?.some((record) => record.studentId === studentId) &&
-            rules.some((rule) => rule.id === classItem.computationRuleId)
+        .find(
+            (classItem) =>
+                classItem.studentRecords?.some((record) => record.studentId === studentId) &&
+                rules.some((rule) => rule.id === classItem.computationRuleId),
         )?.computationRuleId;
     return lastUsed ?? rules[0]?.id ?? "";
 }
@@ -115,7 +114,9 @@ export function getInitialRuleId(db, studentId) {
 // values: { subjectCode, subjectName, professorName, section, computationRuleId }
 // Returns { ok, db, classItem } or { ok: false, fieldErrors | formError }.
 export function addSubject(db, studentId, values, date = new Date()) {
-    const code = String(values.subjectCode ?? "").trim().toUpperCase();
+    const code = String(values.subjectCode ?? "")
+        .trim()
+        .toUpperCase();
     const name = String(values.subjectName ?? "").trim();
     const instructor = String(values.professorName ?? "").trim();
     const programSection = String(values.section ?? "").trim();
@@ -124,14 +125,18 @@ export function addSubject(db, studentId, values, date = new Date()) {
     // studentRecord) are per student. Only block a code this student
     // already has, so different students can add the same subject.
     const subjectsByCode = (db?.subjects ?? []).filter(
-        (subject) => String(subject.subjectCode ?? "").toUpperCase() === code
+        (subject) => String(subject.subjectCode ?? "").toUpperCase() === code,
     );
-    const alreadyEnrolled = (db?.classes ?? []).some((classItem) =>
-        subjectsByCode.some((subject) => subject.id === classItem.subjectId) &&
-        classItem.studentRecords?.some((record) => record.studentId === studentId)
+    const alreadyEnrolled = (db?.classes ?? []).some(
+        (classItem) =>
+            subjectsByCode.some((subject) => subject.id === classItem.subjectId) &&
+            classItem.studentRecords?.some((record) => record.studentId === studentId),
     );
     if (alreadyEnrolled) {
-        return { ok: false, fieldErrors: { subjectCode: "You already have a subject with that code." } };
+        return {
+            ok: false,
+            fieldErrors: { subjectCode: "You already have a subject with that code." },
+        };
     }
 
     const rules = db?.computationRules ?? [];
@@ -140,8 +145,15 @@ export function addSubject(db, studentId, values, date = new Date()) {
         : rules[0];
     if (!rule) {
         return values.computationRuleId
-            ? { ok: false, fieldErrors: { computationRuleId: "Choose a grading rule for this subject." } }
-            : { ok: false, formError: "Create a grading rule on the Grade Rules page before adding subjects." };
+            ? {
+                  ok: false,
+                  fieldErrors: { computationRuleId: "Choose a grading rule for this subject." },
+              }
+            : {
+                  ok: false,
+                  formError:
+                      "Create a grading rule on the Grade Rules page before adding subjects.",
+              };
     }
 
     const semester = getCurrentSemester(date);
@@ -149,7 +161,10 @@ export function addSubject(db, studentId, values, date = new Date()) {
     // otherwise add a new one (the same code can mean different courses
     // at different schools).
     const existingSubject = subjectsByCode.find(
-        (subject) => String(subject.subjectName ?? "").trim().toLowerCase() === name.toLowerCase()
+        (subject) =>
+            String(subject.subjectName ?? "")
+                .trim()
+                .toLowerCase() === name.toLowerCase(),
     );
     const subjectId = existingSubject?.id ?? nextId(db.subjects ?? [], "SUB");
     const classId = nextId(db.classes ?? [], "C");

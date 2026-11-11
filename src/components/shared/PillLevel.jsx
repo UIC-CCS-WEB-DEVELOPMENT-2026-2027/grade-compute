@@ -390,7 +390,10 @@ export default function PillLevel({ tree, levelId, depth, structureLocked, onCha
                                     barRefs.current[segment.id] = element;
                                 }}
                                 className={`pill-bar ${previewId === segment.id ? "is-previewing" : ""}`}
-                                style={{ "--pill-color": segment.color, "--pill-on": segment.onColor }}
+                                style={{
+                                    "--pill-color": segment.color,
+                                    "--pill-on": segment.onColor,
+                                }}
                             >
                                 {renderBarContent(segment)}
                                 {index < segments.length - 1 && renderHandle(segment, index)}

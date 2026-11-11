@@ -35,8 +35,9 @@ function toTime(value) {
 
 // When a task entered the graph (its first score), in ms, or null if unknown.
 export function scoreTime(task) {
-    const scored = [toTime(task?.studentScoredAt), toTime(task?.officialScoredAt)]
-        .filter((time) => time !== null);
+    const scored = [toTime(task?.studentScoredAt), toTime(task?.officialScoredAt)].filter(
+        (time) => time !== null,
+    );
     if (scored.length) return Math.min(...scored);
     const created = toTime(task?.createdAt);
     if (created !== null) return created;
@@ -81,9 +82,10 @@ export function getScoredTasks(studentRecord, rule, termKey) {
                 percent: (score / maxScore) * 100,
                 isOfficial: official !== null,
                 // The student's own entry that the official score replaced.
-                replacedEntry: official !== null && entry !== null && entry !== official
-                    ? { score: entry, maxScore, percent: (entry / maxScore) * 100 }
-                    : null,
+                replacedEntry:
+                    official !== null && entry !== null && entry !== official
+                        ? { score: entry, maxScore, percent: (entry / maxScore) * 100 }
+                        : null,
                 sortKey: [scoreTime(task), criterionIndex, taskIndex],
             });
         });
@@ -126,10 +128,14 @@ export function getGradeHistory(studentRecord, rule, termKey) {
         const grade = calculateUnofficialGrade(recordWithTasks(termKey, upToHere), termKey, rule);
         let ghostGrade = null;
         if (item.replacedEntry) {
-            const withEntry = upToHere.map((other) => other === item
-                ? { ...other, task: { ...other.task, officialScore: null } }
-                : other);
-            ghostGrade = calculateUnofficialGrade(recordWithTasks(termKey, withEntry), termKey, rule);
+            const withEntry = upToHere.map((other) =>
+                other === item ? { ...other, task: { ...other.task, officialScore: null } } : other,
+            );
+            ghostGrade = calculateUnofficialGrade(
+                recordWithTasks(termKey, withEntry),
+                termKey,
+                rule,
+            );
         }
         return {
             step: index + 1,
@@ -199,11 +205,12 @@ export function getPlanPoints(studentRecord, rule, termKey, target, startStep = 
     }
 
     const current = calculateUnofficialGrade(studentRecord, termKey, rule);
-    const fillPercent = plan.status === "required"
-        ? plan.required
-        : plan.status === "impossible"
-            ? 100
-            : Math.min(100, Math.max(0, current ?? plan.target));
+    const fillPercent =
+        plan.status === "required"
+            ? plan.required
+            : plan.status === "impossible"
+              ? 100
+              : Math.min(100, Math.max(0, current ?? plan.target));
 
     const toSlots = (criterion) => {
         const percent = criterion.usesRequired ? fillPercent : criterion.expected;
@@ -233,7 +240,10 @@ export function getPlanPoints(studentRecord, rule, termKey, target, startStep = 
 
     // Fill the slots one by one on a copy of this term's tasks.
     const termGrades = Object.fromEntries(
-        Object.entries(studentRecord?.grades?.[termKey] ?? {}).map(([id, tasks]) => [id, toTaskList(tasks).map((task) => ({ ...task }))])
+        Object.entries(studentRecord?.grades?.[termKey] ?? {}).map(([id, tasks]) => [
+            id,
+            toTaskList(tasks).map((task) => ({ ...task })),
+        ]),
     );
     const record = { grades: { [termKey]: termGrades } };
 
@@ -244,7 +254,10 @@ export function getPlanPoints(studentRecord, rule, termKey, target, startStep = 
             const max = toNumber(copy?.maxScore) ?? 100;
             if (copy) copy.studentReportedScore = (slot.percent * max) / 100;
         } else {
-            termGrades[id] = [...(termGrades[id] ?? []), { id: `plan-${index}`, maxScore: 100, studentReportedScore: slot.percent }];
+            termGrades[id] = [
+                ...(termGrades[id] ?? []),
+                { id: `plan-${index}`, maxScore: 100, studentReportedScore: slot.percent },
+            ];
         }
         return {
             step: startStep + index + 1,
@@ -272,14 +285,16 @@ export function getCoursesHistory(db, studentId, termKey, semesterId = null) {
         const rule = db.computationRules?.find((item) => item.id === classItem.computationRuleId);
         const target = getTermTarget(record, termKey);
         const points = getGradeHistory(record, rule, termKey);
-        return [{
-            classId: classItem.id,
-            subjectCode: subject?.subjectCode ?? "Unknown subject",
-            subjectName: subject?.subjectName ?? "",
-            target,
-            points,
-            reachedIndex: getTargetReachedIndex(points, target),
-        }];
+        return [
+            {
+                classId: classItem.id,
+                subjectCode: subject?.subjectCode ?? "Unknown subject",
+                subjectName: subject?.subjectName ?? "",
+                target,
+                points,
+                reachedIndex: getTargetReachedIndex(points, target),
+            },
+        ];
     });
 }
 

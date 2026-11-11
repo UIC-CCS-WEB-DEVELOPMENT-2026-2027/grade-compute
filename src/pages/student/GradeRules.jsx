@@ -124,8 +124,8 @@ export default function GradeRules() {
                     </p>
 
                     <aside className="rules-delete-note">
-                        <strong>Before deleting a rule:</strong> At least one rule must remain.
-                        If subjects use the rule, choose a replacement rule for them.
+                        <strong>Before deleting a rule:</strong> At least one rule must remain. If
+                        subjects use the rule, choose a replacement rule for them.
                     </aside>
 
                     {visibleRules.length > 0 ? (

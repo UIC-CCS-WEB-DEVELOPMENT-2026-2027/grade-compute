@@ -25,12 +25,7 @@ function missingFieldMessage(field) {
 // initialSection: prefilled program / section (usually the student's own).
 // onAdded(classItem): called after the subject is saved.
 // onCancel(): called when the student closes the form.
-export default function AddSubjectForm({
-    studentId,
-    initialSection = "",
-    onCancel,
-    onAdded,
-}) {
+export default function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdded }) {
     // Rules are read once when the form opens. The form starts on the rule of
     // the student's most recently added subject (see getInitialRuleId).
     const [{ rules, initialRuleId }] = useState(() => {
@@ -45,7 +40,7 @@ export default function AddSubjectForm({
     const [professorName, setProfessorName] = useState("");
     const [section, setSection] = useState(initialSection);
     const [computationRuleId, setComputationRuleId] = useState(() =>
-        rules.some((rule) => rule.id === initialRuleId) ? initialRuleId : rules[0]?.id ?? ""
+        rules.some((rule) => rule.id === initialRuleId) ? initialRuleId : (rules[0]?.id ?? ""),
     );
     const [fieldErrors, setFieldErrors] = useState({});
     const [formError, setFormError] = useState("");
@@ -67,7 +62,7 @@ export default function AddSubjectForm({
 
         if (missingFields.length > 0) {
             const errors = Object.fromEntries(
-                missingFields.map(([field]) => [field, missingFieldMessage(field)])
+                missingFields.map(([field]) => [field, missingFieldMessage(field)]),
             );
             setFieldErrors(errors);
             event.currentTarget.elements.namedItem(missingFields[0][0])?.focus();
@@ -112,8 +107,8 @@ export default function AddSubjectForm({
         <form className="subject-request-form" onSubmit={handleSubmit} noValidate>
             <h2>New Subject Request</h2>
             <p>
-                You can view all three terms and add private sandbox
-                entries while your request awaits verification.
+                You can view all three terms and add private sandbox entries while your request
+                awaits verification.
             </p>
             <div className="subject-request-fields">
                 <label>
@@ -122,8 +117,12 @@ export default function AddSubjectForm({
                         name="subjectCode"
                         value={subjectCode}
                         aria-invalid={Boolean(fieldErrors.subjectCode)}
-                        aria-describedby={fieldErrors.subjectCode ? "subject-code-error" : undefined}
-                        onChange={(event) => updateField("subjectCode", event.target.value, setSubjectCode)}
+                        aria-describedby={
+                            fieldErrors.subjectCode ? "subject-code-error" : undefined
+                        }
+                        onChange={(event) =>
+                            updateField("subjectCode", event.target.value, setSubjectCode)
+                        }
                         placeholder="e.g. IT102"
                     />
                     {fieldErrors.subjectCode && (
@@ -138,8 +137,12 @@ export default function AddSubjectForm({
                         name="subjectName"
                         value={subjectName}
                         aria-invalid={Boolean(fieldErrors.subjectName)}
-                        aria-describedby={fieldErrors.subjectName ? "subject-name-error" : undefined}
-                        onChange={(event) => updateField("subjectName", event.target.value, setSubjectName)}
+                        aria-describedby={
+                            fieldErrors.subjectName ? "subject-name-error" : undefined
+                        }
+                        onChange={(event) =>
+                            updateField("subjectName", event.target.value, setSubjectName)
+                        }
                         placeholder="e.g. Data Structures"
                     />
                     {fieldErrors.subjectName && (
@@ -154,8 +157,12 @@ export default function AddSubjectForm({
                         name="professorName"
                         value={professorName}
                         aria-invalid={Boolean(fieldErrors.professorName)}
-                        aria-describedby={fieldErrors.professorName ? "professor-name-error" : undefined}
-                        onChange={(event) => updateField("professorName", event.target.value, setProfessorName)}
+                        aria-describedby={
+                            fieldErrors.professorName ? "professor-name-error" : undefined
+                        }
+                        onChange={(event) =>
+                            updateField("professorName", event.target.value, setProfessorName)
+                        }
                         placeholder="e.g. Prof. Maria Santos"
                     />
                     {fieldErrors.professorName && (
@@ -192,7 +199,11 @@ export default function AddSubjectForm({
                                     : "computation-rule-formula"
                             }
                             onChange={(event) =>
-                                updateField("computationRuleId", event.target.value, setComputationRuleId)
+                                updateField(
+                                    "computationRuleId",
+                                    event.target.value,
+                                    setComputationRuleId,
+                                )
                             }
                         >
                             {rules.map((rule) => (
@@ -207,7 +218,10 @@ export default function AddSubjectForm({
                         </span>
                     )}
                     {selectedRule && !fieldErrors.computationRuleId && (
-                        <span className="subject-request-rule-formula" id="computation-rule-formula">
+                        <span
+                            className="subject-request-rule-formula"
+                            id="computation-rule-formula"
+                        >
                             {getRuleFormulaText(selectedRule)}
                         </span>
                     )}
@@ -217,7 +231,9 @@ export default function AddSubjectForm({
                         </span>
                     )}
                     <Link className="subject-request-rule-link" to="/student/rules">
-                        {rules.length > 0 ? "View or create grading rules" : "Create a grading rule"}
+                        {rules.length > 0
+                            ? "View or create grading rules"
+                            : "Create a grading rule"}
                     </Link>
                 </label>
             </div>

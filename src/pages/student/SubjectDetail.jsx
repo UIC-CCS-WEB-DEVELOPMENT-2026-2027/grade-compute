@@ -54,18 +54,18 @@ function SubjectDetail() {
         const currentDb = dbData;
         const currentClass = currentDb?.classes?.find((item) => item.id === subjectId);
         const currentRecord = currentClass?.studentRecords?.find(
-            (record) => record.studentId === studentId
+            (record) => record.studentId === studentId,
         );
         const currentRule = currentDb?.computationRules?.find(
-            (rule) => rule.id === currentClass?.computationRuleId
+            (rule) => rule.id === currentClass?.computationRuleId,
         );
         if (!currentRecord) return;
 
         const currentTerm = term.toLowerCase();
         const currentTarget = Number(
             currentRecord.targetGradeSandbox?.terms?.[currentTerm]?.desiredFinalGrade ??
-            currentRecord.targetGradeSandbox?.desiredFinalGrade ??
-            90
+                currentRecord.targetGradeSandbox?.desiredFinalGrade ??
+                90,
         );
         const officialGrade = calculateOfficialGrade(currentRecord, term, currentRule);
         const expectedGrade = calculateUnofficialGrade(currentRecord, term, currentRule);
@@ -82,8 +82,8 @@ function SubjectDetail() {
                     officialJustReached && expectedJustReached
                         ? "Both your official and expected grades reached the target!"
                         : officialJustReached
-                            ? "Your official grade reached the target!"
-                            : "Your expected grade reached the target!"
+                          ? "Your official grade reached the target!"
+                          : "Your expected grade reached the target!",
                 );
             }
         }
@@ -98,11 +98,14 @@ function SubjectDetail() {
     useEffect(() => {
         if (!focusTaskId) return;
         focusTaskRow(focusTaskId);
-        setSearchParams((params) => {
-            const next = new URLSearchParams(params);
-            next.delete("task");
-            return next;
-        }, { replace: true });
+        setSearchParams(
+            (params) => {
+                const next = new URLSearchParams(params);
+                next.delete("task");
+                return next;
+            },
+            { replace: true },
+        );
     }, [focusTaskId, setSearchParams]);
 
     useEffect(() => {
@@ -135,18 +138,16 @@ function SubjectDetail() {
     }, [celebration]);
 
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
-    const subject = dbData?.subjects?.find(
-        (item) => item.id === classItem?.subjectId
-    );
+    const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
     const professor =
         classItem?.professorName ??
         dbData?.users?.find((user) => user.id === classItem?.professorId)?.name ??
         "Awaiting professor assignment";
     const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === studentId
+        (record) => record.studentId === studentId,
     );
     const computationRule = dbData?.computationRules?.find(
-        (rule) => rule.id === classItem?.computationRuleId
+        (rule) => rule.id === classItem?.computationRuleId,
     );
 
     if (!classItem || !subject || !studentRecord) {
@@ -166,27 +167,17 @@ function SubjectDetail() {
     const selectedTermKey = term.toLowerCase();
     const selectedTerm = studentRecord.grades?.[selectedTermKey];
     const officialTasks = getOfficialAssessments(selectedTerm);
-    const officialAverage = calculateOfficialGrade(
-        studentRecord,
-        term,
-        computationRule
-    );
-    const expectedAverage = calculateUnofficialGrade(
-        studentRecord,
-        term,
-        computationRule
-    );
-    const officialProgress = officialAverage === null
-        ? 0
-        : Math.min(100, Math.max(0, officialAverage));
-    const expectedProgress = expectedAverage === null
-        ? 0
-        : Math.min(100, Math.max(0, expectedAverage));
+    const officialAverage = calculateOfficialGrade(studentRecord, term, computationRule);
+    const expectedAverage = calculateUnofficialGrade(studentRecord, term, computationRule);
+    const officialProgress =
+        officialAverage === null ? 0 : Math.min(100, Math.max(0, officialAverage));
+    const expectedProgress =
+        expectedAverage === null ? 0 : Math.min(100, Math.max(0, expectedAverage));
     const targetGradeConfig = studentRecord.targetGradeSandbox ?? {};
     const targetGrade = Number(
         targetGradeConfig.terms?.[selectedTermKey]?.desiredFinalGrade ??
-        targetGradeConfig.desiredFinalGrade ??
-        90
+            targetGradeConfig.desiredFinalGrade ??
+            90,
     );
 
     function updateTargetGrade(value) {
@@ -198,24 +189,32 @@ function SubjectDetail() {
         if (!currentDb) return;
         const updatedDb = {
             ...currentDb,
-            classes: currentDb.classes.map((item) => item.id !== classItem.id ? item : ({
-                ...item,
-                studentRecords: item.studentRecords.map((record) =>
-                    record.studentId !== studentId ? record : ({
-                        ...record,
-                        targetGradeSandbox: {
-                            ...(record.targetGradeSandbox ?? {}),
-                            terms: {
-                                ...(record.targetGradeSandbox?.terms ?? {}),
-                                [selectedTermKey]: {
-                                    ...(record.targetGradeSandbox?.terms?.[selectedTermKey] ?? {}),
-                                    desiredFinalGrade: nextGrade,
-                                },
-                            },
-                        },
-                    })
-                ),
-            })),
+            classes: currentDb.classes.map((item) =>
+                item.id !== classItem.id
+                    ? item
+                    : {
+                          ...item,
+                          studentRecords: item.studentRecords.map((record) =>
+                              record.studentId !== studentId
+                                  ? record
+                                  : {
+                                        ...record,
+                                        targetGradeSandbox: {
+                                            ...(record.targetGradeSandbox ?? {}),
+                                            terms: {
+                                                ...(record.targetGradeSandbox?.terms ?? {}),
+                                                [selectedTermKey]: {
+                                                    ...(record.targetGradeSandbox?.terms?.[
+                                                        selectedTermKey
+                                                    ] ?? {}),
+                                                    desiredFinalGrade: nextGrade,
+                                                },
+                                            },
+                                        },
+                                    },
+                          ),
+                      },
+            ),
         };
 
         try {
@@ -235,164 +234,177 @@ function SubjectDetail() {
                 <Header />
 
                 <main className="student-dashboard">
+                    {/* Term Navigation */}
+                    <TermNavigation
+                        termKey={termKey}
+                        onTermChange={(nextTerm) =>
+                            setSearchParams({ term: nextTerm }, { replace: true })
+                        }
+                        note="Official scores and draft notes are separate for each term."
+                    />
 
-            {/* Term Navigation */}
-            <TermNavigation
-                termKey={termKey}
-                onTermChange={(nextTerm) => setSearchParams({ term: nextTerm }, { replace: true })}
-                note="Official scores and draft notes are separate for each term."
-            />
+                    {/* Subject Heading */}
+                    <section className="subject-overview">
+                        <div className="subject-semester">FIRST SEMESTER · 2026–2027</div>
 
-            {/* Subject Heading */}
-            <section className="subject-overview">
+                        <div className="subject-title-row">
+                            <div>
+                                <h1>
+                                    {subject.subjectCode} - {subject.subjectName}
+                                </h1>
 
-                <div className="subject-semester">
-                    FIRST SEMESTER · 2026–2027
-                </div>
-
-                <div className="subject-title-row">
-                    <div>
-                        <h1>{subject.subjectCode} - {subject.subjectName}</h1>
-
-                        <div className="subject-meta">
-                            <span className="instructor-avatar">
-                                {professor
-                                    .split(" ")
-                                    .map((part) => part[0])
-                                    .slice(0, 2)
-                                    .join("")
-                                    .toUpperCase()}
-                            </span>
-                            <span>{professor}</span>
-                            <span className="meta-divider">·</span>
-                            <span>{classItem.units ?? 3} units</span>
+                                <div className="subject-meta">
+                                    <span className="instructor-avatar">
+                                        {professor
+                                            .split(" ")
+                                            .map((part) => part[0])
+                                            .slice(0, 2)
+                                            .join("")
+                                            .toUpperCase()}
+                                    </span>
+                                    <span>{professor}</span>
+                                    <span className="meta-divider">·</span>
+                                    <span>{classItem.units ?? 3} units</span>
+                                </div>
+                            </div>
+                            <Link
+                                className="term-nav-link subject-sandbox-link"
+                                to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="8.5"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                    />
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="4.5"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                    />
+                                    <circle cx="12" cy="12" r="1" fill="currentColor" />
+                                </svg>
+                                Target grade sandbox
+                            </Link>
                         </div>
-                    </div>
-                    <Link
-                        className="term-nav-link subject-sandbox-link"
-                        to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
-                    >
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
-                            <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
-                            <circle cx="12" cy="12" r="1" fill="currentColor" />
-                        </svg>
-                        Target grade sandbox
-                    </Link>
-                </div>
 
-                {/* Official Grade Summary */}
-                <div className="official-grade-card">
-                    <div className="grade-gauges" aria-label={`${term} grades`}>
-                        <label className="grade-target-control">
-                            <span>Target grade</span>
-                            <span className="grade-target-input-wrap">
-                                {/* Saved on blur / Enter, so a half-typed target
+                        {/* Official Grade Summary */}
+                        <div className="official-grade-card">
+                            <div className="grade-gauges" aria-label={`${term} grades`}>
+                                <label className="grade-target-control">
+                                    <span>Target grade</span>
+                                    <span className="grade-target-input-wrap">
+                                        {/* Saved on blur / Enter, so a half-typed target
                                     (e.g. "8" on the way to "85") can't trigger
                                     the celebration. */}
-                                <DraftInput
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="1"
-                                    value={targetGrade}
-                                    aria-label={`${term} target grade`}
-                                    onCommit={updateTargetGrade}
-                                />
-                                <span aria-hidden="true">%</span>
-                            </span>
-                            <small>Yellow marker shows your target</small>
-                            {targetGradeError && (
-                                <small className="grade-target-error" role="alert">
-                                    {targetGradeError}
-                                </small>
-                            )}
-                        </label>
-                        <div
-                            className="grade-gauge official-gauge"
-                            tabIndex="0"
-                            aria-label={`Official grade: ${officialAverage === null ? "no grade yet" : `${officialAverage.toFixed(2)} percent`}`}
-                        >
-                            <span className="grade-gauge-label">{term} official</span>
-                            <span
-                                className="grade-gauge-ring"
-                                style={{
-                                    "--grade-progress": `${officialProgress}%`,
-                                    "--target-angle": `${targetGrade * 3.6}deg`,
-                                }}
-                                aria-hidden="true"
-                            >
-                                <strong>
-                                    {officialAverage === null ? "—" : officialAverage.toFixed(0)}
-                                    {officialAverage !== null && <small>%</small>}
-                                </strong>
-                                <span className="grade-gauge-target-marker" />
-                            </span>
-                            <span className="grade-gauge-details">
-                                Professor-recorded scores only. These grades are locked.
-                            </span>
+                                        <DraftInput
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            step="1"
+                                            value={targetGrade}
+                                            aria-label={`${term} target grade`}
+                                            onCommit={updateTargetGrade}
+                                        />
+                                        <span aria-hidden="true">%</span>
+                                    </span>
+                                    <small>Yellow marker shows your target</small>
+                                    {targetGradeError && (
+                                        <small className="grade-target-error" role="alert">
+                                            {targetGradeError}
+                                        </small>
+                                    )}
+                                </label>
+                                <div
+                                    className="grade-gauge official-gauge"
+                                    tabIndex="0"
+                                    aria-label={`Official grade: ${officialAverage === null ? "no grade yet" : `${officialAverage.toFixed(2)} percent`}`}
+                                >
+                                    <span className="grade-gauge-label">{term} official</span>
+                                    <span
+                                        className="grade-gauge-ring"
+                                        style={{
+                                            "--grade-progress": `${officialProgress}%`,
+                                            "--target-angle": `${targetGrade * 3.6}deg`,
+                                        }}
+                                        aria-hidden="true"
+                                    >
+                                        <strong>
+                                            {officialAverage === null
+                                                ? "—"
+                                                : officialAverage.toFixed(0)}
+                                            {officialAverage !== null && <small>%</small>}
+                                        </strong>
+                                        <span className="grade-gauge-target-marker" />
+                                    </span>
+                                    <span className="grade-gauge-details">
+                                        Professor-recorded scores only. These grades are locked.
+                                    </span>
+                                </div>
+
+                                <div
+                                    className="grade-gauge expected-gauge"
+                                    tabIndex="0"
+                                    aria-label={`Expected grade: ${expectedAverage === null ? "no grade yet" : `${expectedAverage.toFixed(2)} percent`}`}
+                                >
+                                    <span className="grade-gauge-label">{term} expected</span>
+                                    <span
+                                        className="grade-gauge-ring"
+                                        style={{
+                                            "--grade-progress": `${expectedProgress}%`,
+                                            "--target-angle": `${targetGrade * 3.6}deg`,
+                                        }}
+                                        aria-hidden="true"
+                                    >
+                                        <strong>
+                                            {expectedAverage === null
+                                                ? "—"
+                                                : expectedAverage.toFixed(0)}
+                                            {expectedAverage !== null && <small>%</small>}
+                                        </strong>
+                                        <span className="grade-gauge-target-marker" />
+                                    </span>
+                                    <span className="grade-gauge-details">
+                                        Includes student-reported draft scores with official scores
+                                        taking priority.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="grade-card-divider" />
+
+                            <div className="grade-card-information">
+                                <p>
+                                    <span className="grade-dot blue-dot" />
+                                    {officialTasks.length} official assessment
+                                    {officialTasks.length === 1 ? "" : "s"} recorded
+                                </p>
+
+                                <small>Official records never include sandbox drafts.</small>
+                            </div>
+
+                            <div className="grade-card-legend">
+                                <span>
+                                    <i className="grade-dot dark-dot" />
+                                    Locked official scores
+                                </span>
+
+                                <span>
+                                    <i className="grade-dot blue-dot" />
+                                    Private sandbox drafts
+                                </span>
+                            </div>
                         </div>
+                    </section>
 
-                        <div
-                            className="grade-gauge expected-gauge"
-                            tabIndex="0"
-                            aria-label={`Expected grade: ${expectedAverage === null ? "no grade yet" : `${expectedAverage.toFixed(2)} percent`}`}
-                        >
-                            <span className="grade-gauge-label">{term} expected</span>
-                            <span
-                                className="grade-gauge-ring"
-                                style={{
-                                    "--grade-progress": `${expectedProgress}%`,
-                                    "--target-angle": `${targetGrade * 3.6}deg`,
-                                }}
-                                aria-hidden="true"
-                            >
-                                <strong>
-                                    {expectedAverage === null ? "—" : expectedAverage.toFixed(0)}
-                                    {expectedAverage !== null && <small>%</small>}
-                                </strong>
-                                <span className="grade-gauge-target-marker" />
-                            </span>
-                            <span className="grade-gauge-details">
-                                Includes student-reported draft scores with official scores taking priority.
-                            </span>
-                        </div>
-                    </div>
+                    {/* Current Term Records */}
+                    <CurrentTermRecords classId={classItem.id} term={term} />
 
-                    <div className="grade-card-divider" />
-
-                    <div className="grade-card-information">
-                        <p>
-                            <span className="grade-dot blue-dot" />
-                            {officialTasks.length} official assessment
-                            {officialTasks.length === 1 ? "" : "s"} recorded
-                        </p>
-
-                        <small>
-                            Official records never include sandbox drafts.
-                        </small>
-                    </div>
-
-                    <div className="grade-card-legend">
-                        <span>
-                            <i className="grade-dot dark-dot" />
-                            Locked official scores
-                        </span>
-
-                        <span>
-                            <i className="grade-dot blue-dot" />
-                            Private sandbox drafts
-                        </span>
-                    </div>
-
-                </div>
-            </section>
-
-            {/* Current Term Records */}
-            <CurrentTermRecords classId={classItem.id} term={term} />
-
-            <SubjectGradeHistory classId={classItem.id} termKey={termKey} />
-
+                    <SubjectGradeHistory classId={classItem.id} termKey={termKey} />
                 </main>
                 <PageFooter />
             </div>
@@ -432,11 +444,15 @@ function SubjectDetail() {
                         >
                             ×
                         </button>
-                        <span className="grade-celebration-sparkle" aria-hidden="true">✦</span>
+                        <span className="grade-celebration-sparkle" aria-hidden="true">
+                            ✦
+                        </span>
                         <p className="grade-celebration-eyebrow">TARGET ACHIEVED</p>
                         <h2 id="grade-celebration-title">Congratulations!</h2>
                         <p>{celebration}</p>
-                        <span className="grade-celebration-trophy" aria-hidden="true">🏆</span>
+                        <span className="grade-celebration-trophy" aria-hidden="true">
+                            🏆
+                        </span>
                     </section>
                 </div>
             )}

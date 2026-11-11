@@ -32,7 +32,10 @@
     font-size: 12px;
     font-weight: 500;
     text-decoration: none;
-    transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        color 0.18s ease;
 }
 
 .rule-back-button span {
@@ -360,7 +363,9 @@
     border: 1px solid #f1e7b8;
     border-radius: 12px;
     background: #fffdf5;
-    transition: border-color 0.16s ease, background-color 0.16s ease;
+    transition:
+        border-color 0.16s ease,
+        background-color 0.16s ease;
 }
 
 .rule-impact-dialog .rule-impact-subjects li:hover {
@@ -390,7 +395,11 @@
     min-height: 42px;
     padding: 8px 16px;
     border-radius: 8px;
-    transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    transition:
+        border-color 0.16s ease,
+        background-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease;
 }
 
 .rule-impact-dialog .app-dialog-actions .rule-impact-cancel,
