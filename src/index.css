@@ -11,6 +11,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* dark: utilities in the shadcn components only apply inside a .dark element.
+   The app has one light theme and never sets .dark, so they stay inert
+   instead of following the operating system's dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Scan app code only (src/). The tooling folders, docs and Markdown files
    are not app code (AGENTS.md section 7). */
 @source "./";

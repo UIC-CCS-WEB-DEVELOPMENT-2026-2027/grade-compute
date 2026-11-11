@@ -575,7 +575,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Change the renamed tokens to their §4.1 values (the AA fixes and merges).
   - Replace hard-coded hex values that equal a merged value with the token, in all CSS files.
   - Check: V-visual on all 56 shots. Expected differences: slightly darker muted and error text, unified blues and greys.
-- [ ] **T7.0b Shared app components.**
+- [x] **T7.0b Shared app components.**
   - Create `PageShell` (G2), `BackLink` (G13) and `BrandMark` (G14, pixel-identical).
   - Add shadcn `button`, `card`, `separator`, `badge`.
   - Use them in no page yet except one proof page, StudentDashboard, which gets PageShell.
