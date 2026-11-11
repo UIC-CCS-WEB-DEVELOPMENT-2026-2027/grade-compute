@@ -620,7 +620,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Delete `Header.css` and `PageFooter.css`.
   - Check: B11, B12.
 - **Login (`pages/auth/LoginRegister.jsx`)**
-  - [ ] **T7.L1** Log In / Create Account → `Tabs`. Role choice → `RadioGroup`. Check: A7, A10, A11.
+  - [x] **T7.L1** Log In / Create Account → `Tabs`. Role choice → `RadioGroup`. Check: A7, A10, A11.
   - [ ] **T7.L2** Fields → `Field` / `Input` / `InputGroup` (eye toggle) / `FieldError`. Messages → `Alert`. Submit → `Button`. Check: A1–A13, A18.
   - [ ] **T7.L3a** Hero and academic preview → utilities and tokens (`display` role, D2). Logo and name untouched. Delete `LoginRegister.css`.
 - **Dashboard**

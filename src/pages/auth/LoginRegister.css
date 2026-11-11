@@ -338,28 +338,6 @@
     width: min(365px, calc(100% - 64px));
     margin: 74px auto 0;
 }
-.auth-tabs {
-    display: flex;
-    align-items: stretch;
-    gap: 33px;
-    min-height: 22px;
-    margin-top: 50px;
-    border-bottom: 1px solid #c9cdd4;
-}
-.auth-tabs button {
-    padding: 0 0 7px;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    border-radius: 0;
-    background: transparent;
-    color: var(--muted-foreground);
-    font-size: 11px;
-    line-height: 14px;
-}
-.auth-tabs button.active {
-    border-bottom-color: var(--auth-primary);
-    color: var(--auth-primary);
-}
 .auth-intro {
     margin: 25px 0 24px;
 }
@@ -619,17 +597,6 @@
         max-width: 440px;
         margin: 0 auto;
     }
-    .auth-tabs {
-        gap: 0;
-        min-height: 36px;
-        margin-top: 0;
-    }
-    .auth-tabs button {
-        flex: 1;
-        padding: 5px 0 13px;
-        font-size: 14px;
-        line-height: 17px;
-    }
     .auth-intro {
         margin: 24px 0 30px;
     }
@@ -797,45 +764,6 @@
     white-space: nowrap;
     border: 0;
 }
-.account-types {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    min-width: 0;
-    padding: 0;
-    margin: 0 0 8px;
-    border: 0;
-}
-.account-type {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-height: 36px;
-    padding: 5px 8px;
-    border: 1px solid #c9d2df;
-    border-radius: 6px;
-    color: var(--muted-foreground);
-    font-size: 12px;
-    cursor: pointer;
-}
-.account-type.selected {
-    border-color: var(--auth-primary);
-    background: var(--secondary);
-    color: var(--auth-primary);
-    font-weight: 600;
-}
-.account-type:focus-within {
-    outline: 2px solid var(--self-reported);
-    outline-offset: 2px;
-}
-.account-type input {
-    flex: 0 0 auto;
-    width: 14px;
-    height: 14px;
-    padding: 0;
-    accent-color: var(--auth-primary);
-}
 .registration-identity {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -901,12 +829,6 @@
     .hero-content h1 {
         font-size: clamp(34px, 3.65vw, 48px);
     }
-    .auth-tabs {
-        min-height: 20px;
-    }
-    .auth-tabs button {
-        padding-bottom: 5px;
-    }
     .is-register .auth-field {
         grid-template-rows: 14px 36px 22px;
         gap: 2px;
@@ -919,9 +841,6 @@
         min-height: 22px;
         font-size: 10px;
         line-height: 11px;
-    }
-    .is-register .account-type {
-        min-height: 34px;
     }
     .is-register .submit-button {
         min-height: 40px;
@@ -986,20 +905,9 @@
     .registration-identity {
         display: block;
     }
-    .account-type {
-        min-height: 44px;
-        font-size: 13px;
-    }
     .is-register .auth-form-area {
         margin-top: 0;
         margin-bottom: 4px;
-    }
-    .is-register .auth-tabs {
-        min-height: 32px;
-    }
-    .is-register .auth-tabs button {
-        padding: 4px 0 10px;
-        font-size: 13px;
     }
     .is-register .auth-intro {
         margin: 6px 0 8px;
@@ -1067,9 +975,6 @@
     .is-register .auth-field input,
     .is-register .auth-input-wrap input {
         height: 32px;
-    }
-    .is-register .account-type {
-        min-height: 30px;
     }
     .is-register .submit-button {
         min-height: 34px;
@@ -1140,38 +1045,11 @@
 .auth-page .sparkle-four {
     animation-delay: 1050ms;
 }
-.auth-page .auth-tabs button {
-    position: relative;
-    border-bottom-color: transparent;
-    transition: color 180ms ease;
-}
-.auth-page .auth-tabs button::after {
-    position: absolute;
-    right: 0;
-    bottom: -1px;
-    left: 0;
-    height: 2px;
-    background: var(--auth-primary);
-    content: "";
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 220ms ease;
-}
-.auth-page .auth-tabs button.active::after {
-    transform: scaleX(1);
-}
 .auth-page .auth-field input {
     transition:
         border-color 180ms ease,
         box-shadow 180ms ease,
         background-color 180ms ease;
-}
-.auth-page .account-type {
-    transition:
-        border-color 180ms ease,
-        background-color 180ms ease,
-        color 180ms ease,
-        box-shadow 180ms ease;
 }
 .auth-page .submit-button {
     transition:
@@ -1197,13 +1075,6 @@
     .auth-page .submit-button:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 14px #40609030;
-    }
-    .auth-page .account-type:hover {
-        border-color: var(--auth-primary);
-        background-color: var(--muted);
-    }
-    .auth-page .account-type.selected:hover {
-        background-color: var(--secondary);
     }
     .auth-page .visibility-button:hover {
         background-color: var(--secondary);
@@ -1285,9 +1156,7 @@
     .auth-page form {
         animation: auth-fade-in 240ms ease-out both !important;
     }
-    .auth-page .auth-tabs button,
     .auth-page .auth-field input,
-    .auth-page .account-type,
     .auth-page .submit-button,
     .auth-page .visibility-button,
     .auth-page .switch-copy button,

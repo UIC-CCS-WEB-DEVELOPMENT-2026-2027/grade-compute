@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getDb, saveDb } from "@/services/db";
 import { ACTIVE_USER_KEY } from "@/services/session";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     authenticateAccount,
     PASSWORD_REQUIREMENTS,
@@ -347,219 +350,231 @@ export function LoginRegister() {
             </section>
             <section className="auth-panel" aria-labelledby="auth-title">
                 <p className="guide-label">YOUR ACADEMIC GUIDE</p>
-                <div className={`auth-form-area${isRegister ? " is-register" : ""}`}>
-                    <div className="auth-tabs" role="group" aria-label="Account access">
-                        <button
-                            type="button"
-                            className={!isRegister ? "active" : ""}
-                            aria-pressed={!isRegister}
-                            onClick={() => changeAuthMode("login")}
-                        >
-                            Log In
-                        </button>
-                        <button
-                            type="button"
-                            className={isRegister ? "active" : ""}
-                            aria-pressed={isRegister}
-                            onClick={() => changeAuthMode("register")}
-                        >
-                            Create Account
-                        </button>
-                    </div>
-                    <div className="auth-intro" key={`intro-${activeTab}`}>
-                        <p className="form-eyebrow">
-                            {isRegister ? "YOUR NEXT CHAPTER STARTS HERE" : "GOOD TO SEE YOU AGAIN"}
-                        </p>
-                        <h2 id="auth-title">
-                            {isRegister ? "Create your account." : "Welcome back."}
-                        </h2>
-                        <p className="form-subtitle">
-                            {isRegister
-                                ? "Set your goals. Build a stronger semester."
-                                : "Your grades, goals, and next steps are waiting."}
-                        </p>
-                    </div>
-                    <form key={activeTab} onSubmit={handleSubmit} noValidate>
-                        {isRegister && (
-                            <fieldset className="account-types">
-                                <legend className="sr-only">Account type</legend>
-                                {["student", "professor"].map((role) => (
-                                    <label
-                                        key={role}
-                                        className={`account-type${registrationRole === role ? " selected" : ""}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="role"
-                                            value={role}
-                                            checked={registrationRole === role}
-                                            onChange={() => {
-                                                setRegistrationRole(role);
-                                                setErrorMessage("");
-                                                setInfoMessage("");
-                                            }}
-                                        />
-                                        <span>{role === "student" ? "Student" : "Professor"}</span>
-                                    </label>
-                                ))}
-                            </fieldset>
-                        )}
-                        <div className={isRegister ? "registration-identity" : undefined}>
+                <Tabs
+                    value={activeTab}
+                    onValueChange={changeAuthMode}
+                    className={`auth-form-area gap-0${isRegister ? " is-register" : ""}`}
+                >
+                    <TabsList
+                        variant="line"
+                        aria-label="Account access"
+                        className="h-auto w-full justify-start gap-8 rounded-none border-b border-border p-0 md:mt-12 max-md:gap-0"
+                    >
+                        {[
+                            ["login", "Log In"],
+                            ["register", "Create Account"],
+                        ].map(([value, label]) => (
+                            <TabsTrigger
+                                key={value}
+                                value={value}
+                                className="h-auto flex-none rounded-none border-0 px-0 pt-0 pb-2 type-small font-normal text-muted-foreground data-active:text-primary group-data-horizontal/tabs:after:-bottom-px after:bg-primary max-md:flex-1 max-md:pt-1 max-md:pb-3"
+                            >
+                                {label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                    <TabsContent value={activeTab} className="flex-none type-body">
+                        <div className="auth-intro" key={`intro-${activeTab}`}>
+                            <p className="form-eyebrow">
+                                {isRegister
+                                    ? "YOUR NEXT CHAPTER STARTS HERE"
+                                    : "GOOD TO SEE YOU AGAIN"}
+                            </p>
+                            <h2 id="auth-title">
+                                {isRegister ? "Create your account." : "Welcome back."}
+                            </h2>
+                            <p className="form-subtitle">
+                                {isRegister
+                                    ? "Set your goals. Build a stronger semester."
+                                    : "Your grades, goals, and next steps are waiting."}
+                            </p>
+                        </div>
+                        <form key={activeTab} onSubmit={handleSubmit} noValidate>
                             {isRegister && (
+                                <RadioGroup
+                                    name="role"
+                                    aria-label="Account type"
+                                    value={registrationRole}
+                                    onValueChange={(role) => {
+                                        setRegistrationRole(role);
+                                        setErrorMessage("");
+                                        setInfoMessage("");
+                                    }}
+                                    className="mb-2 grid-cols-2 gap-2"
+                                >
+                                    {["student", "professor"].map((role) => (
+                                        <Label
+                                            key={role}
+                                            className="min-h-9 cursor-pointer justify-center gap-2 rounded-md border border-input px-2 py-1 font-normal text-muted-foreground transition-colors hover:border-primary has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:font-semibold has-data-checked:text-primary max-md:min-h-11"
+                                        >
+                                            <RadioGroupItem value={role} />
+                                            {role === "student" ? "Student" : "Professor"}
+                                        </Label>
+                                    ))}
+                                </RadioGroup>
+                            )}
+                            <div className={isRegister ? "registration-identity" : undefined}>
+                                {isRegister && (
+                                    <div className="auth-field">
+                                        <label htmlFor="fullName">Full name</label>
+                                        <input
+                                            id="fullName"
+                                            name="fullName"
+                                            required
+                                            value={fullName}
+                                            autoComplete="name"
+                                            maxLength={120}
+                                            onChange={(event) => {
+                                                setFullName(event.target.value);
+                                                clearFieldError("fullName");
+                                            }}
+                                            placeholder="Your full name"
+                                            className={
+                                                fieldErrors.fullName ? "has-error" : undefined
+                                            }
+                                            aria-invalid={Boolean(fieldErrors.fullName)}
+                                            aria-describedby={
+                                                fieldErrors.fullName ? "fullName-error" : undefined
+                                            }
+                                        />
+                                        <small
+                                            id="fullName-error"
+                                            className="field-error"
+                                            role={fieldErrors.fullName ? "alert" : undefined}
+                                            aria-hidden={!fieldErrors.fullName}
+                                        >
+                                            {fieldErrors.fullName || "\u00a0"}
+                                        </small>
+                                    </div>
+                                )}
                                 <div className="auth-field">
-                                    <label htmlFor="fullName">Full name</label>
+                                    <label htmlFor="identifier">
+                                        {isRegister ? "Email" : "Email or Student ID"}
+                                    </label>
                                     <input
-                                        id="fullName"
-                                        name="fullName"
+                                        id="identifier"
+                                        name="identifier"
                                         required
-                                        value={fullName}
-                                        autoComplete="name"
-                                        maxLength={120}
+                                        type={isRegister ? "email" : "text"}
+                                        value={identifier}
+                                        autoComplete="username"
+                                        autoCapitalize="none"
+                                        spellCheck={false}
                                         onChange={(event) => {
-                                            setFullName(event.target.value);
-                                            clearFieldError("fullName");
+                                            setIdentifier(event.target.value);
+                                            clearFieldError("identifier");
                                         }}
-                                        placeholder="Your full name"
-                                        className={fieldErrors.fullName ? "has-error" : undefined}
-                                        aria-invalid={Boolean(fieldErrors.fullName)}
+                                        placeholder="you@university.edu"
+                                        className={fieldErrors.identifier ? "has-error" : undefined}
+                                        aria-invalid={Boolean(fieldErrors.identifier)}
                                         aria-describedby={
-                                            fieldErrors.fullName ? "fullName-error" : undefined
+                                            fieldErrors.identifier ? "identifier-error" : undefined
                                         }
                                     />
                                     <small
-                                        id="fullName-error"
+                                        id="identifier-error"
                                         className="field-error"
-                                        role={fieldErrors.fullName ? "alert" : undefined}
-                                        aria-hidden={!fieldErrors.fullName}
+                                        role={fieldErrors.identifier ? "alert" : undefined}
+                                        aria-hidden={!fieldErrors.identifier}
                                     >
-                                        {fieldErrors.fullName || "\u00a0"}
+                                        {fieldErrors.identifier || "\u00a0"}
                                     </small>
                                 </div>
-                            )}
-                            <div className="auth-field">
-                                <label htmlFor="identifier">
-                                    {isRegister ? "Email" : "Email or Student ID"}
-                                </label>
-                                <input
-                                    id="identifier"
-                                    name="identifier"
-                                    required
-                                    type={isRegister ? "email" : "text"}
-                                    value={identifier}
-                                    autoComplete="username"
-                                    autoCapitalize="none"
-                                    spellCheck={false}
-                                    onChange={(event) => {
-                                        setIdentifier(event.target.value);
-                                        clearFieldError("identifier");
-                                    }}
-                                    placeholder="you@university.edu"
-                                    className={fieldErrors.identifier ? "has-error" : undefined}
-                                    aria-invalid={Boolean(fieldErrors.identifier)}
-                                    aria-describedby={
-                                        fieldErrors.identifier ? "identifier-error" : undefined
-                                    }
-                                />
-                                <small
-                                    id="identifier-error"
-                                    className="field-error"
-                                    role={fieldErrors.identifier ? "alert" : undefined}
-                                    aria-hidden={!fieldErrors.identifier}
-                                >
-                                    {fieldErrors.identifier || "\u00a0"}
-                                </small>
                             </div>
-                        </div>
-                        <PasswordField
-                            id="password"
-                            label="Password"
-                            value={password}
-                            isRegister={isRegister}
-                            onChange={(event) => {
-                                setPassword(event.target.value);
-                                clearFieldError("password");
-                                clearFieldError("confirmPassword");
-                            }}
-                            visible={showPassword}
-                            onToggle={() => setShowPassword((value) => !value)}
-                            error={fieldErrors.password}
-                        />
-                        {isRegister && (
                             <PasswordField
-                                id="confirmPassword"
-                                label="Confirm password"
-                                value={confirmPassword}
-                                isRegister
+                                id="password"
+                                label="Password"
+                                value={password}
+                                isRegister={isRegister}
                                 onChange={(event) => {
-                                    setConfirmPassword(event.target.value);
+                                    setPassword(event.target.value);
+                                    clearFieldError("password");
                                     clearFieldError("confirmPassword");
                                 }}
-                                visible={showConfirmPassword}
-                                onToggle={() => setShowConfirmPassword((value) => !value)}
-                                error={fieldErrors.confirmPassword}
+                                visible={showPassword}
+                                onToggle={() => setShowPassword((value) => !value)}
+                                error={fieldErrors.password}
                             />
-                        )}
-                        <div
-                            className={`auth-feedback${isRegister ? " registration-feedback" : ""}`}
-                        >
-                            {isRegister && !errorMessage && !infoMessage && (
-                                <ul className="password-hints" aria-label="Password requirements">
-                                    {PASSWORD_REQUIREMENTS.map((requirement) => (
-                                        <li
-                                            key={requirement.label}
-                                            className={
-                                                requirement.test(password)
-                                                    ? "met"
-                                                    : showPasswordHints
-                                                      ? "unmet"
-                                                      : "pending"
-                                            }
-                                        >
-                                            <span aria-hidden="true">
-                                                {requirement.test(password)
-                                                    ? "✓"
-                                                    : showPasswordHints
-                                                      ? "×"
-                                                      : "·"}
-                                            </span>{" "}
-                                            {requirement.label}
-                                        </li>
-                                    ))}
-                                </ul>
+                            {isRegister && (
+                                <PasswordField
+                                    id="confirmPassword"
+                                    label="Confirm password"
+                                    value={confirmPassword}
+                                    isRegister
+                                    onChange={(event) => {
+                                        setConfirmPassword(event.target.value);
+                                        clearFieldError("confirmPassword");
+                                    }}
+                                    visible={showConfirmPassword}
+                                    onToggle={() => setShowConfirmPassword((value) => !value)}
+                                    error={fieldErrors.confirmPassword}
+                                />
                             )}
-                            {errorMessage && (
-                                <p className="form-message error" role="alert">
-                                    {errorMessage}
-                                </p>
-                            )}
-                            {infoMessage && (
-                                <p className="form-message info" role="status">
-                                    {infoMessage}
-                                </p>
-                            )}
-                        </div>
-                        <button className="submit-button" type="submit">
-                            {isRegister ? "Create account" : "Log In"}
-                        </button>
-                    </form>
-                    <p className="switch-copy">
-                        {isRegister ? "Already have an account? " : "New to CompUGrade? "}
-                        <button
-                            type="button"
-                            onClick={() => changeAuthMode(isRegister ? "login" : "register")}
-                        >
-                            {isRegister ? "Log in" : "Create an account"}
-                        </button>
-                    </p>
-                    {!isRegister && (
-                        <p className="demo-copy">
-                            Demo student: ysa@student.edu (or U1)
-                            <span>
-                                Password: <strong>password123</strong>
-                            </span>
+                            <div
+                                className={`auth-feedback${isRegister ? " registration-feedback" : ""}`}
+                            >
+                                {isRegister && !errorMessage && !infoMessage && (
+                                    <ul
+                                        className="password-hints"
+                                        aria-label="Password requirements"
+                                    >
+                                        {PASSWORD_REQUIREMENTS.map((requirement) => (
+                                            <li
+                                                key={requirement.label}
+                                                className={
+                                                    requirement.test(password)
+                                                        ? "met"
+                                                        : showPasswordHints
+                                                          ? "unmet"
+                                                          : "pending"
+                                                }
+                                            >
+                                                <span aria-hidden="true">
+                                                    {requirement.test(password)
+                                                        ? "✓"
+                                                        : showPasswordHints
+                                                          ? "×"
+                                                          : "·"}
+                                                </span>{" "}
+                                                {requirement.label}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {errorMessage && (
+                                    <p className="form-message error" role="alert">
+                                        {errorMessage}
+                                    </p>
+                                )}
+                                {infoMessage && (
+                                    <p className="form-message info" role="status">
+                                        {infoMessage}
+                                    </p>
+                                )}
+                            </div>
+                            <button className="submit-button" type="submit">
+                                {isRegister ? "Create account" : "Log In"}
+                            </button>
+                        </form>
+                        <p className="switch-copy">
+                            {isRegister ? "Already have an account? " : "New to CompUGrade? "}
+                            <button
+                                type="button"
+                                onClick={() => changeAuthMode(isRegister ? "login" : "register")}
+                            >
+                                {isRegister ? "Log in" : "Create an account"}
+                            </button>
                         </p>
-                    )}
-                </div>
+                        {!isRegister && (
+                            <p className="demo-copy">
+                                Demo student: ysa@student.edu (or U1)
+                                <span>
+                                    Password: <strong>password123</strong>
+                                </span>
+                            </p>
+                        )}
+                    </TabsContent>
+                </Tabs>
                 <small className="copyright">© 2026 CompUGrade</small>
             </section>
         </main>
