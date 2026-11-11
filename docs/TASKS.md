@@ -442,7 +442,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Add a scoped border reset for shadcn components while preflight is off: `[data-slot], [data-slot] *` get `border: 0 solid`.
   - Creates `components.json` and `src/lib/utils.js` (`cn`). Installs the packages the CLI adds (approved).
   - Check: V-same, plus a scratch render of `Button` in a test (not committed in a page).
-- [ ] **T4.5 Add the new design tokens.**
+- [x] **T4.5 Add the new design tokens.**
+  - **As done:**
+    - **Colours:** the new tokens are in `:root`, with an `@theme inline` map for every semantic colour.
+    - **Radius:** `--radius: 0.5rem` and its sm–3xl scale.
+    - **`@theme` values:** `shadow-card`, `shadow-hover`, `shadow-dialog`, the fonts, and the control sizes (`h-control`, `-sm`, `-lg`, `-touch`).
+    - **Type roles:** the seven roles are `@utility type-*` classes (`type-display`, `type-page-title`, `type-section-title`, `type-card-title`, `type-body`, `type-small`, `type-caption`), each with its phone size and `md` size.
+    - **Sidebar:** the width tokens are in; its colour tokens come with the `sidebar` component in T7.S0.
+    - **Proof:** a throwaway file showed the expected CSS for each kind of class.
   - File: `src/index.css`.
   - Add the §4 tokens that don't exist yet (`highlight-text`, `self-reported-foreground`, `overlay`, the type roles from D2, spacing and component sizes, radius, shadows, `--sidebar-width*`), with `@theme inline` names.
   - Nothing uses them yet.

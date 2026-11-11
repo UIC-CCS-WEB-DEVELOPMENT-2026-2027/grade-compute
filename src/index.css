@@ -140,6 +140,148 @@
     /* Typography Variables */
     --font-heading: "Khand", sans-serif;
     --font-body: "General Sans", sans-serif;
+
+    /* New design tokens (docs/TASKS.md section 4, T4.5). Approved values.
+       Tokens that already existed keep today's values until T7.0a. */
+    --card-foreground: #2c2c2c;
+    --popover: #ffffff;
+    --popover-foreground: #2c2c2c;
+    --primary-foreground: #ffffff;
+    --secondary-foreground: #406093;
+    --accent: #e6edf9;
+    --accent-foreground: #406093;
+    --input: #cbd5e1;
+    --success-foreground: #ffffff;
+    --warning-foreground: #2c2c2c;
+    --highlight-foreground: #2c2c2c;
+    --highlight-text: #7b6b1d; /* yellow-family text, WCAG AA */
+    --official: #2c2c2c; /* locked official scores */
+    --self-reported-foreground: #3b6cb0; /* self-reported values as text, WCAG AA */
+
+    /* Radius scale: sm 4px, md 6px, lg 8px, xl 12px, 2xl 16px, 3xl 24px */
+    --radius: 0.5rem;
+
+    /* Sidebar widths (310px expanded, 76px minimised) */
+    --sidebar-width: 19.375rem;
+    --sidebar-width-icon: 4.75rem;
+}
+
+/* Tailwind names for the tokens above (bg-primary, text-muted-foreground,
+   rounded-lg, shadow-card, font-heading, ...). */
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-overlay: var(--overlay);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-warning-soft: var(--warning-soft);
+    --color-highlight: var(--highlight);
+    --color-highlight-foreground: var(--highlight-foreground);
+    --color-highlight-soft: var(--highlight-soft);
+    --color-highlight-strong: var(--highlight-strong);
+    --color-highlight-text: var(--highlight-text);
+    --color-official: var(--official);
+    --color-self-reported: var(--self-reported);
+    --color-self-reported-foreground: var(--self-reported-foreground);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 8px);
+    --radius-3xl: calc(var(--radius) + 16px);
+}
+
+@theme {
+    --font-sans: "General Sans", sans-serif;
+    --font-heading: "Khand", sans-serif;
+
+    --shadow-card: 0 8px 22px rgb(49 84 134 / 0.06);
+    --shadow-hover: 0 12px 28px rgb(30 36 44 / 0.09);
+    --shadow-dialog: 0 18px 50px rgb(24 28 34 / 0.17);
+
+    /* One size per control (docs/TASKS.md 4.3): h-control, size-control,
+       and the 44px touch size for phones and tablets (Phase 8). */
+    --spacing-control: 2.5rem;
+    --spacing-control-sm: 2rem;
+    --spacing-control-lg: 3rem;
+    --spacing-control-touch: 2.75rem;
+}
+
+/* Text roles (AGENTS.md section 7, docs/TASKS.md 4.2). Each role sets its
+   font, weight, size and line height, with the phone size first. */
+@utility type-display {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 1.05;
+    @media (width >= 48rem) {
+        font-size: 3rem;
+    }
+}
+
+@utility type-page-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    @media (width >= 48rem) {
+        font-size: 2.25rem;
+    }
+}
+
+@utility type-section-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    @media (width >= 48rem) {
+        font-size: 1.875rem;
+    }
+}
+
+@utility type-card-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+@utility type-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+@utility type-small {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.45;
+}
+
+@utility type-caption {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.3;
 }
 
 /* CSS Reset. In the base layer, so Tailwind utilities can override it.
