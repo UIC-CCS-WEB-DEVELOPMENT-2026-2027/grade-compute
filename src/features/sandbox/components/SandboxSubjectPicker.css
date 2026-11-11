@@ -1,17 +1,5 @@
 /* src/components/student/SandboxSubjectPicker.css */
-/* Subject picker for the Target Grade Sandbox, plus the sidebar button that
-   opens it. */
-
-.sidebar-link-button {
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    text-align: left;
-}
-
-.sidebar-link-button:hover {
-    opacity: 1;
-}
+/* Subject picker for the Target Grade Sandbox (opened from the sidebar). */
 
 .app-dialog.sandbox-picker-dialog {
     width: min(560px, calc(100vw - 32px));

@@ -611,7 +611,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - [x] **T7.S5 Help popup → `Dialog`.**
     - Remove its inline styles and the 2 `rgba()` values.
     - Check: B7.
-  - [ ] **T7.S6 Sandbox picker entry.**
+  - [x] **T7.S6 Sandbox picker entry.**
     - The Target Grade Sandbox menu item opens `SandboxSubjectPicker`.
     - Check: B8, B9.
   - **Afterwards:** `SPEC.md` F13 (sidebar thresholds and the keyboard shortcut) needs an owner-approved SPEC update.
