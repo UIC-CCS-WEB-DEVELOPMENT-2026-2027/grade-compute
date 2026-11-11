@@ -3,10 +3,10 @@
 // validation and custom tasks, which still live inside the component.
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { readRecord, seedBrowser, setupBrowserTests } from "../../test/browser.js";
-import { FIXED_NOW, FIXED_NOW_ISO } from "../../test/fixedDate.js";
-import { makeSeedDb } from "../../test/fixtures.js";
-import CurrentTermRecords from "./CurrentTermRecord";
+import { readRecord, seedBrowser, setupBrowserTests } from "@/test/browser.js";
+import { FIXED_NOW, FIXED_NOW_ISO } from "@/test/fixedDate.js";
+import { makeSeedDb } from "@/test/fixtures.js";
+import CurrentTermRecords from "./CurrentTermRecords";
 
 setupBrowserTests();
 

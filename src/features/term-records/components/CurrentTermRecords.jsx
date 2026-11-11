@@ -4,7 +4,7 @@ import { getDb, saveDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
-import "./CurrentTermRecord.css";
+import "./CurrentTermRecords.css";
 
 function termKey(term) {
     return term.toLowerCase();

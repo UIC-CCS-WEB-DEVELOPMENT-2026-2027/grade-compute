@@ -4,7 +4,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import PageFooter from "@/components/layout/PageFooter";
 import TargetGradeSandbox from "../../components/student/TargetGradeSandbox";
-import TermNavigation from "../../components/student/TermNavigation";
+import TermNavigation from "@/features/term-records/components/TermNavigation";
 import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
