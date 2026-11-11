@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import PageFooter from "@/components/layout/PageFooter";
 import TargetGradeSandbox from "@/features/sandbox/components/TargetGradeSandbox";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
-import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
+import { useDb } from "@/hooks/useDb";
 import "./SubjectDetail.css";
 
 export default function TargetGradeSandboxPage() {
@@ -15,14 +14,8 @@ export default function TargetGradeSandboxPage() {
     // Same ?term= as Subject Detail, so both pages stay on the same term.
     const [searchParams, setSearchParams] = useSearchParams();
     const termKey = toTermKey(searchParams.get("term"));
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);
-
-    useEffect(() => {
-        const refresh = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refresh);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
-    }, []);
 
     const classItem = dbData?.classes?.find((item) => item.id === subjectId);
     const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);

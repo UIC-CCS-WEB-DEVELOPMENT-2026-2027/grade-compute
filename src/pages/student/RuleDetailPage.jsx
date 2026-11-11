@@ -12,7 +12,7 @@ import RulePieChart from "@/features/grade-rules/components/RulePieChart";
 import RuleHierarchyTable from "@/features/grade-rules/components/RuleHierarchyTable";
 import Dialog from "@/components/Dialog";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
-import { getDb, saveDbSafely } from "@/services/db";
+import { saveDbSafely } from "@/services/db";
 import {
     DEFAULT_TAGS,
     buildRuleMath,
@@ -27,6 +27,7 @@ import {
     updateRule,
     validateRuleDetails,
 } from "@/lib/rules";
+import { useDb } from "@/hooks/useDb";
 import "./GradeRules.css";
 import "./RuleDetailPage.css";
 
@@ -49,7 +50,7 @@ function RuleDetail({ ruleId }) {
     const navigate = useNavigate();
     const location = useLocation();
     const isNew = ruleId === null;
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb({ live: false });
     const rule = isNew ? null : dbData?.computationRules?.find((item) => item.id === ruleId);
 
     const [details, setDetails] = useState(() => detailsOf(rule));

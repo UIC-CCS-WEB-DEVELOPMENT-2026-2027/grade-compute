@@ -7,8 +7,9 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import RuleCard from "@/features/grade-rules/components/RuleCard";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
-import { getDb, saveDbSafely } from "@/services/db";
+import { saveDbSafely } from "@/services/db";
 import { duplicateRule, getRuleUsage, searchRules } from "@/lib/rules";
+import { useDb } from "@/hooks/useDb";
 import "./GradeRules.css";
 
 const THUMBNAIL_KEY = "compugrade_rule_thumbnail";
@@ -39,7 +40,7 @@ function writeThumbnail(value) {
 
 export default function GradeRules() {
     const navigate = useNavigate();
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb({ live: false });
     const [query, setQuery] = useState("");
     const [thumbnail, setThumbnail] = useState(readThumbnail);
     const [deleteTarget, setDeleteTarget] = useState(null);

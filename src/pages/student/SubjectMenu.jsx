@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import PageFooter from "@/components/layout/PageFooter";
 import EnrolledSubjectsTable from "@/features/subjects/components/EnrolledSubjectsTable";
-import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import {
     getClassSemesterId,
@@ -11,25 +10,20 @@ import {
     getEnrolledSubjects,
     getSemesterOptions,
 } from "@/lib/subjects";
+import { useDb } from "@/hooks/useDb";
 import "./SubjectMenu.css";
 
 const SEMESTER_OPTIONS = getSemesterOptions();
 const DEFAULT_SEMESTER_ID = getCurrentSemester().id;
 
 export default function SubjectMenu() {
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const student = dbData?.users?.find((user) => user.id === studentId);
     const studentName = student?.name || "Student";
     const firstName = studentName.split(" ")[0];
     const [selectedSemesterId, setSelectedSemesterId] = useState(DEFAULT_SEMESTER_ID);
     const studentSection = student?.programSection ?? "";
-
-    useEffect(() => {
-        const refreshDbData = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
-    }, []);
 
     if (!dbData) {
         return (

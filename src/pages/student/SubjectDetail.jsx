@@ -7,7 +7,7 @@ import CurrentTermRecords from "@/features/term-records/components/CurrentTermRe
 import DraftInput from "@/components/DraftInput";
 import TermNavigation from "@/features/term-records/components/TermNavigation";
 import SubjectGradeHistory from "@/features/history/components/SubjectGradeHistory";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
+import { getDb, saveDb } from "@/services/db";
 import { updateStudentRecord } from "@/services/records";
 import congratulationAudio from "@/assets/congrats-voice.mp3";
 import {
@@ -20,6 +20,7 @@ import { getSubjectDetailTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
+import { useDb } from "@/hooks/useDb";
 import "./SubjectDetail.css";
 
 const CONFETTI_COLORS = ["#406093", "#e9c936", "#5ca878", "#f47b62", "#8a6bd1"];
@@ -41,17 +42,11 @@ function SubjectDetail() {
     const focusTaskId = searchParams.get("task");
     const [celebration, setCelebration] = useState("");
     const [targetGradeError, setTargetGradeError] = useState("");
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const previousAchievement = useRef(null);
     const celebrationAudioRef = useRef(null);
     const { subjectId } = useParams();
-
-    useEffect(() => {
-        const refreshDbData = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
-    }, []);
 
     useEffect(() => {
         const currentDb = dbData;

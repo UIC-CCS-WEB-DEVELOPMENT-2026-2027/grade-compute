@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
+import { getDb, saveDb } from "@/services/db";
 import { getEnrolledSubjects } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "@/services/session";
@@ -11,6 +11,7 @@ import useSidebarState, {
     setSidebarMenuOpen,
     setSidebarMinimized,
 } from "@/hooks/useSidebarState";
+import { useDb } from "@/hooks/useDb";
 
 // Phones use the slide-in menu; minimizing only applies to wider screens.
 function isPhoneWidth() {
@@ -21,7 +22,7 @@ export default function Sidebar() {
     const location = useLocation();
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const navigate = useNavigate();
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb();
     const [subjectToRemove, setSubjectToRemove] = useState(null);
     const [isSandboxPickerOpen, setIsSandboxPickerOpen] = useState(false);
     const [isSubjectsOpen, setIsSubjectsOpen] = useState(() => {
@@ -98,12 +99,6 @@ export default function Sidebar() {
             window.removeEventListener("pointerdown", handlePointerDown);
         };
     }, [subjectsPopout]);
-
-    useEffect(() => {
-        const refreshDbData = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refreshDbData);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refreshDbData);
-    }, []);
 
     useEffect(() => {
         if (!subjectToRemove) return undefined;

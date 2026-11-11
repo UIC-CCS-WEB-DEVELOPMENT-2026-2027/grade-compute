@@ -1,30 +1,23 @@
 // src/pages/student/StudentDashboard.jsx
 
-import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import PageFooter from "@/components/layout/PageFooter";
 import EnrolledSubjectsTable from "@/features/subjects/components/EnrolledSubjectsTable";
 import AllSubjectsHistory from "@/features/history/components/AllSubjectsHistory";
-import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { getActiveStudentId } from "@/services/session";
 import { getCurrentSemester, getEnrolledSubjects } from "@/lib/subjects";
+import { useDb } from "@/hooks/useDb";
 import "./StudentDashboard.css";
 
 export default function StudentDashboard() {
-    const [dbData, setDbData] = useState(() => getDb());
+    // Live, so it refreshes when any page saves the database (e.g. a subject is added).
+    const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const semester = getCurrentSemester();
     const student = dbData?.users?.find((user) => user.id === studentId);
     // The dashboard shows the current semester's subjects.
     const subjects = getEnrolledSubjects(dbData, studentId, semester.id);
-
-    // Refresh when any page saves the database (e.g. a subject is added).
-    useEffect(() => {
-        const refresh = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refresh);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
-    }, []);
 
     return (
         <div className="dashboard-page">

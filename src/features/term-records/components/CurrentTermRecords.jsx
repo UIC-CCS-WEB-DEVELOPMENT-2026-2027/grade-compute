@@ -6,6 +6,7 @@ import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
 import { validateScore } from "@/lib/scores";
+import { useDb } from "@/hooks/useDb";
 import "./CurrentTermRecords.css";
 
 function termKey(term) {
@@ -25,7 +26,7 @@ function hasOfficialScore(task) {
 // (e.g. AT, TLA, Exam, or any custom criterion). Tasks are stored under the
 // criterion's id in each term (see grades-guide.txt).
 function CurrentTermRecords({ classId, term = "Prelim" }) {
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb({ live: false });
     const studentId = getActiveStudentId(dbData);
     const [taskNameInput, setTaskNameInput] = useState("");
     const [taskMaxScore, setTaskMaxScore] = useState("");

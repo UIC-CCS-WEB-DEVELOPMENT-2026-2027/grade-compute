@@ -3,8 +3,8 @@
 // rule: each deepest criterion of the rule gets its own row.
 // The math lives in utils/sandbox.js. Sandbox settings and draft scores
 // are private to the student and never change official scores.
-import { useEffect, useState } from "react";
-import { DB_UPDATED_EVENT, getDb, saveDb } from "@/services/db";
+import { useState } from "react";
+import { getDb, saveDb } from "@/services/db";
 import { updateStudentRecord } from "@/services/records";
 import { calculateOfficialGrade, calculateUnofficialGrade, withStudentScore } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
@@ -17,6 +17,7 @@ import { getSandboxTarget } from "@/lib/targets";
 import { TERM_LABELS } from "@/lib/terms";
 import HistoryChart from "@/features/history/components/HistoryChart";
 import { formatGrade } from "@/lib/format";
+import { useDb } from "@/hooks/useDb";
 import "./TargetGradeSandbox.css";
 
 function pluralTasks(count) {
@@ -113,18 +114,12 @@ function SandboxResult({ plan, termLabel }) {
 
 // classId: the class to plan. termKey: "prelim" | "midterm" | "finals".
 export default function TargetGradeSandbox({ classId, termKey = "prelim" }) {
-    const [dbData, setDbData] = useState(() => getDb());
+    const [dbData, setDbData] = useDb();
     const studentId = getActiveStudentId(dbData);
     const [saveError, setSaveError] = useState("");
     const [targetInput, setTargetInput] = useState(null);
     const [targetError, setTargetError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
-
-    useEffect(() => {
-        const refresh = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refresh);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
-    }, []);
 
     const termLabel = TERM_LABELS[termKey] ?? "Prelim";
     const classItem = dbData?.classes?.find((item) => item.id === classId);

@@ -533,9 +533,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - The checklist items passed in a real browser, and the saved data after each flow was byte-identical to before the change.
 - [x] **T6.8 `saveDbSafely`** (G12) in `services/db.js`, for GradeRules and RuleDetailPage.
   - Check: checklist J4, J6, K9, K11.
-- [ ] **T6.9 ⚠ `hooks/useDb.js`** (G1).
+- [x] **T6.9 ⚠ `hooks/useDb.js`** (G1).
   - `live: true` for the 7 listeners, `live: false` for the 4 non-listeners.
   - Check: V-tests, V-same, checklist C, E4, F3, G2–G9.
+  - **As done:**
+    - Header is not converted. It doesn't keep the database in state; it calls `getDb()` on every render. `useDb({ live: false })` would read only once and could show stale data, so the other three non-listeners use `live: false` and Header stays as it is.
+    - In a real browser, the saved data and the visible page text after each checklist step were byte-identical to before.
 - [ ] **T6.10 ⚠ Subject Detail grade logic → `lib/`.**
   - The celebration decision (`lib/celebration.js`: previous/next reached → message or null) and the gauge clamp.
   - Add unit tests. The SubjectDetail tests stay unchanged.

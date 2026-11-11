@@ -3,9 +3,8 @@
 // Records. Follows the selected term. Shows the sandbox plan for the
 // remaining tasks (on at first, can be turned off) and links to the
 // sandbox. Clicking a point scrolls to that task.
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { DB_UPDATED_EVENT, getDb } from "@/services/db";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history";
 import { getTermTarget } from "@/lib/targets";
@@ -13,17 +12,12 @@ import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
 import HistoryChart from "./HistoryChart";
 import { formatGrade } from "@/lib/format";
+import { useDb } from "@/hooks/useDb";
 
 export default function SubjectGradeHistory({ classId, termKey }) {
-    const [dbData, setDbData] = useState(() => getDb());
+    // Live, so it redraws when a score is saved (Current Term Records saves on blur).
+    const [dbData] = useDb();
     const [showPlan, setShowPlan] = useState(true);
-
-    // Redraw when a score is saved (Current Term Records saves on blur).
-    useEffect(() => {
-        const refresh = () => setDbData(getDb());
-        window.addEventListener(DB_UPDATED_EVENT, refresh);
-        return () => window.removeEventListener(DB_UPDATED_EVENT, refresh);
-    }, []);
 
     const studentId = getActiveStudentId(dbData);
     const classItem = dbData?.classes?.find((item) => item.id === classId);
