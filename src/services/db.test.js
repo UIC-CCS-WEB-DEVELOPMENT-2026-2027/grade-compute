@@ -2,7 +2,7 @@
 // Characterization tests for db.js and session.js (browser storage).
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { makeSeedDb } from "@/test/fixtures.js";
-import { DB_UPDATED_EVENT, getDb, initializeDatabase, saveDb } from "./db.js";
+import { DB_UPDATED_EVENT, getDb, initializeDatabase, saveDb, saveDbSafely } from "./db.js";
 import { ACTIVE_USER_KEY, getActiveStudentId, getActiveUser, signOut } from "./session.js";
 
 const DB_KEY = "compugrade_db";
@@ -75,6 +75,35 @@ describe("saveDb", () => {
         expect(JSON.parse(localStorage.getItem(DB_KEY))).toEqual(db);
         expect(listener).toHaveBeenCalledTimes(1);
         window.removeEventListener(DB_UPDATED_EVENT, listener);
+    });
+});
+
+describe("saveDbSafely", () => {
+    it("saves like saveDb and reports success", () => {
+        const listener = vi.fn();
+        window.addEventListener(DB_UPDATED_EVENT, listener);
+        const db = { ...makeSeedDb(), users: [] };
+
+        expect(saveDbSafely(db)).toEqual({ ok: true, error: null });
+
+        expect(JSON.parse(localStorage.getItem(DB_KEY))).toEqual(db);
+        expect(listener).toHaveBeenCalledTimes(1);
+        window.removeEventListener(DB_UPDATED_EVENT, listener);
+    });
+
+    it("returns the error instead of throwing when storage fails", () => {
+        const failure = new Error("Storage is full");
+        const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+            throw failure;
+        });
+        const listener = vi.fn();
+        window.addEventListener(DB_UPDATED_EVENT, listener);
+
+        expect(saveDbSafely(makeSeedDb())).toEqual({ ok: false, error: failure });
+        expect(listener).not.toHaveBeenCalled();
+
+        window.removeEventListener(DB_UPDATED_EVENT, listener);
+        setItem.mockRestore();
     });
 });
 

@@ -12,7 +12,7 @@ import RulePieChart from "@/features/grade-rules/components/RulePieChart";
 import RuleHierarchyTable from "@/features/grade-rules/components/RuleHierarchyTable";
 import Dialog from "@/components/Dialog";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
-import { getDb, saveDb } from "@/services/db";
+import { getDb, saveDbSafely } from "@/services/db";
 import {
     DEFAULT_TAGS,
     buildRuleMath,
@@ -92,10 +92,9 @@ function RuleDetail({ ruleId }) {
     const usage = isNew ? null : getRuleUsage(dbData, rule.id);
 
     function commit(updatedDb) {
-        try {
-            saveDb(updatedDb);
-        } catch (error) {
-            setStatus(`Your changes could not be saved: ${error.message}`);
+        const saved = saveDbSafely(updatedDb);
+        if (!saved.ok) {
+            setStatus(`Your changes could not be saved: ${saved.error.message}`);
             return false;
         }
         setDbData(updatedDb);

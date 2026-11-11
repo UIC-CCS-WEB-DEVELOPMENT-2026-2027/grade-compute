@@ -52,3 +52,16 @@ export const saveDb = (updatedData) => {
     localStorage.setItem(DB_KEY, JSON.stringify(updatedData));
     window.dispatchEvent(new Event(DB_UPDATED_EVENT));
 };
+
+/**
+ * Saves like saveDb, but reports a failure (for example, full storage)
+ * instead of throwing. Returns { ok: true, error: null } or { ok: false, error }.
+ */
+export const saveDbSafely = (updatedData) => {
+    try {
+        saveDb(updatedData);
+        return { ok: true, error: null };
+    } catch (error) {
+        return { ok: false, error };
+    }
+};

@@ -7,7 +7,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import RuleCard from "@/features/grade-rules/components/RuleCard";
 import DeleteRuleDialog from "@/features/grade-rules/components/DeleteRuleDialog";
-import { getDb, saveDb } from "@/services/db";
+import { getDb, saveDbSafely } from "@/services/db";
 import { duplicateRule, getRuleUsage, searchRules } from "@/lib/rules";
 import "./GradeRules.css";
 
@@ -49,10 +49,9 @@ export default function GradeRules() {
     const visibleRules = searchRules(rules, query);
 
     function commit(updatedDb) {
-        try {
-            saveDb(updatedDb);
-        } catch (error) {
-            setMessage(`Your changes could not be saved: ${error.message}`);
+        const saved = saveDbSafely(updatedDb);
+        if (!saved.ok) {
+            setMessage(`Your changes could not be saved: ${saved.error.message}`);
             return false;
         }
         setDbData(updatedDb);

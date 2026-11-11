@@ -531,7 +531,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Sidebar's remove-subject code is not converted. It deletes the record, drops the class once it is empty, and cleans up subjects and requests. That is a removal, not an update of one record (AGENTS §6: don't merge things that only look alike).
     - The React Compiler lint started reporting `Date.now()` in CurrentTermRecords' add-task submit handler as "called during render". It is a false positive, so it is disabled on that line with a comment.
     - The checklist items passed in a real browser, and the saved data after each flow was byte-identical to before the change.
-- [ ] **T6.8 `saveDbSafely`** (G12) in `services/db.js`, for GradeRules and RuleDetailPage.
+- [x] **T6.8 `saveDbSafely`** (G12) in `services/db.js`, for GradeRules and RuleDetailPage.
   - Check: checklist J4, J6, K9, K11.
 - [ ] **T6.9 ⚠ `hooks/useDb.js`** (G1).
   - `live: true` for the 7 listeners, `live: false` for the 4 non-listeners.
