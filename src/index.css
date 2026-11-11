@@ -7,6 +7,9 @@
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
+/* shadcn/ui (Base UI): animation utilities and its custom variants. */
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* Scan app code only (src/). The tooling folders, docs and Markdown files
    are not app code (AGENTS.md section 7). */
@@ -224,6 +227,43 @@
 /* =========================================
    Base UI Elements
    ========================================= */
+
+/* shadcn components while Tailwind preflight is off (until T7.P): the part
+   of preflight they rely on, applied only inside elements that carry
+   data-slot (every shadcn component sets it). Replaces shadcn's global
+   "* { border-border outline-ring/50 }" base rule, which would recolour
+   the borders of existing elements. */
+@layer base {
+    [data-slot],
+    [data-slot] *,
+    [data-slot]::before,
+    [data-slot]::after,
+    [data-slot] *::before,
+    [data-slot] *::after {
+        border: 0 solid;
+        border-color: var(--border);
+        outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    }
+
+    :where(button, input, select, textarea)[data-slot],
+    [data-slot] :where(button, input, select, textarea) {
+        font: inherit;
+        color: inherit;
+        letter-spacing: inherit;
+        background-color: transparent;
+        border-radius: 0;
+        opacity: 1;
+    }
+
+    :where(button, [role="button"])[data-slot]:not(:disabled) {
+        cursor: pointer;
+    }
+
+    [data-slot] :where(img, svg, video, canvas) {
+        display: block;
+        vertical-align: middle;
+    }
+}
 
 /* The element rules below stay outside the layers, so their cascade with
    the app's other rules is unchanged. :where(:not([data-slot])) keeps them

@@ -79,7 +79,6 @@ src/
   hooks/           useSidebarState.js  useDb.js (T6.9)
   lib/             grades.js  rules.js  sandbox.js  history.js  subjects.js  terms.js (+tests)
                    number.js  targets.js  scores.js  format.js (+tests, T6.1–T6.6)
-                   utils.js (cn, from shadcn init)
     dom/           focusTask.js  cssColor.js
   services/        db.js  db.json  migrations.js  session.js  records.js (T6.7)
                    localAccountStore.js  prototypeVerification.js (+tests)
@@ -425,7 +424,17 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - Move the existing reset and element rules (`*`, `body`, `button`, `input`, `h1–h4`, `img`, …) into `@layer base`, so utilities can win over them later.
   - Rename every `--color-*` token to the §4.1 names **at today's values**, across all CSS and JSX. `@theme inline` maps them for Tailwind.
   - Check: V-same, plus a grep showing no `--color-` left outside `@theme`.
-- [ ] **T4.4 ⚠ Initialise shadcn.**
+- [x] **T4.4 ⚠ Initialise shadcn.**
+  - **As done** (differs from the plan below in four places; checked with V-same):
+    1. **Set up by hand.** `shadcn init` only recognises a plain `@import "tailwindcss"`, which would bring in preflight, so it stopped without changing anything. `components.json` was written to the official schema: style `base-nova` (Base UI), `tsx: false`, `rsc: false`, CSS `src/index.css`, the planned aliases, icons `lucide`. `npx shadcn@latest info` reads it as base `base`, JavaScript.
+    2. **The packages `init` adds were installed:**
+       - dependencies: `@base-ui/react`, `class-variance-authority`, `cn`, `lucide-react`
+       - dev dependencies: `shadcn`, `tw-animate-css`
+    3. **`init`'s CSS, minus the global rule.** The `tw-animate-css` and `shadcn/tailwind.css` imports were added to `src/index.css`. Its global `*` border/outline base rule was replaced by a preflight subset scoped to `[data-slot]`, until T7.P.
+    4. **No `src/lib/utils.js`.** Current shadcn components import `cn` from the official `cn` package.
+  - **Proof:** `npx shadcn@latest add button` worked with this setup, and a throwaway test rendered the Button (Base UI, `data-slot="button"`, variant classes). Both were removed again; T7.0b adds Button for real.
+  - **`npm audit`:** 9 advisories, up from 4. The 5 new ones come from the dev-only `shadcn` CLI package (`deepmerge`, `ts-morph` → `minimatch`) and are not shipped.
+  - **Fonts:** untouched. No font was added; the preset's default (Geist) is not used.
   - `npx shadcn@latest init` with base **Base UI**, `tsx: false`, CSS `src/index.css`, aliases `@/components`, `@/components/ui`, `@/lib`, `@/lib/utils`, `@/hooks`. Use `--dry-run`/`--diff` first and merge by hand.
   - Keep the tokens from T4.3.
   - Remove or postpone anything init adds that changes the screen (its base-layer `body`/`*` rules) until T7.P.
