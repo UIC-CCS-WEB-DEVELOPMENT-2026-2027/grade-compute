@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { createPortal } from "react-dom";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon, XIcon } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,14 @@ import {
     AlertDialogMedia,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
     Sidebar as SidebarRoot,
@@ -643,67 +651,37 @@ export function Sidebar() {
             </SidebarRoot>
 
             {/* The dialogs sit outside the sidebar: on phones its content is
-                unmounted when the menu closes. They render on <body>
-                (createPortal), above the page; see the z-index scale in
-                index.css. */}
-            {isHelpOpen &&
-                createPortal(
-                    <div
-                        role="presentation"
-                        onClick={() => setIsHelpOpen(false)}
-                        style={{
-                            position: "fixed",
-                            inset: 0,
-                            zIndex: "var(--z-modal)",
-                            display: "grid",
-                            placeItems: "center",
-                            background: "rgba(33, 45, 59, 0.34)",
-                            backdropFilter: "blur(5px)",
-                        }}
+                unmounted when the menu closes. */}
+            {/* Help: the close button, Escape or a backdrop click close it. */}
+            <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>
+                <DialogContent showCloseButton={false} className="p-6 sm:max-w-xs">
+                    <DialogClose
+                        render={
+                            <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                className="absolute top-2 right-2 text-muted-foreground"
+                            />
+                        }
+                        aria-label="Close help and resources"
                     >
-                        <section
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="help-modal-title"
-                            onClick={(event) => event.stopPropagation()}
-                            style={{
-                                position: "relative",
-                                width: "min(20rem, calc(100vw - 2rem))",
-                                padding: "1.65rem 1.35rem 1.55rem",
-                                borderRadius: "0.35rem",
-                                background: "var(--card)",
-                                boxShadow: "0 1rem 2.5rem rgba(38, 50, 65, 0.18)",
-                            }}
-                        >
-                            <button
-                                type="button"
-                                aria-label="Close help and resources"
-                                autoFocus
-                                onClick={() => setIsHelpOpen(false)}
-                                style={{
-                                    position: "absolute",
-                                    top: "0.7rem",
-                                    right: "0.55rem",
-                                    padding: "0.25rem",
-                                    background: "transparent",
-                                    color: "var(--muted-foreground)",
-                                    fontSize: "1.25rem",
-                                    lineHeight: 1,
-                                }}
-                            >
-                                ×
-                            </button>
-                            <h2 id="help-modal-title">Help &amp; resources</h2>
-                            <p>CompuGrade helps you track courses and understand your progress.</p>
-                            <h3>Getting started</h3>
-                            <p>
-                                Add your courses, review your grades, and use the grade simulator to
-                                explore future outcomes. Export your gradebook anytime as a CSV.
-                            </p>
-                        </section>
-                    </div>,
-                    document.body,
-                )}
+                        <XIcon aria-hidden="true" />
+                    </DialogClose>
+                    <DialogHeader>
+                        <DialogTitle>Help &amp; resources</DialogTitle>
+                        <DialogDescription className="text-foreground">
+                            CompuGrade helps you track courses and understand your progress.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-1">
+                        <h3 className="type-small font-semibold">Getting started</h3>
+                        <p>
+                            Add your courses, review your grades, and use the grade simulator to
+                            explore future outcomes. Export your gradebook anytime as a CSV.
+                        </p>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             {isSandboxPickerOpen && (
                 <SandboxSubjectPicker
