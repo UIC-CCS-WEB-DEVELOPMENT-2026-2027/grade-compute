@@ -13,6 +13,7 @@
 // - The y value after each step is the term grade so far, calculated by
 //   grades.js with only the tasks up to that step.
 import { calculateUnofficialGrade, toTaskList } from "./grades.js";
+import { toNumber } from "./number.js";
 import { getRuleLeaves } from "./rules.js";
 import { getSandboxPlan } from "./sandbox.js";
 import { getClassSemesterId, PASSING_GRADE } from "./subjects.js";
@@ -21,12 +22,6 @@ export { PASSING_GRADE };
 
 const TERM_LABELS = { prelim: "Prelim", midterm: "Midterm", finals: "Finals" };
 const DEFAULT_TARGET = 90;
-
-function toNumber(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const number = Number(value);
-    return Number.isFinite(number) ? number : null;
-}
 
 function toTime(value) {
     const stamp = Date.parse(value ?? "");

@@ -22,6 +22,7 @@
 // Student tasks are stored per term under the same deepest-criterion ids.
 
 import { toTaskList } from "./grades.js";
+import { clamp } from "./number.js";
 
 export const TOTAL_SHARE = 10000;
 export const MIN_SHARE = 100;
@@ -61,10 +62,6 @@ export function formatPercent(share, { fixed = false } = {}) {
 // Multiplier text for formulas: 4900 -> "0.49", 1667 -> "0.1667", 3000 -> "0.30".
 function formatMultiplier(effectiveShare) {
     return (effectiveShare / TOTAL_SHARE).toFixed(4).replace(/0{1,2}$/, "");
-}
-
-function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
 }
 
 // ---------------------------------------------------------------------------

@@ -6,15 +6,9 @@
 //   rule.effectiveMultipliers = { AT: 0.49, TLA: 0.21, Exam: 0.3 }
 //   studentRecord.grades.prelim = { AT: [tasks], TLA: [tasks], Exam: [tasks] }
 
-const TERM_KEYS = ["prelim", "midterm", "finals"];
+import { toNumber } from "./number.js";
 
-// Scores may be stored as numbers or as text from inputs ("45", "").
-// Returns a number, or null when the score is empty or invalid.
-function toNumber(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const number = Number(value);
-    return Number.isFinite(number) ? number : null;
-}
+const TERM_KEYS = ["prelim", "midterm", "finals"];
 
 // Every criterion holds a list of tasks. Older data stored the exam as a
 // single object; treat that as a one-task list.

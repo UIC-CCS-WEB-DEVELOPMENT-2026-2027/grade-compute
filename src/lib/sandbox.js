@@ -23,20 +23,11 @@
 //     criteria: { [leafId]: { upcoming: 2, expected: null } },
 //   }
 import { toTaskList } from "./grades.js";
+import { clamp, toNumber } from "./number.js";
 import { getRuleLeaves, TOTAL_SHARE } from "./rules.js";
 
 export const DEFAULT_TARGET = 90;
 export const MAX_UPCOMING = 20;
-
-function toNumber(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const number = Number(value);
-    return Number.isFinite(number) ? number : null;
-}
-
-function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-}
 
 // Round up to 2 decimals, so scoring the shown value always reaches the target.
 export function roundUp2(value) {

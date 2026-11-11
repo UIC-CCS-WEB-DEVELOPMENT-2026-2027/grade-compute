@@ -3,15 +3,9 @@
 // is the top-level criteria; each outer ring splits them further. Slice
 // sizes are each criterion's share of the total grade.
 import { Pie, PieChart } from "recharts";
+import { resolveColor } from "@/lib/dom/cssColor";
 import { formatPercent, getHierarchyRows, getPieRings } from "@/lib/rules";
 import "./RuleVisuals.css";
-
-// SVG fill attributes can't read CSS variables, so read the token's value.
-function resolveColor(color) {
-    const match = /^var\((--[^)]+)\)$/.exec(color);
-    if (!match || typeof document === "undefined") return color;
-    return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim() || color;
-}
 
 export default function RulePieChart({ tree, size = 220, showLegend = false }) {
     const rings = getPieRings(tree);
