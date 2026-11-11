@@ -164,6 +164,10 @@ src/
 - Add components with the shadcn CLI and follow the installed shadcn skill. Do not copy component code from memory or from other projects.
 - Set up shadcn for **Base UI** (owner decision, Gate 0) in JavaScript (`tsx: false`), with the `@/` alias.
 - Build app-specific components by composing shadcn primitives.
+- Generated components in `src/components/ui/` follow the styling rules too (owner decision, Gate 4). In the commit that adds a component:
+  - replace its one-off values with tokens and the Tailwind scale
+  - set its control heights to the token sizes (`h-control` and its siblings)
+  - keep its structure and API as generated
 
 **Styling**
 

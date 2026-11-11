@@ -199,6 +199,13 @@ shadcn is set up for **Base UI**, JavaScript (`tsx: false`), with the `@/` alias
 | Recent Updates list, sessions list, sandbox picker rows, settings rows | `Item` | |
 | Recharts `ResponsiveContainer` setups | `Chart` (`ChartContainer`) | T7.D2; Recharts stays at 3.10.1 |
 
+**Generated components follow the token rules (owner decision, Gate 4).** When a component is added to `src/components/ui/`:
+- Replace its one-off values (`text-[0.8rem]`, `rounded-[min(...)]`, `hover:bg-[color-mix(...)]`, …) with tokens and the Tailwind scale.
+- Set control heights to the §4.3 sizes (`h-control`, `h-control-sm`, `h-control-lg`; 44px touch sizes in Phase 8).
+- Map icon sizes to the scale.
+
+Only the variant strings change; the component's structure and API stay as generated. The edit goes in the same commit that adds the component.
+
 **No shadcn equivalent (kept custom, composed from shadcn parts where possible):**
 - **Grade gauge ring:** shadcn's `Progress` is linear. `GradeGauge` uses a conic-gradient defined as an `@utility` in `src/index.css`.
 - **Pill editor:** the drag handles and the percentage strip. Its buttons and inputs become `Button`/`Input`.
@@ -391,7 +398,7 @@ These come from AUDIT §10 and the Phase 2 screenshots and measurements. All scr
 | **Sandbox** | The criteria table becomes stacked rows below `lg`, so no inner scroll at 1024. Number inputs, back link, term tabs and "How this is calculated" to 44px |
 | **Grade Rules** | Thumbnail toggles, card actions and the card link to 44px |
 | **Rule editor** | Pill icon buttons to 44px hit areas (a visual dot can stay smaller inside a 44px button). The % input, tag checkboxes (inside a 44px label row), name and school inputs, "Add school" and the view toggles to 44px |
-| **Settings** | Nav items, toggles, buttons and inputs to 44px. Its own layout keeps 2 nav rows at `md` and stacks below `sm` |
+| **Settings** | Uses the shared page shell from T7.L0, so the same layout rules as the other pages apply. Section tabs, toggles, buttons and inputs to 44px. The section tabs wrap or scroll below `md` |
 
 ---
 
@@ -414,6 +421,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     1. **Only the reset is layered.** `*`, `body`, `html`/`#root`, font inherit, `img`, `h1–h6` went into `@layer base`.
        - The `button`, `input` and `select` element rules (and their `:hover`/`:focus`) stay unlayered and are scoped with `:where(:not([data-slot]))`, which adds no specificity. The same goes for the 2 bare `select` rules in `GlobalSettings.css`, which loads on every page.
        - Reason: layering those rules would let the app's class rules beat them on hover and focus, which screenshots can't catch. The scoping keeps them off shadcn components.
+       - **Superseded at Gate 4.** The owner accepted hover and focus changes so the whole codebase uses Tailwind's layer system. The `button`, `input` and `select` rules (in `index.css`), and the page-wide element rules in `GlobalSettings.css` (`*`, `html`/`body`/`#root`, font inherit, `img`, the bare `select` parts), are now in `@layer base`, still scoped with `:where(:not([data-slot]))`. V-same was still 0 of 56; only hover and focus can differ, where an element's own class sets `opacity` or `border-color`.
     2. **Criteria tokens keep their names.** `--color-criteria-N` and `-on` went into `@theme static`, because `rules.js` builds those names at runtime and the tests assert them.
     3. **Shadow colours renamed.** `--shadow-card`, `-hover`, `-hover-strong`, `-dialog` and `-card-dark` hold colours, not shadows; they became `--elevation-*` to free Tailwind's `--shadow-*` namespace for T4.5. `GlobalSettings.css`'s page-wide aliases (`--card`, `--muted`, `--primary`, …) became `--settings-*`, because they collided with the new names.
     4. **Scanning limited to `src/`.** Tailwind scans `src/` only (`source(none)` plus `@source "./"`). It no longer scans the tooling folders, `docs/` or the Markdown files, which held example class names.
@@ -648,10 +656,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - Check: K3–K8.
   - [ ] **T7.K3** View switch `ToggleGroup`, the impact `Dialog`, the status line, the action buttons. Delete `RuleDetailPage.css`. Check: K1, K2, K9–K12, K15.
 - **Settings (R5: a shell task plus one per section)**
-  - [ ] **T7.L0 Settings shell.**
-    - Change: section nav → `Tabs`, its back link → `BackLink`, `BrandMark`, the "Workspace Student" box, the status message.
-    - Move the unscoped reduced-motion rule from `GlobalSettings.css` to `index.css` **unchanged** (B19: same reach, now explicit).
-    - Check: L1.
+  - [ ] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**
+    - **Shell:** Settings drops its own layout, its own yellow navigation sidebar and its own colour aliases. It uses `PageShell`, like the other pages: the shared Sidebar, Header and PageFooter, the global tokens and the `type-*` roles.
+    - **Section navigation:** Profile, Account, Security, Notifications and Account Actions become `Tabs` at the top of the page content.
+    - **Kept:** the "Back" link (`BackLink`, same wording), the "Workspace: Student" label (`SPEC.md` §6 g), the page heading and the status message.
+    - **Brand mark:** removed from Settings; the shared Sidebar already shows it.
+    - **Reduced motion:** move the unscoped rule from `GlobalSettings.css` to `index.css` **unchanged** (B19: same reach, now explicit).
+    - **Afterwards:** `SPEC.md` F14 ("its own layout") needs an owner-approved SPEC update, and checklist L1 is updated.
+    - Check: V-visual at all widths; L1; B1–B12 on `/settings` (it now has the shared sidebar).
   - [ ] **T7.L1s Profile section** → `features/settings/components/ProfileSection.jsx`, `Card`, `Item`. Check: L2.
   - [ ] **T7.L2s Account section** → `AccountSection.jsx`: `Field`, `Input`, file `Input`, `Avatar`, `Button`. Check: L3, L4.
   - [ ] **T7.L3 ⚠ Security section** → `SecuritySection.jsx`.
@@ -747,6 +759,14 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 | Input-border contrast (WCAG 1.4.11, 3:1 for control outlines) | Not required by `AGENTS.md`, which asks for text contrast. Noted only |
 
 ---
+
+## 8a. Gate 4 decisions (2026-11-11)
+
+| Decision | Where it is applied |
+| --- | --- |
+| Hover and focus styles may change, so that every element rule is in Tailwind's layer system | Done after T4.5 (T4.3 note) |
+| Settings looks like the other pages and uses the global stylesheet and shared shell | T7.L0–T7.L5s, §5 Settings row |
+| Generated shadcn components are edited to use tokens (no one-off values; control heights from §4.3) | §3.1, every Phase 7 task that adds a component; `AGENTS.md` §7 |
 
 ## 8. Gate 3 decisions
 
