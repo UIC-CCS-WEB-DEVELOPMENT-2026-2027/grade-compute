@@ -41,7 +41,7 @@
    Each of these would change behaviour. See the Sidebar decision in §3.2.
 6. **Conflict between the workflow and `SPEC.md`.** Phase 5a lists `src/pages/StudentSettingsPrototype.jsx` and the dead `.student-switcher*` / `.student-role-*` CSS for deletion. `SPEC.md` §6 (f) lists that prototype "with its CSS" as non-student code that is kept.
    - **Gate 3 decision (D1):** the owner decided they are dead code and are deleted in T5a.1 and T5a.3.
-   - **Blocked:** those deletions wait until `SPEC.md` §6 (f) has been updated through the SPEC protocol.
+   - `SPEC.md` §6 (f) was updated through the SPEC protocol (commit `ca4b747`), so the deletions can go ahead.
 
 ---
 
@@ -116,7 +116,7 @@ A file's test moves with it. Each per-component CSS file moves with its componen
 | `src/assets/congrats_voice .mp3` | `src/assets/congrats-voice.mp3` (no space in the name) | T5.12 |
 
 **Deleted in Phase 5a, not moved:**
-- `src/pages/StudentSettingsPrototype.jsx` (D1, after the SPEC update)
+- `src/pages/StudentSettingsPrototype.jsx` (D1)
 - `src/components/SelectSetting.jsx`
 - `src/components/shared/RuleCompare.jsx`
 - `src/components/ToggleSettings`
@@ -435,14 +435,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 
 - [ ] **T5a.1 Unused files.**
   - Delete: `src/components/SelectSetting.jsx`, `src/components/shared/RuleCompare.jsx` (0 bytes), `src/components/ToggleSettings` (0 bytes), and `src/pages/StudentSettingsPrototype.jsx` (D1).
-  - **Blocked** until `SPEC.md` §6 (f) is updated through the SPEC protocol.
   - Check: V-same, and nothing imports the deleted files.
 - [ ] **T5a.2 Unused assets.**
   - Delete: `src/assets/bell-icon.png`, `user-profile.png`, `visibility-eye.svg`; `public/grade-rules-mark.svg`, `public/icons.svg`.
   - Keep `public/favicon.svg` (branding).
   - Check: V-same, and grep finds no reference to them.
 - [ ] **T5a.3 Dead global CSS classes.**
-  - Remove: `.student-switcher*`, `.student-role-*` (D1, after the SPEC update), `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
+  - Remove: `.student-switcher*`, `.student-role-*` (D1), `.dashboard-view-*`, `.text-official`, `.input-self-reported`, `.banner-pending`, `.container`, `.flex-row`, `.flex-col`, `.align-center`, `.justify-between`, `.btn-accent`.
   - Check: V-same, plus a grep of JSX for each class name.
 - [ ] **T5a.4 Unreachable dark theme.**
   - Remove all `.global-settings.dark` rules (`GlobalSettings.css`), the `--*-dark` tokens (`index.css`), and any token used only by them.
@@ -694,7 +693,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 - **Branding:** untouched. `BrandMark` is an identical extraction, and the favicon and title stay.
 
 **Conflicts with `SPEC.md`.**
-- **Deleting StudentSettingsPrototype and its CSS (D1)** conflicts with SPEC §6 (f). T5a.1 and T5a.3 are blocked until SPEC §6 (f) is updated through the protocol (proposal in the Gate 3 reply).
+- **Deleting StudentSettingsPrototype and its CSS (D1):** resolved. SPEC §6 (f) now marks them as dead code to delete in Phase 5a (commit `ca4b747`).
 - **When they ship, these make `SPEC.md` out of date**, and each needs an owner-approved SPEC update at that point:
   - T6.12 → the B9 note in SPEC §4
   - T7.S1–S2 → F13 (sidebar thresholds and the keyboard shortcut)
@@ -731,7 +730,7 @@ The owner answered on 2026-11-11:
 
 | # | Decision | Where it is applied |
 | --- | --- | --- |
-| D1 | The settings prototype and its `.student-switcher*` / `.student-role-*` CSS are dead code and are **deleted** | T5a.1, T5a.3. Blocked until `SPEC.md` §6 (f) is updated through the protocol |
+| D1 | The settings prototype and its `.student-switcher*` / `.student-role-*` CSS are dead code and are **deleted** | T5a.1, T5a.3. `SPEC.md` §6 (f) updated in `ca4b747` |
 | D2 | Add the `display` and `card-title` type roles | §4.2, `AGENTS.md` §7 |
 | D3 | Add the missing General Sans weights. Use only Khand and General Sans, from `src/assets/` | §4.2, T4.4, T7.0c, `AGENTS.md` §7 |
 | D4 | `window.confirm` → `AlertDialog` | T7.K2 |
@@ -742,6 +741,8 @@ The owner answered on 2026-11-11:
 | S1–S5 | Sidebar behaviour as in §3.2: keep the `compugrade-sidebar-minimized` key with no cookie, keep the Ctrl/⌘+B shortcut, phone switch at 767, tablet default kept, minimised pop-out kept | T7.S0–S3 |
 | D8 | The design tokens in §4 are approved as listed, including the AA darkening | T4.5, T7.0a |
 
-**Still open:**
-- **SPEC proposals 1 and 2** (the D1 note in §6 (f), and the homepage idea for §9) await the owner's approval through the SPEC protocol. T5a.1 and T5a.3 stay blocked until proposal 1 is written.
-- **The owner's homepage idea** (an interactive grade-calculator hero, switching to a grade inputter for professors): a new feature, so it goes to the `SPEC.md` Backlog through the protocol, not into this job.
+**Recorded in `SPEC.md`** (commit `ca4b747`, through the SPEC protocol):
+- the D1 note in §6 (f)
+- the owner's homepage idea, in the §9 Backlog. It is a new feature, so it is not built in this job.
+
+Nothing is left open.
