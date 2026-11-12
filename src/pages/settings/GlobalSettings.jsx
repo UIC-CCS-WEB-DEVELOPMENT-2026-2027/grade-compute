@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSpaceSplitInitials } from "@/lib/format";
+import { AccountSection } from "@/features/settings/components/AccountSection";
 import { ProfileSection } from "@/features/settings/components/ProfileSection";
 import { SettingRow } from "@/features/settings/components/SettingRow";
 import { ToggleSetting } from "@/features/settings/components/ToggleSetting";
@@ -365,146 +366,6 @@ export function GlobalSettings({ onLogout }) {
         { label: "At least 8 characters", met: passwordForm.next.length >= 8 },
     ];
     const passwordStrength = passwordRequirements.filter(({ met }) => met).length;
-
-    const renderAccountSection = () => (
-        <div className="settings-panel" onClick={handleSettingRowClick}>
-            <div className="account-header-row">
-                <div>
-                    <h3>Account details</h3>
-                    <p>Update the information connected to your CompuGrade account.</p>
-                </div>
-            </div>
-
-            <div className="profile-photo-box">
-                <div className="photo-preview-wrap">
-                    {selectedImage || profile.profilePicture ? (
-                        <img
-                            src={selectedImage || profile.profilePicture}
-                            alt="Current profile preview"
-                            className="photo-preview"
-                        />
-                    ) : (
-                        <div className="photo-placeholder">{profileInitials}</div>
-                    )}
-                </div>
-
-                <div className="photo-controls">
-                    <label className="upload-button">
-                        <input
-                            type="file"
-                            accept="image/png, image/jpeg, image/jpg"
-                            onChange={handleImageSelect}
-                            disabled={!isAccountEditing}
-                        />
-                        Choose photo
-                    </label>
-                    <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={saveProfilePicture}
-                        disabled={!isAccountEditing}
-                    >
-                        Save photo
-                    </button>
-                </div>
-            </div>
-
-            <div className="form-grid">
-                <label className="field">
-                    <span>Full name</span>
-                    <input
-                        type="text"
-                        name="fullName"
-                        value={profile.fullName}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field">
-                    <span>Student ID</span>
-                    <input
-                        type="text"
-                        name="studentId"
-                        value={profile.studentId}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field">
-                    <span>Program / Course</span>
-                    <input
-                        type="text"
-                        name="program"
-                        value={profile.program}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field">
-                    <span>Year level</span>
-                    <input
-                        type="text"
-                        name="yearLevel"
-                        value={profile.yearLevel}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field full-width">
-                    <span>Short bio</span>
-                    <textarea
-                        name="bio"
-                        rows="4"
-                        value={profile.bio}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field">
-                    <span>Email address</span>
-                    <input
-                        type="email"
-                        name="email"
-                        value={profile.email}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-
-                <label className="field">
-                    <span>Username</span>
-                    <input
-                        type="text"
-                        name="username"
-                        value={profile.username}
-                        onChange={handleAccountInput}
-                        disabled={!isAccountEditing}
-                    />
-                </label>
-            </div>
-
-            <div className="action-row">
-                {isAccountEditing ? (
-                    <button type="button" className="primary-button" onClick={saveAccountChanges}>
-                        Save changes
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() => setIsAccountEditing(true)}
-                    >
-                        Edit again
-                    </button>
-                )}
-            </div>
-        </div>
-    );
 
     const renderSecuritySection = () => (
         <div className="settings-panel security-panel">
@@ -1350,7 +1211,19 @@ export function GlobalSettings({ onLogout }) {
             case "Profile":
                 return <ProfileSection profile={profile} initials={profileInitials} />;
             case "Account":
-                return renderAccountSection();
+                return (
+                    <AccountSection
+                        profile={profile}
+                        initials={profileInitials}
+                        selectedImage={selectedImage}
+                        isEditing={isAccountEditing}
+                        onFieldChange={handleAccountInput}
+                        onImageSelect={handleImageSelect}
+                        onSavePhoto={saveProfilePicture}
+                        onSave={saveAccountChanges}
+                        onEditAgain={() => setIsAccountEditing(true)}
+                    />
+                );
             case "Security":
                 return renderSecuritySection();
             case "Notifications":

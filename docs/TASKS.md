@@ -780,7 +780,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       3. Text: the name `card-title`, the username `body`, labels, values and the bio `small` (were 12–14.5px), "Short bio" `small` semibold (was Khand 14.4px).
       4. Its rules left `GlobalSettings.css`; the selector lists shared with Account's photo box were trimmed.
       5. Checked L2 in a browser, without and with a saved photo, at all four widths.
-  - [ ] **T7.L2s Account section** → `AccountSection.jsx`: `Field`, `Input`, file `Input`, `Avatar`, `Button`. Check: L3, L4.
+  - [x] **T7.L2s Account section** → `AccountSection.jsx`: `Field`, `Input`, file `Input`, `Avatar`, `Button`. Check: L3, L4.
+    - **As done:**
+      1. `AccountSection` gets the account, the chosen photo, the editing state and the GlobalSettings handlers as props; the state and the save logic stay in GlobalSettings, unchanged.
+      2. "Choose photo" stays a real file input filling a button-styled label, not the shadcn file `Input`: that one shows the browser's own "Choose file / No file chosen" text, which would replace the wording. Name, click area and disabled state are as before.
+      3. The fields are `Field` + `FieldLabel` + `Input`, and the bio a `Textarea`, in a `FieldGroup` with two columns from `lg` (was above 900px). Labels now point at their field (`htmlFor`) instead of wrapping it; the names are the same. Inputs are 40px (44px below `md`; were 44px everywhere). The photo is an `Avatar` (82px, as before).
+      4. "Save changes" keeps the yellow fill (`highlight-strong`); "Save photo" and "Edit again" are outline `Button`s; on phones they fill the width, as before.
+      5. Its rules left `GlobalSettings.css`. `.field`, `.secondary-button` and `.primary-button` stay for Security until T7.L3.
+      6. Checked L3 and L4 in a browser against the old code at 1440 and 375: every keystroke saved, "Account details updated.", the GIF and PNG messages, "Choose an image first.", the disabled state and "Edit again" gave the same results.
   - [ ] **T7.L3 ⚠ Security section** → `SecuritySection.jsx`.
     - Change: the password flow (`Field`, `InputGroup` with the Show/Hide text), the verification code `Input`, 2FA, sessions (`Item`), `AlertDialog`s, the help `Dialog` + `Tabs` (G17).
     - B2 and B5 behaviour is kept.
