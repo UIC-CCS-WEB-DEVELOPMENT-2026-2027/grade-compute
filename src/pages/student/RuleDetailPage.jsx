@@ -28,7 +28,6 @@ import {
     validateRuleDetails,
 } from "@/lib/rules";
 import { useDb } from "@/hooks/useDb";
-import "./GradeRules.css";
 import "./RuleDetailPage.css";
 
 function detailsOf(rule) {

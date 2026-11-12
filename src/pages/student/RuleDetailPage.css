@@ -1,6 +1,70 @@
 /* src/pages/student/RuleDetail.css
    View/edit page for one grade computation rule. */
 
+/* Moved from GradeRules.css when it was deleted (T7.J1): the page layout,
+   the view switch and the secondary buttons. They come first, so the rules
+   below still override them as before. T7.K1 and T7.K3 rebuild them. */
+
+.rules-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--card);
+}
+
+.rules-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.rules-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1180px;
+    padding: 30px clamp(20px, 5vw, 64px) 48px;
+}
+
+.rules-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--muted);
+}
+
+.rules-toggle button {
+    padding: 5px 12px;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 13px;
+}
+
+.rules-toggle button[aria-pressed="true"] {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-secondary {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+.btn-secondary.is-danger {
+    color: var(--destructive);
+}
+
+/* Phones: comfortable tap targets (at least 44px tall). */
+@media (max-width: 760px) {
+    .rules-toggle button {
+        min-height: 44px;
+    }
+}
+
 .rule-detail {
     display: flex;
     flex-direction: column;

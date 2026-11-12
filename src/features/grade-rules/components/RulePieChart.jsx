@@ -5,7 +5,7 @@
 import { Pie, PieChart } from "recharts";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { formatPercent, getHierarchyRows, getPieRings } from "@/lib/rules";
-import "./RuleVisuals.css";
+import { RuleLegend } from "./RuleLegend";
 
 export function RulePieChart({ tree, size = 220, showLegend = false }) {
     const rings = getPieRings(tree);
@@ -19,7 +19,7 @@ export function RulePieChart({ tree, size = 220, showLegend = false }) {
         .join(", ");
 
     return (
-        <figure className="rule-pie">
+        <figure className="m-0 flex flex-wrap items-center gap-x-7 gap-y-4">
             <div role="img" aria-label={`Nested pie chart: ${summary}`}>
                 <PieChart width={size} height={size} accessibilityLayer={false}>
                     {rings.map((ring, index) => (
@@ -47,15 +47,15 @@ export function RulePieChart({ tree, size = 220, showLegend = false }) {
                 </PieChart>
             </div>
             {showLegend && (
-                <ul className="rule-legend rule-legend-stacked" aria-hidden="true">
-                    {rows.map((row) => (
-                        <li key={row.id}>
-                            <i style={{ backgroundColor: row.color }} />
-                            <span>{row.name}</span>
-                            <strong>{formatPercent(row.effectiveShare)}</strong>
-                        </li>
-                    ))}
-                </ul>
+                <RuleLegend
+                    stacked
+                    items={rows.map((row) => ({
+                        id: row.id,
+                        name: row.name,
+                        color: row.color,
+                        value: formatPercent(row.effectiveShare),
+                    }))}
+                />
             )}
         </figure>
     );

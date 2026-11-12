@@ -705,10 +705,18 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. The "How this is calculated" toggle stays primary when open (the ghost button turns dark when open; Current Term Records' breakdown toggle does that today).
       5. Checked B8, B9, I13 and I14 in a browser: same text, accessible names, links and keyboard behaviour as before.
 - **Grade Rules**
-  - [ ] **T7.J1 GradeRules page.**
+  - [x] **T7.J1 GradeRules page.**
     - Change: search `Input`, thumbnail `ToggleGroup`, `RuleCard` (`Card`, `Badge`, `Button`), RuleBar, RulePieChart and RuleHierarchyTable (`Table`), `RuleLegend` (G16), `Empty`.
     - Delete `GradeRules.css` and `RuleVisuals.css`.
     - Check: J1–J4, J8.
+    - **As done:**
+      1. The page uses `PageShell` with `showFooter={false}` (still no footer), so its background is the shared `muted` one (was white) and the 1180px content cap is gone. The card grid follows the space next to the sidebar: two columns from `@xl` (576px), three from `@4xl` (896px); before, `auto-fill` with 300px minimum cards.
+      2. `RuleDetailPage` imported `GradeRules.css` too. Its layout (`rules-layout`/`-main`/`-content`), the view switch (`rules-toggle`) and `btn-secondary`/`is-danger` moved unchanged to the top of `RuleDetailPage.css` for T7.K1 and T7.K3. On the editor, only the shared visuals changed: the formula, the hierarchy table and the pie legend.
+      3. `RuleFormula` keeps its boxed look and takes a `className`; the card shows it as plain `small` text, as before. `RuleLegend` (G16) serves the bar and the pie (`stacked`).
+      4. Rule cards: an `<article>` around a `Card`, with the hover lift and outline as before (`shadow-hover`, no movement with reduced motion). Tags are outline `Badge`s with the dot, usage is a secondary `Badge`, Duplicate and Delete are outline `Button`s (`sm`, 44px below `md`).
+      5. Text: card titles `card-title` (were 23px), table, legend and notes `small` (were 11–13px). The compact thumbnail table still fits its 164px box at 14px.
+      6. The preview toggle is a `ToggleGroup`: one Tab stop, arrows move between the options (G15, as for the term tabs).
+      7. Checked J1–J4 and J8 in a browser, plus a card click and Delete opening the dialog.
   - [ ] **T7.J2** DeleteRuleDialog → `Dialog` + `NativeSelect`. Check: J5–J7.
 - **Rule editor**
   - [ ] **T7.K1** Details form: `Field`, `Input`, `Checkbox`s in `FieldSet`, school chips (`Badge` + `Button`). Check: K13, K14.
