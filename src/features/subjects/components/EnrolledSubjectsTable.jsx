@@ -93,7 +93,7 @@ export function EnrolledSubjectsTable({
                 </div>
                 <Button
                     variant={showForm ? "outline" : "default"}
-                    className={cn("shrink-0 max-md:h-control-touch", showForm && "text-primary")}
+                    className={cn("shrink-0", showForm && "text-primary")}
                     onClick={() => setShowForm((open) => !open)}
                     aria-expanded={showForm}
                 >
@@ -101,7 +101,7 @@ export function EnrolledSubjectsTable({
                 </Button>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-6">
+            <CardContent className="@container flex flex-col gap-6">
                 {showForm && (
                     <AddSubjectForm
                         studentId={studentId}
@@ -122,13 +122,13 @@ export function EnrolledSubjectsTable({
                     >
                         <ToggleGroupItem
                             value="all"
-                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary max-md:h-control-touch"
+                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary"
                         >
                             All subjects
                         </ToggleGroupItem>
                         <ToggleGroupItem
                             value="attention"
-                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary max-md:h-control-touch"
+                            className="rounded-full px-3.5 font-normal text-muted-foreground aria-pressed:bg-secondary aria-pressed:font-semibold aria-pressed:text-primary"
                         >
                             Needs attention
                             {needsAttentionCount > 0 && (
@@ -138,7 +138,7 @@ export function EnrolledSubjectsTable({
                     </ToggleGroup>
                     <Input
                         type="search"
-                        className="w-55 max-md:h-control-touch max-sm:w-full"
+                        className="w-55 max-sm:w-full"
                         placeholder="Search subjects..."
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
@@ -146,8 +146,8 @@ export function EnrolledSubjectsTable({
                     />
                 </div>
 
-                <Table className="max-md:block">
-                    <TableHeader className="max-md:sr-only">
+                <Table className="@max-2xl:block">
+                    <TableHeader className="@max-2xl:sr-only">
                         <TableRow className="hover:bg-transparent">
                             {[
                                 "Subject / Professor",
@@ -165,7 +165,7 @@ export function EnrolledSubjectsTable({
                             <TableHead aria-label="Open subject" />
                         </TableRow>
                     </TableHeader>
-                    <TableBody className="max-md:flex max-md:flex-col max-md:gap-3">
+                    <TableBody className="@max-2xl:flex @max-2xl:flex-col @max-2xl:gap-3">
                         {visibleSubjects.map((row) => {
                             const detailPath = `/student/subject/${row.classId}`;
                             return (
@@ -174,11 +174,11 @@ export function EnrolledSubjectsTable({
                                 <TableRow
                                     key={row.classId}
                                     onClick={() => navigate(detailPath)}
-                                    className="cursor-pointer hover:bg-muted max-md:grid max-md:grid-cols-3 max-md:gap-x-4 max-md:gap-y-3 max-md:rounded-xl max-md:border max-md:p-4"
+                                    className="cursor-pointer hover:bg-muted @max-2xl:grid @max-2xl:grid-cols-3 @max-2xl:gap-x-4 @max-2xl:gap-y-3 @max-2xl:rounded-xl @max-2xl:border @max-2xl:p-4"
                                 >
-                                    <TableCell className="py-4.5 max-md:col-span-2 max-md:p-0 max-md:whitespace-normal">
+                                    <TableCell className="py-4.5 @max-2xl:col-span-2 @max-2xl:p-0 @max-2xl:whitespace-normal">
                                         <Link
-                                            className="flex min-w-55 items-center gap-3.5 text-inherit no-underline hover:text-primary max-md:min-w-0"
+                                            className="flex min-w-55 items-center gap-3.5 text-inherit no-underline hover:text-primary @max-2xl:min-w-0"
                                             to={detailPath}
                                             onClick={(event) => event.stopPropagation()}
                                         >
@@ -201,8 +201,8 @@ export function EnrolledSubjectsTable({
                                             </span>
                                         </Link>
                                     </TableCell>
-                                    <TableCell className="py-4.5 max-md:order-1 max-md:p-0 max-md:whitespace-normal">
-                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase md:hidden">
+                                    <TableCell className="py-4.5 @max-2xl:order-1 @max-2xl:p-0 @max-2xl:whitespace-normal">
+                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase @2xl:hidden">
                                             Official
                                         </span>
                                         <span className="block type-card-title text-foreground">
@@ -214,8 +214,8 @@ export function EnrolledSubjectsTable({
                                                 : "Posted by professor"}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="py-4.5 max-md:order-1 max-md:col-span-2 max-md:p-0 max-md:whitespace-normal">
-                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase md:hidden">
+                                    <TableCell className="py-4.5 @max-2xl:order-1 @max-2xl:col-span-2 @max-2xl:p-0 @max-2xl:whitespace-normal">
+                                        <span className="block type-caption tracking-wide text-muted-foreground uppercase @2xl:hidden">
                                             Expected
                                         </span>
                                         {/* Expected grades use the self-reported color. */}
@@ -228,7 +228,7 @@ export function EnrolledSubjectsTable({
                                                 : "With your scores"}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="py-4.5 max-md:order-2 max-md:col-span-3 max-md:p-0 max-md:whitespace-normal">
+                                    <TableCell className="py-4.5 @max-2xl:order-2 @max-2xl:col-span-3 @max-2xl:p-0 @max-2xl:whitespace-normal">
                                         <Badge
                                             variant={STATUS_VARIANTS[row.status]}
                                             className={cn(
@@ -240,9 +240,9 @@ export function EnrolledSubjectsTable({
                                             {STATUS_LABELS[row.status]}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="py-4.5 text-right max-md:self-center max-md:p-0 max-md:whitespace-normal">
+                                    <TableCell className="py-4.5 text-right @max-2xl:self-center @max-2xl:p-0 @max-2xl:whitespace-normal">
                                         <Link
-                                            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground no-underline hover:text-primary focus-visible:text-primary max-md:size-11"
+                                            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground no-underline hover:text-primary focus-visible:text-primary max-lg:size-11"
                                             to={detailPath}
                                             onClick={(event) => event.stopPropagation()}
                                             aria-label={`Open ${row.subjectCode}`}
@@ -254,10 +254,10 @@ export function EnrolledSubjectsTable({
                             );
                         })}
                         {visibleSubjects.length === 0 && (
-                            <TableRow className="hover:bg-transparent max-md:block">
+                            <TableRow className="hover:bg-transparent @max-2xl:block">
                                 <TableCell
                                     colSpan={5}
-                                    className="max-md:block max-md:p-0 max-md:whitespace-normal"
+                                    className="@max-2xl:block @max-2xl:p-0 @max-2xl:whitespace-normal"
                                 >
                                     <Empty className="type-small text-muted-foreground">
                                         {subjects.length === 0

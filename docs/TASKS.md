@@ -855,7 +855,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. Targets below `lg`: the Log In / Create Account tabs and the Student / Professor choice are 44px tall, and inputs and the submit button are 44px through the T8.1 tokens. The eye buttons and the "Create an account" / "Log in" text buttons keep their look and get a 44px touch area from an invisible `::after` (the shadcn Switch's pattern); a tap just outside the visible icon or text works at 375 and 768 and not at 1440.
     3. Overlap fixed at 1024 and 1440: since Phase 7 made the bullet points 14px, the rotated preview card covered "Learn with confidence". The card sits 24px lower, and the sparkle that then landed on its "Make Your Target Grade a Reality" note moved down (`top-3/5` → `top-2/3`). The sparkles are hidden below `lg`, where their percentage positions fell on the card. Sparkles over the decorative card itself are as before.
     4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on Log In or Create Account. Screenshots: 375 changes only in the tabs, 768 is the new stacked layout, 1024 and 1440 change only in the card position.
-- [ ] **T8.3** Dashboard.
+- [x] **T8.3** Dashboard.
+  - **As done:**
+    1. Enrolled subjects (shared with My Subjects): the table switches to the stacked cards by the card's own width (a container query, under 42rem) instead of the viewport. It needs about 642px, so it was scrolling sideways at 768 and also at 1024, where the sidebar starts expanded since T7.S1. It is now cards at 375, 768 and 1024, and a table at 1440. The row arrow is 44px below `lg`.
+    2. History chips, the term toggle, "Hide all", "Show as a table", search, the filter toggles and "+ Add subject" are 44px below `lg` through the T8.1 tokens; their own `max-md:h-control-touch` classes are removed.
+    3. "Show as a table": the "Open task" buttons are 44px tall below `lg`. The table itself still scrolls sideways inside its card at 375 (five columns in about 310px), which the Phase 8 check allows (no page scroll); Subject Detail's copy of the table is T8.5's.
+    4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on the Dashboard or My Subjects. The 12px "60" the tool reported is Recharts' off-screen text-measuring element, not visible text. Checklist C6–C9 (row, arrow, filter, search) walked at all four widths.
 - [ ] **T8.4** My Subjects.
 - [ ] **T8.5** Subject Detail (including the gauge overlap).
 - [ ] **T8.6** Sandbox (including the table below `lg`).
