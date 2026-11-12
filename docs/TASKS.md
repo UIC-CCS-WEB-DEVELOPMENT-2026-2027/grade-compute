@@ -773,7 +773,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     - **Reduced motion:** move the unscoped rule from `GlobalSettings.css` to `index.css` **unchanged** (B19: same reach, now explicit).
     - **Afterwards:** `SPEC.md` F14 ("its own layout") needs an owner-approved SPEC update, and checklist L1 is updated.
     - Check: V-visual at all widths; L1; B1–B12 on `/settings` (it now has the shared sidebar).
-  - [ ] **T7.L1s Profile section** → `features/settings/components/ProfileSection.jsx`, `Card`, `Item`. Check: L2.
+  - [x] **T7.L1s Profile section** → `features/settings/components/ProfileSection.jsx`, `Card`, `Item`. Check: L2.
+    - **As done:**
+      1. `ProfileSection({ profile, initials })`: a `Card` with an `Avatar` (the photo, or the initials), a `Badge`, three `Item`s for the summary and a `Separator` before the bio. The panel's row-click handler had no rows to act on here, so it isn't used.
+      2. The avatar stays 88px at every width (the CSS's 92px and full-width phone rules were already overridden by a later 88px rule). The summary goes to three columns from `lg` (was above 900px).
+      3. Text: the name `card-title`, the username `body`, labels, values and the bio `small` (were 12–14.5px), "Short bio" `small` semibold (was Khand 14.4px).
+      4. Its rules left `GlobalSettings.css`; the selector lists shared with Account's photo box were trimmed.
+      5. Checked L2 in a browser, without and with a saved photo, at all four widths.
   - [ ] **T7.L2s Account section** → `AccountSection.jsx`: `Field`, `Input`, file `Input`, `Avatar`, `Button`. Check: L3, L4.
   - [ ] **T7.L3 ⚠ Security section** → `SecuritySection.jsx`.
     - Change: the password flow (`Field`, `InputGroup` with the Show/Hide text), the verification code `Input`, 2FA, sessions (`Item`), `AlertDialog`s, the help `Dialog` + `Tabs` (G17).

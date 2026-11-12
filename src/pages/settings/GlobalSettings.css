@@ -13,21 +13,6 @@
     padding: 26px 20px;
 }
 
-.profile-overview {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    margin-bottom: 26px;
-}
-
-.profile-avatar-wrap {
-    width: 124px;
-    height: 124px;
-    flex-shrink: 0;
-}
-
-.profile-avatar-large,
-.profile-avatar-placeholder,
 .photo-preview,
 .photo-placeholder {
     width: 100%;
@@ -36,7 +21,6 @@
     object-fit: cover;
 }
 
-.profile-avatar-placeholder,
 .photo-placeholder {
     display: flex;
     align-items: center;
@@ -45,78 +29,6 @@
     color: var(--primary);
     font-size: 2.6rem;
     font-weight: 800;
-}
-
-.profile-info-block {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.profile-info-block h3 {
-    margin: 0;
-    font-size: clamp(2rem, 2.4vw, 3rem);
-    letter-spacing: -0.06em;
-}
-
-.profile-info-block p {
-    margin: 0;
-    color: var(--muted-foreground);
-    font-size: 1rem;
-}
-
-.student-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: max-content;
-    background: var(--secondary);
-    color: var(--primary);
-    border-radius: 999px;
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.profile-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(150px, 1fr));
-    gap: 14px;
-    margin-bottom: 26px;
-}
-
-.summary-card {
-    background: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 16px;
-}
-
-.summary-label {
-    display: block;
-    color: var(--muted-foreground);
-    font-size: 0.84rem;
-    margin-bottom: 10px;
-}
-
-.summary-card strong {
-    font-size: 1.1rem;
-}
-
-.bio-box {
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-}
-
-.bio-box h4 {
-    margin: 0 0 8px;
-    font-size: 1.2rem;
-}
-
-.bio-box p {
-    margin: 0;
-    color: var(--muted-foreground);
-    line-height: 1.6;
 }
 
 .account-header-row {
@@ -361,7 +273,6 @@
 }
 
 @media (max-width: 900px) {
-    .profile-overview,
     .profile-photo-box,
     .simple-row,
     .account-header-row {
@@ -383,7 +294,6 @@
     }
 
     .form-grid,
-    .profile-summary-grid,
     .theme-preview {
         grid-template-columns: 1fr;
     }
@@ -404,7 +314,6 @@
         margin-top: 20px;
     }
 
-    .profile-avatar-wrap,
     .profile-photo-box {
         width: 100%;
     }
@@ -417,15 +326,6 @@
     .danger-button {
         width: 100%;
         text-align: center;
-    }
-
-    .profile-overview {
-        align-items: flex-start;
-    }
-
-    .profile-avatar-wrap {
-        width: 92px;
-        height: 92px;
     }
 
     .profile-photo-box {
@@ -599,68 +499,10 @@
     font-size: 0.84rem;
 }
 
-.profile-overview {
-    gap: 18px;
-    margin-bottom: 23px;
-}
-
-.profile-avatar-wrap {
-    width: 88px;
-    height: 88px;
-}
-
-.profile-avatar-placeholder,
 .photo-placeholder {
     background: var(--highlight-soft);
     color: var(--primary);
     font-size: 1.8rem;
-}
-
-.profile-info-block h3 {
-    font-size: 1.4rem;
-    font-weight: 660;
-    letter-spacing: -0.04em;
-}
-
-.student-badge {
-    padding: 6px 10px;
-    background: var(--highlight-soft);
-    color: var(--primary);
-    font-size: 0.73rem;
-}
-
-.profile-summary-grid {
-    gap: 10px;
-    margin-bottom: 21px;
-}
-
-.summary-card {
-    padding: 15px;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: var(--muted);
-}
-
-.summary-label {
-    margin-bottom: 7px;
-    font-size: 0.74rem;
-}
-
-.summary-card strong {
-    font-size: 0.91rem;
-    font-weight: 630;
-}
-
-.bio-box {
-    padding-top: 17px;
-}
-
-.bio-box h4 {
-    font-size: 0.9rem;
-}
-
-.bio-box p {
-    font-size: 0.84rem;
 }
 
 .account-header-row h3 {
@@ -1490,7 +1332,6 @@
         flex: 0 0 auto;
     }
 
-    .profile-summary-grid,
     .form-grid {
         grid-template-columns: 1fr;
     }

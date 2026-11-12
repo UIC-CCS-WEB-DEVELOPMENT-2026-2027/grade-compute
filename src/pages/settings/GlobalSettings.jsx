@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSpaceSplitInitials } from "@/lib/format";
+import { ProfileSection } from "@/features/settings/components/ProfileSection";
 import { SettingRow } from "@/features/settings/components/SettingRow";
 import { ToggleSetting } from "@/features/settings/components/ToggleSetting";
 import "./GlobalSettings.css";
@@ -364,50 +365,6 @@ export function GlobalSettings({ onLogout }) {
         { label: "At least 8 characters", met: passwordForm.next.length >= 8 },
     ];
     const passwordStrength = passwordRequirements.filter(({ met }) => met).length;
-
-    const renderProfileSection = () => (
-        <div className="settings-panel" onClick={handleSettingRowClick}>
-            <div className="profile-overview">
-                <div className="profile-avatar-wrap">
-                    {profile.profilePicture ? (
-                        <img
-                            src={profile.profilePicture}
-                            alt="Profile"
-                            className="profile-avatar-large"
-                        />
-                    ) : (
-                        <div className="profile-avatar-placeholder">{profileInitials}</div>
-                    )}
-                </div>
-
-                <div className="profile-info-block">
-                    <h3>{profile.fullName}</h3>
-                    <p>@{profile.username}</p>
-                    <span className="student-badge">Student</span>
-                </div>
-            </div>
-
-            <div className="profile-summary-grid">
-                <div className="summary-card">
-                    <span className="summary-label">Student ID</span>
-                    <strong>{profile.studentId}</strong>
-                </div>
-                <div className="summary-card">
-                    <span className="summary-label">Program</span>
-                    <strong>{profile.program}</strong>
-                </div>
-                <div className="summary-card">
-                    <span className="summary-label">Year level</span>
-                    <strong>{profile.yearLevel}</strong>
-                </div>
-            </div>
-
-            <div className="bio-box">
-                <h4>Short bio</h4>
-                <p>{profile.bio}</p>
-            </div>
-        </div>
-    );
 
     const renderAccountSection = () => (
         <div className="settings-panel" onClick={handleSettingRowClick}>
@@ -1391,7 +1348,7 @@ export function GlobalSettings({ onLogout }) {
     const renderSectionContent = () => {
         switch (activeSection) {
             case "Profile":
-                return renderProfileSection();
+                return <ProfileSection profile={profile} initials={profileInitials} />;
             case "Account":
                 return renderAccountSection();
             case "Security":
