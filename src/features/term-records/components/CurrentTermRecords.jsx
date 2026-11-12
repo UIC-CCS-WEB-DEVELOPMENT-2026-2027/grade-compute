@@ -520,7 +520,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                     render={
                         <Button
                             variant="ghost"
-                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent max-md:h-control-touch"
+                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary max-md:h-control-touch"
                         />
                     }
                 >
