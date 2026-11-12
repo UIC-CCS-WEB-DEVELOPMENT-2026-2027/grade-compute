@@ -103,7 +103,7 @@ function AcademicPreview() {
                                 <small className="absolute -top-6 left-0 w-full text-center type-caption font-normal text-muted-foreground">
                                     {value}%
                                 </small>
-                                <span className="block size-full origin-bottom transition-[transform,filter] duration-850 ease-auth group-hover/bar:scale-y-108 group-hover/bar:brightness-112 group-hover/bar:saturate-115">
+                                <span className="block size-full origin-bottom transition duration-850 ease-auth group-hover/bar:scale-y-108 group-hover/bar:brightness-112 group-hover/bar:saturate-115">
                                     <i
                                         className={cn(
                                             "block size-full origin-bottom animate-auth-bar-grow rounded-t-md bg-linear-to-b",

@@ -247,7 +247,7 @@ export function SubjectDetail() {
                 {/* Official Grade Summary */}
                 <Card className="grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
                     <div
-                        className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-[1.7] xl:justify-start xl:gap-4"
+                        className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-17 xl:justify-start xl:gap-4"
                         aria-label={`${term} grades`}
                     >
                         <Field className="w-auto shrink-0 gap-1.5 max-sm:w-full">
@@ -319,7 +319,7 @@ export function SubjectDetail() {
 
                     <Separator orientation="vertical" className="hidden h-12 xl:block" />
 
-                    <div className="flex min-w-0 flex-col gap-2 xl:flex-1">
+                    <div className="flex min-w-0 flex-col gap-2 xl:flex-10">
                         <p className="m-0 flex items-center gap-2 type-small text-muted-foreground">
                             <span className="size-2 shrink-0 rounded-full bg-self-reported" />
                             {officialTasks.length} official assessment
@@ -331,7 +331,7 @@ export function SubjectDetail() {
                         </small>
                     </div>
 
-                    <div className="flex min-w-0 flex-col gap-2.5 border-t border-highlight pt-3 type-small text-muted-foreground md:border-0 md:pt-0 xl:flex-1">
+                    <div className="flex min-w-0 flex-col gap-2.5 border-t border-highlight pt-3 type-small text-muted-foreground md:border-0 md:pt-0 xl:flex-10">
                         <span className="flex items-center gap-2">
                             <i className="size-2 shrink-0 rounded-full bg-official" />
                             Locked official scores

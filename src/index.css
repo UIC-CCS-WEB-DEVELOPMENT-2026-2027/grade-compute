@@ -82,14 +82,12 @@
 }
 
 :root {
-    /* Layer order (z-index), lowest to highest. Popups that must cover the
-     page are rendered on <body> so these values compare directly. */
+    /* Layer order (z-index), lowest to highest. Popups and dialogs are
+       shadcn components, which stack themselves above these. */
     --z-raised: 1; /* small lifts inside a card */
     --z-chart-tooltip: 10; /* chart and card hover tips */
     --z-header: 20; /* sticky header on phones */
     --z-sidebar: 30; /* sidebar (and its icon tips) above the page */
-    --z-popover: 60; /* pop-out subject list */
-    --z-modal: 100; /* Help, Remove subject */
 
     /* CompUGrade Design System Colors */
     --primary: #406093; /* Deep Blue: Main UI, headers, active states */
@@ -100,11 +98,9 @@
     --secondary: #e6edf9;
     --warning-soft: #f9e7e2;
     --destructive: #ab4f44;
-    --warning-border: rgba(216, 106, 93, 0.35);
     --highlight-soft: #fff7d9;
     --highlight-strong: #e9c936;
     --success: #36754a;
-    --white: #ffffff;
 
     /* Backgrounds & Neutrals */
     --background: #f4f7f9; /* Light grayish-blue for the app background */
@@ -113,23 +109,9 @@
     --border: #e2e8f0; /* Light border color for dividers and standard inputs */
     --muted-foreground: #5d6c81; /* Muted text for helpers and effective multipliers */
 
-    /* Shared feedback, overlay, and elevation colors */
+    /* Dialog backdrop and focus ring */
     --overlay: #181c2257;
     --ring: #4c8ce45c;
-    --surface-overlay: rgba(255, 255, 255, 0.45);
-    --surface-overlay-soft: rgba(255, 255, 255, 0.22);
-    --surface-overlay-subtle: rgba(255, 255, 255, 0.14);
-    --surface-overlay-faint: rgba(255, 255, 255, 0.06);
-    --elevation-card: rgba(28, 34, 44, 0.045);
-    --elevation-hover: rgba(25, 31, 40, 0.045);
-    --elevation-hover-strong: rgba(30, 36, 44, 0.09);
-    --elevation-dialog: rgba(24, 28, 34, 0.17);
-
-    /* Leftovers of the removed dark theme that live light-theme rules in
-       GlobalSettings.css still use (a toggle background and two hover text
-       colours). They go when Settings is converted (T7.L0). */
-    --dark-surface-soft: #292d33;
-    --dark-text: #f0f1f3;
 
     /* Typography Variables */
     --font-heading: "Khand", sans-serif;

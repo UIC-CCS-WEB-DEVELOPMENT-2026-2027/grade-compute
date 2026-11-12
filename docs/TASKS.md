@@ -824,10 +824,20 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     5. The Security help dialog's steps are numbered again (`list-decimal`). They lost their numbers in T7.L3, when the scoped `[data-slot]` reset reached them inside the shadcn `Dialog`.
     6. Checked with all 56 screenshots against the commit before. 52 are identical, and Subject Detail midterm has its usual chart anti-aliasing noise (9–18 px). Dashboard and My Subjects at 768 and wider differ in the enrolled-subjects table: tables now collapse their borders, so the 2px gaps between cells are gone (the table is 6px shorter) and the divider under the header row shows again, as in the original baseline. A computed-style dump of every element on 17 screen states at 1440 and 375 found no other visible change.
     7. Walked every checklist section from A to L (most items, scripted) at 1440 and 375 against the old CSS, and reran the earlier K1, K2 and L2s–L5s walks. Results were identical apart from the help list numbers. M1 is covered by the walk's reload steps and M2 by the unit tests.
-- [ ] **T7.Z Final Phase 7 sweep.**
+- [x] **T7.Z Final Phase 7 sweep.**
   - Delete `components/Dialog.jsx` and `Dialog.css`, the remaining file-local tokens, and the translucent-white tokens.
   - Confirm `src/index.css` is the only `.css` file outside the tooling folders.
   - Confirm grep finds no `#hex`, `rgb(` or arbitrary `[...]` values in `src/**/*.jsx`.
+  - **As done:**
+    1. Deleted `components/Dialog.jsx` and `Dialog.css` (no users since T7.K3).
+    2. Deleted the `:root` tokens nothing used any more: the four translucent-white `--surface-overlay*`, the four `--elevation-*` (the last one was used only by `Dialog.css`), `--dark-surface-soft` and `--dark-text` (they should have gone in T7.L0), `--warning-border`, `--white`, `--z-popover` and `--z-modal`. The file-local aliases went with their stylesheets earlier in Phase 7. `--pill-color` and `--pill-on` stay: they carry each criterion's colour at runtime through an inline style, which AGENTS §7 allows.
+    3. `src/index.css` is the only `.css` file outside the tooling folders.
+    4. No `#hex` or `rgb(` in JSX. The only hits are in shadcn's `ui/chart.jsx`, where `[stroke='#ccc']` and `[stroke='#fff']` are attribute selectors that match Recharts' default strokes; they paint nothing.
+    5. Arbitrary values in app code: two left, both replaced.
+       - Subject Detail's summary row: `xl:flex-[1.7]` became `xl:flex-17`, and its two `xl:flex-1` siblings became `xl:flex-10` (the same 1.7 : 1 : 1 split; the 1440 screenshot is identical).
+       - The login bars: `transition-[transform,filter]` became `transition`. The old list missed the `scale` property that Tailwind v4's `scale-y-*` sets, so the hover growth jumped instead of easing over 850ms. It eases again, as in the original CSS (hover styles may change, Gate 4).
+    6. **Owner decision (2026-11-13):** the 21 arbitrary values inside generated shadcn components in `components/ui/` stay as generated, and the check covers app code only. They are mostly grid templates, transition lists and `calc()` on tokens, plus three small nudges (`tabs` `h-[calc(100%-1px)]`, `tooltip` `translate-y-[calc(-50%-2px)]`, `dialog` `max-w-[calc(100%-2rem)]`). T9.5 lists them as remaining AGENTS §7 items.
+    7. All 56 screenshots match T7.P's, apart from the usual Subject Detail chart noise.
 
 ### Phase 8 — Responsive (V-visual at 375, 768, 1024, 1440, plus the Phase 2 measurement: overflow, text below 14px, targets below 44px)
 
