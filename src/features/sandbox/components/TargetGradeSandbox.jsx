@@ -62,7 +62,7 @@ const CELL = "py-3 whitespace-normal @max-xl:p-0";
 const CELL_LABEL =
     "mb-1 hidden type-caption tracking-wide text-muted-foreground uppercase @max-xl:block";
 const CELL_NOTE = "mt-0.5 block type-small text-muted-foreground";
-const NUMBER_INPUT = "w-18 bg-card tabular-nums hover:bg-muted max-md:h-control-touch";
+const NUMBER_INPUT = "w-18 bg-card tabular-nums hover:bg-muted";
 const DRAFT_NOTE = "block type-small text-muted-foreground";
 
 // A step heading inside a sandbox card, numbered for the three steps.
@@ -319,7 +319,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                         >
                                             {termLabel} target grade
                                         </FieldLabel>
-                                        <InputGroup className="max-w-24 border-highlight-strong bg-card has-[[data-slot][aria-invalid=true]]:bg-warning-soft max-md:h-control-touch">
+                                        <InputGroup className="max-w-24 border-highlight-strong bg-card has-[[data-slot][aria-invalid=true]]:bg-warning-soft">
                                             <InputGroupInput
                                                 id="sandbox-target-grade"
                                                 className="font-bold text-primary"
@@ -536,7 +536,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                             <span className={CELL_LABEL}>
                                                                 Expected %
                                                             </span>
-                                                            <InputGroup className="w-24 bg-card hover:bg-muted max-md:h-control-touch">
+                                                            <InputGroup className="w-24 bg-card hover:bg-muted">
                                                                 <InputGroupInput
                                                                     className="tabular-nums"
                                                                     type="number"
@@ -693,7 +693,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                                     </small>
                                                                 </span>
                                                             ) : (
-                                                                <InputGroup className="w-36 shrink-0 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:h-control-touch">
+                                                                <InputGroup className="w-36 shrink-0 border-self-reported bg-card has-aria-invalid:bg-warning-soft">
                                                                     <InputGroupInput
                                                                         className="text-center text-self-reported-foreground tabular-nums"
                                                                         type="text"
@@ -757,7 +757,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                     render={
                                         <Button
                                             variant="ghost"
-                                            className="group/how text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary max-md:h-control-touch"
+                                            className="group/how text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary"
                                         />
                                     }
                                 >

@@ -30,10 +30,7 @@ export function TargetGradeSandboxPage() {
             {classItem && subject && hasStudentRecord ? (
                 <>
                     <div className="mb-2.5 flex">
-                        <BackLink
-                            to={`/student/subject/${classItem.id}?term=${termKey}`}
-                            className="max-md:h-control-touch"
-                        >
+                        <BackLink to={`/student/subject/${classItem.id}?term=${termKey}`}>
                             Back
                         </BackLink>
                     </div>

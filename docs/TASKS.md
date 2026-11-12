@@ -871,7 +871,11 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. Term toggle, sandbox link, target box, score boxes, "+ Add Custom Task", the add-task form, the breakdown toggle and the history toggles are 44px below `lg` through the T8.1 tokens; their `max-md:h-control-touch` classes are removed. The history table's "Open task" buttons (`h-auto`) are 44px tall below `lg`.
     3. Text: the chart's "Target reached" labels are 12px (were 11px; the caption size, also on the sandbox chart), and the professor's initials use the default avatar size, 14px instead of the 12px caption.
     4. Measured at 375 and 768 (page, add-task form and breakdown open, history table open, 768 with the sidebar expanded): no page overflow, no text below 14px except captions, no target below 44px. The history table scrolls inside its card at 375, as on the Dashboard (T8.3).
-- [ ] **T8.6** Sandbox (including the table below `lg`).
+- [x] **T8.6** Sandbox (including the table below `lg`).
+  - **As done:**
+    1. The criteria table already stacks by its card's width since T7.I2 (a container query), so it doesn't scroll sideways at 1024 or anywhere else.
+    2. The number boxes, the back link, the term toggle, "How this is calculated" and the subject picker's buttons are 44px below `lg` through the T8.1 tokens; their six `max-md:h-control-touch` classes are removed (screenshots identical).
+    3. Measured at 375 and 768 (page, "How this is calculated" open, history table open, subject picker open): no page overflow, no text below 14px except captions, no target below 44px. The history table scrolls inside its card at 375, as on the Dashboard (T8.3).
 - [ ] **T8.7** Grade Rules.
 - [ ] **T8.8** Rule editor.
 - [ ] **T8.9** Settings.
