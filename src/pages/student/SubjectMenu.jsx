@@ -55,7 +55,7 @@ export function SubjectMenu() {
                         value={selectedSemesterId}
                         onChange={(event) => setSelectedSemesterId(event.target.value)}
                         aria-label="View subjects by semester"
-                        className="bg-card max-md:h-control-touch"
+                        className="bg-card"
                     >
                         {SEMESTER_OPTIONS.map((option) => (
                             <NativeSelectOption

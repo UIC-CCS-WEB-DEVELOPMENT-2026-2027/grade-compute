@@ -861,7 +861,10 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. History chips, the term toggle, "Hide all", "Show as a table", search, the filter toggles and "+ Add subject" are 44px below `lg` through the T8.1 tokens; their own `max-md:h-control-touch` classes are removed.
     3. "Show as a table": the "Open task" buttons are 44px tall below `lg`. The table itself still scrolls sideways inside its card at 375 (five columns in about 310px), which the Phase 8 check allows (no page scroll); Subject Detail's copy of the table is T8.5's.
     4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on the Dashboard or My Subjects. The 12px "60" the tool reported is Recharts' off-screen text-measuring element, not visible text. Checklist C6–C9 (row, arrow, filter, search) walked at all four widths.
-- [ ] **T8.4** My Subjects.
+- [x] **T8.4** My Subjects.
+  - **As done:**
+    1. The table fix is T8.3's (shared component). The semester picker, the add-subject form's inputs, select and buttons, and "View or create grading rules" are 44px below `lg` through the T8.1 tokens, so their three `max-md:h-control-touch` classes are removed (screenshots identical).
+    2. Measured at 375 and 768 with the add-subject form open and closed: no page overflow, no text below 14px except captions, no target below 44px.
 - [ ] **T8.5** Subject Detail (including the gauge overlap).
 - [ ] **T8.6** Sandbox (including the table below `lg`).
 - [ ] **T8.7** Grade Rules.

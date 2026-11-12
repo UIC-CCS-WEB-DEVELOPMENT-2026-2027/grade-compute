@@ -238,13 +238,11 @@ export function AddSubjectForm({ studentId, initialSection = "", onCancel, onAdd
                 </Alert>
             )}
             <div className="flex items-center gap-2">
-                <Button type="submit" className="max-md:h-control-touch">
-                    Add Subject
-                </Button>
+                <Button type="submit">Add Subject</Button>
                 <Button
                     type="button"
                     variant="outline"
-                    className="bg-card text-muted-foreground max-md:h-control-touch"
+                    className="bg-card text-muted-foreground"
                     onClick={onCancel}
                 >
                     Cancel
