@@ -397,6 +397,15 @@
     animation-delay: calc(--value(integer) * 1ms);
 }
 
+/* The pill editor indents each level by its depth in the rule, which the
+   level passes as --pill-depth: 32px a level, 14px on phones. */
+@utility pill-indent {
+    padding-left: calc(var(--pill-depth, 0) * 2rem);
+    @media (width < 40rem) {
+        padding-left: calc(var(--pill-depth, 0) * 0.875rem);
+    }
+}
+
 /* Text roles (AGENTS.md section 7, docs/TASKS.md 4.2). Each role sets its
    font, weight, size and line height, with the phone size first. */
 @utility type-display {

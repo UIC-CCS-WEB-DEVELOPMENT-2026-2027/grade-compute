@@ -419,7 +419,7 @@ function RuleDetail({ ruleId }) {
                                                     <Badge
                                                         variant="outline"
                                                         className={cn(
-                                                            "h-auto max-w-full gap-1 py-1 pl-2.5 type-small font-normal whitespace-normal text-foreground",
+                                                            "h-auto max-w-full gap-1 overflow-visible py-1 pl-2.5 type-small font-normal whitespace-normal text-foreground",
                                                             isEditing ? "pr-0.5" : "pr-2.5",
                                                         )}
                                                     >

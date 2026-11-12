@@ -733,11 +733,19 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. Accessibility: the school box now has "Schools that use this rule" as its label while editing (before it had none, AGENTS §7). Read-only values are `small` text in a muted box.
       5. The criteria section's error line lost `rule-field-error` too. The details rules left `RuleDetailPage.css`.
       6. Checked K13, K14, tag toggling (click, label, Space) and adding, de-duplicating and removing schools in a browser, against the old code: same results and saved data.
-  - [ ] **T7.K2 ⚠ PillEditor / PillLevel.**
+  - [x] **T7.K2 ⚠ PillEditor / PillLevel.**
     - Buttons → `Button size="icon"`, the % box → `Input`, the handles stay custom (`@utility`).
     - `window.confirm("Delete … and all of its subcriteria?")` → `AlertDialog`, same wording (D4, approved).
     - Delete `PillEditor.css`.
     - Check: K3–K8.
+    - **As done:**
+      1. The add, rename and delete buttons are outline `Button`s (`icon-xs`, 36px on touch screens as before), with icons instead of the "+", "✎" and "×" characters; their names are unchanged. Disabled ones keep the pointer, so the reason still shows in the tooltip (K8).
+      2. The parent-name toggle is a ghost `Button` with `aria-pressed`, same hover, tap and focus preview. The rename box is an `Input`, the % box an `InputGroup` sized to the number (`field-sizing-content`). Chips are outline `Badge`s.
+      3. `window.confirm` became an `AlertDialog` (D4): the same question, Cancel and OK, focus on OK, Escape cancels.
+      4. The handles, dots and bars stay custom, now as utilities reading the criterion colours from CSS variables. The level indent is a new `@utility pill-indent` (32px a level, 14px on phones). The gap between sections stays 18px on phones (was 16px).
+      5. Text: names `card-title` (were 22px, 18px on phones), "= Grade" `section-title`, the % and preview text `body` and `small` (were 13–17px).
+      6. The K1 school chips get `overflow-visible` too, so the remove button's focus ring isn't clipped (same `Badge` pattern).
+      7. Checked K3–K8 in a browser against the old code at 1440 and 375: typing, limits, Escape, keyboard and pointer dragging, preview, add, rename (and a duplicate name), split, delete, the confirmation and the limits gave the same results.
   - [ ] **T7.K3** View switch `ToggleGroup`, the impact `Dialog`, the status line, the action buttons. Delete `RuleDetailPage.css`. Check: K1, K2, K9–K12, K15.
 - **Settings (R5: a shell task plus one per section)**
   - [ ] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**

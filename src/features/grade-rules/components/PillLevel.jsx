@@ -4,6 +4,25 @@
 // handle sits in the gap between sections, and the typed percentage sits
 // under each section. All math comes from src/utils/rules.js.
 import { useRef, useState } from "react";
+import { PencilIcon, PlusIcon, XIcon } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+    InputGroupText,
+} from "@/components/ui/input-group";
 import {
     TOTAL_SHARE,
     addCriterion,
@@ -21,6 +40,12 @@ import {
     shareToPercent,
     splitCriterion,
 } from "@/lib/rules";
+import { cn } from "@/lib/utils";
+
+// The small add, rename and delete buttons: 24px, 36px on touch screens.
+// Disabled ones still take the pointer, so their tooltip (the reason) shows.
+const ICON_BUTTON =
+    "bg-card text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-40 pointer-coarse:size-9";
 
 export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     const level = findCriterion(tree, levelId);
@@ -31,6 +56,11 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     const [previewId, setPreviewId] = useState(null);
     const [warning, setWarning] = useState("");
     const [isDragging, setIsDragging] = useState(false);
+    // The criterion waiting for "Delete … and all of its subcriteria?". It is
+    // kept while the dialog closes, so the question doesn't change.
+    const [pendingDelete, setPendingDelete] = useState(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const okRef = useRef(null);
 
     const barRefs = useRef({});
     const dragIndex = useRef(null);
@@ -177,15 +207,20 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         }
     }
 
+    // A criterion with subcriteria is deleted only after the question.
     function handleDelete(segment) {
         const check = canDeleteCriterion(tree, segment.id);
-        if (
-            check.hasSubcriteria &&
-            !window.confirm(`Delete ${segment.name} and all of its subcriteria?`)
-        ) {
+        if (check.hasSubcriteria) {
+            setPendingDelete(segment);
+            setIsDeleteOpen(true);
             return;
         }
         apply(deleteCriterion(tree, segment.id));
+    }
+
+    function confirmDelete() {
+        setIsDeleteOpen(false);
+        apply(deleteCriterion(tree, pendingDelete.id));
     }
 
     const addCheck = structureLocked ? null : canAddCriterion(tree, levelId);
@@ -196,8 +231,8 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     function renderName(segment, index) {
         if (renaming?.id === segment.id) {
             return (
-                <input
-                    className="pill-name-input"
+                <Input
+                    className="h-8 max-w-45 bg-card px-1.5 py-0.5 type-card-title md:type-card-title"
                     value={renaming.value}
                     onChange={(event) => setRenaming({ id: segment.id, value: event.target.value })}
                     onBlur={commitRename}
@@ -210,17 +245,17 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
 
         const isLast = index === segments.length - 1;
         const label = segment.hasChildren ? (
-            <button
-                type="button"
-                className={`pill-name pill-name-button ${previewId === segment.id ? "is-previewing" : ""}`}
+            <Button
+                variant="ghost"
+                className="h-auto min-w-0 cursor-help rounded-none border-0 border-b-2 border-dotted border-muted-foreground p-0 type-card-title text-foreground hover:border-solid hover:border-primary hover:bg-transparent hover:text-primary aria-pressed:border-solid aria-pressed:border-primary aria-pressed:text-primary"
                 aria-pressed={previewId === segment.id}
                 aria-label={`${segment.name}, show breakdown`}
                 {...previewHandlers(segment.id)}
             >
-                {segment.name}
-            </button>
+                <span className="truncate">{segment.name}</span>
+            </Button>
         ) : (
-            <span className="pill-name" title={segment.name}>
+            <span className="min-w-0 truncate type-card-title text-foreground" title={segment.name}>
                 {segment.name}
             </span>
         );
@@ -229,16 +264,17 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
             <>
                 {label}
                 {!structureLocked && isLast && (
-                    <button
-                        type="button"
-                        className="pill-icon-button pill-add-button"
+                    <Button
+                        variant="outline"
+                        size="icon-xs"
+                        className={cn(ICON_BUTTON, "border-foreground text-foreground")}
                         onClick={() => apply(addCriterion(tree, levelId))}
                         disabled={!addCheck.allowed}
                         aria-label="Add a criterion"
                         title={addCheck.reason || "Add a criterion"}
                     >
-                        +
-                    </button>
+                        <PlusIcon aria-hidden="true" />
+                    </Button>
                 )}
             </>
         );
@@ -250,39 +286,52 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         const deleteCheck = canDeleteCriterion(tree, segment.id);
         const splitCheck = canSplitCriterion(tree, segment.id);
         return (
-            <li key={segment.id} className="pill-chip">
-                <i style={{ backgroundColor: segment.color }} aria-hidden="true" />
-                <span>{segment.name}</span>
-                <button
-                    type="button"
-                    className="pill-icon-button"
-                    onClick={() => setRenaming({ id: segment.id, value: segment.name })}
-                    aria-label={`Rename ${segment.name}`}
-                    title="Rename"
+            <li key={segment.id}>
+                <Badge
+                    variant="outline"
+                    className="h-auto gap-1 overflow-visible rounded-md bg-card py-0.75 pr-1 pl-2.5 type-small font-normal text-foreground"
                 >
-                    ✎
-                </button>
-                {splitCheck.allowed && (
-                    <button
-                        type="button"
-                        className="pill-text-button"
-                        onClick={() => apply(splitCriterion(tree, segment.id))}
-                        aria-label={`Split ${segment.name} into subcriteria`}
-                        title="Split into subcriteria"
+                    <i
+                        className="mr-0.5 size-2.5 shrink-0 rounded-full"
+                        // The criterion's colour from the rule.
+                        style={{ backgroundColor: segment.color }}
+                        aria-hidden="true"
+                    />
+                    <span className="mr-1">{segment.name}</span>
+                    <Button
+                        variant="outline"
+                        size="icon-xs"
+                        className={ICON_BUTTON}
+                        onClick={() => setRenaming({ id: segment.id, value: segment.name })}
+                        aria-label={`Rename ${segment.name}`}
+                        title="Rename"
                     >
-                        Split
-                    </button>
-                )}
-                <button
-                    type="button"
-                    className="pill-icon-button"
-                    onClick={() => handleDelete(segment)}
-                    disabled={!deleteCheck.allowed}
-                    aria-label={`Delete ${segment.name}`}
-                    title={deleteCheck.reason || "Delete"}
-                >
-                    ×
-                </button>
+                        <PencilIcon aria-hidden="true" />
+                    </Button>
+                    {splitCheck.allowed && (
+                        <Button
+                            variant="outline"
+                            size="xs"
+                            className="bg-card font-normal text-primary pointer-coarse:h-9"
+                            onClick={() => apply(splitCriterion(tree, segment.id))}
+                            aria-label={`Split ${segment.name} into subcriteria`}
+                            title="Split into subcriteria"
+                        >
+                            Split
+                        </Button>
+                    )}
+                    <Button
+                        variant="outline"
+                        size="icon-xs"
+                        className={ICON_BUTTON}
+                        onClick={() => handleDelete(segment)}
+                        disabled={!deleteCheck.allowed}
+                        aria-label={`Delete ${segment.name}`}
+                        title={deleteCheck.reason || "Delete"}
+                    >
+                        <XIcon aria-hidden="true" />
+                    </Button>
+                </Badge>
             </li>
         );
     }
@@ -292,11 +341,12 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     function renderBarContent(segment) {
         if (previewId === segment.id) {
             return (
-                <div className="pill-preview">
+                <div className="flex w-full gap-1 self-stretch">
                     {getPreviewSegments(tree, segment.id).map((part) => (
                         <div
                             key={part.id}
-                            className="pill-preview-part"
+                            className="flex min-w-0 basis-0 flex-col items-center justify-center rounded-md px-1.5 text-center type-small group-first/criterion:first:rounded-l-full group-last/criterion:last:rounded-r-full"
+                            // Each part's share and colours come from the rule.
                             style={{
                                 flexGrow: part.sectionRatio,
                                 backgroundColor: part.color,
@@ -304,8 +354,10 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                             }}
                             title={`${part.name}: ${formatPercent(part.effectiveShare)} of the grade`}
                         >
-                            <span>{part.name}</span>
-                            <strong>{formatPercent(part.effectiveShare)}</strong>
+                            <span className="max-w-full truncate">{part.name}</span>
+                            <strong className="max-w-full truncate font-semibold">
+                                {formatPercent(part.effectiveShare)}
+                            </strong>
                         </div>
                     ))}
                 </div>
@@ -314,20 +366,28 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
 
         const dotCount = Math.floor(segment.share / 1000);
         return (
-            <span className="pill-dots" aria-hidden="true">
+            <span
+                className="pointer-events-none flex min-w-0 flex-1 items-center justify-evenly px-3.5"
+                aria-hidden="true"
+            >
                 {Array.from({ length: dotCount }, (_, dot) => (
-                    <i key={dot} />
+                    <i
+                        key={dot}
+                        className="size-2 shrink-0 rounded-full bg-(--pill-on) opacity-60 inset-shadow-xs inset-shadow-foreground/45"
+                    />
                 ))}
             </span>
         );
     }
 
-    // The slider handle in the gap after a section (bar 4 of the reference).
+    // The slider handle in the gap after a section (bar 4 of the reference):
+    // a thick rounded line, with a wider invisible grab area (::before). It
+    // narrows while it is dragged.
     function renderHandle(segment, index) {
         const next = segments[index + 1];
         return (
             <span
-                className="pill-handle"
+                className="absolute -top-3.5 -right-3.25 -bottom-3.5 z-2 w-2 cursor-ew-resize touch-none rounded-full bg-primary transition-all duration-150 before:absolute before:-inset-x-4 before:-inset-y-1.5 hover:bg-self-reported focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-ring group-data-dragging/level:active:-right-2.75 group-data-dragging/level:active:w-1 group-data-dragging/level:active:bg-self-reported motion-reduce:transition-none"
                 role="slider"
                 tabIndex={0}
                 aria-label={`Divider between ${segment.name} and ${next.name}`}
@@ -349,8 +409,12 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
             draft?.id === segment.id ? draft.value : String(shareToPercent(segment.share));
 
         return (
-            <label className="pill-percent">
-                <input
+            <InputGroup className="mt-2.5 h-8 w-auto max-w-full self-center bg-card hover:border-primary pointer-coarse:h-control">
+                {/* Sized to the number where the browser can, so "%" sits
+                    right after it. pr-0.5! beats InputGroup's own padding for
+                    an input with an end addon. */}
+                <InputGroupInput
+                    className="w-12 min-w-4 flex-none pr-0.5! pl-2 text-right type-body tabular-nums field-sizing-content md:type-body supports-[field-sizing:content]:w-auto"
                     type="text"
                     inputMode="decimal"
                     value={value}
@@ -365,31 +429,42 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                     aria-label={`${segment.name} percentage`}
                     aria-describedby={warning ? warningId : undefined}
                 />
-                <span aria-hidden="true">%</span>
-            </label>
+                <InputGroupAddon align="inline-end" className="pl-0 font-normal">
+                    <InputGroupText aria-hidden="true">%</InputGroupText>
+                </InputGroupAddon>
+            </InputGroup>
         );
     }
 
     return (
         <section
-            className={`pill-level ${isDragging ? "is-dragging" : ""}`}
+            className="group/level pill-indent not-first:border-0 not-first:border-t not-first:border-dashed not-first:border-border not-first:pt-5.5"
+            data-dragging={isDragging || undefined}
+            // The level's depth in the rule sets its indent (pill-indent).
             style={{ "--pill-depth": depth }}
             aria-label={`${level.name} breakdown`}
         >
-            <div className="pill-row">
-                <div className="pill-track">
+            <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
+                <div className="flex min-w-0 flex-1 basis-80">
                     {segments.map((segment, index) => (
                         <div
                             key={segment.id}
-                            className="pill-criterion"
+                            className="group/criterion flex min-w-16 basis-0 flex-col transition-all duration-250 group-data-dragging/level:transition-none motion-reduce:transition-none"
+                            // Each section's width is its share of the level.
                             style={{ flexGrow: segment.share }}
                         >
-                            <div className="pill-name-row">{renderName(segment, index)}</div>
+                            <div className="flex min-h-8.5 items-center gap-1 px-3 pb-1.5">
+                                {renderName(segment, index)}
+                            </div>
                             <div
                                 ref={(element) => {
                                     barRefs.current[segment.id] = element;
                                 }}
-                                className={`pill-bar ${previewId === segment.id ? "is-previewing" : ""}`}
+                                className={cn(
+                                    "relative mx-2.25 flex h-13 items-center rounded-lg bg-(--pill-color) text-(--pill-on) transition-colors group-first/criterion:ml-0 group-first/criterion:rounded-l-full group-last/criterion:mr-0 group-last/criterion:rounded-r-full motion-reduce:transition-none",
+                                    previewId === segment.id && "bg-transparent",
+                                )}
+                                // The criterion's colours from the rule.
                                 style={{
                                     "--pill-color": segment.color,
                                     "--pill-on": segment.onColor,
@@ -402,18 +477,46 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                         </div>
                     ))}
                 </div>
-                <p className="pill-total">= {level.name}</p>
+                <p className="m-0 mb-12.5 type-section-title whitespace-nowrap text-foreground max-sm:mb-0">
+                    = {level.name}
+                </p>
             </div>
 
-            <p id={warningId} className="pill-warning" role="alert">
+            <p
+                id={warningId}
+                className="m-0 mt-2.5 min-h-5 type-small text-destructive empty:mt-0"
+                role="alert"
+            >
                 {warning}
             </p>
 
             {!structureLocked && (
-                <ul className="pill-manage" aria-label={`Criteria in ${level.name}`}>
+                <ul
+                    className="m-0 flex list-none flex-wrap gap-2 p-0"
+                    aria-label={`Criteria in ${level.name}`}
+                >
                     {segments.map(renderManageChip)}
                 </ul>
             )}
+
+            {/* Deleting a criterion that has subcriteria asks first (it
+                replaced the browser's confirm box, D4): same question, OK and
+                Cancel, focus on OK. */}
+            <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                <AlertDialogContent initialFocus={okRef}>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Delete {pendingDelete?.name} and all of its subcriteria?
+                        </AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction ref={okRef} onClick={confirmDelete}>
+                            OK
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </section>
     );
 }
