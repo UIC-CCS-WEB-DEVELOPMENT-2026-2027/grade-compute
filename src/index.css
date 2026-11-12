@@ -251,6 +251,9 @@
     --spacing-control-lg: 3rem;
     --spacing-control-touch: 2.75rem;
 
+    /* The sandbox subject picker's list scrolls past this height. */
+    --spacing-picker-list: min(55vh, 26.25rem);
+
     /* Login page motion (moved from LoginRegister.css, T7.L3a). */
     --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
     --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;

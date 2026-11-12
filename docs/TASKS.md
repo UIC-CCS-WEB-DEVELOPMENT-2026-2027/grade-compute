@@ -697,7 +697,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. New token `shadow-row-active` (the 3px primary bar on the row being edited). A draft row picked from the chart uses `task-highlighted:animate-record-highlight`, like Current Term Records, with its reduced-motion fallback. `TargetGradeSandbox.css` loses its own highlight rule and keyframes.
       5. Text: names `body` semibold (were Khand 16px), notes `small` (were 11px), group titles and headers `caption`. Notes may now wrap, so the table fits at 768 and 1024, as before. At 1280, where the result column sits beside it, it scrolls inside its box by 70px (was 47px). T8.6 handles that.
       6. Checked I6–I12 in a browser. Tests unchanged.
-  - [ ] **T7.I3** "How this is calculated" → `Collapsible`. SandboxSubjectPicker → `Dialog` + `Item` + `Badge`. Delete `TargetGradeSandbox.css` and `SandboxSubjectPicker.css`. Check: B8, B9, I13, I14.
+  - [x] **T7.I3** "How this is calculated" → `Collapsible`. SandboxSubjectPicker → `Dialog` + `Item` + `Badge`. Delete `TargetGradeSandbox.css` and `SandboxSubjectPicker.css`. Check: B8, B9, I13, I14.
+    - **As done:**
+      1. The rest of the sandbox moved to utilities too: the layout (flex, with the result on the right from `@2xl`, 672px of sandbox width; was 700px; the result column is 320px, was 260–330px), step 1 and the chart as `Card`s, and the empty messages. All four step headings use `SandboxStep`.
+      2. The picker is the shadcn `Dialog` with `disablePointerDismissal`, so, as before, only Escape and Cancel close it, not a click outside. Focus still starts on the first subject. One difference: after closing, focus goes back to the sidebar button (before: the page body).
+      3. Picker look: the title uses the `section-title` role, the eyebrow `caption`, the description `small` (was 10px) as the dialog's `DialogDescription`. Subject rows are `Item` links, "Viewing now" is a `Badge`, Cancel is in a `DialogFooter`. New token `spacing-picker-list` keeps the list's old maximum height, `min(55vh, 420px)`.
+      4. The "How this is calculated" toggle stays primary when open (the ghost button turns dark when open; Current Term Records' breakdown toggle does that today).
+      5. Checked B8, B9, I13 and I14 in a browser: same text, accessible names, links and keyboard behaviour as before.
 - **Grade Rules**
   - [ ] **T7.J1 GradeRules page.**
     - Change: search `Input`, thumbnail `ToggleGroup`, `RuleCard` (`Card`, `Badge`, `Button`), RuleBar, RulePieChart and RuleHierarchyTable (`Table`), `RuleLegend` (G16), `Empty`.

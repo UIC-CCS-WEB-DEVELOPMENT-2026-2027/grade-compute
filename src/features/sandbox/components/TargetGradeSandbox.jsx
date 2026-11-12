@@ -26,7 +26,10 @@ import { TERM_LABELS } from "@/lib/terms";
 import { HistoryChart } from "@/features/history/components/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
+import { ChevronRightIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -45,7 +48,6 @@ import {
 } from "@/components/ui/table";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
-import "./TargetGradeSandbox.css";
 
 function pluralTasks(count) {
     return `${count} ${count === 1 ? "task" : "tasks"}`;
@@ -63,16 +65,18 @@ const CELL_NOTE = "mt-0.5 block type-small text-muted-foreground";
 const NUMBER_INPUT = "w-18 bg-card tabular-nums hover:bg-muted max-md:h-control-touch";
 const DRAFT_NOTE = "block type-small text-muted-foreground";
 
-// A numbered step heading inside a sandbox card.
+// A step heading inside a sandbox card, numbered for the three steps.
 function SandboxStep({ id, number, children }) {
     return (
         <h2 id={id} className="m-0 flex items-center gap-2 type-card-title text-foreground">
-            <span
-                aria-hidden="true"
-                className="inline-grid size-6 shrink-0 place-items-center rounded-full bg-secondary type-caption font-bold text-primary"
-            >
-                {number}
-            </span>
+            {number && (
+                <span
+                    aria-hidden="true"
+                    className="inline-grid size-6 shrink-0 place-items-center rounded-full bg-secondary type-caption font-bold text-primary"
+                >
+                    {number}
+                </span>
+            )}
             {children}
         </h2>
     );
@@ -204,11 +208,15 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
 
     if (!studentRecord) {
-        return <p className="sandbox-empty">This subject is not available for your account.</p>;
+        return (
+            <p className="m-0 type-body text-muted-foreground">
+                This subject is not available for your account.
+            </p>
+        );
     }
     if (!rule) {
         return (
-            <p className="sandbox-empty">
+            <p className="m-0 type-body text-muted-foreground">
                 This subject has no grading rule yet. Choose one on the Grade Rules page.
             </p>
         );
@@ -287,118 +295,124 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const draftCriteria = plan.criteria.filter((criterion) => criterion.tasks.length > 0);
 
     return (
-        <div className="sandbox @container">
-            <div className="sandbox-layout">
-                {/* Answer first on phones, sticky on the right on wide screens. */}
-                <div className="sandbox-result-column">
+        // Layout follows the space next to the sidebar, not the window width.
+        <div className="@container text-foreground">
+            <div className="flex flex-col gap-6 @2xl:flex-row @2xl:items-start">
+                {/* Answer first on phones, on the right on wide screens. */}
+                <div className="@2xl:order-last @2xl:w-80 @2xl:shrink-0">
                     <SandboxResult plan={plan} termLabel={termLabel} />
                 </div>
 
-                <div className="sandbox-inputs">
+                <div className="flex min-w-0 flex-1 flex-col gap-4">
                     {/* Step 1: target and current grades */}
-                    <section
-                        className="sandbox-card sandbox-summary"
-                        aria-labelledby="sandbox-step-target"
-                    >
-                        <div className="flex flex-col gap-2">
-                            <h2 className="sandbox-step" id="sandbox-step-target">
-                                <span aria-hidden="true">1</span> Set your {termLabel} target
-                            </h2>
-                            <Field className="gap-2">
-                                <FieldLabel htmlFor="sandbox-target-grade" className="sr-only">
-                                    {termLabel} target grade
-                                </FieldLabel>
-                                <InputGroup className="max-w-24 border-highlight-strong bg-card has-[[data-slot][aria-invalid=true]]:bg-warning-soft max-md:h-control-touch">
-                                    <InputGroupInput
-                                        id="sandbox-target-grade"
-                                        className="font-bold text-primary"
-                                        type="number"
-                                        min="0"
-                                        max="100"
-                                        step="any"
-                                        value={targetInput ?? String(target)}
-                                        aria-invalid={Boolean(targetError)}
-                                        aria-describedby={
-                                            targetError
-                                                ? "sandbox-target-error"
-                                                : "sandbox-target-hint"
-                                        }
-                                        onChange={(event) => {
-                                            setTargetInput(event.target.value);
-                                            setTargetError("");
-                                        }}
-                                        onBlur={commitTarget}
-                                        onKeyDown={(event) => {
-                                            if (event.key === "Enter") event.currentTarget.blur();
-                                        }}
-                                    />
-                                    <InputGroupAddon align="inline-end">
-                                        <InputGroupText
-                                            className="text-highlight-text"
-                                            aria-hidden="true"
+                    <section aria-labelledby="sandbox-step-target">
+                        <Card className="gap-0">
+                            <CardContent className="grid items-center gap-5 @xl:grid-cols-5">
+                                <div className="flex flex-col gap-2 @xl:col-span-2">
+                                    <SandboxStep id="sandbox-step-target" number={1}>
+                                        Set your {termLabel} target
+                                    </SandboxStep>
+                                    <Field className="gap-2">
+                                        <FieldLabel
+                                            htmlFor="sandbox-target-grade"
+                                            className="sr-only"
                                         >
-                                            %
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                </InputGroup>
-                                {targetError ? (
-                                    <small
-                                        id="sandbox-target-error"
-                                        className="type-small text-destructive"
-                                        role="alert"
-                                    >
-                                        {targetError}
-                                    </small>
-                                ) : (
-                                    <small
-                                        id="sandbox-target-hint"
-                                        className="type-small text-highlight-text"
-                                    >
-                                        Yellow marker shows your target
-                                    </small>
-                                )}
-                            </Field>
-                        </div>
-                        <div className="sandbox-gauges">
-                            <GradeGauge
-                                label={`${termLabel} official`}
-                                grade={officialGrade}
-                                target={target}
-                            />
-                            <GradeGauge
-                                label={`${termLabel} expected`}
-                                grade={expectedGrade}
-                                target={target}
-                                tone="expected"
-                            />
-                        </div>
+                                            {termLabel} target grade
+                                        </FieldLabel>
+                                        <InputGroup className="max-w-24 border-highlight-strong bg-card has-[[data-slot][aria-invalid=true]]:bg-warning-soft max-md:h-control-touch">
+                                            <InputGroupInput
+                                                id="sandbox-target-grade"
+                                                className="font-bold text-primary"
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                step="any"
+                                                value={targetInput ?? String(target)}
+                                                aria-invalid={Boolean(targetError)}
+                                                aria-describedby={
+                                                    targetError
+                                                        ? "sandbox-target-error"
+                                                        : "sandbox-target-hint"
+                                                }
+                                                onChange={(event) => {
+                                                    setTargetInput(event.target.value);
+                                                    setTargetError("");
+                                                }}
+                                                onBlur={commitTarget}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter")
+                                                        event.currentTarget.blur();
+                                                }}
+                                            />
+                                            <InputGroupAddon align="inline-end">
+                                                <InputGroupText
+                                                    className="text-highlight-text"
+                                                    aria-hidden="true"
+                                                >
+                                                    %
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                        </InputGroup>
+                                        {targetError ? (
+                                            <small
+                                                id="sandbox-target-error"
+                                                className="type-small text-destructive"
+                                                role="alert"
+                                            >
+                                                {targetError}
+                                            </small>
+                                        ) : (
+                                            <small
+                                                id="sandbox-target-hint"
+                                                className="type-small text-highlight-text"
+                                            >
+                                                Yellow marker shows your target
+                                            </small>
+                                        )}
+                                    </Field>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-start gap-4 @xl:col-span-3 @xl:justify-evenly">
+                                    <GradeGauge
+                                        label={`${termLabel} official`}
+                                        grade={officialGrade}
+                                        target={target}
+                                    />
+                                    <GradeGauge
+                                        label={`${termLabel} expected`}
+                                        grade={expectedGrade}
+                                        target={target}
+                                        tone="expected"
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
                     </section>
 
                     {/* The plan as a chart: always shown. */}
-                    <section
-                        className="sandbox-card sandbox-chart-card"
-                        id="sandbox-chart"
-                        aria-labelledby="sandbox-chart-title"
-                    >
-                        <h2 className="sandbox-step" id="sandbox-chart-title">
-                            Your plan on a chart
-                        </h2>
-                        <p className="sandbox-help">
-                            Solid line: your {termLabel} grade so far. Dotted line: each remaining
-                            task at the score in your result. The order of upcoming tasks is a
-                            guess, so the end point is what matters.
-                        </p>
-                        <HistoryChart
-                            points={historyPoints}
-                            planPoints={planPoints}
-                            showPlan
-                            emphasizePlan
-                            target={target}
-                            targetLabel="Target"
-                            termLabel={termLabel}
-                            onSelect={(point) => focusTaskRow(point.taskId)}
-                            heightClass="h-70"
-                        />
+                    <section id="sandbox-chart" aria-labelledby="sandbox-chart-title">
+                        <Card className={STEP_CARD}>
+                            <CardContent>
+                                <SandboxStep id="sandbox-chart-title">
+                                    Your plan on a chart
+                                </SandboxStep>
+                                <p className="m-0 mt-1.5 mb-1 max-w-2xl type-small text-muted-foreground">
+                                    Solid line: your {termLabel} grade so far. Dotted line: each
+                                    remaining task at the score in your result. The order of
+                                    upcoming tasks is a guess, so the end point is what matters.
+                                </p>
+                                <HistoryChart
+                                    points={historyPoints}
+                                    planPoints={planPoints}
+                                    showPlan
+                                    emphasizePlan
+                                    target={target}
+                                    targetLabel="Target"
+                                    termLabel={termLabel}
+                                    onSelect={(point) => focusTaskRow(point.taskId)}
+                                    heightClass="h-70"
+                                />
+                            </CardContent>
+                        </Card>
                     </section>
 
                     {/* Step 2: remaining tasks per criterion */}
@@ -736,17 +750,38 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                         </Card>
                     </section>
 
-                    <details className="sandbox-card sandbox-how">
-                        <summary>How this is calculated</summary>
-                        <p>
-                            Each criterion&apos;s grade is the average of its task percentages,
-                            weighted by your grading rule. Scored tasks stay as they are (official
-                            scores first, then your own). Every remaining task without an expected %
-                            gets the same score, and the sandbox finds the lowest score that reaches
-                            your target. Criteria with no tasks are left out until you add some.
-                            Nothing here changes official records.
-                        </p>
-                    </details>
+                    <Card size="sm" className="gap-0">
+                        <CardContent>
+                            <Collapsible>
+                                <CollapsibleTrigger
+                                    render={
+                                        <Button
+                                            variant="ghost"
+                                            className="group/how text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary max-md:h-control-touch"
+                                        />
+                                    }
+                                >
+                                    <ChevronRightIcon
+                                        data-icon="inline-start"
+                                        aria-hidden="true"
+                                        className="transition-transform group-aria-expanded/how:rotate-90 motion-reduce:transition-none"
+                                    />
+                                    How this is calculated
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                    <p className="m-0 mt-3 border-0 border-t border-solid border-border pt-3 type-small text-muted-foreground">
+                                        Each criterion&apos;s grade is the average of its task
+                                        percentages, weighted by your grading rule. Scored tasks
+                                        stay as they are (official scores first, then your own).
+                                        Every remaining task without an expected % gets the same
+                                        score, and the sandbox finds the lowest score that reaches
+                                        your target. Criteria with no tasks are left out until you
+                                        add some. Nothing here changes official records.
+                                    </p>
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
