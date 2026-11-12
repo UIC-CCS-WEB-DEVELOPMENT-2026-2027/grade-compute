@@ -800,7 +800,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. Found, kept (bug): with no verified contact, 2FA "Turn on" shows no message. Its error line only renders inside the verification block, which needs a contact. Checklist L7 expects "Add and verify an email address or phone number…".
       5. `GlobalSettings.css` keeps only the rules Notifications and Account Actions still use (1,498 → 369 lines). The tab icons are 18px (were 18.4px).
       6. Checked L5–L10, B2 and B5 in a browser against the old code at 1440 and 375, including a seeded account without a verified contact and one with a second active session: same messages, saved account data and flows; only the glyphs differ.
-  - [ ] **T7.L4s Notifications section** → `NotificationsSection.jsx`. `ToggleSetting` → `Switch`; toggles still not saved (B3). Check: L11.
+  - [x] **T7.L4s Notifications section** → `NotificationsSection.jsx`. `ToggleSetting` → `Switch`; toggles still not saved (B3). Check: L11.
+    - **As done:**
+      1. Added shadcn `switch`, adapted in the same commit: `cn` from `@/lib/utils`; the scale instead of `h-[18.4px]`, `w-[32px]` and `translate-x-[calc(100%-2px)]` (track 32 × 18px, the thumb travels 14px); a `card` thumb, visible on the light "off" track.
+      2. Each row keeps the old toggle's visible "On"/"Off" word beside its `Switch` (hidden from screen readers; the switch states it). The switches keep their names.
+      3. A click anywhere on a row still flips its switch. The row checks this itself now, because the page-wide row-click handler looked for a `button` and was only used here. That handler, `SettingRow.jsx` and `ToggleSetting.jsx` had no users left and are deleted in this task (the plan had them in T7.L5s).
+      4. The state stays in GlobalSettings: it survives a section switch and resets on reload (B3).
+      5. Checked L11 in a browser against the old code at 1440 and 375: switch click, row click, Space, section switch and reload gave the same results.
   - [ ] **T7.L5s Account Actions section** → `AccountActionsSection.jsx`, `Button`s (still no action, B1/B3). Delete `GlobalSettings.css`, `SettingRow.jsx` and `ToggleSetting.jsx` if they are now unused. Check: L12.
 - [ ] **T7.P ⚠ Turn on Tailwind preflight.**
   - Import the full `tailwindcss`. Remove the now-duplicate parts of the old reset and the scoped `[data-slot]` reset.

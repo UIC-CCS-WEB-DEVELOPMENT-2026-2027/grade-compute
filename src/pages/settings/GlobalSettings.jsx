@@ -21,9 +21,8 @@ import { getSpaceSplitInitials } from "@/lib/format";
 import { AccountSection } from "@/features/settings/components/AccountSection";
 import { SecuritySection } from "@/features/settings/components/SecuritySection";
 import { SettingsIcon } from "@/features/settings/components/SettingsIcon";
+import { NotificationsSection } from "@/features/settings/components/NotificationsSection";
 import { ProfileSection } from "@/features/settings/components/ProfileSection";
-import { SettingRow } from "@/features/settings/components/SettingRow";
-import { ToggleSetting } from "@/features/settings/components/ToggleSetting";
 import "./GlobalSettings.css";
 
 const sidebarItems = [
@@ -289,14 +288,6 @@ export function GlobalSettings({ onLogout }) {
         setSessionDetails(null);
     };
 
-    const handleSettingRowClick = (event) => {
-        if (event.target.closest("button, select, input, textarea, a, label")) return;
-
-        const row = event.target.closest(".simple-row, .danger-box:not(.destructive)");
-        const control = row?.querySelector("button, select");
-        control?.click();
-    };
-
     const confirmLogout = () => {
         setShowLogoutConfirm(false);
         onLogout?.();
@@ -355,41 +346,6 @@ export function GlobalSettings({ onLogout }) {
         logoutSession,
         logoutAllOtherSessions,
     };
-
-    const renderNotificationsSection = () => (
-        <div className="settings-panel" onClick={handleSettingRowClick}>
-            <SettingRow
-                title="Email notifications"
-                description="Receive important updates through email."
-            >
-                <ToggleSetting
-                    label="Email notifications"
-                    enabled={notifications.email}
-                    onToggle={() => toggleNotification("email")}
-                />
-            </SettingRow>
-            <SettingRow
-                title="Important system notifications"
-                description="Platform alerts for deadlines, outages, and account changes."
-            >
-                <ToggleSetting
-                    label="Important system notifications"
-                    enabled={notifications.system}
-                    onToggle={() => toggleNotification("system")}
-                />
-            </SettingRow>
-            <SettingRow
-                title="Assignment and grade notifications"
-                description="Get reminded when tasks are graded or submitted."
-            >
-                <ToggleSetting
-                    label="Assignment and grade notifications"
-                    enabled={notifications.assignments}
-                    onToggle={() => toggleNotification("assignments")}
-                />
-            </SettingRow>
-        </div>
-    );
 
     const renderActionsSection = () => (
         <div className="settings-panel">
@@ -468,7 +424,12 @@ export function GlobalSettings({ onLogout }) {
             case "Security":
                 return <SecuritySection security={security} />;
             case "Notifications":
-                return renderNotificationsSection();
+                return (
+                    <NotificationsSection
+                        notifications={notifications}
+                        onToggle={toggleNotification}
+                    />
+                );
             case "Account Actions":
                 return renderActionsSection();
             default:
