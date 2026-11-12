@@ -194,7 +194,7 @@ Write **Pass** or **Fail** (with a note) next to each item.
 
 | # | Do | Expect |
 | --- | --- | --- |
-| L1 | Open Settings | Its own layout. Back link, brand, "Workspace Student", and the sections Profile, Account, Security, Notifications, Account Actions |
+| L1 | Open Settings | The shared page shell (sidebar, header, footer). Back link, the "Settings" heading, and tabs for Profile, Account, Security, Notifications, Account Actions. From 1024px wide, Settings' own "Help & Resources" button sits beside the tabs; its help only shows while Security is open (B2) |
 | L2 | Profile | Read-only details. The defaults come from the per-browser account (B4) |
 | L3 | Account: edit a field | Saved on every keystroke. "Save changes" shows "Account details updated." (B3) |
 | L4 | Account: upload a GIF, then a PNG | "Please choose a JPG, JPEG, or PNG image." The PNG: "Profile picture saved." |

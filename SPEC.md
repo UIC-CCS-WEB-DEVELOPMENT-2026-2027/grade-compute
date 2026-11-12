@@ -169,7 +169,7 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
 
 ### F14. Account settings (`/settings`) — [PARTIAL]
 
-- **Built:** its own layout. Sections:
+- **Built:** on the shared page shell (sidebar, header and footer), with the sections as tabs and Settings' own "Help & Resources" button beside them. Sections:
   - Profile (read-only)
   - Account (edit details and photo)
   - Security (password change with a simulated code, 2FA, sessions)
@@ -381,7 +381,7 @@ The code already contains these non-student pieces. All except (f) and (g) are k
 - (d) **Seed accounts:** professor `U2` and admin `U3`.
 - (e) **Verification data:** `verificationQueue` requests and the class `status` field. `addSubject` writes them, but no one can act on them yet.
 - (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It is dead code and is deleted in Phase 5a of the clean-up job (owner decision, Gate 3, 2026-11-11).
-- (g) **Settings** shows the label "Workspace: Student", left over from a discontinued workspace-switching feature. It is removed when Settings moves onto the shared page shell (Phase 7, T7.L0; owner decision, 2026-11-11).
+- (g) **Settings** shows the label "Workspace: Student", left over from a discontinued workspace-switching feature. It was removed when Settings moved onto the shared page shell (T7.L0, 2026-11-12; owner decision, 2026-11-11).
 
 ## 7. UX principles (from the project details)
 
@@ -448,3 +448,5 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-12:** §3, §5 and §6: file paths updated after the Phase 5 moves and the Phase 6 extractions (owner approved).
 - **2026-11-12:** F9, §4 and §5: the B9 fix has shipped. Sandbox drafts are draft-only (`draftScores`), and the chart draws them after the real scores (owner approved).
 - **2026-11-12:** F13: sidebar thresholds (767/1023) and the Ctrl/⌘+B shortcut, after the sidebar rebuild (owner approved).
+- **2026-11-12:** F14: Settings uses the shared page shell, with its sections as tabs (T7.L0, owner approved).
+- **2026-11-12:** §6 (g): the "Workspace: Student" label has been removed (T7.L0, owner approved).
