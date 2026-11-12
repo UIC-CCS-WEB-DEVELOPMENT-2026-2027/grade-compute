@@ -200,7 +200,7 @@ Write **Pass** or **Fail** (with a note) next to each item.
 | L4 | Account: upload a GIF, then a PNG | "Please choose a JPG, JPEG, or PNG image." The PNG: "Profile picture saved." |
 | L5 | Security › Password: wrong current password, short password, no uppercase or number, mismatch, same as current | "Current password is incorrect." / "Your new password must be at least 8 characters." / "… at least one uppercase letter and one number." / "The new passwords do not match." / "Your new password must be different from your current password." |
 | L6 | Valid new password, then the verification step | "Verify it's you". Sending a code shows "Prototype code (not sent): ######". A wrong code: "That verification code is incorrect or expired. Request a new code." The right code: "Your password was changed successfully." The login password in `db.users` does not change (B4) |
-| L7 | Security › Two-Factor Authentication: Turn on, verify | Needs a verified email or phone, otherwise "Add and verify an email address or phone number before enabling two-factor authentication." After the code: "Two-factor authentication is now enabled." |
+| L7 | Security › Two-Factor Authentication: Turn on, verify | Needs a verified email or phone. Without one, "Turn on" shows no message (B21; the intended message, "Add and verify an email address or phone number before enabling two-factor authentication.", never renders). After the code: "Two-factor authentication is now enabled." |
 | L8 | 2FA "Turn off" | Opens a confirmation that shares state with the session dialog (B5) |
 | L9 | Security › Login Activity | Lists sessions. Session details and "log out of all sessions" open dialogs |
 | L10 | Help & Resources | Only opens from the Security section (B2) |
