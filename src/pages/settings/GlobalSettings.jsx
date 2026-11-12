@@ -18,12 +18,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSpaceSplitInitials } from "@/lib/format";
+import { AccountActionsSection } from "@/features/settings/components/AccountActionsSection";
 import { AccountSection } from "@/features/settings/components/AccountSection";
 import { SecuritySection } from "@/features/settings/components/SecuritySection";
 import { SettingsIcon } from "@/features/settings/components/SettingsIcon";
 import { NotificationsSection } from "@/features/settings/components/NotificationsSection";
 import { ProfileSection } from "@/features/settings/components/ProfileSection";
-import "./GlobalSettings.css";
 
 const sidebarItems = [
     { label: "Profile", icon: "profile" },
@@ -347,62 +347,6 @@ export function GlobalSettings({ onLogout }) {
         logoutAllOtherSessions,
     };
 
-    const renderActionsSection = () => (
-        <div className="settings-panel">
-            <div className="danger-box">
-                <div>
-                    <h4>Download account data</h4>
-                    <p>Export your profile and academic information for review.</p>
-                </div>
-                <button type="button" className="secondary-button">
-                    Download
-                </button>
-            </div>
-
-            <div className="danger-box">
-                <div>
-                    <h4>Clear local preferences</h4>
-                    <p>Reset stored browser settings for this prototype.</p>
-                </div>
-                <button type="button" className="secondary-button">
-                    Clear
-                </button>
-            </div>
-
-            <div className="danger-box destructive">
-                <div>
-                    <h4>Log out</h4>
-                    <p>Sign out of your CompuGrade account.</p>
-                </div>
-                <button
-                    type="button"
-                    className="danger-button"
-                    onClick={() => setShowLogoutConfirm(true)}
-                >
-                    Log Out
-                </button>
-            </div>
-
-            {showLogoutConfirm && (
-                <div className="delete-confirmation">
-                    <p>Are you sure you want to log out?</p>
-                    <div className="confirm-actions">
-                        <button
-                            type="button"
-                            className="secondary-button"
-                            onClick={() => setShowLogoutConfirm(false)}
-                        >
-                            Cancel
-                        </button>
-                        <button type="button" className="danger-button" onClick={confirmLogout}>
-                            Log Out
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-
     const renderSectionContent = () => {
         switch (activeSection) {
             case "Profile":
@@ -431,7 +375,14 @@ export function GlobalSettings({ onLogout }) {
                     />
                 );
             case "Account Actions":
-                return renderActionsSection();
+                return (
+                    <AccountActionsSection
+                        showLogoutConfirm={showLogoutConfirm}
+                        onLogout={() => setShowLogoutConfirm(true)}
+                        onCancelLogout={() => setShowLogoutConfirm(false)}
+                        onConfirmLogout={confirmLogout}
+                    />
+                );
             default:
                 return null;
         }
@@ -439,9 +390,7 @@ export function GlobalSettings({ onLogout }) {
 
     return (
         <PageShell>
-            {/* settings-content scopes the focus outline of the sections, which
-                still use their own CSS until T7.L1s-L5s. */}
-            <div className="settings-content flex flex-col gap-6">
+            <div className="flex flex-col gap-6">
                 <div>
                     <BackLink to="/student/dashboard" className="max-md:h-control-touch">
                         Back

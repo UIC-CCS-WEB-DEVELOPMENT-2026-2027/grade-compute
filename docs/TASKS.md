@@ -807,7 +807,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       3. A click anywhere on a row still flips its switch. The row checks this itself now, because the page-wide row-click handler looked for a `button` and was only used here. That handler, `SettingRow.jsx` and `ToggleSetting.jsx` had no users left and are deleted in this task (the plan had them in T7.L5s).
       4. The state stays in GlobalSettings: it survives a section switch and resets on reload (B3).
       5. Checked L11 in a browser against the old code at 1440 and 375: switch click, row click, Space, section switch and reload gave the same results.
-  - [ ] **T7.L5s Account Actions section** → `AccountActionsSection.jsx`, `Button`s (still no action, B1/B3). Delete `GlobalSettings.css`, `SettingRow.jsx` and `ToggleSetting.jsx` if they are now unused. Check: L12.
+  - [x] **T7.L5s Account Actions section** → `AccountActionsSection.jsx`, `Button`s (still no action, B1/B3). Delete `GlobalSettings.css`, `SettingRow.jsx` and `ToggleSetting.jsx` if they are now unused. Check: L12.
+    - **As done:**
+      1. `AccountActionsSection`: Download and Clear are outline `Button`s, still without an action (B3); "Log Out" opens the same inline "Are you sure you want to log out?" panel, whose Log Out still does nothing (B1). The panel's state stays in GlobalSettings.
+      2. The two plain rows lost their pointer cursor and hover lift (they were never clickable; the hover tint stays).
+      3. `GlobalSettings.css` is deleted, and with it the `settings-content` focus scope. `SettingRow.jsx` and `ToggleSetting.jsx` already went in T7.L4s. Only `src/index.css` and `components/Dialog.css` (T7.Z) remain as stylesheets.
+      4. Checked L12 in a browser against the old code at 1440 and 375: same results, no stored data changed, still signed in after the confirmed Log Out.
 - [ ] **T7.P ⚠ Turn on Tailwind preflight.**
   - Import the full `tailwindcss`. Remove the now-duplicate parts of the old reset and the scoped `[data-slot]` reset.
   - Check: V-visual against the baseline at all widths, plus the full checklist.
