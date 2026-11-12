@@ -240,6 +240,9 @@
     --shadow-card: 0 8px 22px rgb(49 84 134 / 0.06);
     --shadow-hover: 0 12px 28px rgb(30 36 44 / 0.09);
     --shadow-dialog: 0 18px 50px rgb(24 28 34 / 0.17);
+    /* The bar on the left of the row being edited (sandbox criteria and
+       draft rows). */
+    --shadow-row-active: inset 3px 0 0 var(--primary);
 
     /* One size per control (docs/TASKS.md 4.3): h-control, size-control,
        and the 44px touch size for phones and tablets (Phase 8). */

@@ -28,18 +28,54 @@ import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
     InputGroup,
     InputGroupAddon,
     InputGroupInput,
     InputGroupText,
 } from "@/components/ui/input-group";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
 import "./TargetGradeSandbox.css";
 
 function pluralTasks(count) {
     return `${count} ${count === 1 ? "task" : "tasks"}`;
+}
+
+// The four step cards: white fading to muted, as before.
+const STEP_CARD = "gap-0 bg-linear-145 from-card from-55% to-muted shadow-card";
+const CRITERIA_COLUMNS = ["Criterion", "Scored so far", "Upcoming tasks", "Expected %", "You need"];
+// Criteria table cells. When the sandbox is narrow, each criterion becomes a
+// small card: the header row is hidden and each cell shows its own label.
+const CELL = "py-3 whitespace-normal @max-xl:p-0";
+const CELL_LABEL =
+    "mb-1 hidden type-caption tracking-wide text-muted-foreground uppercase @max-xl:block";
+const CELL_NOTE = "mt-0.5 block type-small text-muted-foreground";
+const NUMBER_INPUT = "w-18 bg-card tabular-nums hover:bg-muted max-md:h-control-touch";
+const DRAFT_NOTE = "block type-small text-muted-foreground";
+
+// A numbered step heading inside a sandbox card.
+function SandboxStep({ id, number, children }) {
+    return (
+        <h2 id={id} className="m-0 flex items-center gap-2 type-card-title text-foreground">
+            <span
+                aria-hidden="true"
+                className="inline-grid size-6 shrink-0 place-items-center rounded-full bg-secondary type-caption font-bold text-primary"
+            >
+                {number}
+            </span>
+            {children}
+        </h2>
+    );
 }
 
 // The result card's colours for each tone: the card, and its divider lines.
@@ -251,7 +287,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const draftCriteria = plan.criteria.filter((criterion) => criterion.tasks.length > 0);
 
     return (
-        <div className="sandbox">
+        <div className="sandbox @container">
             <div className="sandbox-layout">
                 {/* Answer first on phones, sticky on the right on wide screens. */}
                 <div className="sandbox-result-column">
@@ -366,237 +402,338 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     </section>
 
                     {/* Step 2: remaining tasks per criterion */}
-                    <section
-                        className="sandbox-card sandbox-remaining-card"
-                        aria-labelledby="sandbox-step-remaining"
-                    >
-                        <h2 className="sandbox-step" id="sandbox-step-remaining">
-                            <span aria-hidden="true">2</span> Tell us what is left
-                        </h2>
-                        <p className="sandbox-help">
-                            For each criterion, count the tasks you still expect this term. If you
-                            already know how you will do on one (for example the exam), enter an
-                            expected %. Leave it empty and the sandbox works it out.
-                        </p>
-                        <div className="sandbox-table-scroll">
-                            <table className="sandbox-table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Criterion</th>
-                                        <th scope="col">Scored so far</th>
-                                        <th scope="col">Upcoming tasks</th>
-                                        <th scope="col">Expected %</th>
-                                        <th scope="col">You need</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {plan.criteria.map((criterion) => (
-                                        <tr
-                                            key={criterion.id}
-                                            className={criterion.counted ? "" : "is-not-counted"}
-                                        >
-                                            <th scope="row">
-                                                <span className="sandbox-criterion-name">
-                                                    {criterion.path.join(" › ")}
-                                                </span>
-                                                <small>
-                                                    {formatPercent(
-                                                        Math.round(criterion.weight * 10000),
-                                                    )}{" "}
-                                                    of the term
-                                                </small>
-                                            </th>
-                                            <td className="sandbox-cell-scored">
-                                                {criterion.scoredCount === 0 ? (
-                                                    <span className="sandbox-muted">None yet</span>
-                                                ) : (
-                                                    <>
-                                                        <span>
-                                                            {formatGrade(criterion.scoredAverage)}
-                                                        </span>
-                                                        <small>
-                                                            average of{" "}
-                                                            {pluralTasks(criterion.scoredCount)}
-                                                        </small>
-                                                    </>
-                                                )}
-                                            </td>
-                                            <td className="sandbox-cell-upcoming">
-                                                <input
-                                                    className="sandbox-number"
-                                                    type="number"
-                                                    min="0"
-                                                    max={MAX_UPCOMING}
-                                                    step="1"
-                                                    value={criterion.upcoming}
-                                                    aria-label={`Upcoming ${criterion.name} tasks not added yet`}
-                                                    onChange={(event) =>
-                                                        saveCriterion(criterion.id, {
-                                                            upcoming: Math.max(
-                                                                0,
-                                                                Math.min(
-                                                                    MAX_UPCOMING,
+                    <section aria-labelledby="sandbox-step-remaining">
+                        <Card className={STEP_CARD}>
+                            <CardContent>
+                                <SandboxStep id="sandbox-step-remaining" number={2}>
+                                    Tell us what is left
+                                </SandboxStep>
+                                <p className="m-0 mt-1.5 mb-4 max-w-2xl type-small text-muted-foreground">
+                                    For each criterion, count the tasks you still expect this term.
+                                    If you already know how you will do on one (for example the
+                                    exam), enter an expected %. Leave it empty and the sandbox works
+                                    it out.
+                                </p>
+                                <div className="overflow-hidden rounded-lg border border-border bg-card">
+                                    <Table className="border-collapse @max-xl:block">
+                                        <TableHeader className="@max-xl:sr-only">
+                                            <TableRow className="hover:bg-transparent">
+                                                {CRITERIA_COLUMNS.map((column) => (
+                                                    <TableHead
+                                                        key={column}
+                                                        scope="col"
+                                                        className="h-auto bg-muted py-3 type-caption tracking-wide text-muted-foreground uppercase"
+                                                    >
+                                                        {column}
+                                                    </TableHead>
+                                                ))}
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody className="@max-xl:block">
+                                            {plan.criteria.map((criterion) => {
+                                                const dimmed = criterion.counted
+                                                    ? ""
+                                                    : "opacity-60";
+                                                return (
+                                                    <TableRow
+                                                        key={criterion.id}
+                                                        className="hover:bg-muted focus-within:bg-secondary focus-within:*:first:shadow-row-active @max-xl:grid @max-xl:grid-cols-2 @max-xl:gap-x-4 @max-xl:gap-y-3 @max-xl:p-4"
+                                                    >
+                                                        <TableHead
+                                                            scope="row"
+                                                            className={cn(
+                                                                "h-auto py-3 font-normal whitespace-normal @max-xl:col-span-2 @max-xl:p-0",
+                                                                dimmed,
+                                                            )}
+                                                        >
+                                                            <span className="type-body font-semibold text-muted-foreground">
+                                                                {criterion.path.join(" › ")}
+                                                            </span>
+                                                            <small className={CELL_NOTE}>
+                                                                {formatPercent(
                                                                     Math.round(
-                                                                        Number(
-                                                                            event.target.value,
-                                                                        ) || 0,
+                                                                        criterion.weight * 10000,
                                                                     ),
-                                                                ),
-                                                            ),
-                                                        })
-                                                    }
-                                                />
-                                                {criterion.openTasks > 0 && (
-                                                    <small>
-                                                        + {criterion.openTasks} added without a
-                                                        score
-                                                    </small>
-                                                )}
-                                            </td>
-                                            <td className="sandbox-cell-expected">
-                                                <span className="sandbox-percent-input">
-                                                    <input
-                                                        className="sandbox-number"
-                                                        type="number"
-                                                        min="0"
-                                                        max="100"
-                                                        step="any"
-                                                        placeholder="Auto"
-                                                        value={criterion.expected ?? ""}
-                                                        aria-label={`Expected percentage for remaining ${criterion.name} tasks (leave empty to calculate)`}
-                                                        onChange={(event) => {
-                                                            const raw = event.target.value;
-                                                            const value = Number(raw);
-                                                            saveCriterion(criterion.id, {
-                                                                expected:
-                                                                    raw === "" ||
-                                                                    !Number.isFinite(value)
-                                                                        ? null
-                                                                        : Math.max(
-                                                                              0,
-                                                                              Math.min(100, value),
-                                                                          ),
-                                                            });
-                                                        }}
-                                                    />
-                                                    <span aria-hidden="true">%</span>
-                                                </span>
-                                            </td>
-                                            <td className="sandbox-need">
-                                                {!criterion.counted ? (
-                                                    <span className="sandbox-muted">
-                                                        Not counted (no tasks)
-                                                    </span>
-                                                ) : criterion.slots === 0 ? (
-                                                    <span className="sandbox-muted">Done</span>
-                                                ) : criterion.usesRequired ? (
-                                                    <strong>
-                                                        {suggestion === null
-                                                            ? "—"
-                                                            : formatGrade(suggestion)}
-                                                        <small>
-                                                            each · {pluralTasks(criterion.slots)}
-                                                        </small>
-                                                    </strong>
-                                                ) : (
-                                                    <span>
-                                                        {formatGrade(criterion.expected)}
-                                                        <small>your estimate</small>
-                                                    </span>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                                                )}{" "}
+                                                                of the term
+                                                            </small>
+                                                        </TableHead>
+                                                        <TableCell className={cn(CELL, dimmed)}>
+                                                            <span className={CELL_LABEL}>
+                                                                Scored so far
+                                                            </span>
+                                                            {criterion.scoredCount === 0 ? (
+                                                                <span className="text-muted-foreground">
+                                                                    None yet
+                                                                </span>
+                                                            ) : (
+                                                                <>
+                                                                    <span>
+                                                                        {formatGrade(
+                                                                            criterion.scoredAverage,
+                                                                        )}
+                                                                    </span>
+                                                                    <small className={CELL_NOTE}>
+                                                                        average of{" "}
+                                                                        {pluralTasks(
+                                                                            criterion.scoredCount,
+                                                                        )}
+                                                                    </small>
+                                                                </>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell className={CELL}>
+                                                            <span className={CELL_LABEL}>
+                                                                Upcoming tasks
+                                                            </span>
+                                                            <Input
+                                                                className={NUMBER_INPUT}
+                                                                type="number"
+                                                                min="0"
+                                                                max={MAX_UPCOMING}
+                                                                step="1"
+                                                                value={criterion.upcoming}
+                                                                aria-label={`Upcoming ${criterion.name} tasks not added yet`}
+                                                                onChange={(event) =>
+                                                                    saveCriterion(criterion.id, {
+                                                                        upcoming: Math.max(
+                                                                            0,
+                                                                            Math.min(
+                                                                                MAX_UPCOMING,
+                                                                                Math.round(
+                                                                                    Number(
+                                                                                        event.target
+                                                                                            .value,
+                                                                                    ) || 0,
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    })
+                                                                }
+                                                            />
+                                                            {criterion.openTasks > 0 && (
+                                                                <small className={CELL_NOTE}>
+                                                                    + {criterion.openTasks} added
+                                                                    without a score
+                                                                </small>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell className={CELL}>
+                                                            <span className={CELL_LABEL}>
+                                                                Expected %
+                                                            </span>
+                                                            <InputGroup className="w-24 bg-card hover:bg-muted max-md:h-control-touch">
+                                                                <InputGroupInput
+                                                                    className="tabular-nums"
+                                                                    type="number"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="any"
+                                                                    placeholder="Auto"
+                                                                    value={criterion.expected ?? ""}
+                                                                    aria-label={`Expected percentage for remaining ${criterion.name} tasks (leave empty to calculate)`}
+                                                                    onChange={(event) => {
+                                                                        const raw =
+                                                                            event.target.value;
+                                                                        const value = Number(raw);
+                                                                        saveCriterion(
+                                                                            criterion.id,
+                                                                            {
+                                                                                expected:
+                                                                                    raw === "" ||
+                                                                                    !Number.isFinite(
+                                                                                        value,
+                                                                                    )
+                                                                                        ? null
+                                                                                        : Math.max(
+                                                                                              0,
+                                                                                              Math.min(
+                                                                                                  100,
+                                                                                                  value,
+                                                                                              ),
+                                                                                          ),
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                />
+                                                                <InputGroupAddon align="inline-end">
+                                                                    <InputGroupText aria-hidden="true">
+                                                                        %
+                                                                    </InputGroupText>
+                                                                </InputGroupAddon>
+                                                            </InputGroup>
+                                                        </TableCell>
+                                                        <TableCell className={cn(CELL, dimmed)}>
+                                                            <span className={CELL_LABEL}>
+                                                                You need
+                                                            </span>
+                                                            {!criterion.counted ? (
+                                                                <span className="text-muted-foreground">
+                                                                    Not counted (no tasks)
+                                                                </span>
+                                                            ) : criterion.slots === 0 ? (
+                                                                <span className="text-muted-foreground">
+                                                                    Done
+                                                                </span>
+                                                            ) : criterion.usesRequired ? (
+                                                                <strong className="type-body font-bold whitespace-nowrap text-primary">
+                                                                    {suggestion === null
+                                                                        ? "—"
+                                                                        : formatGrade(suggestion)}
+                                                                    <small className={CELL_NOTE}>
+                                                                        each ·{" "}
+                                                                        {pluralTasks(
+                                                                            criterion.slots,
+                                                                        )}
+                                                                    </small>
+                                                                </strong>
+                                                            ) : (
+                                                                <span>
+                                                                    {formatGrade(
+                                                                        criterion.expected,
+                                                                    )}
+                                                                    <small className={CELL_NOTE}>
+                                                                        your estimate
+                                                                    </small>
+                                                                </span>
+                                                            )}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </section>
 
                     {/* Step 3: try draft scores on tasks already added */}
-                    <section
-                        className="sandbox-card sandbox-drafts-card"
-                        aria-labelledby="sandbox-step-drafts"
-                    >
-                        <h2 className="sandbox-step" id="sandbox-step-drafts">
-                            <span aria-hidden="true">3</span> Try draft scores (optional)
-                        </h2>
-                        <p className="sandbox-help">
-                            Type a score on a task you have already added. The grey number is the
-                            score that matches your result. Official scores are locked.
-                        </p>
-                        {draftCriteria.length === 0 ? (
-                            <p className="sandbox-muted">No tasks added for {termLabel} yet.</p>
-                        ) : (
-                            draftCriteria.map((criterion) => (
-                                <div className="sandbox-draft-group" key={criterion.id}>
-                                    <h3>{criterion.path.join(" › ")}</h3>
-                                    {criterion.tasks.map(({ task }, index) => {
-                                        const label =
-                                            task.title || `${criterion.name} ${index + 1}`;
-                                        const hasOfficial =
-                                            task.officialScore !== null &&
-                                            task.officialScore !== undefined &&
-                                            task.officialScore !== "";
-                                        const placeholder = criterion.usesRequired
-                                            ? requiredScore(suggestion, task.maxScore ?? 100)
-                                            : requiredScore(
-                                                  criterion.expected,
-                                                  task.maxScore ?? 100,
-                                              );
-                                        return (
-                                            <label
-                                                className="sandbox-draft"
-                                                key={task.id ?? index}
-                                                data-task-id={task.id}
+                    <section aria-labelledby="sandbox-step-drafts">
+                        <Card className={STEP_CARD}>
+                            <CardContent>
+                                <SandboxStep id="sandbox-step-drafts" number={3}>
+                                    Try draft scores (optional)
+                                </SandboxStep>
+                                <p className="m-0 mt-1.5 mb-4 type-small text-muted-foreground">
+                                    Type a score on a task you have already added. The grey number
+                                    is the score that matches your result. Official scores are
+                                    locked.
+                                </p>
+                                {draftCriteria.length === 0 ? (
+                                    <p className="m-0 type-small text-muted-foreground">
+                                        No tasks added for {termLabel} yet.
+                                    </p>
+                                ) : (
+                                    <div className="flex flex-col gap-4">
+                                        {draftCriteria.map((criterion) => (
+                                            <div
+                                                className="overflow-hidden rounded-lg border border-border bg-card"
+                                                key={criterion.id}
                                             >
-                                                <span className="sandbox-draft-name">
-                                                    {label}
-                                                    {task.description && (
-                                                        <small>{task.description}</small>
-                                                    )}
-                                                </span>
-                                                {hasOfficial ? (
-                                                    <span className="sandbox-draft-locked">
-                                                        {task.officialScore} /{" "}
-                                                        {task.maxScore ?? 100}
-                                                        <small>official</small>
-                                                    </span>
-                                                ) : (
-                                                    <span className="sandbox-draft-input">
-                                                        <input
-                                                            type="text"
-                                                            inputMode="decimal"
-                                                            value={task.studentReportedScore ?? ""}
-                                                            aria-invalid={
-                                                                invalidScoreId === task.id
-                                                            }
-                                                            placeholder={
-                                                                placeholder === null
-                                                                    ? "—"
-                                                                    : String(placeholder)
-                                                            }
-                                                            onChange={(event) =>
-                                                                saveDraftScore(
-                                                                    task,
-                                                                    event.target.value,
-                                                                )
-                                                            }
-                                                            aria-label={`Draft score for ${label}`}
-                                                        />
-                                                        <span>/ {task.maxScore ?? 100}</span>
-                                                    </span>
-                                                )}
-                                            </label>
-                                        );
-                                    })}
-                                </div>
-                            ))
-                        )}
-                        {saveError && (
-                            <p className="sandbox-error" role="alert">
-                                {saveError}
-                            </p>
-                        )}
+                                                <h3 className="m-0 bg-muted px-3 py-2.5 type-caption font-bold tracking-wide text-muted-foreground uppercase">
+                                                    {criterion.path.join(" › ")}
+                                                </h3>
+                                                {criterion.tasks.map(({ task }, index) => {
+                                                    const label =
+                                                        task.title ||
+                                                        `${criterion.name} ${index + 1}`;
+                                                    const hasOfficial =
+                                                        task.officialScore !== null &&
+                                                        task.officialScore !== undefined &&
+                                                        task.officialScore !== "";
+                                                    const placeholder = criterion.usesRequired
+                                                        ? requiredScore(
+                                                              suggestion,
+                                                              task.maxScore ?? 100,
+                                                          )
+                                                        : requiredScore(
+                                                              criterion.expected,
+                                                              task.maxScore ?? 100,
+                                                          );
+                                                    return (
+                                                        <label
+                                                            className="flex items-center justify-between gap-3 border-0 border-b border-solid border-border px-3 py-2.5 transition-colors last:border-b-0 hover:bg-muted focus-within:bg-secondary focus-within:shadow-row-active task-highlighted:animate-record-highlight motion-reduce:task-highlighted:animate-none motion-reduce:task-highlighted:bg-highlight-soft"
+                                                            key={task.id ?? index}
+                                                            data-task-id={task.id}
+                                                        >
+                                                            <span className="min-w-0 type-body font-semibold wrap-anywhere text-muted-foreground">
+                                                                {label}
+                                                                {task.description && (
+                                                                    <small
+                                                                        className={cn(
+                                                                            DRAFT_NOTE,
+                                                                            "font-normal",
+                                                                        )}
+                                                                    >
+                                                                        {task.description}
+                                                                    </small>
+                                                                )}
+                                                            </span>
+                                                            {hasOfficial ? (
+                                                                <span className="type-small font-semibold whitespace-nowrap text-foreground text-right">
+                                                                    {task.officialScore} /{" "}
+                                                                    {task.maxScore ?? 100}
+                                                                    <small className={DRAFT_NOTE}>
+                                                                        official
+                                                                    </small>
+                                                                </span>
+                                                            ) : (
+                                                                <InputGroup className="w-36 shrink-0 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:h-control-touch">
+                                                                    <InputGroupInput
+                                                                        className="text-center text-self-reported-foreground tabular-nums"
+                                                                        type="text"
+                                                                        inputMode="decimal"
+                                                                        value={
+                                                                            task.studentReportedScore ??
+                                                                            ""
+                                                                        }
+                                                                        aria-invalid={
+                                                                            invalidScoreId ===
+                                                                            task.id
+                                                                        }
+                                                                        placeholder={
+                                                                            placeholder === null
+                                                                                ? "—"
+                                                                                : String(
+                                                                                      placeholder,
+                                                                                  )
+                                                                        }
+                                                                        onChange={(event) =>
+                                                                            saveDraftScore(
+                                                                                task,
+                                                                                event.target.value,
+                                                                            )
+                                                                        }
+                                                                        aria-label={`Draft score for ${label}`}
+                                                                    />
+                                                                    <InputGroupAddon
+                                                                        align="inline-end"
+                                                                        className="tabular-nums"
+                                                                    >
+                                                                        <InputGroupText>
+                                                                            / {task.maxScore ?? 100}
+                                                                        </InputGroupText>
+                                                                    </InputGroupAddon>
+                                                                </InputGroup>
+                                                            )}
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {saveError && (
+                                    <p
+                                        className="m-0 mt-2 type-small text-destructive"
+                                        role="alert"
+                                    >
+                                        {saveError}
+                                    </p>
+                                )}
+                            </CardContent>
+                        </Card>
                     </section>
 
                     <details className="sandbox-card sandbox-how">

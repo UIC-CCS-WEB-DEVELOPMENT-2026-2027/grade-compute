@@ -689,7 +689,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       3. The target box follows Subject Detail: `Field` + `InputGroup` + `InputGroupInput`, with the `%` inside the box. Its save and validation logic is unchanged. The hint was 7px and is now the `small` role. The box uses `max-w-24`, because `Field` sets `*:w-full` on its children.
       4. "Sandbox unavailable" → `Empty` (centred), with the same heading, text and link. The link is a primary button.
       5. Checked I1–I5 in a browser. The four Subject Detail shots also differ, but only by 9–18 pixels of chart anti-aliasing.
-  - [ ] **T7.I2 ⚠** Criteria table (`Table`, stacked rows) and the draft-score inputs (`Input`). Check: I6–I12; sandbox tests.
+  - [x] **T7.I2 ⚠** Criteria table (`Table`, stacked rows) and the draft-score inputs (`Input`). Check: I6–I12; sandbox tests.
+    - **As done:**
+      1. Steps 2 and 3 are `Card`s inside their same named `<section>`s, with the same gradient and shadow. Their headings use a private `SandboxStep` (the `card-title` role and a numbered dot). Steps 1 and the chart keep the old heading class until T7.I3.
+      2. The criteria table still stacks by the sandbox's own width, not the window's: `@container` on the sandbox, with `@max-xl` (576px; was 560px). The column labels in stacked rows are spans hidden above that width, like EnrolledSubjectsTable, instead of CSS `content`. The table sets `border-collapse`, because preflight is still off.
+      3. Upcoming tasks is an `Input`. Expected % is an `InputGroup` with the `%` inside the box. Draft scores use Current Term Records' score box (`InputGroup` with `/ max` inside). Draft values use `self-reported-foreground` (AA). Save logic unchanged.
+      4. New token `shadow-row-active` (the 3px primary bar on the row being edited). A draft row picked from the chart uses `task-highlighted:animate-record-highlight`, like Current Term Records, with its reduced-motion fallback. `TargetGradeSandbox.css` loses its own highlight rule and keyframes.
+      5. Text: names `body` semibold (were Khand 16px), notes `small` (were 11px), group titles and headers `caption`. Notes may now wrap, so the table fits at 768 and 1024, as before. At 1280, where the result column sits beside it, it scrolls inside its box by 70px (was 47px). T8.6 handles that.
+      6. Checked I6–I12 in a browser. Tests unchanged.
   - [ ] **T7.I3** "How this is calculated" → `Collapsible`. SandboxSubjectPicker → `Dialog` + `Item` + `Badge`. Delete `TargetGradeSandbox.css` and `SandboxSubjectPicker.css`. Check: B8, B9, I13, I14.
 - **Grade Rules**
   - [ ] **T7.J1 GradeRules page.**
