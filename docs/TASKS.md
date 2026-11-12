@@ -887,7 +887,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. Each criterion's rename, Split and delete buttons are 44px below `lg` (they sit next to each other, so they need real size, not overlapping touch areas). The "+" beside the last criterion's name keeps its 24px look with a 44px touch area from an invisible `::after`: a 44px button there truncated narrow names ("Exam" → "E…") and pushed that bar out of line.
     3. Also 44px below `lg`: the `%` boxes (were 32px tall), the tag checkboxes' labels (were `md` only), the parent names that preview a breakdown and the school chips' remove buttons (same look, `::after` touch areas). The drag handle's touch area is 44px wide (was 40px).
     4. Measured at 375 and 768 (view, edit and new): no page overflow, no text below 14px except captions, no target below 44px. The T7.K1 and T7.K2 walks (K1–K8, the details form) give the same results on the old and new code at 1440 and 375, once their selector for the old `.rule-savebar` class was updated.
-- [ ] **T8.9** Settings.
+- [x] **T8.9** Settings.
+  - **As done:**
+    1. The section tabs are 44px tall below `lg` (were `md` only) and wrap onto two rows at 375.
+    2. The notification switches' touch area is 46px tall below `lg` (the Switch's own `::after`, was 34px); a row click still flips its switch, as before. The 2FA and password-verification contact rows are 44px tall. The "‹ Security" back button is 44px tall. "Show" / "Hide" in the password boxes keeps its look with a 44px touch area.
+    3. Everything else (buttons, inputs, the back link, the dialogs' buttons) is 44px below `lg` through the T8.1 tokens, so the shared `TOUCH` constants (`max-md:h-control-touch`) and the other touch classes are removed from the five Settings files.
+    4. Measured at 375 and 768 (all five sections, the password, 2FA and sessions views): no page overflow, no text below 14px except captions, no target below 44px; a tap just outside "Show" works at 375 and 768. The T7.L2s, L4s and L5s walks (L3, L4, L11, L12) give the same results on the old and new code.
 
 Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll; no text below 14px except captions; no target below 44px at 375 and 768.
 

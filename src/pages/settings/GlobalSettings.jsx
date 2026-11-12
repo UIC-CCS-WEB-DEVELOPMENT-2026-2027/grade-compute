@@ -392,9 +392,7 @@ export function GlobalSettings({ onLogout }) {
         <PageShell>
             <div className="flex flex-col gap-6">
                 <div>
-                    <BackLink to="/student/dashboard" className="max-md:h-control-touch">
-                        Back
-                    </BackLink>
+                    <BackLink to="/student/dashboard">Back</BackLink>
                 </div>
 
                 <header>
@@ -415,7 +413,7 @@ export function GlobalSettings({ onLogout }) {
                                 <TabsTrigger
                                     key={label}
                                     value={label}
-                                    className="h-auto flex-none rounded-none border-0 px-0 pt-1 pb-2.5 type-small font-normal text-muted-foreground group-data-horizontal/tabs:after:-bottom-px after:bg-primary hover:text-primary data-active:text-primary max-md:min-h-11"
+                                    className="h-auto flex-none rounded-none border-0 px-0 pt-1 pb-2.5 type-small font-normal text-muted-foreground group-data-horizontal/tabs:after:-bottom-px after:bg-primary hover:text-primary data-active:text-primary max-lg:min-h-11"
                                 >
                                     <SettingsIcon name={icon} />
                                     {label}

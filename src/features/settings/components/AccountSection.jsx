@@ -62,7 +62,7 @@ export function AccountSection({
                     <label
                         className={cn(
                             buttonVariants({ variant: "secondary" }),
-                            "relative cursor-pointer overflow-hidden max-md:h-control-touch",
+                            "relative cursor-pointer overflow-hidden",
                             PHONE_FULL,
                         )}
                     >
@@ -77,7 +77,7 @@ export function AccountSection({
                     </label>
                     <Button
                         variant="outline"
-                        className={cn("bg-card max-md:h-control-touch", PHONE_FULL)}
+                        className={cn("bg-card", PHONE_FULL)}
                         onClick={onSavePhoto}
                         disabled={!isEditing}
                     >
@@ -102,10 +102,7 @@ export function AccountSection({
                                 value={profile[name]}
                                 onChange={onFieldChange}
                                 disabled={!isEditing}
-                                className={cn(
-                                    "bg-card",
-                                    multiline ? "min-h-26" : "max-md:h-control-touch",
-                                )}
+                                className={cn("bg-card", multiline && "min-h-26")}
                             />
                         </Field>
                     );
@@ -116,7 +113,7 @@ export function AccountSection({
                 {isEditing ? (
                     <Button
                         className={cn(
-                            "bg-highlight-strong text-foreground hover:bg-highlight-strong/80 max-md:h-control-touch",
+                            "bg-highlight-strong text-foreground hover:bg-highlight-strong/80",
                             PHONE_FULL,
                         )}
                         onClick={onSave}
@@ -126,7 +123,7 @@ export function AccountSection({
                 ) : (
                     <Button
                         variant="outline"
-                        className={cn("bg-card max-md:h-control-touch", PHONE_FULL)}
+                        className={cn("bg-card", PHONE_FULL)}
                         onClick={onEditAgain}
                     >
                         Edit again

@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const TOUCH = "max-md:h-control-touch";
-const DANGER = cn("bg-destructive text-primary-foreground hover:bg-destructive/90", TOUCH);
+const DANGER = "bg-destructive text-primary-foreground hover:bg-destructive/90";
 
 const ROWS = [
     {
@@ -47,7 +46,7 @@ export function AccountActionsSection({
                     className="flex min-h-19 items-center justify-between gap-4.5 rounded-lg border-0 border-b border-solid border-border px-1 py-4 last:border-b-0 hover:bg-muted max-sm:gap-3"
                 >
                     <ActionText title={title} description={description} />
-                    <Button variant="outline" className={cn("shrink-0 bg-card max-sm:w-29", TOUCH)}>
+                    <Button variant="outline" className="shrink-0 bg-card max-sm:w-29">
                         {action}
                     </Button>
                 </div>
@@ -68,7 +67,7 @@ export function AccountActionsSection({
                     <div className="flex justify-end gap-3 max-lg:justify-start max-sm:flex-col-reverse">
                         <Button
                             variant="outline"
-                            className={cn("bg-card max-sm:w-full", TOUCH)}
+                            className="bg-card max-sm:w-full"
                             onClick={onCancelLogout}
                         >
                             Cancel

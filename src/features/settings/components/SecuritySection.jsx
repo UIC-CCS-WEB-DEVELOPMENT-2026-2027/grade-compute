@@ -59,14 +59,10 @@ const PASSWORD_LABELS = {
 };
 const STRENGTH_FILL = ["", "bg-destructive", "bg-highlight-strong", "bg-success"];
 
-const TOUCH = "max-md:h-control-touch";
 // The yellow main action, as on the Account section.
-const PRIMARY = cn(
-    "bg-highlight-strong text-foreground hover:bg-highlight-strong/80 max-sm:w-full",
-    TOUCH,
-);
-const SECONDARY = cn("bg-card max-sm:w-full", TOUCH);
-const DANGER = cn("bg-destructive text-primary-foreground hover:bg-destructive/90", TOUCH);
+const PRIMARY = "bg-highlight-strong text-foreground hover:bg-highlight-strong/80 max-sm:w-full";
+const SECONDARY = "bg-card max-sm:w-full";
+const DANGER = "bg-destructive text-primary-foreground hover:bg-destructive/90";
 const NOTE = "m-0 type-small text-muted-foreground";
 const ERROR = "m-0 type-small text-destructive";
 const SUBTITLE = "m-0 mb-1.5 type-card-title text-primary";
@@ -98,7 +94,10 @@ function MethodChoice({ methods, value, onChange }) {
     return (
         <RadioGroup value={value} onValueChange={onChange} className="gap-2">
             {methods.map((method) => (
-                <Label key={method.id} className="flex items-center gap-2 font-normal">
+                <Label
+                    key={method.id}
+                    className="flex items-center gap-2 font-normal max-lg:min-h-11"
+                >
                     <RadioGroupItem value={method.id} />
                     <span>
                         {method.label} · {method.masked}
@@ -128,7 +127,7 @@ function CodeEntry({ id, code, value, onChange, autoComplete }) {
                     value={value}
                     onChange={(event) => onChange(event.target.value.replace(/\D/g, ""))}
                     required
-                    className={cn("bg-card", TOUCH)}
+                    className="bg-card"
                 />
             </Field>
         </>
@@ -218,7 +217,7 @@ export function SecuritySection({ security }) {
                     <div>
                         <Button
                             variant="link"
-                            className="h-auto px-0 text-primary"
+                            className="h-auto px-0 text-primary max-lg:min-h-11"
                             onClick={() => {
                                 setSecurityView("overview");
                                 setSecurityError("");
@@ -292,7 +291,7 @@ export function SecuritySection({ security }) {
                                                     </Button>
                                                 )}
                                             </div>
-                                            <InputGroup className={cn("bg-card", TOUCH)}>
+                                            <InputGroup className="bg-card">
                                                 <InputGroupInput
                                                     id={`${field}-password`}
                                                     type={
@@ -332,7 +331,7 @@ export function SecuritySection({ security }) {
                                                 />
                                                 <InputGroupAddon align="inline-end">
                                                     <InputGroupButton
-                                                        className="type-small"
+                                                        className="relative type-small max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-2.75"
                                                         onClick={() =>
                                                             togglePasswordVisibility(field)
                                                         }
@@ -608,7 +607,7 @@ export function SecuritySection({ security }) {
                                     <div className="flex flex-wrap gap-2">
                                         <Button
                                             variant="outline"
-                                            className={TOUCH}
+
                                             onClick={() => setConfirmCurrentLogout(false)}
                                         >
                                             Cancel
@@ -718,7 +717,7 @@ export function SecuritySection({ security }) {
                         <DialogFooter className="-mx-6 -mb-6 px-6">
                             <Button
                                 variant="outline"
-                                className={TOUCH}
+
                                 onClick={() => {
                                     setSessionDetails(null);
                                     setConfirmCurrentLogout(false);
@@ -767,7 +766,7 @@ export function SecuritySection({ security }) {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel className={TOUCH}>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction className={DANGER} onClick={logoutAllOtherSessions}>
                             Log Out All Other Sessions
                         </AlertDialogAction>
