@@ -682,7 +682,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       2. `HistoryChart` is built on `HistoryChartFrame` (which gained a `marginTop` prop for the "Target reached" label). Its `height` prop became `heightClass`. `HistoryTooltip` uses utilities.
       3. The dashboard chart's dots lost an unused `history-dot-mark` class (it had no effect there).
 - **Sandbox**
-  - [ ] **T7.I1** Page header, `BackLink`, the result card (`Card`, tones from tokens), the target input. Check: I1–I5.
+  - [x] **T7.I1** Page header, `BackLink`, the result card (`Card`, tones from tokens), the target input. Check: I1–I5.
+    - **As done:**
+      1. `BackLink` gained an optional `className`. The sandbox passes `max-md:h-control-touch`, so the Back link stays 44px on phones as before.
+      2. The result card is a `Card` inside the same named `<section>` (the region and its live updates are unchanged). Its headline uses the `page-title` role (was 48–68px; `display` is for the login hero only). The label uses `caption`, without the old 85% opacity. Tones: `primary`, `success`, `muted`, and `warning-soft` with a `warning/35` border (was a one-off `rgba(216, 106, 93, 0.35)`). The divider lines are 20% white (were 22%).
+      3. The target box follows Subject Detail: `Field` + `InputGroup` + `InputGroupInput`, with the `%` inside the box. Its save and validation logic is unchanged. The hint was 7px and is now the `small` role. The box uses `max-w-24`, because `Field` sets `*:w-full` on its children.
+      4. "Sandbox unavailable" → `Empty` (centred), with the same heading, text and link. The link is a primary button.
+      5. Checked I1–I5 in a browser. The four Subject Detail shots also differ, but only by 9–18 pixels of chart anti-aliasing.
   - [ ] **T7.I2 ⚠** Criteria table (`Table`, stacked rows) and the draft-score inputs (`Input`). Check: I6–I12; sandbox tests.
   - [ ] **T7.I3** "How this is calculated" → `Collapsible`. SandboxSubjectPicker → `Dialog` + `Item` + `Badge`. Delete `TargetGradeSandbox.css` and `SandboxSubjectPicker.css`. Check: B8, B9, I13, I14.
 - **Grade Rules**

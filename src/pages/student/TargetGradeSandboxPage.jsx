@@ -1,10 +1,14 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { BackLink } from "@/components/BackLink";
 import { PageShell } from "@/components/layout/PageShell";
+import { buttonVariants } from "@/components/ui/button";
+import { Empty, EmptyHeader } from "@/components/ui/empty";
 import { TargetGradeSandbox } from "@/features/sandbox/components/TargetGradeSandbox";
 import { TermNavigation } from "@/features/term-records/components/TermNavigation";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
 import { useDb } from "@/hooks/useDb";
+import { cn } from "@/lib/utils";
 
 export function TargetGradeSandboxPage() {
     const { subjectId } = useParams();
@@ -25,27 +29,22 @@ export function TargetGradeSandboxPage() {
         <PageShell headerProps={{ title: "Target Grade Sandbox", subtitle: null }}>
             {classItem && subject && hasStudentRecord ? (
                 <>
-                    <div className="sandbox-back-row">
-                        <Link
-                            className="term-nav-link sandbox-back-link"
+                    <div className="mb-2.5 flex">
+                        <BackLink
                             to={`/student/subject/${classItem.id}?term=${termKey}`}
+                            className="max-md:h-control-touch"
                         >
-                            <span aria-hidden="true">
-                                <svg viewBox="0 0 16 16" fill="none">
-                                    <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
-                                </svg>
-                            </span>
                             Back
-                        </Link>
+                        </BackLink>
                     </div>
 
-                    <section className="subject-overview sandbox-page-heading">
-                        <div className="subject-semester">
+                    <section className="mb-5 w-full">
+                        <div className="mb-2 type-caption tracking-wide text-muted-foreground">
                             TARGET GRADE SANDBOX
                             {rule ? ` · ${rule.ruleName.toUpperCase()}` : ""}
                         </div>
-                        <div className="subject-title-row">
-                            <h1>
+                        <div className="flex w-full items-start justify-between gap-6 max-md:flex-col max-md:gap-4 md:gap-10 xl:gap-16">
+                            <h1 className="m-0 min-w-0 flex-auto type-page-title text-foreground">
                                 {subject.subjectCode} - {subject.subjectName}
                             </h1>
                             <TermNavigation
@@ -62,13 +61,20 @@ export function TargetGradeSandboxPage() {
                     <TargetGradeSandbox classId={classItem.id} termKey={termKey} />
                 </>
             ) : (
-                <section className="subject-target-grade-section">
-                    <h2>Sandbox unavailable</h2>
-                    <p>This subject is not available for your account.</p>
-                    <Link to="/student/subject" className="target-grade-button">
+                <Empty className="mb-8 rounded-xl border border-solid border-border bg-muted p-4 md:p-6">
+                    <EmptyHeader>
+                        <h2 className="m-0 type-section-title text-primary">Sandbox unavailable</h2>
+                        <p className="m-0 type-small text-muted-foreground">
+                            This subject is not available for your account.
+                        </p>
+                    </EmptyHeader>
+                    <Link
+                        to="/student/subject"
+                        className={cn(buttonVariants(), "rounded-full no-underline")}
+                    >
                         Back to My Subjects
                     </Link>
-                </section>
+                </Empty>
             )}
         </PageShell>
     );

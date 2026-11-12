@@ -4,187 +4,10 @@
    beside the inputs on wide screens (first on phones). Gauge styles
    come from GradeGauge.jsx. */
 
-/* Page heading, Back link and the "unavailable" box of TargetGradeSandboxPage
-   (moved from SubjectDetail.css when it was deleted in T7.G5; T7.I1 rebuilds
-   them). */
-
-.term-nav-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 9px 15px;
-    border: 1px solid var(--primary);
-    border-radius: 22px;
-    background: var(--secondary);
-    color: var(--primary);
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-    transition:
-        background 0.2s ease,
-        color 0.2s ease;
-}
-
-.term-nav-link:hover,
-.term-nav-link:focus-visible {
-    background: var(--primary);
-    color: var(--white);
-}
-
-.term-nav-link svg {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
-}
-
-.sandbox-back-link {
-    gap: 6px;
-    padding: 7px 13px 7px 9px;
-    border-color: transparent;
-    background: var(--secondary);
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.sandbox-back-link > span {
-    display: inline-flex;
-    width: 20px;
-    height: 20px;
-    flex: 0 0 20px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--card);
-}
-
-.sandbox-back-link > span svg {
-    display: block;
-    width: 12px;
-    height: 12px;
-    flex: 0 0 12px;
-}
-
-.sandbox-back-link > span svg path {
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.4;
-}
-
-.sandbox-back-link:hover,
-.sandbox-back-link:focus-visible {
-    border-color: var(--primary);
-    background: var(--card);
-    color: var(--primary);
-}
-
-.sandbox-back-link:hover > span,
-.sandbox-back-link:focus-visible > span {
-    background: var(--card);
-}
-
-.sandbox-back-link:focus-visible {
-    outline: 3px solid var(--ring);
-    outline-offset: 2px;
-}
-
-.sandbox-back-row {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.subject-overview {
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-.subject-semester {
-    margin-bottom: 8px;
-    color: #8392a7;
-    font-size: 10px;
-    letter-spacing: 0.8px;
-}
-
-.subject-title-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.subject-title-row h1 {
-    margin: 0 0 12px;
-    color: var(--foreground);
-    font-size: clamp(22px, 3vw, 30px);
-    font-weight: 700;
-    line-height: 1.3;
-}
-
-.target-grade-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 22px;
-    background: var(--primary);
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
-
-.target-grade-button:hover {
-    background: #304f81;
-}
-
-.subject-target-grade-section {
-    margin: 0 0 2rem;
-    padding: 1rem 1.1rem;
-    border: 1px solid #e0e6ef;
-    border-radius: 0.75rem;
-    background: var(--muted);
-}
-
-@media (max-width: 760px) {
-    .subject-title-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-@media (max-width: 420px) {
-    .subject-title-row h1 {
-        font-size: 22px;
-    }
-}
-
-@media (max-width: 760px) {
-    .term-nav-link,
-    .sandbox-back-link {
-        min-height: 44px;
-    }
-}
-
 .sandbox {
     /* Layout follows the space next to the sidebar, not the window width. */
     container-type: inline-size;
     color: var(--foreground);
-}
-
-.sandbox-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
 }
 
 .sandbox-layout {
@@ -206,110 +29,6 @@
 .sandbox-result-column {
     grid-area: result;
     position: static;
-}
-
-/* ---- Result card ---- */
-.sandbox-result {
-    --result-bg: var(--primary);
-    --result-text: var(--white);
-    --result-muted: var(--surface-overlay);
-    --result-line: var(--surface-overlay-soft);
-    padding: 1.4rem 1.4rem 1.2rem;
-    border-radius: 14px;
-    background: var(--result-bg);
-    color: var(--result-text);
-    box-shadow: 0 12px 28px var(--elevation-hover-strong);
-}
-
-.sandbox-result--impossible {
-    --result-bg: var(--warning-soft);
-    --result-text: var(--foreground);
-    --result-muted: var(--destructive);
-    --result-line: var(--warning-border);
-    border: 1px solid var(--warning-border);
-}
-
-.sandbox-result--reached {
-    --result-bg: var(--success);
-}
-
-.sandbox-result--empty {
-    --result-bg: var(--muted);
-    --result-text: var(--foreground);
-    --result-muted: var(--muted-foreground);
-    --result-line: var(--border);
-    box-shadow: none;
-}
-
-.sandbox-result p {
-    margin: 0;
-}
-
-.sandbox-result-label {
-    color: var(--result-text);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.85;
-}
-
-.sandbox-result-value {
-    margin-top: 0.35rem !important;
-    font-family: var(--font-heading);
-    font-size: clamp(3rem, 6vw, 4.25rem);
-    font-weight: 700;
-    line-height: 0.95;
-    font-variant-numeric: tabular-nums;
-}
-
-.sandbox-result-unit {
-    margin-top: 0.2rem !important;
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-.sandbox-result-message {
-    margin-top: 0.75rem !important;
-    font-size: 0.85rem;
-    line-height: 1.5;
-}
-
-.sandbox-result-list {
-    margin: 0.9rem 0 0;
-    padding: 0.75rem 0 0;
-    border-top: 1px solid var(--result-line);
-    list-style: none;
-    font-size: 0.8rem;
-}
-
-.sandbox-result-list li {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.2rem 0;
-}
-
-.sandbox-result-list li span:last-child {
-    flex-shrink: 0;
-    font-weight: 600;
-}
-
-.sandbox-result-projection {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-top: 0.9rem !important;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--result-line);
-    font-size: 0.8rem;
-}
-
-.sandbox-result-projection strong {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    line-height: 1;
 }
 
 /* ---- Input cards ---- */
@@ -471,45 +190,6 @@
     gap: 1.25rem;
 }
 
-.sandbox-target {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-}
-
-.sandbox-target > small {
-    color: var(--highlight-text);
-    font-size: 7px;
-    font-weight: 400;
-}
-
-.sandbox-target-input {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--highlight-strong);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.sandbox-target-input input {
-    box-sizing: border-box;
-    width: 60px;
-    padding: 5px 6px;
-    border: 1px solid var(--highlight-strong);
-    border-radius: 7px;
-    background: var(--card);
-    color: var(--primary);
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.sandbox-target-input input[aria-invalid="true"] {
-    border-color: var(--destructive);
-    background: var(--warning-soft);
-}
-
 .sandbox-gauges {
     display: flex;
     flex-wrap: wrap;
@@ -581,7 +261,6 @@
 }
 
 .sandbox-number:focus,
-.sandbox-target-input input:focus,
 .sandbox-draft-input input:focus {
     border-color: var(--primary);
     outline: none;
@@ -893,37 +572,8 @@
         min-height: 2.75rem;
     }
 
-    .sandbox-target-input input {
-        min-height: 2.75rem;
-    }
-
     .sandbox-draft-input input {
         min-height: 2.75rem;
-    }
-}
-
-/* Page heading above the sandbox (TargetGradeSandboxPage). */
-.sandbox-page-heading {
-    margin-bottom: 1.25rem;
-}
-
-.sandbox-page-heading .subject-title-row {
-    width: 100%;
-    align-items: flex-start;
-    gap: clamp(24px, 5vw, 64px);
-    margin-bottom: 0;
-}
-
-.sandbox-page-heading h1 {
-    flex: 1 1 auto;
-    min-width: 0;
-    margin: 0;
-}
-
-@media (max-width: 760px) {
-    .sandbox-page-heading .subject-title-row {
-        flex-wrap: wrap;
-        row-gap: 16px;
     }
 }
 

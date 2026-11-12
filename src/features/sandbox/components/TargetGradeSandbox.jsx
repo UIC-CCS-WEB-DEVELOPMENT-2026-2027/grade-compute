@@ -26,12 +26,41 @@ import { TERM_LABELS } from "@/lib/terms";
 import { HistoryChart } from "@/features/history/components/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+    InputGroupText,
+} from "@/components/ui/input-group";
 import { useDb } from "@/hooks/useDb";
+import { cn } from "@/lib/utils";
 import "./TargetGradeSandbox.css";
 
 function pluralTasks(count) {
     return `${count} ${count === 1 ? "task" : "tasks"}`;
 }
+
+// The result card's colours for each tone: the card, and its divider lines.
+const RESULT_TONES = {
+    required: {
+        card: "border-0 bg-primary text-primary-foreground",
+        line: "border-primary-foreground/20",
+    },
+    reached: {
+        card: "border-0 bg-success text-success-foreground",
+        line: "border-success-foreground/20",
+    },
+    impossible: {
+        card: "border-warning/35 bg-warning-soft text-foreground",
+        line: "border-warning/35",
+    },
+    empty: {
+        card: "border-0 bg-muted text-foreground shadow-none",
+        line: "border-border",
+    },
+};
 
 // The answer card. Kept separate so it is easy to find in the code too.
 function SandboxResult({ plan, termLabel }) {
@@ -61,38 +90,63 @@ function SandboxResult({ plan, termLabel }) {
         message = "Add upcoming tasks below to see the score you need.";
     }
 
+    const colors = RESULT_TONES[tone];
+
     return (
-        <section
-            className={`sandbox-result sandbox-result--${tone}`}
-            aria-labelledby="sandbox-result-label"
-            aria-live="polite"
-        >
-            <p className="sandbox-result-label" id="sandbox-result-label">
-                Your result · To reach {formatGrade(target)} in {termLabel}
-            </p>
-            <p className="sandbox-result-value">{headline}</p>
-            {status === "required" && (
-                <p className="sandbox-result-unit">needed on each remaining task</p>
-            )}
-            <p className="sandbox-result-message">{message}</p>
+        <section aria-labelledby="sandbox-result-label" aria-live="polite">
+            <Card className={cn("gap-0 shadow-hover", colors.card)}>
+                <CardContent>
+                    <p
+                        className="m-0 type-caption tracking-wider uppercase"
+                        id="sandbox-result-label"
+                    >
+                        Your result · To reach {formatGrade(target)} in {termLabel}
+                    </p>
+                    <p className="m-0 mt-1.5 type-page-title tabular-nums">{headline}</p>
+                    {status === "required" && (
+                        <p className="m-0 mt-1 type-body font-semibold">
+                            needed on each remaining task
+                        </p>
+                    )}
+                    <p className="m-0 mt-3 type-small">{message}</p>
 
-            {status === "required" && requiredCriteria.length > 0 && (
-                <ul className="sandbox-result-list" aria-label="Remaining tasks this applies to">
-                    {requiredCriteria.map((criterion) => (
-                        <li key={criterion.id}>
-                            <span>{criterion.path.join(" › ")}</span>
-                            <span>{pluralTasks(criterion.slots)}</span>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                    {status === "required" && requiredCriteria.length > 0 && (
+                        <ul
+                            className={cn(
+                                "m-0 mt-4 list-none border-0 border-t border-solid p-0 pt-3 type-small",
+                                colors.line,
+                            )}
+                            aria-label="Remaining tasks this applies to"
+                        >
+                            {requiredCriteria.map((criterion) => (
+                                <li
+                                    key={criterion.id}
+                                    className="flex justify-between gap-3 py-0.5"
+                                >
+                                    <span>{criterion.path.join(" › ")}</span>
+                                    <span className="shrink-0 font-semibold">
+                                        {pluralTasks(criterion.slots)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
 
-            {projected !== null && status !== "complete" && status !== "empty" && (
-                <p className="sandbox-result-projection">
-                    Projected {termLabel} grade
-                    <strong>{formatGrade(projected)}</strong>
-                </p>
-            )}
+                    {projected !== null && status !== "complete" && status !== "empty" && (
+                        <p
+                            className={cn(
+                                "m-0 mt-4 flex items-baseline justify-between gap-3 border-0 border-t border-solid pt-3 type-small",
+                                colors.line,
+                            )}
+                        >
+                            Projected {termLabel} grade
+                            <strong className="type-section-title leading-none">
+                                {formatGrade(projected)}
+                            </strong>
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
         </section>
     );
 }
@@ -210,46 +264,64 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                         className="sandbox-card sandbox-summary"
                         aria-labelledby="sandbox-step-target"
                     >
-                        <div className="sandbox-target">
+                        <div className="flex flex-col gap-2">
                             <h2 className="sandbox-step" id="sandbox-step-target">
                                 <span aria-hidden="true">1</span> Set your {termLabel} target
                             </h2>
-                            <label className="sandbox-target-input">
-                                <span className="sandbox-sr-only">{termLabel} target grade</span>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="any"
-                                    value={targetInput ?? String(target)}
-                                    aria-invalid={Boolean(targetError)}
-                                    aria-describedby={
-                                        targetError ? "sandbox-target-error" : "sandbox-target-hint"
-                                    }
-                                    onChange={(event) => {
-                                        setTargetInput(event.target.value);
-                                        setTargetError("");
-                                    }}
-                                    onBlur={commitTarget}
-                                    onKeyDown={(event) => {
-                                        if (event.key === "Enter") event.currentTarget.blur();
-                                    }}
-                                />
-                                <span aria-hidden="true">%</span>
-                            </label>
-                            {targetError ? (
-                                <small
-                                    id="sandbox-target-error"
-                                    className="sandbox-error"
-                                    role="alert"
-                                >
-                                    {targetError}
-                                </small>
-                            ) : (
-                                <small id="sandbox-target-hint">
-                                    Yellow marker shows your target
-                                </small>
-                            )}
+                            <Field className="gap-2">
+                                <FieldLabel htmlFor="sandbox-target-grade" className="sr-only">
+                                    {termLabel} target grade
+                                </FieldLabel>
+                                <InputGroup className="max-w-24 border-highlight-strong bg-card has-[[data-slot][aria-invalid=true]]:bg-warning-soft max-md:h-control-touch">
+                                    <InputGroupInput
+                                        id="sandbox-target-grade"
+                                        className="font-bold text-primary"
+                                        type="number"
+                                        min="0"
+                                        max="100"
+                                        step="any"
+                                        value={targetInput ?? String(target)}
+                                        aria-invalid={Boolean(targetError)}
+                                        aria-describedby={
+                                            targetError
+                                                ? "sandbox-target-error"
+                                                : "sandbox-target-hint"
+                                        }
+                                        onChange={(event) => {
+                                            setTargetInput(event.target.value);
+                                            setTargetError("");
+                                        }}
+                                        onBlur={commitTarget}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter") event.currentTarget.blur();
+                                        }}
+                                    />
+                                    <InputGroupAddon align="inline-end">
+                                        <InputGroupText
+                                            className="text-highlight-text"
+                                            aria-hidden="true"
+                                        >
+                                            %
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                {targetError ? (
+                                    <small
+                                        id="sandbox-target-error"
+                                        className="type-small text-destructive"
+                                        role="alert"
+                                    >
+                                        {targetError}
+                                    </small>
+                                ) : (
+                                    <small
+                                        id="sandbox-target-hint"
+                                        className="type-small text-highlight-text"
+                                    >
+                                        Yellow marker shows your target
+                                    </small>
+                                )}
+                            </Field>
                         </div>
                         <div className="sandbox-gauges">
                             <GradeGauge
