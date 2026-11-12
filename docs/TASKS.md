@@ -788,10 +788,18 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. "Save changes" keeps the yellow fill (`highlight-strong`); "Save photo" and "Edit again" are outline `Button`s; on phones they fill the width, as before.
       5. Its rules left `GlobalSettings.css`. `.field`, `.secondary-button` and `.primary-button` stay for Security until T7.L3.
       6. Checked L3 and L4 in a browser against the old code at 1440 and 375: every keystroke saved, "Account details updated.", the GIF and PNG messages, "Choose an image first.", the disabled state and "Edit again" gave the same results.
-  - [ ] **T7.L3 ⚠ Security section** → `SecuritySection.jsx`.
+  - [x] **T7.L3 ⚠ Security section** → `SecuritySection.jsx`.
     - Change: the password flow (`Field`, `InputGroup` with the Show/Hide text), the verification code `Input`, 2FA, sessions (`Item`), `AlertDialog`s, the help `Dialog` + `Tabs` (G17).
     - B2 and B5 behaviour is kept.
     - Check: L5–L10.
+    - **As done:**
+      1. `SecuritySection({ security })`. The state and handlers stay in GlobalSettings and arrive as one object, because they must outlive a switch to another section (today a half-done password change is still there when you come back) and the page's Help button sets `helpDialog` (B2). The handlers are unchanged. `SettingsIcon` moved to its own file, sized with utilities.
+      2. The 2FA "Turn off" confirmation stays **inline** (rebuilt from shadcn parts), not an `AlertDialog` as §3.1 lists. It shares `confirmCurrentLogout` with the session dialog (B5): after "Turn off 2FA" it stays visible and the flag stays on, so the current session's dialog opens straight into "Confirm Log Out". As a modal it would block that path, so B5 wins.
+      3. The session details are a shadcn `Dialog` (a click outside only closes it, Close also resets the shared flag, as before), "Log out all other sessions" an `AlertDialog` that a backdrop click closes, and the help a `Dialog` with `Tabs` and panels (G17). All three now also close with Escape and hold focus while open.
+      3a. Rows (overview, sessions, verified contacts) are `Item`s; the contact choice is a `RadioGroup`; password boxes are `InputGroup`s with the Show/Hide text button (G19); the code box is a `Field` + `Input`; the strength bars and requirement list use tokens. The "›", "‹" and "×" characters are icons; the back button reads "Security".
+      4. Found, kept (bug): with no verified contact, 2FA "Turn on" shows no message. Its error line only renders inside the verification block, which needs a contact. Checklist L7 expects "Add and verify an email address or phone number…".
+      5. `GlobalSettings.css` keeps only the rules Notifications and Account Actions still use (1,498 → 369 lines). The tab icons are 18px (were 18.4px).
+      6. Checked L5–L10, B2 and B5 in a browser against the old code at 1440 and 375, including a seeded account without a verified contact and one with a second active session: same messages, saved account data and flows; only the glyphs differ.
   - [ ] **T7.L4s Notifications section** → `NotificationsSection.jsx`. `ToggleSetting` → `Switch`; toggles still not saved (B3). Check: L11.
   - [ ] **T7.L5s Account Actions section** → `AccountActionsSection.jsx`, `Button`s (still no action, B1/B3). Delete `GlobalSettings.css`, `SettingRow.jsx` and `ToggleSetting.jsx` if they are now unused. Check: L12.
 - [ ] **T7.P ⚠ Turn on Tailwind preflight.**
