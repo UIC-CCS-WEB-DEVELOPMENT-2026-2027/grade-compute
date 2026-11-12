@@ -92,17 +92,14 @@ export function GradeRules() {
                         How each part of your work adds up to your grade.
                     </p>
                 </div>
-                <Link
-                    className={cn(buttonVariants(), "no-underline max-md:h-control-touch")}
-                    to="/student/rules/new"
-                >
+                <Link className={cn(buttonVariants(), "no-underline")} to="/student/rules/new">
                     + New rule
                 </Link>
             </header>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <Input
-                    className="max-w-105 min-w-0 flex-1 basis-65 bg-card max-md:h-control-touch"
+                    className="max-w-105 min-w-0 flex-1 basis-65 bg-card"
                     type="search"
                     placeholder="Search by name, tag, or school"
                     value={query}
@@ -130,7 +127,7 @@ export function GradeRules() {
                                 key={option.id}
                                 value={option.id}
                                 size="sm"
-                                className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-md:h-control-touch"
+                                className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-lg:min-w-11"
                             >
                                 {option.label}
                             </ToggleGroupItem>

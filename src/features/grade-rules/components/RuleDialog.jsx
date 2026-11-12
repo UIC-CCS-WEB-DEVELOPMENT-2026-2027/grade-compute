@@ -53,11 +53,7 @@ export function RuleDialog({
                 </DialogHeader>
                 <div className="flex flex-col gap-3.5">{children}</div>
                 <DialogFooter className="-mx-6 -mb-6 px-6 max-sm:-mx-4 max-sm:px-4 md:-mx-7.5 md:px-7.5">
-                    <DialogClose
-                        render={<Button variant="outline" className="max-md:h-control-touch" />}
-                    >
-                        {cancelLabel}
-                    </DialogClose>
+                    <DialogClose render={<Button variant="outline" />}>{cancelLabel}</DialogClose>
                     {actions}
                 </DialogFooter>
             </DialogContent>

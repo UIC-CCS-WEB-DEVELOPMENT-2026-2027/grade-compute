@@ -58,7 +58,7 @@ export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
             actions={
                 // Dark text on the coral fill (WCAG AA).
                 <Button
-                    className="bg-warning text-warning-foreground hover:bg-destructive hover:text-primary-foreground hover:shadow-card max-md:h-control-touch"
+                    className="bg-warning text-warning-foreground hover:bg-destructive hover:text-primary-foreground hover:shadow-card"
                     onClick={confirmDelete}
                 >
                     Delete rule
@@ -83,7 +83,7 @@ export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                         Move{" "}
                         {subjectCount > 0 ? "these subjects" : "everything that uses this rule"} to
                         <NativeSelect
-                            className="w-full bg-card text-foreground max-md:h-control-touch"
+                            className="w-full bg-card text-foreground"
                             value={replacementId}
                             onChange={(event) => setReplacementId(event.target.value)}
                         >

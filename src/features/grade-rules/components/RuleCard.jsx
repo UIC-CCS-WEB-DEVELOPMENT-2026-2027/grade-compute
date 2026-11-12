@@ -12,7 +12,7 @@ import { RulePieChart } from "./RulePieChart";
 import { ruleToTree } from "@/lib/rules";
 import { cn } from "@/lib/utils";
 
-const ACTION = "bg-card max-md:h-control-touch";
+const ACTION = "bg-card";
 
 export function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, onDelete }) {
     const tree = ruleToTree(rule);

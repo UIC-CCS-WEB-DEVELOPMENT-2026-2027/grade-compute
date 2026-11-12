@@ -876,7 +876,11 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     1. The criteria table already stacks by its card's width since T7.I2 (a container query), so it doesn't scroll sideways at 1024 or anywhere else.
     2. The number boxes, the back link, the term toggle, "How this is calculated" and the subject picker's buttons are 44px below `lg` through the T8.1 tokens; their six `max-md:h-control-touch` classes are removed (screenshots identical).
     3. Measured at 375 and 768 (page, "How this is calculated" open, history table open, subject picker open): no page overflow, no text below 14px except captions, no target below 44px. The history table scrolls inside its card at 375, as on the Dashboard (T8.3).
-- [ ] **T8.7** Grade Rules.
+- [x] **T8.7** Grade Rules.
+  - **As done:**
+    1. The thumbnail toggles are at least 44px wide below `lg` ("Pie" was 43px); their height, the card actions, "+ New rule", the search box and the delete dialog's controls are 44px through the T8.1 tokens, so their `max-md:h-control-touch` classes are removed (also in `RuleDialog`, shared with the rule editor).
+    2. The card link was already large enough: its `::after` stretches over the whole card, so the touch target is the card.
+    3. Measured at 375 and 768 (page and delete dialog): no page overflow, no text below 14px except captions, no target below 44px.
 - [ ] **T8.8** Rule editor.
 - [ ] **T8.9** Settings.
 
