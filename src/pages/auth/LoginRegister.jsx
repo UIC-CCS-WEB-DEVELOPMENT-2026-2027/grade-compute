@@ -194,7 +194,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
                 <InputGroupAddon align="inline-end">
                     <InputGroupButton
                         size="icon-xs"
-                        className="relative max-lg:after:absolute max-lg:after:-inset-2.75"
+                        className="relative tap:after:absolute tap:after:-inset-2.75"
                         aria-label={toggleLabel}
                         title={toggleLabel}
                         aria-controls={id}
@@ -451,7 +451,7 @@ export function LoginRegister() {
                             <TabsTrigger
                                 key={value}
                                 value={value}
-                                className="h-auto flex-none rounded-none border-0 px-0 pt-0 pb-2 type-small font-normal text-muted-foreground data-active:text-primary group-data-horizontal/tabs:after:-bottom-px after:bg-primary max-lg:min-h-11 max-lg:flex-1 max-lg:py-0"
+                                className="h-auto flex-none rounded-none border-0 px-0 pt-0 pb-2 type-small font-normal text-muted-foreground data-active:text-primary group-data-horizontal/tabs:after:-bottom-px after:bg-primary tap:min-h-11 tap:min-w-11 max-lg:flex-1 max-lg:py-0"
                             >
                                 {label}
                             </TabsTrigger>
@@ -500,7 +500,7 @@ export function LoginRegister() {
                                     {["student", "professor"].map((role) => (
                                         <Label
                                             key={role}
-                                            className="min-h-9 cursor-pointer justify-center gap-2 rounded-md border border-input px-2 py-1 font-normal text-muted-foreground transition-colors hover:border-primary has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:font-semibold has-data-checked:text-primary max-lg:min-h-11"
+                                            className="min-h-9 cursor-pointer justify-center gap-2 rounded-md border border-input px-2 py-1 font-normal text-muted-foreground transition-colors hover:border-primary has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:font-semibold has-data-checked:text-primary tap:min-h-11"
                                         >
                                             <RadioGroupItem value={role} />
                                             {role === "student" ? "Student" : "Professor"}
@@ -632,7 +632,7 @@ export function LoginRegister() {
                             {isRegister ? "Already have an account? " : "New to CompUGrade? "}
                             <Button
                                 variant="link"
-                                className="relative h-auto p-0 type-small font-normal max-lg:after:absolute max-lg:after:-inset-x-1 max-lg:after:-inset-y-3"
+                                className="relative h-auto p-0 type-small font-normal tap:after:absolute tap:after:-inset-x-1 tap:after:-inset-y-3"
                                 onClick={() => changeAuthMode(isRegister ? "login" : "register")}
                             >
                                 {isRegister ? "Log in" : "Create an account"}

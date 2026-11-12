@@ -127,7 +127,7 @@ export function GradeRules() {
                                 key={option.id}
                                 value={option.id}
                                 size="sm"
-                                className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-lg:min-w-11"
+                                className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground tap:min-w-11"
                             >
                                 {option.label}
                             </ToggleGroupItem>

@@ -57,7 +57,7 @@ export function NotificationsSection({ notifications, onToggle }) {
                             checked={notifications[key]}
                             onCheckedChange={() => onToggle(key)}
                             aria-label={title}
-                            className="max-lg:after:-inset-y-3.5"
+                            className="tap:after:-inset-y-3.5"
                         />
                     </span>
                     <ChevronRightIcon

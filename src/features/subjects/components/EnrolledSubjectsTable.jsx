@@ -242,7 +242,7 @@ export function EnrolledSubjectsTable({
                                     </TableCell>
                                     <TableCell className="py-4.5 text-right @max-2xl:self-center @max-2xl:p-0 @max-2xl:whitespace-normal">
                                         <Link
-                                            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground no-underline hover:text-primary focus-visible:text-primary max-lg:size-11"
+                                            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground no-underline hover:text-primary focus-visible:text-primary tap:size-11"
                                             to={detailPath}
                                             onClick={(event) => event.stopPropagation()}
                                             aria-label={`Open ${row.subjectCode}`}

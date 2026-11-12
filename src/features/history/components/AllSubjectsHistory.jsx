@@ -187,7 +187,7 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
                             <TableCell className="text-right">
                                 <Button
                                     variant="link"
-                                    className="h-auto p-0 max-lg:min-h-11"
+                                    className="h-auto p-0 tap:min-h-11"
                                     onClick={() => openTask(course, point)}
                                 >
                                     Open task

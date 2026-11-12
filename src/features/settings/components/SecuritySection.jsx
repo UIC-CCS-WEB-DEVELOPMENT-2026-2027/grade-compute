@@ -94,10 +94,7 @@ function MethodChoice({ methods, value, onChange }) {
     return (
         <RadioGroup value={value} onValueChange={onChange} className="gap-2">
             {methods.map((method) => (
-                <Label
-                    key={method.id}
-                    className="flex items-center gap-2 font-normal max-lg:min-h-11"
-                >
+                <Label key={method.id} className="flex items-center gap-2 font-normal tap:min-h-11">
                     <RadioGroupItem value={method.id} />
                     <span>
                         {method.label} · {method.masked}
@@ -217,7 +214,7 @@ export function SecuritySection({ security }) {
                     <div>
                         <Button
                             variant="link"
-                            className="h-auto px-0 text-primary max-lg:min-h-11"
+                            className="h-auto px-0 text-primary tap:min-h-11"
                             onClick={() => {
                                 setSecurityView("overview");
                                 setSecurityError("");
@@ -331,7 +328,7 @@ export function SecuritySection({ security }) {
                                                 />
                                                 <InputGroupAddon align="inline-end">
                                                     <InputGroupButton
-                                                        className="relative type-small max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-2.75"
+                                                        className="relative type-small tap:after:absolute tap:after:inset-x-0 tap:after:-inset-y-2.75"
                                                         onClick={() =>
                                                             togglePasswordVisibility(field)
                                                         }
@@ -808,7 +805,7 @@ export function SecuritySection({ security }) {
                                     <TabsTrigger
                                         key={value}
                                         value={value}
-                                        className="h-auto flex-none rounded-lg px-3 py-2 text-muted-foreground after:hidden hover:bg-muted data-active:text-primary group-data-[variant=line]/tabs-list:data-active:bg-highlight-soft"
+                                        className="h-auto flex-none rounded-lg px-3 py-2 text-muted-foreground after:hidden tap:min-h-11 hover:bg-muted data-active:text-primary group-data-[variant=line]/tabs-list:data-active:bg-highlight-soft"
                                     >
                                         {label}
                                     </TabsTrigger>

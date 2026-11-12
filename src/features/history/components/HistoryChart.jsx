@@ -325,7 +325,7 @@ export function HistoryChart({
                                 {point.taskId && (
                                     <Button
                                         variant="link"
-                                        className="h-auto p-0 max-lg:min-h-11"
+                                        className="h-auto p-0 tap:min-h-11"
                                         onClick={() => onSelect(point)}
                                     >
                                         Go to task

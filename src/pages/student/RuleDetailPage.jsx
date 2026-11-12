@@ -388,7 +388,7 @@ function RuleDetail({ ruleId }) {
                                             DEFAULT_TAGS.map((tag) => (
                                                 <label
                                                     key={tag}
-                                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid border-border px-3 py-1.5 type-small text-foreground has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:text-primary max-lg:min-h-11"
+                                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid border-border px-3 py-1.5 type-small text-foreground has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:text-primary tap:min-h-11"
                                                 >
                                                     <Checkbox
                                                         checked={details.tags.includes(tag)}
@@ -444,7 +444,7 @@ function RuleDetail({ ruleId }) {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon-xs"
-                                                                className="relative rounded-full text-muted-foreground max-lg:after:absolute max-lg:after:-inset-2.75"
+                                                                className="relative rounded-full text-muted-foreground tap:after:absolute tap:after:-inset-2.75"
                                                                 onClick={() => removeSchool(school)}
                                                                 aria-label={`Remove ${school}`}
                                                             >
