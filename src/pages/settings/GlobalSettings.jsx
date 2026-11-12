@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
     hasLocalPassword,
     loadLocalAccount,
@@ -13,6 +12,11 @@ import {
     getVerifiedMethods,
     verifyPrototypeChallenge,
 } from "@/services/prototypeVerification";
+import { BackLink } from "@/components/BackLink";
+import { PageShell } from "@/components/layout/PageShell";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSpaceSplitInitials } from "@/lib/format";
 import { SettingRow } from "@/features/settings/components/SettingRow";
 import { ToggleSetting } from "@/features/settings/components/ToggleSetting";
@@ -1402,108 +1406,89 @@ export function GlobalSettings({ onLogout }) {
     };
 
     return (
-        <div className="global-settings">
-            <aside className="settings-sidebar">
-                <Link className="back-button" to="/student/dashboard">
-                    <span className="back-button__icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
-                        </svg>
-                    </span>
-                    <span>Back</span>
-                </Link>
-
-                <div className="brand" aria-label="CompUGrade">
-                    <span className="brand-mark" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M7 5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V15.5C17 16.33 16.33 17 15.5 17H8.5C7.67 17 7 16.33 7 15.5V5.5Z"
-                                stroke="currentColor"
-                                strokeWidth="1.4"
-                            />
-                            <path
-                                d="M10 8H14M10 11H14M10 14H12.5"
-                                stroke="currentColor"
-                                strokeWidth="1.4"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                    </span>
-                    <span className="brand-name">
-                        CompUGrade<span className="brand-name-dot">.</span>
-                    </span>
+        <PageShell>
+            {/* settings-content scopes the focus outline of the sections, which
+                still use their own CSS until T7.L1s-L5s. */}
+            <div className="settings-content flex flex-col gap-6">
+                <div>
+                    <BackLink to="/student/dashboard" className="max-md:h-control-touch">
+                        Back
+                    </BackLink>
                 </div>
 
-                <div className="settings-workspace-box">
-                    <span>Workspace</span>
-                    <strong>Student</strong>
-                </div>
-
-                <nav className="settings-menu" aria-label="Global settings navigation">
-                    <p className="settings-menu-label">SETTINGS</p>
-                    {sidebarItems.map(({ label, icon }) => (
-                        <button
-                            key={label}
-                            type="button"
-                            className={
-                                activeSection === label
-                                    ? "settings-nav-item active"
-                                    : "settings-nav-item"
-                            }
-                            onClick={() => setActiveSection(label)}
-                            aria-current={activeSection === label ? "page" : undefined}
-                        >
-                            <SettingsIcon name={icon} />
-                            <span>{label}</span>
-                        </button>
-                    ))}
-                </nav>
-
-                <button
-                    type="button"
-                    className="settings-help-button"
-                    onClick={() => setHelpDialog("support")}
-                >
-                    <span className="settings-help-mark" aria-hidden="true">
-                        ?
-                    </span>
-                    <span>Help &amp; Resources</span>
-                </button>
-            </aside>
-
-            <main className="content-panel">
-                <header className="page-header">
-                    <div>
-                        <p className="eyebrow">YOUR ACCOUNT</p>
-                        <h1>Settings</h1>
-                    </div>
+                <header>
+                    <p className="m-0 mb-2 type-caption tracking-widest text-muted-foreground">
+                        YOUR ACCOUNT
+                    </p>
+                    <h1 className="m-0 type-page-title text-foreground">Settings</h1>
                 </header>
 
-                <section className="main-card">
-                    <div className="section-header-row">
-                        <div>
-                            <h2>{activeSection}</h2>
-                        </div>
+                <Tabs value={activeSection} onValueChange={setActiveSection} className="gap-6">
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                        <TabsList
+                            variant="line"
+                            aria-label="Global settings navigation"
+                            className="h-auto min-w-0 flex-1 flex-wrap justify-start group-data-horizontal/tabs:h-auto gap-x-6 gap-y-1 rounded-none border-0 border-b border-solid border-border p-0"
+                        >
+                            {sidebarItems.map(({ label, icon }) => (
+                                <TabsTrigger
+                                    key={label}
+                                    value={label}
+                                    className="h-auto flex-none rounded-none border-0 px-0 pt-1 pb-2.5 type-small font-normal text-muted-foreground group-data-horizontal/tabs:after:-bottom-px after:bg-primary hover:text-primary data-active:text-primary max-md:min-h-11"
+                                >
+                                    <SettingsIcon name={icon} />
+                                    {label}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                        {/* Opens the Settings help, which only shows while the
+                            Security section is open (docs/AUDIT.md B2). Hidden
+                            below lg, as before (900px and narrower). */}
+                        <Button
+                            variant="outline"
+                            className="hidden bg-card lg:inline-flex"
+                            onClick={() => setHelpDialog("support")}
+                        >
+                            <span
+                                className="inline-grid size-4.5 place-items-center rounded-full border border-solid border-current type-caption"
+                                aria-hidden="true"
+                            >
+                                ?
+                            </span>
+                            Help &amp; Resources
+                        </Button>
                     </div>
 
-                    <p className="section-description">
-                        {activeSection === "Profile" &&
-                            "Read-only details for your academic identity."}
-                        {activeSection === "Account" &&
-                            "Manage your personal account information and profile picture settings."}
-                        {activeSection === "Security" &&
-                            "Protect your account with password, verification, and session controls."}
-                        {activeSection === "Notifications" &&
-                            "Choose which alerts and updates you want to receive."}
-                        {activeSection === "Account Actions" &&
-                            "Review account data and take higher-risk actions carefully."}
-                    </p>
+                    <TabsContent value={activeSection} className="type-body">
+                        <Card className="gap-0 px-(--card-spacing) type-body">
+                            <h2 className="m-0 mb-2 type-section-title text-foreground">
+                                {activeSection}
+                            </h2>
 
-                    {renderSectionContent()}
+                            <p className="m-0 mb-6 type-small text-muted-foreground">
+                                {activeSection === "Profile" &&
+                                    "Read-only details for your academic identity."}
+                                {activeSection === "Account" &&
+                                    "Manage your personal account information and profile picture settings."}
+                                {activeSection === "Security" &&
+                                    "Protect your account with password, verification, and session controls."}
+                                {activeSection === "Notifications" &&
+                                    "Choose which alerts and updates you want to receive."}
+                                {activeSection === "Account Actions" &&
+                                    "Review account data and take higher-risk actions carefully."}
+                            </p>
 
-                    {statusMessage && <div className="status-message">{statusMessage}</div>}
-                </section>
-            </main>
-        </div>
+                            {renderSectionContent()}
+
+                            {statusMessage && (
+                                <div className="mt-4.5 rounded-lg border border-solid border-highlight bg-highlight-soft px-3.5 py-3 type-small font-semibold text-primary">
+                                    {statusMessage}
+                                </div>
+                            )}
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </PageShell>
     );
 }

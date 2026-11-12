@@ -755,7 +755,15 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       5. After the impact dialog closes, focus goes back to "Save changes" (before: the page body). The now-unused `.btn-primary` rule left `index.css`; `components/Dialog.jsx` has no users left and goes in T7.Z.
       6. Checked K1, K2, K9–K12 and K15 in a browser against the old code at 1440 and 375, and J5–J7 again on the shared dialog: same text, results and saved data.
 - **Settings (R5: a shell task plus one per section)**
-  - [ ] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**
+  - [x] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**
+    - **As done:**
+      1. Settings' own "Help & Resources" button was in its old sidebar and is the only way to open the Settings help. Owner decision (2026-11-12): keep it, beside the section tabs, with the same label and behaviour (B2: the help only shows while Security is open). It is hidden below `lg`, as before (it was hidden at 900px and narrower).
+      2. The sections are shadcn `Tabs` (line style, wrapping on narrow screens) with one panel holding the section `Card`. The panel and card keep body-size text, so the sections, still on their own CSS until T7.L1s–L5s, look as before. The status message keeps no role.
+      3. `GlobalSettings.css` lost the shell (layout, own sidebar, brand, workspace box, menu, help button, back link, heading, card, status), the dead `.section-index` and `.account-chip` rules, the page-wide element rules (`src/index.css` already has them), and the `--settings-*` aliases (their uses now point at the global tokens).
+      4. Its unscoped `button`/`input`/`select`/`textarea` focus outline reached every page. It is now limited to the Settings sections (`:where(.settings-content)`, same specificity), so other pages' controls show their own focus style.
+      5. The reduced-motion rule moved to `src/index.css` unchanged (B19).
+      6. Settings now shows the shared footer, like the other non-rules pages. `scripts/screenshots.mjs` opens the sections by their tab instead of a button (selector only).
+      7. Checked L1 as changed, the section switching (click and arrow keys), B2, and B1, B7 and B10 on `/settings`, at 375, 768, 1024 and 1440. Every other page's screenshots are unchanged.
     - **Shell:** Settings drops its own layout, its own yellow navigation sidebar and its own colour aliases. It uses `PageShell`, like the other pages: the shared Sidebar, Header and PageFooter, the global tokens and the `type-*` roles.
     - **Section navigation:** Profile, Account, Security, Notifications and Account Actions become `Tabs` at the top of the page content.
     - **Kept:** the "Back" link (`BackLink`, same wording), the page heading and the status message.

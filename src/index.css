@@ -679,3 +679,17 @@
         color: var(--foreground);
     }
 }
+
+/* Reduced motion for the whole app: transitions and animations finish at
+   once. Moved unchanged from GlobalSettings.css (T7.L0), which loaded on
+   every page, so its reach is the same (docs/AUDIT.md B19). */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

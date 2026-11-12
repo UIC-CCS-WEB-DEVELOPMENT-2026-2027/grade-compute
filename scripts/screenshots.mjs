@@ -41,7 +41,7 @@ const SCREENS = [
     ...["Profile", "Account", "Security", "Notifications", "Account Actions"].map((section) => ({
         name: `settings-${section.toLowerCase().replace(/\s+/g, "-")}`,
         url: "/settings",
-        action: (page) => page.getByRole("button", { name: section, exact: true }).click(),
+        action: (page) => page.getByRole("tab", { name: section, exact: true }).click(),
     })),
 ];
 
