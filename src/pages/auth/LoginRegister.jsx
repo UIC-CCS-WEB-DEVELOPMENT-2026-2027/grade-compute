@@ -53,7 +53,7 @@ const previewScores = [
 function AcademicPreview() {
     return (
         <div
-            className="relative mt-2 ml-6 w-full max-w-114 pb-7 animate-auth-float motion-reduce:animate-none max-xl:ml-3"
+            className="relative mt-8 ml-6 w-full max-w-114 pb-7 animate-auth-float motion-reduce:animate-none max-xl:ml-3"
             aria-label="Example grade progress, from 84 percent to a 95 percent target"
         >
             <div className="relative min-h-63 w-full -rotate-6 rounded-lg border border-border bg-card px-4 pt-4 pb-7 shadow-hover">
@@ -194,6 +194,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
                 <InputGroupAddon align="inline-end">
                     <InputGroupButton
                         size="icon-xs"
+                        className="relative max-lg:after:absolute max-lg:after:-inset-2.5"
                         aria-label={toggleLabel}
                         title={toggleLabel}
                         aria-controls={id}
@@ -369,9 +370,9 @@ export function LoginRegister() {
         navigate(destination, { replace: true });
     };
     return (
-        <main className="flex min-h-svh flex-col bg-card font-sans text-foreground md:grid md:grid-cols-12">
+        <main className="flex min-h-svh flex-col bg-card font-sans text-foreground lg:grid lg:grid-cols-12">
             <section
-                className="relative isolate flex min-w-0 flex-col bg-highlight px-6 py-3 max-md:min-h-20 md:col-span-7 md:overflow-hidden md:px-7 md:py-6 xl:px-11"
+                className="relative isolate flex min-w-0 flex-col bg-highlight px-6 py-3 max-md:min-h-20 md:overflow-hidden lg:col-span-7 md:px-7 md:py-6 xl:px-11"
                 aria-label="About CompUGrade"
             >
                 <header className="flex w-fit shrink-0 animate-auth-enter items-center gap-1.5 motion-reduce:animate-auth-fade-in">
@@ -403,13 +404,13 @@ export function LoginRegister() {
                 {[
                     [sparkle, "top-3/5 left-1/7"],
                     [sparkleSmall, "top-3/8 right-1/5 animate-delay-350"],
-                    [sparkleTiny, "top-3/5 right-1/6 animate-delay-700"],
+                    [sparkleTiny, "top-2/3 right-1/6 animate-delay-700"],
                     [sparkleSmall, "top-3/4 left-3/16 animate-delay-1050"],
                 ].map(([src, place]) => (
                     <img
                         key={place}
                         className={cn(
-                            "pointer-events-none absolute animate-auth-sparkle motion-reduce:animate-none max-md:hidden",
+                            "pointer-events-none absolute animate-auth-sparkle motion-reduce:animate-none max-lg:hidden",
                             place,
                         )}
                         src={src}
@@ -424,7 +425,7 @@ export function LoginRegister() {
                 </p>
             </section>
             <section
-                className="relative flex min-w-0 flex-1 flex-col bg-card px-6 pt-3 pb-2.5 md:col-span-5 md:px-2 md:pt-3.5"
+                className="relative flex min-w-0 flex-1 flex-col bg-card px-6 pt-3 pb-2.5 lg:col-span-5 lg:px-2 lg:pt-3.5"
                 aria-labelledby="auth-title"
             >
                 <p className="m-0 type-caption text-muted-foreground max-md:hidden">
@@ -434,14 +435,14 @@ export function LoginRegister() {
                     value={activeTab}
                     onValueChange={changeAuthMode}
                     className={cn(
-                        "relative mx-auto mb-3 w-full max-w-91 shrink-0 animate-auth-enter animate-delay-120 gap-0 motion-reduce:animate-none md:px-4 xl:px-0",
-                        isRegister ? "mt-1 mb-1 max-md:mt-0" : "mt-0 md:mt-16",
+                        "relative mx-auto mb-3 w-full max-w-91 shrink-0 animate-auth-enter animate-delay-120 gap-0 motion-reduce:animate-none lg:px-4 xl:px-0",
+                        isRegister ? "mt-1 mb-1 max-lg:mt-0" : "mt-0 lg:mt-16",
                     )}
                 >
                     <TabsList
                         variant="line"
                         aria-label="Account access"
-                        className="h-auto w-full justify-start gap-8 rounded-none border-b border-border p-0 md:mt-12 max-md:gap-0"
+                        className="h-auto w-full justify-start gap-8 rounded-none border-b border-border p-0 max-lg:gap-0 lg:mt-12"
                     >
                         {[
                             ["login", "Log In"],
@@ -450,7 +451,7 @@ export function LoginRegister() {
                             <TabsTrigger
                                 key={value}
                                 value={value}
-                                className="h-auto flex-none rounded-none border-0 px-0 pt-0 pb-2 type-small font-normal text-muted-foreground data-active:text-primary group-data-horizontal/tabs:after:-bottom-px after:bg-primary max-md:flex-1 max-md:pt-1 max-md:pb-3"
+                                className="h-auto flex-none rounded-none border-0 px-0 pt-0 pb-2 type-small font-normal text-muted-foreground data-active:text-primary group-data-horizontal/tabs:after:-bottom-px after:bg-primary max-lg:min-h-11 max-lg:flex-1 max-lg:py-0"
                             >
                                 {label}
                             </TabsTrigger>
@@ -499,7 +500,7 @@ export function LoginRegister() {
                                     {["student", "professor"].map((role) => (
                                         <Label
                                             key={role}
-                                            className="min-h-9 cursor-pointer justify-center gap-2 rounded-md border border-input px-2 py-1 font-normal text-muted-foreground transition-colors hover:border-primary has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:font-semibold has-data-checked:text-primary max-md:min-h-11"
+                                            className="min-h-9 cursor-pointer justify-center gap-2 rounded-md border border-input px-2 py-1 font-normal text-muted-foreground transition-colors hover:border-primary has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:font-semibold has-data-checked:text-primary max-lg:min-h-11"
                                         >
                                             <RadioGroupItem value={role} />
                                             {role === "student" ? "Student" : "Professor"}
@@ -631,7 +632,7 @@ export function LoginRegister() {
                             {isRegister ? "Already have an account? " : "New to CompUGrade? "}
                             <Button
                                 variant="link"
-                                className="h-auto p-0 type-small font-normal"
+                                className="relative h-auto p-0 type-small font-normal max-lg:after:absolute max-lg:after:-inset-x-1 max-lg:after:-inset-y-3"
                                 onClick={() => changeAuthMode(isRegister ? "login" : "register")}
                             >
                                 {isRegister ? "Log in" : "Create an account"}
@@ -647,7 +648,7 @@ export function LoginRegister() {
                         )}
                     </TabsContent>
                 </Tabs>
-                <small className="mt-auto self-end type-small text-muted-foreground md:pr-4">
+                <small className="mt-auto self-end type-small text-muted-foreground lg:pr-4">
                     © 2026 CompUGrade
                 </small>
             </section>

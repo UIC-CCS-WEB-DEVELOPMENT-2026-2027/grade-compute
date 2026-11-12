@@ -849,7 +849,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     3. Sidebar: the minimise toggle and the subject-list chevron are 44px below `lg`. Subject rows are at least 44px, with the arrow centred against the text. The remove-subject button is 44px and always visible below `lg` (it was phone-only), because a touch tablet can't hover to reveal it.
     4. The Help popup's close button is 44px below `lg` (tokens). The footer has no controls.
     5. Measured at 375 and 768: no header, sidebar, footer or dialog control is below 44px; the remaining small targets belong to T8.2–T8.9. Screenshots: 375 and 768 change (taller controls), 1024 and 1440 are identical. Checklist B2, B4–B7 and F1–F3 walked at 1440, 768 (both sidebar states) and 375: same results, plus the remove button now works by touch at 768.
-- [ ] **T8.2** Login.
+- [x] **T8.2** Login.
+  - **As done:**
+    1. Below `lg` the hero stacks above the form (it was two columns from `md`). The form column's "YOUR ACADEMIC GUIDE" now sits directly above the tabs instead of floating at the top of a narrow column, and the tabs fill the width as on phones.
+    2. Targets below `lg`: the Log In / Create Account tabs and the Student / Professor choice are 44px tall, and inputs and the submit button are 44px through the T8.1 tokens. The eye buttons and the "Create an account" / "Log in" text buttons keep their look and get a 44px touch area from an invisible `::after` (the shadcn Switch's pattern); a tap just outside the visible icon or text works at 375 and 768 and not at 1440.
+    3. Overlap fixed at 1024 and 1440: since Phase 7 made the bullet points 14px, the rotated preview card covered "Learn with confidence". The card sits 24px lower, and the sparkle that then landed on its "Make Your Target Grade a Reality" note moved down (`top-3/5` → `top-2/3`). The sparkles are hidden below `lg`, where their percentage positions fell on the card. Sparkles over the decorative card itself are as before.
+    4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on Log In or Create Account. Screenshots: 375 changes only in the tabs, 768 is the new stacked layout, 1024 and 1440 change only in the card position.
 - [ ] **T8.3** Dashboard.
 - [ ] **T8.4** My Subjects.
 - [ ] **T8.5** Subject Detail (including the gauge overlap).
