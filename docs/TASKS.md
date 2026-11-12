@@ -717,7 +717,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       5. Text: card titles `card-title` (were 23px), table, legend and notes `small` (were 11–13px). The compact thumbnail table still fits its 164px box at 14px.
       6. The preview toggle is a `ToggleGroup`: one Tab stop, arrows move between the options (G15, as for the term tabs).
       7. Checked J1–J4 and J8 in a browser, plus a card click and Delete opening the dialog.
-  - [ ] **T7.J2** DeleteRuleDialog → `Dialog` + `NativeSelect`. Check: J5–J7.
+  - [x] **T7.J2** DeleteRuleDialog → `Dialog` + `NativeSelect`. Check: J5–J7.
+    - **As done:**
+      1. Both cases (the last rule, and a normal delete) share one private frame: the shadcn `Dialog` with `disablePointerDismissal`, so, as before, only Escape and the buttons close it, not a click outside. Focus still starts on the first control. After closing, focus goes back to the Delete button that opened it (before: the page body).
+      2. The label still wraps the select, so its accessible name is unchanged. The subject list, the lost-task warning and the error use utilities; new token `spacing-delete-list` keeps the list's old maximum height, `min(40vh, 300px)`.
+      3. "Delete rule" keeps the coral fill with dark text (`warning-foreground`, WCAG AA; was white, 2.6:1), and turns `destructive` on hover. The buttons sit in a `DialogFooter`, stacked on phones.
+      4. Its `.rule-delete-*` rules left `Dialog.css`. `.app-dialog-warning` stays for the editor's impact dialog until T7.K3.
+      5. Checked J5–J7 in a browser, from the Grade Rules page and from the rule editor: same text, and the same data moves to the replacement rule.
 - **Rule editor**
   - [ ] **T7.K1** Details form: `Field`, `Input`, `Checkbox`s in `FieldSet`, school chips (`Badge` + `Button`). Check: K13, K14.
   - [ ] **T7.K2 ⚠ PillEditor / PillLevel.**
