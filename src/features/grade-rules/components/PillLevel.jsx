@@ -249,7 +249,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         const label = segment.hasChildren ? (
             <Button
                 variant="ghost"
-                className="relative h-auto min-w-0 cursor-help rounded-none max-lg:after:absolute max-lg:after:-inset-y-2.5 border-0 border-b-2 border-dotted border-muted-foreground p-0 type-card-title text-foreground hover:border-solid hover:border-primary hover:bg-transparent hover:text-primary aria-pressed:border-solid aria-pressed:border-primary aria-pressed:text-primary"
+                className="relative h-auto min-w-0 cursor-help rounded-none max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-2.5 max-lg:after:z-(--z-raised) border-0 border-b-2 border-dotted border-muted-foreground p-0 type-card-title text-foreground hover:border-solid hover:border-primary hover:bg-transparent hover:text-primary aria-pressed:border-solid aria-pressed:border-primary aria-pressed:text-primary"
                 aria-pressed={previewId === segment.id}
                 aria-label={`${segment.name}, show breakdown`}
                 {...previewHandlers(segment.id)}
@@ -271,7 +271,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                         size="icon-xs"
                         className={cn(
                             ICON_BUTTON,
-                            "relative border-foreground text-foreground max-lg:after:absolute max-lg:after:-inset-2.5",
+                            "relative border-foreground text-foreground max-lg:after:absolute max-lg:after:-inset-2.75 max-lg:after:z-(--z-raised)",
                         )}
                         onClick={() => apply(addCriterion(tree, levelId))}
                         disabled={!addCheck.allowed}

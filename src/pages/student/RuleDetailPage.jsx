@@ -444,7 +444,7 @@ function RuleDetail({ ruleId }) {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon-xs"
-                                                                className="relative rounded-full text-muted-foreground max-lg:after:absolute max-lg:after:-inset-2.5"
+                                                                className="relative rounded-full text-muted-foreground max-lg:after:absolute max-lg:after:-inset-2.75"
                                                                 onClick={() => removeSchool(school)}
                                                                 aria-label={`Remove ${school}`}
                                                             >

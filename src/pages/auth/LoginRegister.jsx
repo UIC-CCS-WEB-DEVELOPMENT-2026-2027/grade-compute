@@ -194,7 +194,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
                 <InputGroupAddon align="inline-end">
                     <InputGroupButton
                         size="icon-xs"
-                        className="relative max-lg:after:absolute max-lg:after:-inset-2.5"
+                        className="relative max-lg:after:absolute max-lg:after:-inset-2.75"
                         aria-label={toggleLabel}
                         title={toggleLabel}
                         aria-controls={id}

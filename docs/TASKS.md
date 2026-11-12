@@ -855,6 +855,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. Targets below `lg`: the Log In / Create Account tabs and the Student / Professor choice are 44px tall, and inputs and the submit button are 44px through the T8.1 tokens. The eye buttons and the "Create an account" / "Log in" text buttons keep their look and get a 44px touch area from an invisible `::after` (the shadcn Switch's pattern); a tap just outside the visible icon or text works at 375 and 768 and not at 1440.
     3. Overlap fixed at 1024 and 1440: since Phase 7 made the bullet points 14px, the rotated preview card covered "Learn with confidence". The card sits 24px lower, and the sparkle that then landed on its "Make Your Target Grade a Reality" note moved down (`top-3/5` → `top-2/3`). The sparkles are hidden below `lg`, where their percentage positions fell on the card. Sparkles over the decorative card itself are as before.
     4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on Log In or Create Account. Screenshots: 375 changes only in the tabs, 768 is the new stacked layout, 1024 and 1440 change only in the card position.
+    5. Corrected after T8.9: the eye buttons' touch area was 42px, not 44px (an `::after` is placed inside the 1px border, so `-inset-2.5` added 20px to 22px). It is `-inset-2.75` now; every side of it is checked by tapping.
 - [x] **T8.3** Dashboard.
   - **As done:**
     1. Enrolled subjects (shared with My Subjects): the table switches to the stacked cards by the card's own width (a container query, under 42rem) instead of the viewport. It needs about 642px, so it was scrolling sideways at 768 and also at 1024, where the sidebar starts expanded since T7.S1. It is now cards at 375, 768 and 1024, and a table at 1440. The row arrow is 44px below `lg`.
@@ -887,6 +888,10 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     2. Each criterion's rename, Split and delete buttons are 44px below `lg` (they sit next to each other, so they need real size, not overlapping touch areas). The "+" beside the last criterion's name keeps its 24px look with a 44px touch area from an invisible `::after`: a 44px button there truncated narrow names ("Exam" → "E…") and pushed that bar out of line.
     3. Also 44px below `lg`: the `%` boxes (were 32px tall), the tag checkboxes' labels (were `md` only), the parent names that preview a breakdown and the school chips' remove buttons (same look, `::after` touch areas). The drag handle's touch area is 44px wide (was 40px).
     4. Measured at 375 and 768 (view, edit and new): no page overflow, no text below 14px except captions, no target below 44px. The T7.K1 and T7.K2 walks (K1–K8, the details form) give the same results on the old and new code at 1440 and 375, once their selector for the old `.rule-savebar` class was updated.
+    5. Corrected after T8.9 (found with a better measurement and by tapping each side):
+       - The parent names' touch area set only top and bottom, so it was 0px wide; it now spans the name's width (`inset-x-0`).
+       - The "+" and the school remove buttons' touch areas were 42px (placed inside the 1px border); they are `-inset-2.75` now.
+       - The pill bar below covered the bottom of the "+" and parent-name touch areas; those two `::after`s are raised one layer (`z-(--z-raised)`). The T7.K2 walk gives the same results after the change.
 - [x] **T8.9** Settings.
   - **As done:**
     1. The section tabs are 44px tall below `lg` (were `md` only) and wrap onto two rows at 375.
