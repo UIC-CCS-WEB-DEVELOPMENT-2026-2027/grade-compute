@@ -746,7 +746,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       5. Text: names `card-title` (were 22px, 18px on phones), "= Grade" `section-title`, the % and preview text `body` and `small` (were 13–17px).
       6. The K1 school chips get `overflow-visible` too, so the remove button's focus ring isn't clipped (same `Badge` pattern).
       7. Checked K3–K8 in a browser against the old code at 1440 and 375: typing, limits, Escape, keyboard and pointer dragging, preview, add, rename (and a duplicate name), split, delete, the confirmation and the limits gave the same results.
-  - [ ] **T7.K3** View switch `ToggleGroup`, the impact `Dialog`, the status line, the action buttons. Delete `RuleDetailPage.css`. Check: K1, K2, K9–K12, K15.
+  - [x] **T7.K3** View switch `ToggleGroup`, the impact `Dialog`, the status line, the action buttons. Delete `RuleDetailPage.css`. Check: K1, K2, K9–K12, K15.
+    - **As done:**
+      1. The editor uses `PageShell` with `showFooter={false}` (still no footer), like Grade Rules since T7.J1, so its background is the shared `muted` one (was white). Details, Criteria and Breakdown sit in one `Card`, split by `Separator`s, and the save bar is its `CardFooter`. The back link is `BackLink`.
+      2. The impact dialog and DeleteRuleDialog now share `RuleDialog` (the eyebrow, title, Escape-only closing and the Cancel or Close button) and `RuleSubjectList`. Their outline buttons use the plain `outline` style. The impact list lost its hover effect (it isn't clickable). Token `spacing-delete-list` became `spacing-rule-dialog-list`.
+      3. The saved-message line is an `Alert` that keeps `role="status"`. The view switch is a `ToggleGroup` (one Tab stop, arrow keys, G15).
+      4. "Rule not found" (K15) is an `Empty` with the `BackLink`, so its "← All rules" link shows the arrow as an icon: "All rules", like the editor's own back link.
+      5. After the impact dialog closes, focus goes back to "Save changes" (before: the page body). The now-unused `.btn-primary` rule left `index.css`; `components/Dialog.jsx` has no users left and goes in T7.Z.
+      6. Checked K1, K2, K9–K12 and K15 in a browser against the old code at 1440 and 375, and J5–J7 again on the shared dialog: same text, results and saved data.
 - **Settings (R5: a shell task plus one per section)**
   - [ ] **T7.L0 Settings shell: same look as the other pages (owner decision, Gate 4).**
     - **Shell:** Settings drops its own layout, its own yellow navigation sidebar and its own colour aliases. It uses `PageShell`, like the other pages: the shared Sidebar, Header and PageFooter, the global tokens and the `type-*` roles.

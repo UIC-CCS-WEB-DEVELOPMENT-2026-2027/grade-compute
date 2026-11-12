@@ -3,18 +3,20 @@
 // (grade-rules-spec.txt, PART 4-8). Routes: /student/rules/new and
 // /student/rules/:ruleId.
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { XIcon } from "lucide-react";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
+import { BackLink } from "@/components/BackLink";
+import { PageShell } from "@/components/layout/PageShell";
 import { PillEditor } from "@/features/grade-rules/components/PillEditor";
 import { RuleFormula } from "@/features/grade-rules/components/RuleFormula";
 import { RulePieChart } from "@/features/grade-rules/components/RulePieChart";
 import { RuleHierarchyTable } from "@/features/grade-rules/components/RuleHierarchyTable";
-import { Dialog } from "@/components/Dialog";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Empty, EmptyHeader } from "@/components/ui/empty";
 import {
     Field,
     FieldGroup,
@@ -24,7 +26,11 @@ import {
     FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DeleteRuleDialog } from "@/features/grade-rules/components/DeleteRuleDialog";
+import { RuleDialog } from "@/features/grade-rules/components/RuleDialog";
+import { RuleSubjectList } from "@/features/grade-rules/components/RuleSubjectList";
 import { saveDbSafely } from "@/services/db";
 import {
     DEFAULT_TAGS,
@@ -42,7 +48,12 @@ import {
 } from "@/lib/rules";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
-import "./RuleDetailPage.css";
+
+// The page's three sections (Details, Criteria, Breakdown) inside one card.
+const SECTION = "flex flex-col gap-5 px-(--card-spacing) py-6";
+const SECTION_TITLE = "m-0 type-section-title text-foreground";
+// The page's buttons: 44px below md.
+const ACTION = "max-md:h-control-touch";
 
 // A saved value shown while not editing.
 const READONLY_VALUE =
@@ -89,19 +100,23 @@ function RuleDetail({ ruleId }) {
 
     if (!isNew && !rule) {
         return (
-            <div className="rules-layout">
-                <Sidebar />
-                <div className="rules-main">
-                    <Header />
-                    <main className="rules-content">
-                        <Link className="rule-back" to="/student/rules">
-                            ← All rules
-                        </Link>
-                        <h1>Rule not found</h1>
-                        <p>This rule may have been deleted. Go back to see all rules.</p>
-                    </main>
+            <PageShell showFooter={false}>
+                <div className="flex flex-col gap-7">
+                    <div>
+                        <BackLink to="/student/rules" className="max-md:h-control-touch">
+                            All rules
+                        </BackLink>
+                    </div>
+                    <Empty className="rounded-xl border border-solid border-border bg-card">
+                        <EmptyHeader>
+                            <h1 className="m-0 type-page-title text-foreground">Rule not found</h1>
+                            <p className="m-0 type-body text-muted-foreground">
+                                This rule may have been deleted. Go back to see all rules.
+                            </p>
+                        </EmptyHeader>
+                    </Empty>
                 </div>
-            </div>
+            </PageShell>
         );
     }
 
@@ -248,78 +263,79 @@ function RuleDetail({ ruleId }) {
     const isCopy = !isNew && isCopiedRule(rule);
 
     return (
-        <div className="rules-layout">
-            <Sidebar />
-            <div className="rules-main">
-                <Header />
-                <main className="rules-content rule-detail">
-                    <Link className="rule-back rule-back-button" to="/student/rules">
-                        <span aria-hidden="true">
-                            <svg viewBox="0 0 16 16" fill="none">
-                                <path d="M10.5 3.5 6 8l4.5 4.5M6.5 8h7" />
-                            </svg>
-                        </span>
+        // The Grade Rules pages have no footer.
+        <PageShell showFooter={false}>
+            <div className="flex flex-col gap-7">
+                <div>
+                    <BackLink to="/student/rules" className="max-md:h-control-touch">
                         All rules
-                    </Link>
+                    </BackLink>
+                </div>
 
-                    <header className="rule-detail-heading">
-                        <div>
-                            <h1>{isNew ? "New rule" : rule.ruleName}</h1>
-                            <p>
-                                {isNew
-                                    ? "Split the grade into criteria, then save the rule to use it for your subjects."
-                                    : subjectCount === 0
-                                      ? "Not used by any subject yet."
-                                      : `Used by ${usage.classes.map((item) => item.subjectCode).join(", ")}.`}
-                            </p>
-                        </div>
-                        {!isNew && (
-                            <div className="rule-detail-tools">
-                                {isEditing ? (
-                                    <button
-                                        type="button"
-                                        className="btn-secondary"
-                                        onClick={cancelEditing}
-                                    >
-                                        Cancel editing
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="btn-primary"
-                                        onClick={() => {
-                                            setStatus("");
-                                            setIsEditing(true);
-                                        }}
-                                    >
-                                        Edit
-                                    </button>
-                                )}
-                                <button
-                                    type="button"
-                                    className="btn-secondary"
-                                    onClick={handleDuplicate}
-                                >
-                                    Duplicate
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn-secondary is-danger"
-                                    onClick={() => setShowDelete(true)}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        )}
-                    </header>
-                    {status && !hasEdits && (
-                        <p className="rule-save-success" role="status">
-                            {status}
+                <header className="flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <h1 className="m-0 type-page-title text-foreground">
+                            {isNew ? "New rule" : rule.ruleName}
+                        </h1>
+                        <p className="m-0 mt-1.5 type-body text-muted-foreground">
+                            {isNew
+                                ? "Split the grade into criteria, then save the rule to use it for your subjects."
+                                : subjectCount === 0
+                                  ? "Not used by any subject yet."
+                                  : `Used by ${usage.classes.map((item) => item.subjectCode).join(", ")}.`}
                         </p>
+                    </div>
+                    {!isNew && (
+                        <div className="flex flex-wrap gap-2">
+                            {isEditing ? (
+                                <Button
+                                    variant="outline"
+                                    className={ACTION}
+                                    onClick={cancelEditing}
+                                >
+                                    Cancel editing
+                                </Button>
+                            ) : (
+                                <Button
+                                    className={ACTION}
+                                    onClick={() => {
+                                        setStatus("");
+                                        setIsEditing(true);
+                                    }}
+                                >
+                                    Edit
+                                </Button>
+                            )}
+                            <Button variant="outline" className={ACTION} onClick={handleDuplicate}>
+                                Duplicate
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className={cn(
+                                    ACTION,
+                                    "text-destructive hover:border-destructive hover:bg-warning-soft hover:text-destructive",
+                                )}
+                                onClick={() => setShowDelete(true)}
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     )}
+                </header>
+                {status && !hasEdits && (
+                    <Alert
+                        role="status"
+                        className="border-0 border-l-4 border-solid border-primary bg-secondary px-3.5 py-2.5 text-primary"
+                    >
+                        {status}
+                    </Alert>
+                )}
 
-                    <section className="rule-section" aria-labelledby="rule-details-title">
-                        <h2 id="rule-details-title">Details</h2>
+                <Card className="gap-0 py-0">
+                    <section className={SECTION} aria-labelledby="rule-details-title">
+                        <h2 id="rule-details-title" className={SECTION_TITLE}>
+                            Details
+                        </h2>
                         {/* Columns follow the width of the page content. */}
                         <div className="@container">
                             <FieldGroup className="grid items-start gap-x-7 gap-y-5 @xl:grid-cols-2 @3xl:grid-cols-3">
@@ -477,8 +493,11 @@ function RuleDetail({ ruleId }) {
                         </div>
                     </section>
 
-                    <section className="rule-section" aria-labelledby="rule-criteria-title">
-                        <h2 id="rule-criteria-title">Criteria</h2>
+                    <Separator />
+                    <section className={SECTION} aria-labelledby="rule-criteria-title">
+                        <h2 id="rule-criteria-title" className={SECTION_TITLE}>
+                            Criteria
+                        </h2>
                         {isEditing ? (
                             <PillEditor
                                 tree={tree}
@@ -496,24 +515,36 @@ function RuleDetail({ ruleId }) {
                         <RuleFormula tree={tree} />
                     </section>
 
-                    <section className="rule-section" aria-labelledby="rule-breakdown-title">
-                        <div className="rule-section-heading">
-                            <h2 id="rule-breakdown-title">Breakdown</h2>
-                            <div className="rules-toggle" role="group" aria-label="Breakdown view">
+                    <Separator />
+                    <section className={SECTION} aria-labelledby="rule-breakdown-title">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <h2 id="rule-breakdown-title" className={SECTION_TITLE}>
+                                Breakdown
+                            </h2>
+                            <ToggleGroup
+                                aria-label="Breakdown view"
+                                value={[view]}
+                                // Pressing the selected view again keeps it selected.
+                                onValueChange={(value) => {
+                                    if (value[0]) setView(value[0]);
+                                }}
+                                spacing={0.5}
+                                className="rounded-lg border border-border bg-muted p-0.5"
+                            >
                                 {[
                                     ["pie", "Pie chart"],
                                     ["table", "Table"],
                                 ].map(([id, label]) => (
-                                    <button
+                                    <ToggleGroupItem
                                         key={id}
-                                        type="button"
-                                        aria-pressed={view === id}
-                                        onClick={() => setView(id)}
+                                        value={id}
+                                        size="sm"
+                                        className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-md:h-control-touch"
                                     >
                                         {label}
-                                    </button>
+                                    </ToggleGroupItem>
                                 ))}
-                            </div>
+                            </ToggleGroup>
                         </div>
                         {view === "pie" ? (
                             <RulePieChart tree={tree} size={240} showLegend />
@@ -523,121 +554,90 @@ function RuleDetail({ ruleId }) {
                     </section>
 
                     {hasEdits && (
-                        <div className="rule-savebar">
-                            <p role="status">
+                        <CardFooter className="flex-wrap justify-between gap-3 py-3.5">
+                            <p className="m-0 type-small text-muted-foreground" role="status">
                                 {status || (!isNew ? "You have unsaved changes." : "")}
                             </p>
-                            <div>
+                            <div className="flex flex-wrap gap-2">
                                 {!isNew && (
-                                    <button
-                                        type="button"
-                                        className="btn-secondary"
+                                    <Button
+                                        variant="outline"
+                                        className={ACTION}
                                         onClick={handleDiscard}
                                     >
                                         Discard changes
-                                    </button>
+                                    </Button>
                                 )}
                                 {!isNew && (
-                                    <button
-                                        type="button"
-                                        className="btn-secondary"
+                                    <Button
+                                        variant="outline"
+                                        className={ACTION}
                                         onClick={() => validate() && handleSaveAsNew()}
                                     >
                                         Save as new rule
-                                    </button>
+                                    </Button>
                                 )}
-                                <button
-                                    type="button"
-                                    className="btn-primary"
-                                    onClick={handleSave}
-                                    disabled={!isDirty}
-                                >
+                                <Button className={ACTION} onClick={handleSave} disabled={!isDirty}>
                                     {isNew ? "Create rule" : "Save changes"}
-                                </button>
+                                </Button>
                             </div>
-                        </div>
+                        </CardFooter>
                     )}
-                </main>
+                </Card>
             </div>
 
             {pendingImpact && (
-                <Dialog
+                <RuleDialog
+                    eyebrow={pendingImpact.classes.length > 0 ? "Rule update" : "Copied rule"}
                     title={
-                        <>
-                            <span className="rule-impact-eyebrow">
-                                {pendingImpact.classes.length > 0 ? "Rule update" : "Copied rule"}
-                            </span>
-                            {pendingImpact.classes.length > 0
-                                ? "Update this rule for every subject?"
-                                : "Save changes to this copy?"}
-                        </>
+                        pendingImpact.classes.length > 0
+                            ? "Update this rule for every subject?"
+                            : "Save changes to this copy?"
                     }
-                    className="rule-impact-dialog"
                     onClose={() => setPendingImpact(null)}
                     actions={
-                        <>
-                            <button
-                                type="button"
-                                className="rule-impact-cancel"
-                                onClick={() => setPendingImpact(null)}
-                            >
-                                Cancel
-                            </button>
-                            {pendingImpact.classes.length > 0 ? (
-                                <>
-                                    <button
-                                        type="button"
-                                        className="rule-impact-new"
-                                        onClick={handleSaveAsNew}
-                                    >
-                                        Save as new rule
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="rule-impact-confirm"
-                                        onClick={applyUpdate}
-                                    >
-                                        Update anyway
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="rule-impact-confirm"
+                        pendingImpact.classes.length > 0 ? (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    className={ACTION}
+                                    onClick={handleSaveAsNew}
+                                >
+                                    Save as new rule
+                                </Button>
+                                <Button
+                                    className={cn(ACTION, "hover:shadow-card")}
                                     onClick={applyUpdate}
                                 >
-                                    Save changes
-                                </button>
-                            )}
-                        </>
+                                    Update anyway
+                                </Button>
+                            </>
+                        ) : (
+                            <Button
+                                className={cn(ACTION, "hover:shadow-card")}
+                                onClick={applyUpdate}
+                            >
+                                Save changes
+                            </Button>
+                        )
                     }
                 >
                     {pendingImpact.classes.length > 0 ? (
                         <>
-                            <p className="rule-impact-description">
+                            <p className="m-0 type-small text-muted-foreground">
                                 This rule is used by {pendingImpact.classes.length} subject
                                 {pendingImpact.classes.length === 1 ? "" : "s"}. Updating it
                                 recalculates their grades using the new rule:
                             </p>
-                            <ul className="rule-impact-subjects">
-                                {pendingImpact.classes.map((item) => (
-                                    <li key={item.classId}>
-                                        <span className="rule-impact-code">{item.subjectCode}</span>
-                                        <span className="rule-impact-name">
-                                            {item.subjectName}
-                                            {item.programSection && ` (${item.programSection})`}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
+                            <RuleSubjectList classes={pendingImpact.classes} />
                         </>
                     ) : (
-                        <p className="rule-impact-description">
+                        <p className="m-0 type-small text-muted-foreground">
                             Saving updates this copy only. The original rule will stay unchanged.
                         </p>
                     )}
                     {pendingImpact.lostTaskCount > 0 && (
-                        <p className="app-dialog-warning">
+                        <p className="m-0 border-0 border-l-4 border-solid border-warning bg-warning-soft px-3 py-2.5 text-foreground">
                             {pendingImpact.lostTaskCount} recorded task
                             {pendingImpact.lostTaskCount === 1 ? "" : "s"} in{" "}
                             {pendingImpact.lostTasks.map((item) => item.name).join(", ")} will stop
@@ -649,11 +649,11 @@ function RuleDetail({ ruleId }) {
                         </p>
                     )}
                     {pendingImpact.classes.length > 0 && (
-                        <p className="rule-impact-note">
+                        <p className="m-0 type-small text-muted-foreground">
                             To keep these subjects unchanged, save your edits as a new rule instead.
                         </p>
                     )}
-                </Dialog>
+                </RuleDialog>
             )}
 
             {showDelete && (
@@ -667,6 +667,6 @@ function RuleDetail({ ruleId }) {
                     }}
                 />
             )}
-        </div>
+        </PageShell>
     );
 }

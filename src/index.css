@@ -252,9 +252,9 @@
     --spacing-control-touch: 2.75rem;
 
     /* Lists in dialogs scroll past these heights: the sandbox subject
-       picker, and the subjects in the delete-rule dialog. */
+       picker, and the subjects in the rule dialogs. */
     --spacing-picker-list: min(55vh, 26.25rem);
-    --spacing-delete-list: min(40vh, 18.75rem);
+    --spacing-rule-dialog-list: min(40vh, 18.75rem);
 
     /* Login page motion (moved from LoginRegister.css, T7.L3a). */
     --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -594,11 +594,6 @@
     select:where(:not([data-slot])):focus {
         border-color: var(--primary);
     }
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: #ffffff;
 }
 
 /* =========================================
