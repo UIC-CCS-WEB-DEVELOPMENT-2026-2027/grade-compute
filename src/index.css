@@ -371,6 +371,18 @@
     }
 }
 
+/* Phones and tablets (below lg): every control is the 44px touch size
+   (AGENTS.md section 7), so h-control, size-control-sm and the rest grow
+   there without a breakpoint class on each control. */
+@layer base {
+    @media (width < 64rem) {
+        :root {
+            --spacing-control: var(--spacing-control-touch);
+            --spacing-control-sm: var(--spacing-control-touch);
+        }
+    }
+}
+
 /* animation-delay in milliseconds: animate-delay-120 (Tailwind has none). */
 @utility animate-delay-* {
     animation-delay: calc(--value(integer) * 1ms);

@@ -98,7 +98,7 @@ export function Header({ title, subtitle = "A little progress, every day." }) {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="relative max-md:size-11"
+                    className="relative"
                     aria-label="View notifications"
                 >
                     <BellIcon className="size-5" />

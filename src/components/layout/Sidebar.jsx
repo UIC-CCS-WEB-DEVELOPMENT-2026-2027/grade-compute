@@ -254,7 +254,7 @@ export function Sidebar() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="hidden size-9 text-sidebar-foreground hover:bg-sidebar-accent aria-expanded:bg-transparent aria-expanded:text-sidebar-foreground aria-expanded:hover:bg-sidebar-accent md:inline-flex [&_svg]:size-5"
+                        className="hidden size-9 text-sidebar-foreground max-lg:size-11 hover:bg-sidebar-accent aria-expanded:bg-transparent aria-expanded:text-sidebar-foreground aria-expanded:hover:bg-sidebar-accent md:inline-flex [&_svg]:size-5"
                         onClick={() => {
                             setIsPopoutOpen(false);
                             toggleSidebar();
@@ -394,7 +394,7 @@ export function Sidebar() {
                                         <Button
                                             variant="ghost"
                                             size="icon-sm"
-                                            className="w-6 text-sidebar-foreground hover:bg-sidebar-accent aria-expanded:bg-transparent aria-expanded:text-sidebar-foreground aria-expanded:hover:bg-sidebar-accent group-data-[collapsible=icon]:hidden max-md:size-11"
+                                            className="w-6 text-sidebar-foreground hover:bg-sidebar-accent aria-expanded:bg-transparent aria-expanded:text-sidebar-foreground aria-expanded:hover:bg-sidebar-accent group-data-[collapsible=icon]:hidden max-lg:size-11"
                                             onClick={() => setIsSubjectsOpen((isOpen) => !isOpen)}
                                             aria-label={
                                                 isSubjectsOpen
@@ -432,7 +432,7 @@ export function Sidebar() {
                                                                 isActive={
                                                                     location.pathname === linkPath
                                                                 }
-                                                                className="h-auto min-h-8 flex-1 items-start py-1.5 pr-8 no-underline hover:bg-sidebar-accent data-active:bg-sidebar-accent data-active:text-sidebar-primary"
+                                                                className="h-auto min-h-8 flex-1 items-start py-1.5 pr-8 no-underline max-lg:min-h-11 max-lg:items-center max-lg:pr-12 hover:bg-sidebar-accent data-active:bg-sidebar-accent data-active:text-sidebar-primary"
                                                             >
                                                                 <span
                                                                     aria-hidden="true"
@@ -448,7 +448,7 @@ export function Sidebar() {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon-xs"
-                                                                className="pointer-events-none absolute top-1/2 right-0.5 -translate-y-1/2 bg-sidebar text-destructive opacity-0 group-focus-within/menu-sub-item:pointer-events-auto group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:pointer-events-auto group-hover/menu-sub-item:opacity-100 hover:bg-destructive/10 hover:text-destructive max-md:pointer-events-auto max-md:size-8 max-md:opacity-100 max-md:[&_svg]:size-4"
+                                                                className="pointer-events-none absolute top-1/2 right-0.5 -translate-y-1/2 bg-sidebar text-destructive opacity-0 group-focus-within/menu-sub-item:pointer-events-auto group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:pointer-events-auto group-hover/menu-sub-item:opacity-100 hover:bg-destructive/10 hover:text-destructive max-lg:pointer-events-auto max-lg:size-11 max-lg:opacity-100 max-lg:[&_svg]:size-4"
                                                                 aria-label={`Remove ${sub.subjectCode} - ${sub.subjectName} from your subjects`}
                                                                 title="Remove subject"
                                                                 onClick={(event) => {

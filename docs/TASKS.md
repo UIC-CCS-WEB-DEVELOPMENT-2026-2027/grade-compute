@@ -842,7 +842,13 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
 ### Phase 8 — Responsive (V-visual at 375, 768, 1024, 1440, plus the Phase 2 measurement: overflow, text below 14px, targets below 44px)
 
 - **T8.0 Sidebar thresholds: moved into T7.S1** (no separate task), so the shadcn `Sidebar`'s 768px phone switch and the app's thresholds change together. After it, the sidebar starts **expanded** at 1024.
-- [ ] **T8.1** Global: header, sidebar and footer targets.
+- [x] **T8.1** Global: header, sidebar and footer targets.
+  - **As done:**
+    1. One global rule instead of a class on each control: below `lg`, `src/index.css` sets the `control` and `control-sm` tokens to the 44px touch size. Every `h-control` / `size-control` / `h-control-sm` control (buttons, inputs, selects, toggles, tab lists) is therefore 44px on phones and tablets, and unchanged from 1024 up. Phase 7's `max-md:h-control-touch` classes stopped at 767, so tablets had 40px and 32px controls. Where they are now redundant, the screen tasks (T8.2–T8.9) remove them as they go.
+    2. Header: the bell and profile chevron reach 44px through the tokens (the bell's own `max-md:size-11` is gone).
+    3. Sidebar: the minimise toggle and the subject-list chevron are 44px below `lg`. Subject rows are at least 44px, with the arrow centred against the text. The remove-subject button is 44px and always visible below `lg` (it was phone-only), because a touch tablet can't hover to reveal it.
+    4. The Help popup's close button is 44px below `lg` (tokens). The footer has no controls.
+    5. Measured at 375 and 768: no header, sidebar, footer or dialog control is below 44px; the remaining small targets belong to T8.2–T8.9. Screenshots: 375 and 768 change (taller controls), 1024 and 1440 are identical. Checklist B2, B4–B7 and F1–F3 walked at 1440, 768 (both sidebar states) and 375: same results, plus the remove button now works by touch at 768.
 - [ ] **T8.2** Login.
 - [ ] **T8.3** Dashboard.
 - [ ] **T8.4** My Subjects.
