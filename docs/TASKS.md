@@ -813,9 +813,17 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       2. The two plain rows lost their pointer cursor and hover lift (they were never clickable; the hover tint stays).
       3. `GlobalSettings.css` is deleted, and with it the `settings-content` focus scope. `SettingRow.jsx` and `ToggleSetting.jsx` already went in T7.L4s. Only `src/index.css` and `components/Dialog.css` (T7.Z) remain as stylesheets.
       4. Checked L12 in a browser against the old code at 1440 and 375: same results, no stored data changed, still signed in after the confirmed Log Out.
-- [ ] **T7.P ⚠ Turn on Tailwind preflight.**
+- [x] **T7.P ⚠ Turn on Tailwind preflight.**
   - Import the full `tailwindcss`. Remove the now-duplicate parts of the old reset and the scoped `[data-slot]` reset.
   - Check: V-visual against the baseline at all widths, plus the full checklist.
+  - **As done:**
+    1. `src/index.css` imports `tailwindcss` (with `source(none)`). Removed: the old `*` margin/padding/box-sizing reset, `font: inherit` on form controls, the `img` rule and the body line height (preflight sets all of these), the scoped `[data-slot]` reset, and the "element defaults for the existing screens" block (plain `button`, `input` and `select` rules, which no element used any more).
+    2. In their place: shadcn's global base rule (borders and outlines default to the `border` and `ring/50` colours) and a pointer cursor on enabled buttons, which preflight leaves on the arrow.
+    3. The app heading rule is now `:is(h1, …)` instead of `:where(h1, …)`, so its semibold weight still beats preflight's `font-weight: inherit`.
+    4. "Subject not found" was the only heading without a text role. Preflight would have shrunk it to 16px, so it now has `type-page-title`.
+    5. The Security help dialog's steps are numbered again (`list-decimal`). They lost their numbers in T7.L3, when the scoped `[data-slot]` reset reached them inside the shadcn `Dialog`.
+    6. Checked with all 56 screenshots against the commit before. 52 are identical, and Subject Detail midterm has its usual chart anti-aliasing noise (9–18 px). Dashboard and My Subjects at 768 and wider differ in the enrolled-subjects table: tables now collapse their borders, so the 2px gaps between cells are gone (the table is 6px shorter) and the divider under the header row shows again, as in the original baseline. A computed-style dump of every element on 17 screen states at 1440 and 375 found no other visible change.
+    7. Walked every checklist section from A to L (most items, scripted) at 1440 and 375 against the old CSS, and reran the earlier K1, K2 and L2s–L5s walks. Results were identical apart from the help list numbers. M1 is covered by the walk's reload steps and M2 by the unit tests.
 - [ ] **T7.Z Final Phase 7 sweep.**
   - Delete `components/Dialog.jsx` and `Dialog.css`, the remaining file-local tokens, and the translucent-white tokens.
   - Confirm `src/index.css` is the only `.css` file outside the tooling folders.

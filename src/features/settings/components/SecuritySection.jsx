@@ -825,7 +825,7 @@ export function SecuritySection({ security }) {
                                 <p className="m-0 text-muted-foreground">
                                     Try these steps if something is not working as expected:
                                 </p>
-                                <ol className="m-0 flex flex-col gap-2 pl-5 text-muted-foreground">
+                                <ol className="m-0 flex list-decimal flex-col gap-2 pl-5 text-muted-foreground">
                                     <li>
                                         Refresh the page and sign in again if your session has
                                         expired.

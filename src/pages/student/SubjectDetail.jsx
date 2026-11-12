@@ -156,7 +156,7 @@ export function SubjectDetail() {
     if (!classItem || !subject || !studentRecord) {
         return (
             <PageShell showHeader={false} showFooter={false}>
-                <h1>Subject not found</h1>
+                <h1 className="type-page-title">Subject not found</h1>
                 <p>This subject is not available for your account.</p>
             </PageShell>
         );

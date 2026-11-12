@@ -1,12 +1,9 @@
 /* src/index.css */
 
-/* Tailwind CSS v4, without preflight (docs/TASKS.md T4.3). The app still
-   relies on its own reset below; preflight is turned on in T7.P.
-   Cascade layers, lowest priority first. Anything not in a layer (all the
-   existing app CSS) still beats every layer. */
-@layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities) source(none);
+/* Tailwind CSS v4 with its preflight reset (turned on in docs/TASKS.md
+   T7.P). Cascade layers, lowest priority first: theme, base, components,
+   utilities. Anything not in a layer still beats every layer. */
+@import "tailwindcss" source(none);
 /* shadcn/ui (Base UI): animation utilities and its custom variants. */
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -464,14 +461,21 @@
     line-height: 1.3;
 }
 
-/* CSS Reset. In the base layer, so Tailwind utilities can override it.
-   Every rule here already loses to any app rule that sets the same
-   property, so layering it changes nothing on screen. */
+/* Page and element defaults on top of preflight. In the base layer, so
+   Tailwind utilities override them. */
 @layer base {
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    /* shadcn's base rule: borders and outlines default to the border and
+       focus-ring colours instead of the text colour. */
+    *,
+    ::before,
+    ::after {
+        border-color: var(--border);
+        outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    }
+
+    /* Preflight leaves buttons on the default arrow cursor. */
+    :where(button, [role="button"]):not(:disabled) {
+        cursor: pointer;
     }
 
     body {
@@ -479,7 +483,6 @@
         font-family: var(--font-body); /* Applied Body Font */
         background-color: var(--background);
         color: var(--foreground);
-        line-height: 1.5;
         -webkit-font-smoothing: antialiased;
     }
 
@@ -488,111 +491,14 @@
         min-height: 100%;
     }
 
-    button,
-    input,
-    select {
-        font: inherit;
-    }
-
-    img {
-        display: block;
-        max-width: 100%;
-    }
-
-    /* Not on shadcn titles (they carry data-slot), which set their own. */
-    :where(h1, h2, h3, h4, h5, h6):where(:not([data-slot])) {
+    /* Not on shadcn titles (they carry data-slot), which set their own.
+       :is() rather than :where(), so the weight beats preflight's
+       "h1, ... { font-weight: inherit }". */
+    :is(h1, h2, h3, h4, h5, h6):where(:not([data-slot])) {
         font-family: var(--font-heading); /* Applied Heading Font */
         color: var(--primary);
         font-weight: 600;
         margin-bottom: 0.5rem;
-    }
-}
-
-/* =========================================
-   Base UI Elements
-   ========================================= */
-
-/* shadcn components while Tailwind preflight is off (until T7.P): the part
-   of preflight they rely on, applied only inside elements that carry
-   data-slot (every shadcn component sets it). Replaces shadcn's global
-   "* { border-border outline-ring/50 }" base rule, which would recolour
-   the borders of existing elements. The sidebar provider wrapper
-   (data-slot="sidebar-wrapper", display: contents) surrounds whole pages,
-   so it is left out.
-   The list reset is the part of preflight shadcn menus rely on. */
-@layer base {
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])),
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) *,
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"]))::before,
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"]))::after,
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) *::before,
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) *::after {
-        border: 0 solid;
-        border-color: var(--border);
-        outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
-    }
-
-    :where(button, input, select, textarea)[data-slot]:where(:not([data-slot="sidebar-wrapper"])),
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) :where(button, input, select, textarea) {
-        font: inherit;
-        color: inherit;
-        letter-spacing: inherit;
-        background-color: transparent;
-        border-radius: 0;
-        opacity: 1;
-    }
-
-    :where(button, [role="button"])[data-slot]:where(:not([data-slot="sidebar-wrapper"])):not(
-            :disabled
-        ) {
-        cursor: pointer;
-    }
-
-    :where(ul, ol)[data-slot]:where(:not([data-slot="sidebar-wrapper"])),
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) :where(ul, ol) {
-        list-style: none;
-    }
-
-    [data-slot]:where(:not([data-slot="sidebar-wrapper"])) :where(img, svg, video, canvas) {
-        display: block;
-        vertical-align: middle;
-    }
-}
-
-/* Element defaults for the existing screens. In the base layer, so Tailwind
-   utilities override them (owner decision, Gate 4: hover and focus styles
-   may change). :where(:not([data-slot])) keeps them off shadcn components
-   (which carry data-slot) without adding specificity. They go when the
-   screens are converted (Phase 7). */
-@layer base {
-    button:where(:not([data-slot])) {
-        font-family: var(--font-body);
-        cursor: pointer;
-        border: none;
-        border-radius: 4px;
-        padding: 0.5rem 1rem;
-        font-weight: 500;
-        transition: opacity 0.2s ease;
-    }
-
-    button:where(:not([data-slot])):hover {
-        opacity: 0.85;
-    }
-
-    input:where(:not([data-slot])),
-    select:where(:not([data-slot])) {
-        font-family: var(--font-body);
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 0.5rem;
-        outline: none;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    input:where(:not([data-slot])):focus,
-    select:where(:not([data-slot])):focus {
-        border-color: var(--primary);
     }
 }
 
