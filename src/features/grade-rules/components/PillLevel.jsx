@@ -42,10 +42,12 @@ import {
 } from "@/lib/rules";
 import { cn } from "@/lib/utils";
 
-// The small add, rename and delete buttons: 24px, 36px on touch screens.
+// The small add, rename and delete buttons (24px). Below lg, rename and
+// delete are 44px; add keeps its size beside the name and gets a 44px
+// touch area instead, so narrow names don't truncate.
 // Disabled ones still take the pointer, so their tooltip (the reason) shows.
 const ICON_BUTTON =
-    "bg-card text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-40 pointer-coarse:size-9";
+    "bg-card text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-40";
 
 export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
     const level = findCriterion(tree, levelId);
@@ -247,7 +249,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         const label = segment.hasChildren ? (
             <Button
                 variant="ghost"
-                className="h-auto min-w-0 cursor-help rounded-none border-0 border-b-2 border-dotted border-muted-foreground p-0 type-card-title text-foreground hover:border-solid hover:border-primary hover:bg-transparent hover:text-primary aria-pressed:border-solid aria-pressed:border-primary aria-pressed:text-primary"
+                className="relative h-auto min-w-0 cursor-help rounded-none max-lg:after:absolute max-lg:after:-inset-y-2.5 border-0 border-b-2 border-dotted border-muted-foreground p-0 type-card-title text-foreground hover:border-solid hover:border-primary hover:bg-transparent hover:text-primary aria-pressed:border-solid aria-pressed:border-primary aria-pressed:text-primary"
                 aria-pressed={previewId === segment.id}
                 aria-label={`${segment.name}, show breakdown`}
                 {...previewHandlers(segment.id)}
@@ -267,7 +269,10 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                     <Button
                         variant="outline"
                         size="icon-xs"
-                        className={cn(ICON_BUTTON, "border-foreground text-foreground")}
+                        className={cn(
+                            ICON_BUTTON,
+                            "relative border-foreground text-foreground max-lg:after:absolute max-lg:after:-inset-2.5",
+                        )}
                         onClick={() => apply(addCriterion(tree, levelId))}
                         disabled={!addCheck.allowed}
                         aria-label="Add a criterion"
@@ -301,7 +306,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                     <Button
                         variant="outline"
                         size="icon-xs"
-                        className={ICON_BUTTON}
+                        className={cn(ICON_BUTTON, "max-lg:size-11")}
                         onClick={() => setRenaming({ id: segment.id, value: segment.name })}
                         aria-label={`Rename ${segment.name}`}
                         title="Rename"
@@ -312,7 +317,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                         <Button
                             variant="outline"
                             size="xs"
-                            className="bg-card font-normal text-primary pointer-coarse:h-9"
+                            className="bg-card font-normal text-primary max-lg:h-11"
                             onClick={() => apply(splitCriterion(tree, segment.id))}
                             aria-label={`Split ${segment.name} into subcriteria`}
                             title="Split into subcriteria"
@@ -323,7 +328,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
                     <Button
                         variant="outline"
                         size="icon-xs"
-                        className={ICON_BUTTON}
+                        className={cn(ICON_BUTTON, "max-lg:size-11")}
                         onClick={() => handleDelete(segment)}
                         disabled={!deleteCheck.allowed}
                         aria-label={`Delete ${segment.name}`}
@@ -387,7 +392,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         const next = segments[index + 1];
         return (
             <span
-                className="absolute -top-3.5 -right-3.25 -bottom-3.5 z-2 w-2 cursor-ew-resize touch-none rounded-full bg-primary transition-all duration-150 before:absolute before:-inset-x-4 before:-inset-y-1.5 hover:bg-self-reported focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-ring group-data-dragging/level:active:-right-2.75 group-data-dragging/level:active:w-1 group-data-dragging/level:active:bg-self-reported motion-reduce:transition-none"
+                className="absolute -top-3.5 -right-3.25 -bottom-3.5 z-2 w-2 cursor-ew-resize touch-none rounded-full bg-primary transition-all duration-150 before:absolute before:-inset-x-4.5 before:-inset-y-1.5 hover:bg-self-reported focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-ring group-data-dragging/level:active:-right-2.75 group-data-dragging/level:active:w-1 group-data-dragging/level:active:bg-self-reported motion-reduce:transition-none"
                 role="slider"
                 tabIndex={0}
                 aria-label={`Divider between ${segment.name} and ${next.name}`}
@@ -409,7 +414,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
             draft?.id === segment.id ? draft.value : String(shareToPercent(segment.share));
 
         return (
-            <InputGroup className="mt-2.5 h-8 w-auto max-w-full self-center bg-card hover:border-primary pointer-coarse:h-control">
+            <InputGroup className="mt-2.5 h-8 w-auto max-w-full self-center bg-card hover:border-primary max-lg:h-control">
                 {/* Sized to the number where the browser can, so "%" sits
                     right after it. pr-0.5! beats InputGroup's own padding for
                     an input with an end addon. */}

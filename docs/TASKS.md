@@ -881,7 +881,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
     1. The thumbnail toggles are at least 44px wide below `lg` ("Pie" was 43px); their height, the card actions, "+ New rule", the search box and the delete dialog's controls are 44px through the T8.1 tokens, so their `max-md:h-control-touch` classes are removed (also in `RuleDialog`, shared with the rule editor).
     2. The card link was already large enough: its `::after` stretches over the whole card, so the touch target is the card.
     3. Measured at 375 and 768 (page and delete dialog): no page overflow, no text below 14px except captions, no target below 44px.
-- [ ] **T8.8** Rule editor.
+- [x] **T8.8** Rule editor.
+  - **As done:**
+    1. Phase 7's touch sizes in the pill editor were `pointer-coarse:` (36px, touch screens only). They are now width-based, 44px below `lg`, like every other screen.
+    2. Each criterion's rename, Split and delete buttons are 44px below `lg` (they sit next to each other, so they need real size, not overlapping touch areas). The "+" beside the last criterion's name keeps its 24px look with a 44px touch area from an invisible `::after`: a 44px button there truncated narrow names ("Exam" → "E…") and pushed that bar out of line.
+    3. Also 44px below `lg`: the `%` boxes (were 32px tall), the tag checkboxes' labels (were `md` only), the parent names that preview a breakdown and the school chips' remove buttons (same look, `::after` touch areas). The drag handle's touch area is 44px wide (was 40px).
+    4. Measured at 375 and 768 (view, edit and new): no page overflow, no text below 14px except captions, no target below 44px. The T7.K1 and T7.K2 walks (K1–K8, the details form) give the same results on the old and new code at 1440 and 375, once their selector for the old `.rule-savebar` class was updated.
 - [ ] **T8.9** Settings.
 
 Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll; no text below 14px except captions; no target below 44px at 375 and 768.
