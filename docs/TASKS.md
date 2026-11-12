@@ -865,7 +865,12 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - **As done:**
     1. The table fix is T8.3's (shared component). The semester picker, the add-subject form's inputs, select and buttons, and "View or create grading rules" are 44px below `lg` through the T8.1 tokens, so their three `max-md:h-control-touch` classes are removed (screenshots identical).
     2. Measured at 375 and 768 with the add-subject form open and closed: no page overflow, no text below 14px except captions, no target below 44px.
-- [ ] **T8.5** Subject Detail (including the gauge overlap).
+- [x] **T8.5** Subject Detail (including the gauge overlap).
+  - **As done:**
+    1. Gauges: they no longer overlapped after Phase 7 (the row wraps), but at 768 with the sidebar expanded one gauge sat beside the target box and the other alone below. The summary card is now a container: under 32rem the target box takes the full width and both gauges sit side by side below it, as on phones (was `max-sm`).
+    2. Term toggle, sandbox link, target box, score boxes, "+ Add Custom Task", the add-task form, the breakdown toggle and the history toggles are 44px below `lg` through the T8.1 tokens; their `max-md:h-control-touch` classes are removed. The history table's "Open task" buttons (`h-auto`) are 44px tall below `lg`.
+    3. Text: the chart's "Target reached" labels are 12px (were 11px; the caption size, also on the sandbox chart), and the professor's initials use the default avatar size, 14px instead of the 12px caption.
+    4. Measured at 375 and 768 (page, add-task form and breakdown open, history table open, 768 with the sidebar expanded): no page overflow, no text below 14px except captions, no target below 44px. The history table scrolls inside its card at 375, as on the Dashboard (T8.3).
 - [ ] **T8.6** Sandbox (including the table below `lg`).
 - [ ] **T8.7** Grade Rules.
 - [ ] **T8.8** Rule editor.

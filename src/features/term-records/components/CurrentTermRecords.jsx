@@ -341,7 +341,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                             </div>
                                             {!isOfficialLocked ? (
                                                 <div className="shrink-0">
-                                                    <InputGroup className="w-36 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:h-control-touch max-md:w-44">
+                                                    <InputGroup className="w-36 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:w-44">
                                                         <DraftInput
                                                             as={InputGroupInput}
                                                             type="text"
@@ -437,7 +437,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     setAddTaskError("");
                                 }}
                                 aria-label="Sandbox task name"
-                                className="bg-card max-md:h-control-touch"
+                                className="bg-card"
                             />
                             {addTaskError === "Please enter a task name." && (
                                 <FieldError>{addTaskError}</FieldError>
@@ -465,7 +465,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                     "Please enter a whole-number",
                                 )}
                                 aria-label="Maximum score"
-                                className="bg-card max-md:h-control-touch"
+                                className="bg-card"
                             />
                             {addTaskError.startsWith("Please enter a whole-number") && (
                                 <FieldError>{addTaskError}</FieldError>
@@ -477,7 +477,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                         <Button
                             type="button"
                             variant="outline"
-                            className="bg-card max-md:h-control-touch"
+                            className="bg-card"
                             onClick={() => {
                                 setShowAddTask(false);
                                 setTaskNameInput("");
@@ -502,7 +502,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-dashed border-self-reported text-self-reported-foreground hover:bg-secondary/40 hover:text-self-reported-foreground aria-expanded:bg-transparent max-md:h-control-touch"
+                        className="w-full border-dashed border-self-reported text-self-reported-foreground hover:bg-secondary/40 hover:text-self-reported-foreground aria-expanded:bg-transparent"
                         onClick={() => {
                             setSaveError("");
                             setAddTaskError("");
@@ -520,7 +520,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                     render={
                         <Button
                             variant="ghost"
-                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary max-md:h-control-touch"
+                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary"
                         />
                     }
                 >

@@ -63,7 +63,7 @@ export function SubjectGradeHistory({ classId, termKey }) {
                             variant="outline"
                             pressed={showPlan}
                             onPressedChange={setShowPlan}
-                            className="rounded-full bg-card px-3.5 text-primary aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-primary max-md:h-control-touch"
+                            className="rounded-full bg-card px-3.5 text-primary aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-primary"
                         >
                             {showPlan ? "Hide plan" : "Show plan"}
                         </Toggle>
@@ -71,7 +71,7 @@ export function SubjectGradeHistory({ classId, termKey }) {
                     <Link
                         className={cn(
                             buttonVariants({ variant: "outline", size: "sm" }),
-                            "rounded-full border-primary bg-secondary px-3.5 text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
+                            "rounded-full border-primary bg-secondary px-3.5 text-primary no-underline hover:bg-primary hover:text-primary-foreground",
                         )}
                         to={sandboxLink}
                     >

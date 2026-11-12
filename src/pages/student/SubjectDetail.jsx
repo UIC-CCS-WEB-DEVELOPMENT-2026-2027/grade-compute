@@ -222,7 +222,7 @@ export function SubjectDetail() {
                         </h1>
 
                         <div className="flex flex-wrap items-center gap-2 type-small text-muted-foreground">
-                            <Avatar size="sm">
+                            <Avatar>
                                 <AvatarFallback className="bg-secondary font-semibold text-primary">
                                     {getSpaceSplitInitials(professor)}
                                 </AvatarFallback>
@@ -235,7 +235,7 @@ export function SubjectDetail() {
                     <Link
                         className={cn(
                             buttonVariants({ variant: "outline" }),
-                            "shrink-0 rounded-full border-primary bg-secondary text-primary no-underline hover:bg-primary hover:text-primary-foreground max-md:h-control-touch",
+                            "shrink-0 rounded-full border-primary bg-secondary text-primary no-underline hover:bg-primary hover:text-primary-foreground",
                         )}
                         to={`/student/subject/${classItem.id}/sandbox?term=${termKey}`}
                     >
@@ -245,19 +245,19 @@ export function SubjectDetail() {
                 </div>
 
                 {/* Official Grade Summary */}
-                <Card className="grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
+                <Card className="@container grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
                     <div
                         className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-17 xl:justify-start xl:gap-4"
                         aria-label={`${term} grades`}
                     >
-                        <Field className="w-auto shrink-0 gap-1.5 max-sm:w-full">
+                        <Field className="w-auto shrink-0 gap-1.5 @max-lg:w-full">
                             <FieldLabel
                                 htmlFor="subject-target-grade"
                                 className="font-semibold text-foreground"
                             >
                                 Target grade
                             </FieldLabel>
-                            <InputGroup className="w-24 border-highlight-strong bg-card max-md:h-control-touch">
+                            <InputGroup className="w-24 border-highlight-strong bg-card">
                                 {/* Saved on blur / Enter, so a half-typed target
                                         (e.g. "8" on the way to "85") can't trigger
                                         the celebration. */}

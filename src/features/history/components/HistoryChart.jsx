@@ -87,7 +87,7 @@ function RealDot({ cx, cy, payload, colors, reachedStep, lastStep, onSelect, hov
                         y={labelY(cy, 16)}
                         textAnchor={labelAnchor(payload.step, lastStep)}
                         fill={colors.success}
-                        fontSize={11}
+                        fontSize={12}
                         fontWeight={700}
                     >
                         Target reached
@@ -164,7 +164,7 @@ function PlanDot({ cx, cy, payload, colors, reachedStep, lastStep, hover }) {
                     y={labelY(cy, 12)}
                     textAnchor={labelAnchor(payload.step, lastStep)}
                     fill={colors.success}
-                    fontSize={11}
+                    fontSize={12}
                     fontWeight={700}
                 >
                     Target reached
@@ -325,7 +325,7 @@ export function HistoryChart({
                                 {point.taskId && (
                                     <Button
                                         variant="link"
-                                        className="h-auto p-0 max-md:h-control-touch"
+                                        className="h-auto p-0 max-lg:min-h-11"
                                         onClick={() => onSelect(point)}
                                     >
                                         Go to task

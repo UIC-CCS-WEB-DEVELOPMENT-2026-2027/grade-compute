@@ -26,7 +26,7 @@ export function TermNavigation({ termKey, onTermChange, note = null, className }
                         key={term.key}
                         value={term.key}
                         variant="outline"
-                        className="min-w-15 rounded-full border-border bg-card px-3.5 font-normal text-muted-foreground hover:border-primary hover:bg-secondary hover:text-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-md:h-control-touch"
+                        className="min-w-15 rounded-full border-border bg-card px-3.5 font-normal text-muted-foreground hover:border-primary hover:bg-secondary hover:text-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                     >
                         {term.label}
                     </ToggleGroupItem>
