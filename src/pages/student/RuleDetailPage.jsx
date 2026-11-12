@@ -4,6 +4,7 @@
 // /student/rules/:ruleId.
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { XIcon } from "lucide-react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { PillEditor } from "@/features/grade-rules/components/PillEditor";
@@ -11,6 +12,18 @@ import { RuleFormula } from "@/features/grade-rules/components/RuleFormula";
 import { RulePieChart } from "@/features/grade-rules/components/RulePieChart";
 import { RuleHierarchyTable } from "@/features/grade-rules/components/RuleHierarchyTable";
 import { Dialog } from "@/components/Dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Field,
+    FieldGroup,
+    FieldLabel,
+    FieldLegend,
+    FieldSet,
+    FieldTitle,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { DeleteRuleDialog } from "@/features/grade-rules/components/DeleteRuleDialog";
 import { saveDbSafely } from "@/services/db";
 import {
@@ -28,7 +41,12 @@ import {
     validateRuleDetails,
 } from "@/lib/rules";
 import { useDb } from "@/hooks/useDb";
+import { cn } from "@/lib/utils";
 import "./RuleDetailPage.css";
+
+// A saved value shown while not editing.
+const READONLY_VALUE =
+    "flex min-h-control items-center rounded-lg border border-solid border-border bg-muted px-3 py-2 type-small text-foreground";
 
 function detailsOf(rule) {
     return {
@@ -302,110 +320,160 @@ function RuleDetail({ ruleId }) {
 
                     <section className="rule-section" aria-labelledby="rule-details-title">
                         <h2 id="rule-details-title">Details</h2>
-                        <div className="rule-details-grid">
-                            <label className="rule-field">
-                                <span>Rule name</span>
-                                {isEditing ? (
-                                    <input
-                                        value={details.ruleName}
-                                        onChange={(event) =>
-                                            setDetails((current) => ({
-                                                ...current,
-                                                ruleName: event.target.value,
-                                            }))
-                                        }
-                                        placeholder="e.g. Standard IT Rule (70/30)"
-                                        aria-invalid={Boolean(errors.ruleName)}
-                                        aria-describedby={
-                                            errors.ruleName ? "rule-name-error" : undefined
-                                        }
-                                    />
-                                ) : (
-                                    <span className="rule-readonly-value">{details.ruleName}</span>
-                                )}
-                                {errors.ruleName && (
-                                    <small id="rule-name-error" className="rule-field-error">
-                                        {errors.ruleName}
-                                    </small>
-                                )}
-                            </label>
-
-                            <fieldset className="rule-field">
-                                <legend>Tags</legend>
-                                <div className="rule-tag-options">
+                        {/* Columns follow the width of the page content. */}
+                        <div className="@container">
+                            <FieldGroup className="grid items-start gap-x-7 gap-y-5 @xl:grid-cols-2 @3xl:grid-cols-3">
+                                <Field data-invalid={Boolean(errors.ruleName)} className="gap-1.5">
+                                    <FieldLabel
+                                        htmlFor={isEditing ? "rule-name" : undefined}
+                                        className="font-normal text-muted-foreground"
+                                    >
+                                        Rule name
+                                    </FieldLabel>
                                     {isEditing ? (
-                                        DEFAULT_TAGS.map((tag) => (
-                                            <label key={tag} className="rule-tag-option">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={details.tags.includes(tag)}
-                                                    onChange={() => toggleTag(tag)}
-                                                />
-                                                {tag}
-                                            </label>
-                                        ))
-                                    ) : details.tags.length > 0 ? (
-                                        details.tags.map((tag) => (
-                                            <span key={tag} className="rule-tag-option is-readonly">
-                                                {tag}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span className="rule-readonly-value">No tags</span>
-                                    )}
-                                </div>
-                            </fieldset>
-
-                            <div className="rule-field rule-schools">
-                                <span>Schools that use this rule</span>
-                                {details.schools.length > 0 && (
-                                    <ul>
-                                        {details.schools.map((school) => (
-                                            <li key={school}>
-                                                {school}
-                                                {isEditing && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeSchool(school)}
-                                                        aria-label={`Remove ${school}`}
-                                                    >
-                                                        ×
-                                                    </button>
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                                {isEditing ? (
-                                    <div className="rule-school-add">
-                                        <input
-                                            id="rule-school-input"
-                                            value={schoolInput}
-                                            onChange={(event) => setSchoolInput(event.target.value)}
-                                            onKeyDown={(event) => {
-                                                if (event.key === "Enter") {
-                                                    event.preventDefault();
-                                                    addSchool();
-                                                }
-                                            }}
-                                            placeholder="School name"
+                                        <Input
+                                            id="rule-name"
+                                            className="bg-card max-md:h-control-touch"
+                                            value={details.ruleName}
+                                            onChange={(event) =>
+                                                setDetails((current) => ({
+                                                    ...current,
+                                                    ruleName: event.target.value,
+                                                }))
+                                            }
+                                            placeholder="e.g. Standard IT Rule (70/30)"
+                                            aria-invalid={Boolean(errors.ruleName)}
+                                            aria-describedby={
+                                                errors.ruleName ? "rule-name-error" : undefined
+                                            }
                                         />
-                                        <button
-                                            type="button"
-                                            className="btn-secondary"
-                                            onClick={addSchool}
+                                    ) : (
+                                        <span className={READONLY_VALUE}>{details.ruleName}</span>
+                                    )}
+                                    {errors.ruleName && (
+                                        <small
+                                            id="rule-name-error"
+                                            className="type-small text-destructive"
                                         >
-                                            Add school
-                                        </button>
+                                            {errors.ruleName}
+                                        </small>
+                                    )}
+                                </Field>
+
+                                <FieldSet className="m-0 min-w-0 gap-1.5 border-0 p-0">
+                                    <FieldLegend
+                                        variant="label"
+                                        className="p-0 font-normal text-muted-foreground"
+                                    >
+                                        Tags
+                                    </FieldLegend>
+                                    <div className="flex flex-wrap gap-2">
+                                        {isEditing ? (
+                                            DEFAULT_TAGS.map((tag) => (
+                                                <label
+                                                    key={tag}
+                                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-solid border-border px-3 py-1.5 type-small text-foreground has-data-checked:border-primary has-data-checked:bg-secondary has-data-checked:text-primary max-md:min-h-11"
+                                                >
+                                                    <Checkbox
+                                                        checked={details.tags.includes(tag)}
+                                                        onCheckedChange={() => toggleTag(tag)}
+                                                    />
+                                                    {tag}
+                                                </label>
+                                            ))
+                                        ) : details.tags.length > 0 ? (
+                                            details.tags.map((tag) => (
+                                                <Badge
+                                                    key={tag}
+                                                    variant="secondary"
+                                                    className="h-auto px-3 py-1.5 type-small"
+                                                >
+                                                    {tag}
+                                                </Badge>
+                                            ))
+                                        ) : (
+                                            <span className={cn(READONLY_VALUE, "w-full")}>
+                                                No tags
+                                            </span>
+                                        )}
                                     </div>
-                                ) : (
-                                    details.schools.length === 0 && (
-                                        <span className="rule-readonly-value">
-                                            No schools listed
-                                        </span>
-                                    )
-                                )}
-                            </div>
+                                </FieldSet>
+
+                                <Field className="gap-1.5">
+                                    {isEditing ? (
+                                        <FieldLabel
+                                            htmlFor="rule-school-input"
+                                            className="font-normal text-muted-foreground"
+                                        >
+                                            Schools that use this rule
+                                        </FieldLabel>
+                                    ) : (
+                                        <FieldTitle className="font-normal text-muted-foreground">
+                                            Schools that use this rule
+                                        </FieldTitle>
+                                    )}
+                                    {details.schools.length > 0 && (
+                                        <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+                                            {details.schools.map((school) => (
+                                                <li key={school} className="max-w-full">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={cn(
+                                                            "h-auto max-w-full gap-1 py-1 pl-2.5 type-small font-normal whitespace-normal text-foreground",
+                                                            isEditing ? "pr-0.5" : "pr-2.5",
+                                                        )}
+                                                    >
+                                                        {school}
+                                                        {isEditing && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon-xs"
+                                                                className="rounded-full text-muted-foreground"
+                                                                onClick={() => removeSchool(school)}
+                                                                aria-label={`Remove ${school}`}
+                                                            >
+                                                                <XIcon aria-hidden="true" />
+                                                            </Button>
+                                                        )}
+                                                    </Badge>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    {isEditing ? (
+                                        <div className="flex gap-2">
+                                            <Input
+                                                id="rule-school-input"
+                                                className="min-w-0 flex-1 bg-card max-md:h-control-touch"
+                                                value={schoolInput}
+                                                onChange={(event) =>
+                                                    setSchoolInput(event.target.value)
+                                                }
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter") {
+                                                        event.preventDefault();
+                                                        addSchool();
+                                                    }
+                                                }}
+                                                placeholder="School name"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                className="shrink-0 bg-card max-md:h-control-touch"
+                                                onClick={addSchool}
+                                            >
+                                                Add school
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        details.schools.length === 0 && (
+                                            <span className={READONLY_VALUE}>
+                                                No schools listed
+                                            </span>
+                                        )
+                                    )}
+                                </Field>
+                            </FieldGroup>
                         </div>
                     </section>
 
@@ -421,7 +489,7 @@ function RuleDetail({ ruleId }) {
                             <RuleHierarchyTable tree={tree} />
                         )}
                         {errors.tree && (
-                            <p className="rule-field-error" role="alert">
+                            <p className="m-0 type-small text-destructive" role="alert">
                                 {errors.tree}
                             </p>
                         )}

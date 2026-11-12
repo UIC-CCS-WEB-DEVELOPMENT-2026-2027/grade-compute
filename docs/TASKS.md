@@ -725,7 +725,14 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
       4. Its `.rule-delete-*` rules left `Dialog.css`. `.app-dialog-warning` stays for the editor's impact dialog until T7.K3.
       5. Checked J5–J7 in a browser, from the Grade Rules page and from the rule editor: same text, and the same data moves to the replacement rule.
 - **Rule editor**
-  - [ ] **T7.K1** Details form: `Field`, `Input`, `Checkbox`s in `FieldSet`, school chips (`Badge` + `Button`). Check: K13, K14.
+  - [x] **T7.K1** Details form: `Field`, `Input`, `Checkbox`s in `FieldSet`, school chips (`Badge` + `Button`). Check: K13, K14.
+    - **As done:**
+      1. Added shadcn `checkbox`, adapted in the same commit: `cn` from `@/lib/utils`, `rounded-sm` instead of `rounded-[4px]`.
+      2. The form is a `FieldGroup` grid that follows the content width (two columns from `@xl`, three from `@3xl`; before, `auto-fit` with 260px minimum columns). Same column count at 375, 768, 1024 and 1440.
+      3. Rule name: `Field` + `FieldLabel` + `Input`, with the error still a plain `small` tied by `aria-describedby` (no new `role="alert"`). Tags: a `FieldSet` and `FieldLegend` with a `Checkbox` inside each pill label; read-only tags are secondary `Badge`s. Schools are outline `Badge`s with a ghost `Button` (an × icon instead of the "×" character, same "Remove …" name); "Add school" is an outline `Button`.
+      4. Accessibility: the school box now has "Schools that use this rule" as its label while editing (before it had none, AGENTS §7). Read-only values are `small` text in a muted box.
+      5. The criteria section's error line lost `rule-field-error` too. The details rules left `RuleDetailPage.css`.
+      6. Checked K13, K14, tag toggling (click, label, Space) and adding, de-duplicating and removing schools in a browser, against the old code: same results and saved data.
   - [ ] **T7.K2 ⚠ PillEditor / PillLevel.**
     - Buttons → `Button size="icon"`, the % box → `Input`, the handles stay custom (`@utility`).
     - `window.confirm("Delete … and all of its subcriteria?")` → `AlertDialog`, same wording (D4, approved).
