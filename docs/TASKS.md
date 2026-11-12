@@ -861,7 +861,7 @@ Each task gives the files, the change and the acceptance check. ⚠ marks the ri
   - **As done:**
     1. Enrolled subjects (shared with My Subjects): the table switches to the stacked cards by the card's own width (a container query, under 42rem) instead of the viewport. It needs about 642px, so it was scrolling sideways at 768 and also at 1024, where the sidebar starts expanded since T7.S1. It is now cards at 375, 768 and 1024, and a table at 1440. The row arrow is 44px below `lg`.
     2. History chips, the term toggle, "Hide all", "Show as a table", search, the filter toggles and "+ Add subject" are 44px below `lg` through the T8.1 tokens; their own `max-md:h-control-touch` classes are removed.
-    3. "Show as a table": the "Open task" buttons are 44px tall below `lg`. The table itself still scrolls sideways inside its card at 375 (five columns in about 310px), which the Phase 8 check allows (no page scroll); Subject Detail's copy of the table is T8.5's.
+    3. "Show as a table": the "Open task" buttons are 44px tall below `lg`. The table itself still scrolls sideways inside its card at 375 (five columns in about 310px), which the Phase 8 check allows (no page scroll); Subject Detail's copy of the table is T8.5's. **Owner decision (2026-11-13):** the history tables keep their sideways scroll on phones, because the full table is easier to read.
     4. Measured at 375 and 768: no page overflow, no text below 14px except captions, no target below 44px on the Dashboard or My Subjects. The 12px "60" the tool reported is Recharts' off-screen text-measuring element, not visible text. Checklist C6–C9 (row, arrow, filter, search) walked at all four widths.
 - [x] **T8.4** My Subjects.
   - **As done:**
@@ -904,6 +904,11 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 
 ### Phase 9 — Clean-up and verification (as in the workflow)
 
+- [ ] **T9.0 Duplication re-scan** (added by the owner, 2026-11-13). Phases 6 and 7 merged the duplication groups found in Phase 0 (AUDIT §7, §2 above); nobody has looked again since Phases 7 and 8 rewrote the screens.
+  - Scan `src/` (outside `components/ui/`) for markup, class strings and logic that appear in two or more places. Group them as AUDIT §7 does, and mark which groups serve the same purpose and which only look alike (⚠, not merged).
+  - Known candidate: the "Show as a table" history tables in `AllSubjectsHistory.jsx` and `HistoryChart.jsx` (same columns and "Open task" button). Their sideways scroll at 375 stays (owner decision, 2026-11-13).
+  - Write the groups and a proposed shared component, hook or function for each into this task's "As done" note. **Stop and ask the owner** which groups to merge before changing code.
+  - Each approved merge is its own commit (T9.0.1, T9.0.2, …): behaviour, wording and appearance stay identical (V-same: screenshots, the component tests, and the checklist items for the screens it touches).
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).
   - Remove the unused `@types/react` and `@types/react-dom` dev dependencies (D6, approved).
