@@ -969,7 +969,15 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
     6. Checked: the rendered DOM of the 30 states differs only by the removed classes, and all 56 screenshots match apart from the usual login and Subject Detail chart noise.
 - [x] **T9.2** Lint, format check, build, all tests.
   - **As done (at `23c97e5`):** `npm run lint` no problems; `npm run format:check` "All matched files use Prettier code style!"; `npm run build` succeeds (CSS 160 kB, 24.8 kB gzipped; JS 1,115 kB, 330 kB gzipped, with Vite's usual over-500 kB chunk warning, kept as in §7); `npm test` 19 files, 369 tests passed.
-- [ ] **T9.3** Walk `docs/BEHAVIOUR_CHECKLIST.md` in full.
+- [x] **T9.3** Walk `docs/BEHAVIOUR_CHECKLIST.md` in full.
+  - **As done (at `1498436`):** every item from A1 to M2 was scripted in a real browser (Playwright, a fresh seeded browser per item, the date frozen at 2026-11-11) and run at 1440 and 375; B3 also at 768 and 1024. D3 is covered by E4 on My Subjects, M1 by H3's and J2's reloads.
+    1. **Result:** every item passes at both widths. Not applicable: B4 at 1440 (phone menu only); B2 and B6 at 375 (no minimised sidebar on phones); L10 at 375 (the Settings help button is hidden below 1024, as L1 says).
+    2. **Known bugs behave as listed:** B1 (L12: the confirmed Log Out does nothing), B2 (L10: the help state chosen from another section shows once Security opens), B3 (L11, L12), B4 (L6: the login password in `db.users` is unchanged), B7 (G1), B8 (D4), B13 (B7, B11, C10), B14 (A15), B16 (I7), B17 (G9) and B21 (L7: no message without a verified contact). B9 is fixed as approved (I9). For L8 the walk checked that "Turn off" opens its confirmation; the state it shares with the session dialog (B5) was last walked in T7.L3.
+    3. **Where the checklist's wording is looser than the screen** (the app matches the Phase 2 baseline in each case; no behaviour changed):
+       - H1: the summary shows "70% Classwork" over "70% AT + 30% TLA" and "30% Exam" over "Prelim tasks", without the parentheses the checklist writes.
+       - H6: clearing AT 2 clears the score, but with the seed data the expected grade stays 90% (AT 1 is 18/20 and AT 2 was 45/50, both 90%), so "The expected grade changes" does not show.
+       - B11: on phones the profile chevron is hidden (below `md`; at the baseline below 761px), so only the bell can be tried there.
+       - K8: the depth limit shows as a missing Split button on third-level criteria, not as a tooltip; the 8-criteria limit is the "+" tooltip "A level can have at most 8 criteria."
 - [ ] **T9.4** `npm run screenshots -- docs/after`.
 - [ ] **T9.5** Check `AGENTS.md` §5–7 and list the remaining violations.
 - [ ] **T9.6** Check every `[BUILT]` feature in `SPEC.md`.
