@@ -444,6 +444,7 @@ The same pages were also measured in the browser (overflow, font sizes, target s
 | B19 | The unscoped `*` reduced-motion rule in `GlobalSettings.css`, and the duplicated `.sandbox-error`, both depend on CSS load order |
 | B20 | `npm audit`: 4 moderate advisories in the dev-only ESLint chain (§2) |
 | B21 | Settings › Security › 2FA: with no verified email or phone, **"Turn on" shows no message**. `startTwoFactorEnable` sets "Add and verify an email address or phone number before enabling two-factor authentication.", but the error line only renders inside the verification block, which needs a contact. `docs/BEHAVIOUR_CHECKLIST.md` L7 expects the message. Found in T7.L3; the old code behaves the same. **To do (owner, 2026-11-13): fix after the clean-up; kept until then.** |
+| B22 | Current Term Records tags a task by its kind, not by its score: a custom task always shows "Custom Addition" (also after the student adds a score), and a regular task without an official score always shows "Self Reported", even when it has no score yet. Unchanged since the original code. **To do (owner, 2026-11-13): refine how tasks are tagged after the feature freeze is lifted; it changes user-facing wording.** |
 
 ## 13. Assumption check
 
