@@ -26,10 +26,9 @@ import { TERM_LABELS } from "@/lib/terms";
 import { HistoryChart } from "@/features/history/components/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
-import { ChevronRightIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { DisclosureTrigger } from "@/components/DisclosureTrigger";
 import { Card, CardContent } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -749,21 +748,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                     <Card size="sm" className="gap-0">
                         <CardContent>
                             <Collapsible>
-                                <CollapsibleTrigger
-                                    render={
-                                        <Button
-                                            variant="ghost"
-                                            className="group/how text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary"
-                                        />
-                                    }
-                                >
-                                    <ChevronRightIcon
-                                        data-icon="inline-start"
-                                        aria-hidden="true"
-                                        className="transition-transform group-aria-expanded/how:rotate-90 motion-reduce:transition-none"
-                                    />
-                                    How this is calculated
-                                </CollapsibleTrigger>
+                                <DisclosureTrigger>How this is calculated</DisclosureTrigger>
                                 <CollapsibleContent>
                                     <p className="m-0 mt-3 border-0 border-t border-solid border-border pt-3 type-small text-muted-foreground">
                                         Each criterion&apos;s grade is the average of its task

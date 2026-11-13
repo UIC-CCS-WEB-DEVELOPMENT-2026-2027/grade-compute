@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ChevronRightIcon } from "lucide-react";
 import { DraftInput } from "@/components/DraftInput";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { DisclosureTrigger } from "@/components/DisclosureTrigger";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
@@ -512,23 +512,11 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
             </Card>
 
             <Collapsible open={showBreakdown} onOpenChange={setShowBreakdown} className="mt-3">
-                <CollapsibleTrigger
-                    render={
-                        <Button
-                            variant="ghost"
-                            className="group/breakdown -ml-2 text-primary hover:bg-secondary hover:text-primary aria-expanded:bg-transparent aria-expanded:text-primary"
-                        />
-                    }
-                >
-                    <ChevronRightIcon
-                        data-icon="inline-start"
-                        aria-hidden="true"
-                        className="transition-transform group-aria-expanded/breakdown:rotate-90 motion-reduce:transition-none"
-                    />
+                <DisclosureTrigger className="-ml-2">
                     {showBreakdown
                         ? "Hide Official Grade Breakdown"
                         : "View Complete Official Grade Breakdown"}
-                </CollapsibleTrigger>
+                </DisclosureTrigger>
                 <p className="m-0 mt-1 type-small text-muted-foreground">
                     ⓘ Sandbox edits cannot change these records.
                 </p>
