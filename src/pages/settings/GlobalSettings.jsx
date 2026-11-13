@@ -15,7 +15,7 @@ import {
 import { BackLink } from "@/components/BackLink";
 import { PageShell } from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSpaceSplitInitials } from "@/lib/format";
 import { AccountActionsSection } from "@/features/settings/components/AccountActionsSection";
@@ -439,31 +439,33 @@ export function GlobalSettings({ onLogout }) {
                     </div>
 
                     <TabsContent value={activeSection} className="type-body">
-                        <Card className="gap-0 px-(--card-spacing) type-body">
-                            <h2 className="m-0 mb-2 type-section-title text-foreground">
-                                {activeSection}
-                            </h2>
+                        <Card className="gap-0 type-body">
+                            <CardContent className="flex flex-col">
+                                <h2 className="m-0 mb-2 type-section-title text-foreground">
+                                    {activeSection}
+                                </h2>
 
-                            <p className="m-0 mb-6 type-small text-muted-foreground">
-                                {activeSection === "Profile" &&
-                                    "Read-only details for your academic identity."}
-                                {activeSection === "Account" &&
-                                    "Manage your personal account information and profile picture settings."}
-                                {activeSection === "Security" &&
-                                    "Protect your account with password, verification, and session controls."}
-                                {activeSection === "Notifications" &&
-                                    "Choose which alerts and updates you want to receive."}
-                                {activeSection === "Account Actions" &&
-                                    "Review account data and take higher-risk actions carefully."}
-                            </p>
+                                <p className="m-0 mb-6 type-small text-muted-foreground">
+                                    {activeSection === "Profile" &&
+                                        "Read-only details for your academic identity."}
+                                    {activeSection === "Account" &&
+                                        "Manage your personal account information and profile picture settings."}
+                                    {activeSection === "Security" &&
+                                        "Protect your account with password, verification, and session controls."}
+                                    {activeSection === "Notifications" &&
+                                        "Choose which alerts and updates you want to receive."}
+                                    {activeSection === "Account Actions" &&
+                                        "Review account data and take higher-risk actions carefully."}
+                                </p>
 
-                            {renderSectionContent()}
+                                {renderSectionContent()}
 
-                            {statusMessage && (
-                                <div className="mt-4.5 rounded-lg border border-solid border-highlight bg-highlight-soft px-3.5 py-3 type-small font-semibold text-primary">
-                                    {statusMessage}
-                                </div>
-                            )}
+                                {statusMessage && (
+                                    <div className="mt-4.5 rounded-lg border border-solid border-highlight bg-highlight-soft px-3.5 py-3 type-small font-semibold text-primary">
+                                        {statusMessage}
+                                    </div>
+                                )}
+                            </CardContent>
                         </Card>
                     </TabsContent>
                 </Tabs>

@@ -1130,7 +1130,10 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
     - The legend pills belong to the chart, like its axis labels.
     - The header's initials are a 36px avatar badge, hidden from screen readers.
     - The login preview is a decorative mock chart: its labels are its axis values, its "On Track" badge and its eyebrow.
-- [ ] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
+- [x] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
+  - **As done:**
+    - Settings' panel card and its five section cards now hold their content in `CardContent className="flex flex-col"`: the same padding and the same flex layout, so the Settings screenshots are pixel-identical at all four widths (the DOM gains the wrapper).
+    - Subject Detail's summary card uses the card spacing instead of `p-4` and `xl:px-5`: unchanged at 375, and 8px more padding on each side from 768 up (the page is 16px taller at 1440 and 34px taller at 768 and 1024, where the notes wrap a little more). Approved as an appearance change.
 - [ ] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
 - [ ] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
 - [ ] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.

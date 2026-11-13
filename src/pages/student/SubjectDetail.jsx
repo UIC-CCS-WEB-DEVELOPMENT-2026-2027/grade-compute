@@ -224,7 +224,7 @@ export function SubjectDetail() {
                 </div>
 
                 {/* Official Grade Summary */}
-                <Card className="@container grid gap-4 border-highlight bg-highlight-soft p-4 shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center xl:px-5">
+                <Card className="@container grid gap-4 border-highlight bg-highlight-soft px-(--card-spacing) shadow-none md:grid-cols-2 xl:flex xl:flex-row xl:items-center">
                     <div
                         className="flex min-w-0 flex-wrap items-center justify-evenly gap-3 md:col-span-2 xl:flex-17 xl:justify-start xl:gap-4"
                         aria-label={`${term} grades`}
