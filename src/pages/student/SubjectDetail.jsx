@@ -16,12 +16,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupInput,
-    InputGroupText,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupText } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
 import { TermNavigation } from "@/components/TermNavigation";
 import { SubjectGradeHistory } from "@/features/history/components/SubjectGradeHistory";
@@ -246,7 +241,6 @@ export function SubjectDetail() {
                                         (e.g. "8" on the way to "85") can't trigger
                                         the celebration. */}
                                 <DraftInput
-                                    as={InputGroupInput}
                                     id="subject-target-grade"
                                     type="number"
                                     min="0"

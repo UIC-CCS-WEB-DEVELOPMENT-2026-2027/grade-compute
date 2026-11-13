@@ -147,7 +147,7 @@ src/
 - Named exports. Default exports only where a tool requires them. Today 39 files use default exports. Convert them in dedicated Phase 6 tasks, never inside a file-move commit.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3).
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
 - **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes

@@ -1120,7 +1120,8 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
     - The components keep their wording and number formatting.
     - N7, Subject Detail's read-update-save step, is a save flow rather than maths; it stays in the page with its own error message, and FU1 covers it.
     - Checked: checklist G4–G6, G8–G10, G12, I1, I2, I6, I7, K1, K3, K5 and K8 pass at 1440 and 375; DOM of the 30 states identical.
-- [ ] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
+- [x] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
+  - **As done:** the test-only exports stay, recorded as a second exception in `AGENTS.md` §6 (owner decision). `DraftInput` now always renders `InputGroupInput` and its `as` prop is gone, so the two callers no longer pass it. DOM of the 30 states identical; tests unchanged.
 - [ ] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
 - [ ] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
 - [ ] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
