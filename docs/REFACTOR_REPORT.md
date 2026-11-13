@@ -145,7 +145,7 @@ Nothing here was changed. What the branding branch will find:
 
 ## 9. After the clean-up
 
-- **Owner to-dos:** fix B21, and review error handling.
+- **Owner to-dos:** fix B21, review error handling, and refine how tasks are tagged in Current Term Records (B22, `docs/AUDIT.md` §12).
 - **Follow-up branches in `SPEC.md` §2:** branding; semesters (B7, B12); the features the UI already points to (B13); gauge enhancements (F17).
 - **Decide one by one** which of the kept bugs in section 5 to fix (`SPEC.md` §9 Backlog).
 - **Follow-up tasks FU1–FU12** (`docs/TASKS.md` §9, owner decision 2026-11-13): the AGENTS items in section 6. All twelve were done on `refactor/follow-ups` after this job was merged (PR #118); see each task's note.

@@ -11,7 +11,7 @@ When instructions conflict, the higher item wins:
 1. The project owner's direct instruction in the current session
 2. `SPEC.md` — the project's truth
 3. This file (`AGENTS.md`)
-4. `docs/REFACTOR_WORKFLOW.md` and `docs/TASKS.md` — the job currently in progress
+4. The task being worked on (`docs/BOARD.md`) and `docs/TEAM_WORKFLOW.md`
 
 If the code and `SPEC.md` disagree, stop and report the difference. Do not change either one to make them match.
 
@@ -34,51 +34,26 @@ Rules around the protocol:
 - Never edit `SPEC.md` through shell commands, scripts, or any route other than the normal file-edit tool.
 - Ideas, suggestions, and open questions go in the chat or in `docs/`, never straight into `SPEC.md`.
 
-## 3. Current scope: feature freeze
+## 3. Scope
 
-The job in progress is a codebase and UI clean-up. Until the owner lifts the freeze:
+The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `docs/REFACTOR_REPORT.md`). Work now comes from tasks on `docs/BOARD.md`, done as `docs/TEAM_WORKFLOW.md` describes.
 
-**Allowed**
+**Allowed, inside the task you were given and its Areas on `docs/BOARD.md`:**
 
-- Moving, renaming, and splitting files
-- Extracting repeated code into shared components, hooks, and functions
-- Replacing hand-built UI elements with shadcn/ui components that do the same thing
-- Consolidating styling into design tokens and the single global stylesheet
-- Fixing layout, sizing, spacing, and color inconsistencies
-- Adding tests, lint, and formatting configuration
+- What the task's "Done when" describes, including new features, screens, routes, form fields and user flows
+- Changes to how a grade is computed, rounded or displayed, to user-facing wording, or to stored data, only when the task says so. Stored-data changes come with a migration in `src/services/migrations.js` and a new `SCHEMA_VERSION`
+- Refactoring, tests and styling fixes inside the task's Areas that the task needs
 
-**Not allowed**
+**Needs the owner first (stop and ask):**
 
-- Adding, removing, or changing a feature, screen, route, form field, or user flow
-- Changing how any grade is computed, rounded, or displayed
-- Changing the shape of stored data, API requests, or the database
-- Changing user-facing wording
-- Changing the logo, favicon, page title, or product name anywhere. Branding is handled in a separate branch after this job; note problems in `docs/AUDIT.md` and leave them
-- Building anything for professor, parent, or administrator roles. Only the student experience is implemented and in scope
-- Adding a dependency that is not on the approved list in section 4
+- Anything the task doesn't describe, or a file outside its Areas
+- A change to what `SPEC.md` says. A feature or behaviour change is only done once `SPEC.md` describes it, updated through the protocol in section 2, in the same pull request or before it
+- A dependency that is not on the approved list in section 4
+- Branding (logo, product name, favicon, page title). It has its own branch (`SPEC.md` §2)
+- Professor, parent or administrator workspaces. They are `[PLANNED]` (`SPEC.md` §6)
+- Fixing a bug listed in `docs/AUDIT.md` §12 that has no task of its own
 
-**Behaviour must stay identical.** The same input must produce the same grades, the same saved data, and the same navigation as before. Appearance changes on purpose; behaviour does not.
-
-**If you find a bug**, report it and keep the current behaviour. Fixing a bug is a behaviour change and needs the owner's approval.
-
-**Owner-approved exceptions.** These are the only approved behaviour or data changes (Gates 0 and 3, 2026-11-11; see `docs/AUDIT.md` §12 and §14 and `docs/TASKS.md` §8). Each one is its own task and its own commit.
-
-- **B9: sandbox drafts become draft-only.**
-  - **Today:** "Try draft scores" in the Target Grade Sandbox writes the real `studentReportedScore`.
-  - **Change:** store drafts in a new optional field, `targetGradeSandbox.terms[term].draftScores` (`{ [taskId]: score }`), and never write them to `studentReportedScore`.
-  - **When:** a dedicated Phase 6 task, after the sandbox logic has moved to `lib/`.
-  - **Tests:** the characterization test for the old behaviour is updated in the same commit.
-  - **No migration:** existing `studentReportedScore` values stay as real scores.
-  - **Drafts feed the sandbox only** (Gate 3): its result card, gauges and plan chart. A draft box starts from the task's real self-reported score.
-- **Sidebar breakpoints.** `PHONE_MAX_WIDTH` moves from 760 to 767 and `TABLET_MAX_WIDTH` from 1100 to 1023, to match the Tailwind breakpoints in section 7. This is done with the sidebar rebuild (T7.S1).
-- **shadcn `Sidebar`** (Gate 3).
-  - **Change:** the sidebar is rebuilt on the shadcn `Sidebar` and keeps its current appearance.
-  - **Behaviour:** only as listed and confirmed in `docs/TASKS.md` §3.2 (S1–S5).
-- **Rule editor confirm** (Gate 3). PillLevel's `window.confirm` becomes a shadcn `AlertDialog` with the same wording.
-- **Dead settings prototype** (Gate 3). `src/pages/StudentSettingsPrototype.jsx` and its `.student-switcher*` / `.student-role-*` CSS are deleted in Phase 5a, once `SPEC.md` §6 (f) has been updated.
-- **Settings on the shared shell** (Gate 4). Settings drops its own layout and styling for the shared page shell and global styles (T7.L0). The "Workspace: Student" label, a leftover of the discontinued workspace switcher, is removed (`SPEC.md` §6 g).
-
-Every other bug in `docs/AUDIT.md` §12 stays as it is.
+**Outside the task, behaviour stays as it is.** If you find a bug or something to tidy elsewhere, report it so it can become a task; don't change it in the same pull request.
 
 ## 4. Project facts
 
@@ -100,11 +75,11 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 | Tailwind version | Tailwind CSS v4 (`@tailwindcss/vite`), with its preflight reset on. shadcn/ui on Base UI (`components.json`, style `base-nova`, JavaScript), components in `src/components/ui/`; `cn()` comes from `src/lib/utils.js` |
 | Global stylesheet | `src/index.css`, the only stylesheet: design tokens, the `type-*` text roles, the `tap:` touch variant and the control sizes (44px below `lg` or on touch screens). The 19 per-component and per-page CSS files found in Phase 0 were merged into it and deleted |
 
-**Approved dependencies for this job:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
+**Approved dependencies:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
 
 ## 5. File structure
 
-Target layout, revised at Gate 0 to match the code (`docs/AUDIT.md` §11, R6). The full move table (old path → new path) goes in `docs/TASKS.md` in Phase 3 and needs the owner's approval. Update this section if that approval changes it. Do not create folders that would stay empty.
+The layout the code follows (set up in the clean-up, `docs/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
 
 ```
 src/
@@ -148,10 +123,10 @@ src/
 
 - Function components and hooks only.
 - Names: `PascalCase` for components and their files, `useCamelCase` for hooks, `camelCase` for functions and variables, `UPPER_SNAKE_CASE` for constants.
-- Named exports. Default exports only where a tool requires them. Today 39 files use default exports. Convert them in dedicated Phase 6 tasks, never inside a file-move commit.
+- Named exports. Default exports only where a tool requires them.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
 - **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes
@@ -189,18 +164,18 @@ src/
   - `success`, `warning`, `highlight`
   - the 3-state tokens `official` (locked official scores) and `self-reported` (student entries)
   - `criteria-1` to `criteria-8`, each with its `-on` pair
-- Themes: the app has one theme (light), and it keeps working. The `.global-settings.dark` rules and `--*-dark` tokens can't be reached, so they are dead code and are deleted in Phase 5a. Do not add a theme.
+- Themes: the app has one theme (light). Do not add a theme without a task for it.
 - Typography: one font family set and one fixed scale of text roles, defined once and reused. No one-off sizes.
   - Fonts: Khand for headings and General Sans for everything else, from the files in `src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
   - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/TASKS.md` §4.2.
   - Minimum sizes: 14px for body text, inputs and buttons.
   - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
 - Spacing and sizing: the Tailwind spacing scale only. Same element, same size everywhere (one button height per size variant, one input height, one card padding).
-- Branding: out of scope for the current job (see section 3). Keep the existing logo and name exactly as they are, including when moving the files that show them.
+- Branding: changed only in its own branch (section 3). Keep the existing logo and name exactly as they are, including when moving the files that show them.
 
 **Responsive**
 
-- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The code today uses 760/761 and other one-off values. These move to the defaults. The JS sidebar thresholds move as listed under "Owner-approved exceptions" in section 3.
+- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The JS sidebar thresholds match them (767 and 1023, `src/hooks/useSidebarState.js`).
 - Every screen must work at 375 (phone), 768 (tablet), 1024 (laptop), and 1440 (desktop) wide:
   - no horizontal scroll
   - no clipped or overlapping content
@@ -214,18 +189,21 @@ src/
 
 ## 8. Working rules
 
-- Work from `docs/TASKS.md`. One task, one commit. Tick the task off in the same commit.
+- Work on one task from `docs/BOARD.md` at a time, on its own branch, and change only the folders in its Areas. People claim tasks; an agent never edits `docs/BOARD.md`.
+- One logical change per commit. A pull request closes one task.
 - Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
-- Commit messages: `type(scope): summary` — types `refactor`, `style`, `test`, `chore`, `docs`.
-- Never push, force-push, rewrite history, or delete branches. The owner does that.
-- Stop and ask when: the task is ambiguous, it would change behaviour, it conflicts with `SPEC.md`, it needs a new dependency, or you found a bug.
-- When resuming in a new session, read `SPEC.md`, this file, and `docs/TASKS.md` first, then continue from the first unticked task.
+- Commit messages: `type(scope): summary` — types `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`.
+- Stage files by name (`git add <path>`), never `git add .` or `-A`.
+- Never push, force-push, rewrite history, merge, or delete branches. People do that.
+- Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
+- When resuming in a new session, read `SPEC.md`, this file, and the task's block on `docs/BOARD.md` first.
 
 ## 9. Definition of done for any task
 
-1. The task's acceptance check in `docs/TASKS.md` is met.
-2. Lint, format check, build, and tests pass.
-3. Behaviour is unchanged; any screen touched was checked at 375, 768, 1024, and 1440.
-4. No rule in sections 5 to 7 is newly broken.
-5. The commit contains only what the task describes.
+1. The task's "Done when" on `docs/BOARD.md` is met.
+2. Lint, format check, build, and tests pass. New logic in `src/lib/` or `src/services/` has tests.
+3. Behaviour changes only as the task describes; any screen touched was checked at 375, 768, 1024, and 1440.
+4. `SPEC.md` describes any feature or behaviour the task added or changed (section 2).
+5. No rule in sections 5 to 7 is newly broken.
+6. The pull request contains only what the task describes.
