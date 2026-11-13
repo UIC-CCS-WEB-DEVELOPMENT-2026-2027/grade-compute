@@ -37,6 +37,13 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: SPEC.md §2 (features the UI already points to); AUDIT B13
 - Done when: the header's bell and profile chevron do what the owner decides; today they do nothing
 
+### T-27 · Damaged records don't crash screens
+
+- State: proposed
+- Areas: layout (Sidebar), term-records (src/lib/grades.js)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E7, E8 (T-21); AUDIT §12
+- Done when: the Sidebar treats a missing `studentRecords` or `subjects` list as empty, `toTaskList` drops task entries that aren't objects, and tests cover each damaged shape in the review's §4
+
 ### T-3 · CSV export promised in the sidebar Help
 
 - State: todo
@@ -69,6 +76,15 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: AUDIT B22 (owner to-do, 2026-11-13). Changes user-facing wording, so `SPEC.md` F8 gets the tag rules through its protocol
 - Done when: the tags in Current Term Records reflect both the kind of task and whether it has a score (for example a custom task with a student score, and a regular task with no score yet), as agreed with the owner, and `docs/BEHAVIOUR_CHECKLIST.md` H-items are updated in the same PR
 
+## subject-detail
+
+### T-30 · Out-of-range target message on Subject Detail
+
+- State: proposed
+- Areas: subject-detail
+- Spec: docs/ERROR_HANDLING_REVIEW.md E21 (T-21); AUDIT §12. Changes `SPEC.md` §4 through its protocol
+- Done when: a Subject Detail target outside 0–100 shows "Enter a target from 0 to 100.", as the sandbox does, instead of quietly going back to the old value
+
 ## sandbox
 
 ### T-6 · Conversational sandbox copy
@@ -77,6 +93,15 @@ ones in TEAM_WORKFLOW.md §4.
 - Areas: sandbox
 - Spec: F18 [PARTIAL]; SPEC.md §10 D8
 - Done when: the sandbox result messages use encouraging wording approved by the owner
+
+## grade-rules
+
+### T-23 · Rule pages save fresh data
+
+- State: proposed
+- Areas: grade-rules
+- Spec: docs/ERROR_HANDLING_REVIEW.md E9, E15 (T-21); AUDIT §12. Fixes the worst data loss the review found
+- Done when: Grade Rules and the rule editor build every save from the data as it is at the moment of saving, so a subject removed in the Sidebar (or in another tab) doesn't come back; a failed Duplicate on the rule editor shows its error; a test covers removing a subject and then pressing Duplicate
 
 ## history
 
@@ -123,6 +148,13 @@ ones in TEAM_WORKFLOW.md §4.
 - Areas: settings
 - Spec: F14; AUDIT B21 (owner: fix after the clean-up, 2026-11-13)
 - Done when: with no verified email or phone, "Turn on" shows "Add and verify an email address or phone number before enabling two-factor authentication." (today the message is set but never rendered), and `docs/BEHAVIOUR_CHECKLIST.md` L7 is updated in the same PR
+
+### T-26 · Settings storage can fail safely
+
+- State: proposed
+- Areas: settings
+- Spec: docs/ERROR_HANDLING_REVIEW.md E16–E19 (T-21); AUDIT §12; F14 in `SPEC.md` through its protocol. The photo size limit, or resizing, is the owner's decision
+- Done when: a damaged `compugrade-account` loads the defaults (keeping a backup copy) and says so; a failed save, including signing out a session, shows a message instead of a blank page; a large photo is resized or refused as the owner decides; an unreadable image says "That image couldn't be read. Try another file."
 
 ## auth
 
@@ -278,6 +310,34 @@ owner makes its decisions during implementation.
 - Spec: owner request, 2026-11-13. The clean-up kept error handling as it was (feature freeze)
 - Done when: a read-only review in `docs/` lists every place an error can happen (reading, parsing and saving `localStorage`, bad or old stored data, failed saves, invalid input that slips through, exceptions while rendering), what the student sees today, and a proposed fix for each. The fixes become separate tasks, each approved by the owner, because they change behaviour
 
+### T-24 · Recover from unreadable stored data
+
+- State: proposed
+- Areas: shared (src/services/db.js), auth
+- Spec: docs/ERROR_HANDLING_REVIEW.md E1, E2, E3 (T-21); AUDIT §12. Changes what the student sees (F1, F15 in `SPEC.md`) and stored data (a backup key), so it needs LOCK-data and `SPEC.md` §5 through its protocol
+- Done when: stored data that can't be used is copied to a backup key and the student sees a recovery screen with "Start again with fresh data" (after a confirmation) instead of the login page; upgraded data is still returned when its write-back fails; blocked storage gets its own message on the login page. Wording agreed with the owner
+
+### T-25 · App-wide error boundary
+
+- State: proposed
+- Areas: src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5), shared (a new component)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E6 (T-21); AUDIT §12. Its wording goes in `SPEC.md` through its protocol
+- Done when: an exception while a screen renders shows a short message with "Reload" and "Go to the Dashboard" instead of a blank page, and the error is logged to the console
+
+### T-28 · Plain-language save errors
+
+- State: proposed
+- Areas: shared (the helper) first, then layout, sandbox, subject-detail, term-records, subjects, grade-rules
+- Spec: docs/ERROR_HANDLING_REVIEW.md E11–E14 (T-21); AUDIT §12. Wording goes in `SPEC.md` through its protocol. It touches six areas: one small shared PR for the helper, then one PR per area
+- Done when: one helper in `src/services/` turns a save error into plain words and logs the details, and every save message uses it; Remove subject shows its error in the dialog; the sandbox and the Subject Detail target say so when the data can't be read; Current Term Records no longer says "sandbox changes"
+
+### T-29 · Other tabs stay in sync
+
+- State: proposed
+- Areas: shared (src/hooks/useDb.js)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
+- Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
+
 ## tooling
 
 ### T-17 · Line endings: .gitattributes
@@ -300,6 +360,13 @@ owner makes its decisions during implementation.
 - Areas: tooling
 - Spec: docs/ai-context/README.md §4
 - Done when: the draft rules are tried on the code, false positives fixed or exempted, and the rules turned on as errors
+
+### T-31 · Note on testing security features over HTTP
+
+- State: proposed
+- Areas: docs/DEVELOPER_GUIDE.md
+- Spec: docs/ERROR_HANDLING_REVIEW.md E20 (T-21); AUDIT §12. Docs only
+- Done when: `docs/DEVELOPER_GUIDE.md` §6 says the password and verification features need HTTPS or `localhost`, so they don't work when the dev server is opened by its network address on a phone
 
 ---
 
