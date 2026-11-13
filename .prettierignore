@@ -1,0 +1,17 @@
+# Build output and dependencies
+dist
+node_modules
+package-lock.json
+
+# Tooling folders (not app code; AGENTS.md section 7)
+.agents
+.claude
+.codestudio
+skills-lock.json
+
+# Documents are written by hand. SPEC.md is protected (AGENTS.md section 2).
+*.md
+
+# Screenshots
+docs/baseline
+docs/after

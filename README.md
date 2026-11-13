@@ -40,6 +40,11 @@ Open the address Vite prints (usually `http://localhost:5173`).
 | `npm run build` | Builds the production site into `dist/` |
 | `npm run preview` | Serves the built `dist/` folder locally |
 | `npm run lint` | Checks the code with ESLint (including React Hooks rules) |
+| `npm run format` / `npm run format:check` | Formats the code with Prettier, or checks that it is formatted |
+| `npm test` | Runs the unit and characterization tests (Vitest) |
+| `npm run screenshots [folder]` | Takes screenshots of every screen at 375, 768, 1024 and 1440px wide (Playwright) |
+
+Before every commit, `npm run lint`, `npm run format:check`, `npm run build` and `npm test` must pass. The project rules for people and AI tools are in `AGENTS.md`; what the app does is in `SPEC.md`.
 
 ### Demo account
 | Role | Email | Password |
@@ -97,18 +102,20 @@ Development is split into a Minimum Viable Product (Phase 1) and full system int
 * **Professor Grading Workspace:** An Excel-style grid for faculty to input official scores. Adding an official score locks that task on the student's side.
 * **Global Course Catalog:** An admin-managed list of subjects with default university grading formulas.
 
-Professor and admin routes are already outlined (commented out) in `src/App.jsx`. Professor accounts can register, but their workspace is not available yet.
+Professor and admin routes are already outlined (commented out) in `src/app/App.jsx`. Professor accounts can register, but their workspace is not available yet.
 
 ---
 
 ## 🛠 Tech Stack & Design System
-* **Frontend Framework:** React 19 (bootstrapped with Vite)
+* **Frontend Framework:** React 19 (bootstrapped with Vite), JavaScript
+* **UI Components:** shadcn/ui on Base UI (in `src/components/ui/`), with lucide icons
+* **Styling:** Tailwind CSS v4
 * **Routing:** React Router DOM
 * **Charts:** Recharts
 * **Data Persistence:** Browser `localStorage`, initialized from a mock `db.json` to emulate a stateful backend
 * **Hosting:** Vercel (`vercel.json` sends every route to `index.html` so page refreshes work)
 * **Fonts:** Khand (headings) and General Sans (body)
-* **Design System:** CSS variables in `src/assets/index.css`
+* **Design System:** design tokens (CSS variables), text roles and control sizes in `src/index.css`, the only stylesheet, used through Tailwind utilities
   * **Primary:** `#406093` (Deep Blue: main UI, headers, active states)
   * **Accent:** `#4C8CE4` (Bright Blue: student-reported inputs and self-generated tasks)
   * **Warning:** `#FF7070` (Coral: destructive actions, system warnings)
@@ -121,35 +128,36 @@ Professor and admin routes are already outlined (commented out) in `src/App.jsx`
 The repository follows a domain-driven folder structure to reduce merge conflicts among the team.
 
 ```text
-public/                       # Static files served as-is (favicon, icons)
+public/                       # Static files served as-is (favicon)
+scripts/screenshots.mjs       # Screenshot script (npm run screenshots)
 src/
-├── assets/                   # index.css (global styles + design tokens), fonts, icons, sounds
-├── components/
-│   ├── SettingRow, SelectSetting, ToggleSetting   # Settings page building blocks
-│   ├── shared/               # Used across pages
-│   │   ├── Sidebar, useSidebarState, Header, PageFooter
-│   │   ├── RequireStudent    # Route guard (must be signed in)
-│   │   ├── Dialog, DeleteRuleDialog, DraftInput
-│   │   └── PillEditor, PillLevel, RuleCard, RuleBar, RulePieChart,
-│   │       RuleHierarchyTable, RuleFormula   # Grade rule editor and visuals
-│   └── student/
-│       ├── EnrolledSubjectsTable, AddSubjectForm
-│       ├── CurrentTermRecord, TermNavigation
-│       ├── TargetGradeSandbox, SandboxSubjectPicker
-│       └── HistoryChart, HistoryTooltip, usePointHover,
-│           SubjectGradeHistory, AllSubjectsHistory   # Grade history charts
-├── pages/
+├── app/                      # App.jsx (route map), main.jsx (entry point, seeds the database),
+│                             # RequireStudent.jsx (route guard: must be signed in)
+├── pages/                    # One page per route
 │   ├── auth/                 # LoginRegister (split-screen login/register)
 │   ├── student/              # StudentDashboard, SubjectMenu, SubjectDetail,
-│   │                         # TargetGradeSandboxPage, GradeRules, RuleDetail
-│   └── GlobalSettings.jsx    # Account settings
-├── utils/                    # Plain JavaScript logic (no React)
-│   ├── db.js, db.json, migrations.js     # Mock database and data upgrades
-│   ├── grades.js, rules.js, sandbox.js   # Grade, rule, and sandbox math
-│   ├── history.js, subjects.js, terms.js, session.js
-│   └── cssColor.js, focusTask.js, localAccountStore.js, prototypeVerification.js
-├── App.jsx                   # Route map
-└── main.jsx                  # Entry point (seeds the database, renders App)
+│   │                         # TargetGradeSandboxPage, GradeRules, RuleDetailPage
+│   └── settings/             # GlobalSettings (account settings)
+├── features/                 # Code that belongs to one feature
+│   ├── auth/lib/             # Sign-in and registration checks
+│   ├── subjects/             # EnrolledSubjectsTable, AddSubjectForm
+│   ├── term-records/         # CurrentTermRecords, TermNavigation
+│   ├── grade-rules/          # Pill editor, rule cards and visuals, rule dialogs
+│   ├── sandbox/              # TargetGradeSandbox, SandboxSubjectPicker
+│   ├── history/              # Grade history charts, table, legend and tooltip
+│   └── settings/             # Settings sections (Profile, Account, Security, ...)
+├── components/
+│   ├── ui/                   # shadcn/ui components (added with the shadcn CLI)
+│   ├── layout/               # Sidebar, Header, PageFooter, PageShell
+│   └── ...                   # Shared parts: GradeGauge, DraftInput, BackLink, BrandMark, ...
+├── hooks/                    # useDb, useSidebarState, useIsMobile
+├── lib/                      # Plain JavaScript logic (no React): grades, rules, sandbox,
+│                             # history, subjects, terms, targets, scores, format, ...
+├── services/                 # Data access: db.js, db.json, migrations.js, session.js,
+│                             # records.js, localAccountStore.js, prototypeVerification.js
+├── assets/                   # Fonts, images, sounds
+├── test/                     # Test helpers and fixtures (tests sit next to the code)
+└── index.css                 # The only stylesheet: design tokens and base styles
 ```
 
 ### Routes
@@ -170,11 +178,11 @@ All student routes require a signed-in student; otherwise you are sent back to t
 
 ## 💾 Data Management (Mock Database)
 
-The app has no live backend. All data goes through `src/utils/db.js`.
+The app has no live backend. All data goes through `src/services/db.js`.
 
 * **Initialization:** On first load, `main.jsx` calls `initializeDatabase()`, which copies `db.json` into `localStorage` (only if it isn't there yet). Older saved data is upgraded automatically by `migrations.js`.
-* **Reading and saving:** Pages read with `getDb()` and save with `saveDb()`. Saving also fires a `compugrade-db-updated` event so other parts of the page (like the sidebar and charts) refresh right away.
-* **Pure logic:** Grade, rule, sandbox, and history calculations live in `src/utils/` as plain functions with no React or storage access, which keeps them easy to test and reuse.
+* **Reading and saving:** Components read the database with the `useDb` hook (`src/hooks/useDb.js`, built on `getDb()`) and save with `saveDb()`. Saving also fires a `compugrade-db-updated` event so other parts of the page (like the sidebar and charts) refresh right away.
+* **Pure logic:** Grade, rule, sandbox, and history calculations live in `src/lib/` as plain functions with no React or storage access, which keeps them easy to test and reuse.
 
 **`localStorage` keys**
 

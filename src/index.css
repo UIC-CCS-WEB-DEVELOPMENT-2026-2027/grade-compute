@@ -1,0 +1,600 @@
+/* Tailwind CSS v4 with its preflight reset (turned on in docs/TASKS.md
+   T7.P). Cascade layers, lowest priority first: theme, base, components,
+   utilities. Anything not in a layer still beats every layer. */
+@import "tailwindcss" source(none);
+/* shadcn/ui (Base UI): animation utilities and its custom variants. */
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* dark: utilities in the shadcn components only apply inside a .dark element.
+   The app has one light theme and never sets .dark, so they stay inert
+   instead of following the operating system's dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
+/* A task row picked from a History chart: lib/dom/focusTask.js adds the
+   is-highlighted class for 2.4 seconds. */
+@custom-variant task-highlighted (&.is-highlighted);
+
+/* Scan app code only (src/). The tooling folders, docs and Markdown files
+   are not app code (AGENTS.md section 7). */
+@source "./";
+
+/* =========================================
+   Typography (Local Fonts)
+   ========================================= */
+
+/* Heading Font: Khand (SemiBold) */
+@font-face {
+    font-family: "Khand";
+    src: url("./assets/Khand-SemiBold.ttf") format("truetype");
+    font-weight: 600; /* SemiBold */
+    font-style: normal;
+}
+
+/* Body Font: General Sans (Regular) */
+@font-face {
+    font-family: "General Sans";
+    src: url("./assets/GeneralSans-Regular.otf") format("opentype");
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+/* Semibold and Bold: the official Fontshare web files, unchanged (ITF Free
+   Font License; self-hosted for this app only). */
+@font-face {
+    font-family: "General Sans";
+    src: url("./assets/GeneralSans-Semibold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "General Sans";
+    src: url("./assets/GeneralSans-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* Criteria colors (grade computation rules).
+   Built from the brand palette: primary and accent blues, the highlight
+   yellow, and the coral, plus their deeper and softer tones. Neighbors
+   alternate between blue and warm so sections next to each other differ.
+   Each "-on" token is the text and dot color that reads on that color.
+   Tailwind theme colors (bg-criteria-1, text-criteria-1-on, ...). "static"
+   keeps them all emitted, because src/lib/rules.js builds the variable
+   names at runtime (var(--color-criteria-N)). */
+@theme static {
+    --color-criteria-1: #406093; /* primary blue */
+    --color-criteria-1-on: #ffffff;
+    --color-criteria-2: #e9c936; /* highlight yellow, deep */
+    --color-criteria-2-on: #2c2c2c;
+    --color-criteria-3: #4c8ce4; /* accent blue */
+    --color-criteria-3-on: #ffffff;
+    --color-criteria-4: #ff7070; /* coral */
+    --color-criteria-4-on: #2c2c2c;
+    --color-criteria-5: #2c4870; /* primary blue, deep */
+    --color-criteria-5-on: #ffffff;
+    --color-criteria-6: #f4e46a; /* highlight yellow */
+    --color-criteria-6-on: #2c2c2c;
+    --color-criteria-7: #a9c6f2; /* accent blue, soft */
+    --color-criteria-7-on: #2c2c2c;
+    --color-criteria-8: #f7afa6; /* coral, soft */
+    --color-criteria-8-on: #2c2c2c;
+}
+
+:root {
+    /* Layer order (z-index), lowest to highest. Popups and dialogs are
+       shadcn components, which stack themselves above these. */
+    --z-raised: 1; /* small lifts inside a card */
+    --z-chart-tooltip: 10; /* chart and card hover tips */
+    --z-header: 20; /* sticky header on phones */
+    --z-sidebar: 30; /* sidebar (and its icon tips) above the page */
+
+    /* CompUGrade Design System Colors */
+    --primary: #406093; /* Deep Blue: Main UI, headers, active states */
+    --self-reported: #4c8ce4; /* Bright Blue: Student-reported inputs, self-generated tasks */
+    --warning: #ff7070; /* Coral: System warnings, destructive actions */
+    --highlight: #fff799; /* Pale Yellow: Alert banners, pending verification states */
+    --foreground: #2c2c2c; /* Deep Navy: Official locked scores, standard text */
+    --secondary: #e6edf9;
+    --warning-soft: #f9e7e2;
+    --destructive: #ab4f44;
+    --highlight-soft: #fff7d9;
+    --highlight-strong: #e9c936;
+    --success: #36754a;
+
+    /* Backgrounds & Neutrals */
+    --background: #f4f7f9; /* Light grayish-blue for the app background */
+    --card: #ffffff; /* White for cards, modals, and tables */
+    --muted: #f1f5f9;
+    --border: #e2e8f0; /* Light border color for dividers and standard inputs */
+    --muted-foreground: #5d6c81; /* Muted text for helpers and effective multipliers */
+
+    /* Dialog backdrop and focus ring */
+    --overlay: #181c2257;
+    --ring: #4c8ce45c;
+
+    /* Typography Variables */
+    --font-heading: "Khand", sans-serif;
+    --font-body: "General Sans", sans-serif;
+
+    /* New design tokens (docs/TASKS.md section 4, T4.5). Approved values.
+       Tokens that already existed keep today's values until T7.0a. */
+    --card-foreground: #2c2c2c;
+    --popover: #ffffff;
+    --popover-foreground: #2c2c2c;
+    --primary-foreground: #ffffff;
+    --secondary-foreground: #406093;
+    --accent: #e6edf9;
+    --accent-foreground: #406093;
+    --input: #cbd5e1;
+    --success-foreground: #ffffff;
+    --warning-foreground: #2c2c2c;
+    --highlight-foreground: #2c2c2c;
+    --highlight-text: #7b6b1d; /* yellow-family text, WCAG AA */
+    --official: #2c2c2c; /* locked official scores */
+    --self-reported-foreground: #3b6cb0; /* self-reported values as text, WCAG AA */
+
+    /* Radius scale: sm 4px, md 6px, lg 8px, xl 12px, 2xl 16px, 3xl 24px */
+    --radius: 0.5rem;
+
+    /* Sidebar widths (310px expanded, 76px minimised) */
+    /* The sidebar (shadcn Sidebar, TASKS.md section 3.2): yellow, with the
+       42% white tint of today's active item, and today's border. */
+    --sidebar: #fff799;
+    --sidebar-foreground: #2c2c2c;
+    --sidebar-primary: #406093;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #ffffff6b;
+    --sidebar-accent-foreground: #406093;
+    --sidebar-border: #2e303733;
+    --sidebar-ring: #4c8ce45c;
+    --sidebar-width: 19.375rem;
+    --sidebar-width-icon: 4.75rem;
+}
+
+/* Tailwind names for the tokens above (bg-primary, text-muted-foreground,
+   rounded-lg, shadow-card, font-heading, ...). */
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-overlay: var(--overlay);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-warning-soft: var(--warning-soft);
+    --color-highlight: var(--highlight);
+    --color-highlight-foreground: var(--highlight-foreground);
+    --color-highlight-soft: var(--highlight-soft);
+    --color-highlight-strong: var(--highlight-strong);
+    --color-highlight-text: var(--highlight-text);
+    --color-official: var(--official);
+    --color-self-reported: var(--self-reported);
+    --color-self-reported-foreground: var(--self-reported-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 8px);
+    --radius-3xl: calc(var(--radius) + 16px);
+
+    /* Inline, so the variables resolve on each confetti piece, which sets
+       its own --confetti-duration and --confetti-delay. */
+    --animate-celebration-confetti: celebration-confetti-fall var(--confetti-duration)
+        var(--confetti-delay) ease-in forwards;
+
+    /* Inline for the same reason: each login bar sets its own --bar-delay. */
+    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--bar-delay, 180ms) var(--ease-auth) both;
+}
+
+@theme {
+    --font-sans: "General Sans", sans-serif;
+    --font-heading: "Khand", sans-serif;
+
+    --shadow-card: 0 8px 22px rgb(49 84 134 / 0.06);
+    --shadow-hover: 0 12px 28px rgb(30 36 44 / 0.09);
+    --shadow-dialog: 0 18px 50px rgb(24 28 34 / 0.17);
+    /* The bar on the left of the row being edited (sandbox criteria and
+       draft rows). */
+    --shadow-row-active: inset 3px 0 0 var(--primary);
+
+    /* One size per control (docs/TASKS.md 4.3): h-control, size-control,
+       and the 44px touch size for phones and tablets (Phase 8). */
+    --spacing-control: 2.5rem;
+    --spacing-control-sm: 2rem;
+    --spacing-control-lg: 3rem;
+    --spacing-control-touch: 2.75rem;
+
+    /* Lists in dialogs scroll past these heights: the sandbox subject
+       picker, and the subjects in the rule dialogs. */
+    --spacing-picker-list: min(55vh, 26.25rem);
+    --spacing-rule-dialog-list: min(40vh, 18.75rem);
+
+    /* Login page motion. */
+    --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;
+    --animate-auth-content-enter: auth-content-enter 300ms ease-out both;
+    --animate-auth-fade-in: auth-fade-in 240ms ease-out both;
+    --animate-auth-note-enter: auth-note-enter 650ms 650ms ease-out both;
+    --animate-auth-sparkle: auth-sparkle 5s ease-in-out infinite;
+    --animate-auth-float: auth-float 6s 800ms ease-in-out infinite;
+
+    @keyframes auth-enter {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-content-enter {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes auth-bar-grow {
+        from {
+            transform: scaleY(0);
+        }
+        to {
+            transform: scaleY(1);
+        }
+    }
+    @keyframes auth-note-enter {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes auth-sparkle {
+        0%,
+        100% {
+            transform: translateY(0) rotate(0);
+        }
+        50% {
+            transform: translateY(-4px) rotate(8deg);
+        }
+    }
+    @keyframes auth-float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    /* Target-reached celebration on Subject Detail. The confetti token is in
+       @theme inline above. */
+    --animate-celebration-card-in: celebration-card-in 550ms cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+    --animate-celebration-sparkle: celebration-sparkle 1.3s ease-in-out infinite alternate;
+    --animate-celebration-trophy: celebration-trophy 1s ease-in-out infinite alternate;
+
+    /* The task-row highlight. */
+    --animate-record-highlight: record-highlight 2.4s ease-out;
+
+    @keyframes record-highlight {
+        0%,
+        35% {
+            background: var(--highlight-soft);
+            box-shadow: inset 4px 0 0 var(--highlight-strong);
+        }
+        100% {
+            background: transparent;
+            box-shadow: inset 4px 0 0 transparent;
+        }
+    }
+    @keyframes celebration-card-in {
+        from {
+            opacity: 0;
+            transform: translateY(1.5rem) scale(0.86);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    @keyframes celebration-sparkle {
+        from {
+            transform: rotate(-12deg) scale(0.9);
+        }
+        to {
+            transform: rotate(12deg) scale(1.12);
+        }
+    }
+    @keyframes celebration-trophy {
+        from {
+            transform: rotate(-8deg) translateY(0);
+        }
+        to {
+            transform: rotate(8deg) translateY(-0.25rem);
+        }
+    }
+    @keyframes celebration-confetti-fall {
+        0% {
+            opacity: 0;
+            transform: translate3d(0, -5vh, 0) rotate(0);
+        }
+        12% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0.9;
+            transform: translate3d(5vw, 110vh, 0) rotate(720deg);
+        }
+    }
+}
+
+/* Sized for tapping: phones and tablets (below lg) and any touch screen at
+   any width, such as a tablet in landscape (owner decision, 2026-11-13).
+   tap:size-11 and the like give a control its 44px touch size there. */
+@custom-variant tap {
+    @media (width < 64rem), (pointer: coarse) {
+        @slot;
+    }
+}
+
+/* Under the same condition every control is the 44px touch size (AGENTS.md
+   section 7), so h-control, size-control-sm and the rest grow there
+   without a class on each control. */
+@layer base {
+    @media (width < 64rem), (pointer: coarse) {
+        :root {
+            --spacing-control: var(--spacing-control-touch);
+            --spacing-control-sm: var(--spacing-control-touch);
+        }
+    }
+}
+
+/* animation-delay in milliseconds: animate-delay-120 (Tailwind has none). */
+@utility animate-delay-* {
+    animation-delay: calc(--value(integer) * 1ms);
+}
+
+/* The pill editor indents each level by its depth in the rule, which the
+   level passes as --pill-depth: 32px a level, 14px on phones. */
+@utility pill-indent {
+    padding-left: calc(var(--pill-depth, 0) * 2rem);
+    @media (width < 40rem) {
+        padding-left: calc(var(--pill-depth, 0) * 0.875rem);
+    }
+}
+
+/* Text roles (AGENTS.md section 7, docs/TASKS.md 4.2). Each role sets its
+   font, weight, size and line height, with the phone size first. */
+@utility type-display {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 1.05;
+    @media (width >= 48rem) {
+        font-size: 3rem;
+    }
+}
+
+@utility type-page-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    @media (width >= 48rem) {
+        font-size: 2.25rem;
+    }
+}
+
+@utility type-section-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    @media (width >= 48rem) {
+        font-size: 1.875rem;
+    }
+}
+
+@utility type-card-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+@utility type-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+@utility type-small {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.45;
+}
+
+@utility type-caption {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.3;
+}
+
+/* Page and element defaults on top of preflight. In the base layer, so
+   Tailwind utilities override them. */
+@layer base {
+    /* shadcn's base rule: borders and outlines default to the border and
+       focus-ring colours instead of the text colour. */
+    *,
+    ::before,
+    ::after {
+        border-color: var(--border);
+        outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    }
+
+    /* Preflight leaves buttons on the default arrow cursor. */
+    :where(button, [role="button"]):not(:disabled) {
+        cursor: pointer;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: var(--font-body); /* Applied Body Font */
+        background-color: var(--background);
+        color: var(--foreground);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html,
+    #root {
+        min-height: 100%;
+    }
+
+    /* Not on shadcn titles (they carry data-slot), which set their own.
+       :is() rather than :where(), so the weight beats preflight's
+       "h1, ... { font-weight: inherit }". */
+    :is(h1, h2, h3, h4, h5, h6):where(:not([data-slot])) {
+        font-family: var(--font-heading); /* Applied Heading Font */
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* =========================================
+   Base Containers
+   ========================================= */
+
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(180deg, #6d8ed0 0%, #4b6fbc 100%);
+    color: #f2f6ff;
+    box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.brand-mark svg {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.brand-name {
+    font-family: var(--font-heading);
+    font-size: 2.1rem;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.brand-name-dot {
+    color: var(--foreground);
+}
+
+/* Phones: the brand name in the slide-in menu is a little smaller. */
+@media (max-width: 767px) {
+    .brand-name {
+        font-size: 1.8rem;
+    }
+}
+
+/* Login page brand (branding, kept exactly as it was). */
+.auth-brand-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 38px;
+    border-radius: 6px;
+    background: var(--primary);
+}
+
+.auth-brand-icon img {
+    display: block;
+    width: 22.4px;
+    height: 27.4px;
+}
+
+.auth-brand-name {
+    font:
+        600 36px/1 "Khand",
+        sans-serif;
+    letter-spacing: -0.6px;
+    white-space: nowrap;
+}
+
+.auth-brand-dot {
+    color: var(--primary);
+    font: inherit;
+    letter-spacing: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .auth-brand-name {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .auth-brand-dot {
+        color: var(--foreground);
+    }
+}
+
+/* Reduced motion for the whole app: transitions and animations finish at
+   once. It reaches every page, as it did before the clean-up (docs/AUDIT.md
+   B19). */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
