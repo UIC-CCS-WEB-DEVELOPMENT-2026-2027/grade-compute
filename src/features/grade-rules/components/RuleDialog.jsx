@@ -9,14 +9,8 @@ import {
     DialogContent,
     DialogFooter,
     DialogHeader,
-    DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-
-const DOT_TONES = {
-    primary: "bg-primary",
-    warning: "bg-warning",
-};
+import { DialogEyebrowTitle } from "@/components/DialogEyebrowTitle";
 
 // eyebrow: the small label above the title. dot: "primary" | "warning".
 // cancelLabel: the first button, which only closes it ("Cancel", "Close").
@@ -43,13 +37,9 @@ export function RuleDialog({
                 className="gap-5 border-highlight-strong p-6 type-body max-sm:px-4 sm:max-w-2xl md:px-7.5"
             >
                 <DialogHeader>
-                    <DialogTitle className="m-0 flex flex-col gap-2 type-section-title text-foreground">
-                        <span className="flex items-center gap-2 type-caption font-bold tracking-widest text-primary uppercase">
-                            <span className={cn("size-2 shrink-0 rounded-full", DOT_TONES[dot])} />
-                            {eyebrow}
-                        </span>
+                    <DialogEyebrowTitle eyebrow={eyebrow} dot={dot}>
                         {title}
-                    </DialogTitle>
+                    </DialogEyebrowTitle>
                 </DialogHeader>
                 <div className="flex flex-col gap-3.5">{children}</div>
                 <DialogFooter className="-mx-6 -mb-6 px-6 max-sm:-mx-4 max-sm:px-4 md:-mx-7.5 md:px-7.5">

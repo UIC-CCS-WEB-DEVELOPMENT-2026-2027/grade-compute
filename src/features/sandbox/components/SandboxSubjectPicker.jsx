@@ -11,8 +11,8 @@ import {
     DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogTitle,
 } from "@/components/ui/dialog";
+import { DialogEyebrowTitle } from "@/components/DialogEyebrowTitle";
 import { Item, ItemContent } from "@/components/ui/item";
 import { formatGrade } from "@/lib/format";
 
@@ -45,13 +45,9 @@ export function SandboxSubjectPicker({ subjects, currentClassId = null, termKey 
                 className="gap-5 border-highlight-strong p-6 max-sm:px-4 sm:max-w-xl"
             >
                 <DialogHeader className="gap-4">
-                    <DialogTitle className="m-0 flex flex-col gap-2 type-section-title text-foreground">
-                        <span className="flex items-center gap-2 type-caption font-bold tracking-widest text-primary uppercase">
-                            <span className="size-2 shrink-0 rounded-full bg-primary" />
-                            Target Grade Sandbox
-                        </span>
+                    <DialogEyebrowTitle eyebrow="Target Grade Sandbox">
                         Which subject do you want to plan?
-                    </DialogTitle>
+                    </DialogEyebrowTitle>
                     <DialogDescription>
                         The sandbox shows the score you need on your remaining tasks to reach your
                         target.
