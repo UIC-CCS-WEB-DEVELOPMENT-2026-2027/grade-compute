@@ -39,8 +39,10 @@ the Claude Code settings. After cloning there is nothing to install for the agen
 
 ## 3. Before you start the agent
 
-1. **Claim the task yourself** on `main` (`docs/TEAM_WORKFLOW.md` §3), then create the branch.
-   Agents never claim tasks, edit `docs/BOARD.md`, push or merge.
+1. **Claim the task** on `main` (`docs/TEAM_WORKFLOW.md` §3), then create the branch. Do it
+   yourself, or ask the agent to as the first step of the session (the optional line in the §4
+   prompt). An agent that claims follows the same steps and pushes only that one commit
+   (`AGENTS.md` §8). Apart from the claim, agents never edit `docs/BOARD.md`, push or merge.
 2. **One task per session.** Start a fresh session for each task. Long sessions drift: the agent
    forgets early instructions and carries assumptions from the last task into the next.
 3. **Two agents at once? Use a separate folder for each.** Two agents in the same folder will
@@ -72,8 +74,13 @@ src/services/migrations.js, src/components/ui/, SPEC.md), stop and ask me first.
 
 Read first: AGENTS.md, SPEC.md [the feature's section], docs/TEAM_WORKFLOW.md §4–5.
 
+[Optional] First claim the task for me on main (docs/TEAM_WORKFLOW.md §3):
+GitHub username [username], branch [branch]. Push only that claim commit,
+then create the branch from main.
+
 Rules for this session:
-- Don't edit docs/BOARD.md or SPEC.md. Don't push, merge or switch branches.
+- Don't edit SPEC.md, or docs/BOARD.md beyond the claim. Don't push anything
+  but the claim, don't merge, and don't switch branches after creating yours.
 - Stage files by name (git add <path>), never git add . or -A.
 - If you find a bug outside this task, tell me; don't fix it.
 
@@ -122,6 +129,7 @@ An agent's report says what it **thinks** it did. Check before you commit or ope
 | Installs a package to solve a problem | `AGENTS.md` §4 lists the approved dependencies. Look for `package.json` in the diff |
 | Hand-writes a shadcn component, or a Radix version of one | Components are added with the shadcn CLI (`AGENTS.md` §7). Look for `@radix-ui` imports |
 | Claims tests pass without running them | Run them yourself (§5) |
+| Claims a task carelessly: another task's line, the wrong username or branch, or an overlapping area | Check the claim commit on `main` (`git show origin/main --stat`): one State line, yours, with the right branch |
 | Trusts a fact in `AGENTS.md` §4 that has gone stale | Tell the owner when a fact there is wrong, so it gets fixed for everyone |
 
 ## 7. When the agent says "stop and ask"
