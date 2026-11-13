@@ -124,7 +124,10 @@
     --secondary-foreground: #406093;
     --accent: #e6edf9;
     --accent-foreground: #406093;
-    --input: #cbd5e1;
+    /* Control outlines (text boxes, selects, checkboxes, radios, the switch
+       track): at least 3:1 against every background they sit on (WCAG
+       1.4.11; FU12). Was #cbd5e1. */
+    --input: #7a879c;
     --success-foreground: #ffffff;
     --warning-foreground: #2c2c2c;
     --highlight-foreground: #2c2c2c;

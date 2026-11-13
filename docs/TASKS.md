@@ -1143,4 +1143,9 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
   - **As done:** the arbitrary values stay as generated, recorded as an exception in `AGENTS.md` §7 (owner decision); fonts and colours still follow the rules. `ChartTooltipContent`'s value no longer sets `font-mono`, so it uses the body font (the app does not use that tooltip, so no screen changes).
 - [x] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.
   - **As done (review, kept):** "Choose photo" stays a styled real file input, because the shadcn file `Input` would show the browser's own "Choose file" wording. The 2FA "Turn off" confirmation stays inline, because B5's shared state is kept and a modal would block that path. The pill editor's handles stay custom, because shadcn's `Slider` has no multi-segment divider. Revisit with the B5 fix or a wording change after the freeze.
-- [ ] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
+- [x] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
+  - **As done (approved visible change):** the control-outline token `--input` is `#7a879c` (was `#cbd5e1`), at least 3:1 against every background a control sits on: card 3.64, page 3.38, muted 3.32, secondary 3.09, the yellows 3.29–3.39.
+    - It outlines text boxes, selects, text areas, input groups, checkboxes, radios, the login role choices and toggles, and fills the switch's "off" track.
+    - Side effects of the same token: disabled controls' 50% fill is a little darker, and the Dashboard's two decorative "·"/"•" separators are darker.
+    - Card borders and dividers keep the light `--border` (they are not controls). Buttons are identified by their labels, so their outlines are unchanged.
+    - Screenshots change only on screens with those controls (login, Dashboard, My Subjects, Grade Rules, sandbox, rule editor, Settings › Account); DOM unchanged.
