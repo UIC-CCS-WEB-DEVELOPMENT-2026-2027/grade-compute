@@ -909,6 +909,42 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
   - Known candidate: the "Show as a table" history tables in `AllSubjectsHistory.jsx` and `HistoryChart.jsx` (same columns and "Open task" button). Their sideways scroll at 375 stays (owner decision, 2026-11-13).
   - Write the groups and a proposed shared component, hook or function for each into this task's "As done" note. **Stop and ask the owner** which groups to merge before changing code.
   - Each approved merge is its own commit (T9.0.1, T9.0.2, …): behaviour, wording and appearance stay identical (V-same: screenshots, the component tests, and the checklist items for the screens it touches).
+  - **As done (scan, 2026-11-13, at `8d862da`):** every `.js`/`.jsx` file in `src/` outside `components/ui/` and the tests, read by hand, plus a script that counts class strings used in two or more places.
+    - **Same purpose (merge candidates):**
+
+      | # | Group | Where | Proposed | Differences kept |
+      | --- | --- | --- | --- | --- |
+      | N1 | "Show as a table" history table | `AllSubjectsHistory`, `HistoryChart` | `HistoryTable` in `features/history/components/` (table, caption, Step / Task / Score / Grade so far, the link button) | Caption text; "Open task" vs "Go to task" (wording frozen); the button only for points with a task id (Subject Detail); the "you entered" note and plan rows (Subject Detail); the Score cell wraps on Subject Detail only. Sideways scroll stays |
+      | N2 | Chart legend pills | `AllSubjectsHistory`, `HistoryChart` (identical markup) | `HistoryLegend({ items })` | Each chart's own marks and text |
+      | N3 | Dashed "nothing to chart" box | `HistoryChartFrame`, `HistoryChart`, `AllSubjectsHistory` (identical classes) | `HistoryEmpty({ children })` | Each message |
+      | N4 | History card (region, title, description, controls on the right) | `AllSubjectsHistory`, `SubjectGradeHistory` (identical classes) | `HistoryCard({ titleId, title, description, actions, children })` | Title, text and controls |
+      | N5 | Class, subject, record and rule lookup from `(db, classId, studentId)` | `SubjectDetail` (×2), `CurrentTermRecords`, `TargetGradeSandbox`, `SubjectGradeHistory`, `TargetGradeSandboxPage` | `getStudentClass(db, classId, studentId)` → `{ classItem, subject, record, rule }` in `services/records.js`, with unit tests; same `undefined` results | ⚠ The loops in `lib/history` and `lib/subjects` keep their own lookups |
+      | N6 | Writing one term's `targetGradeSandbox.terms[term]` | `SubjectDetail.updateTargetGrade` (inline) and `lib/sandbox` (`updateSandboxSettings`, `setDraftScore`) | `setTermTarget(record, termKey, grade)` in `lib/targets.js` on a shared private term-update helper, with unit tests | Reusing `updateSandboxSettings` is not an option: it always writes `criteria`, a stored-data change |
+      | N7 | Save a change to the student's record (`getDb` → `updateStudentRecord` → `saveDb` → `setDbData`) | `SubjectDetail`, `CurrentTermRecords`, `TargetGradeSandbox` | `saveStudentRecord(classId, studentId, update)` → `{ ok, db, error }` in `services/records.js` | Each caller keeps its messages, its no-database handling (Current Term Records shows an error, the others stay silent) and its return value |
+      | N8 | Disclosure toggle (ghost button, rotating chevron, reduced motion) | Sandbox "How this is calculated", Current Term Records breakdown | `DisclosureTrigger` in `components/` | ⚠ The history "Show as a table" toggle is outline and small, with no reduced-motion rule: not included |
+      | N9 | Dialog eyebrow (dot and caption) above the title | `RuleDialog`, `SandboxSubjectPicker` (identical markup) | `DialogEyebrowTitle({ eyebrow, dot, children })` in `components/` | Each dialog's width and padding |
+      | N10 | Settings button styles (yellow primary, card secondary, full width on phones, red danger) | `SecuritySection`, `AccountSection` (inline), `AccountActionsSection` | One `features/settings/buttonStyles.js` with the three class constants | — |
+      | N11 | Setting row text (title and description) | `AccountActionsSection.ActionText`, `NotificationsSection` (identical markup) | `SettingText({ title, description })` | — |
+      | N12 | Profile avatar (photo or initials on yellow) | `ProfileSection`, `AccountSection` | `ProfileAvatar({ src, alt, initials, className })` | Size and alt text. ⚠ Header and Subject Detail avatars look different: not included |
+      | N13 | Rule "Delete" button style and the lost-task warning box | `RuleCard` and `RuleDetailPage` (button); `DeleteRuleDialog` and the impact dialog in `RuleDetailPage` (warning) | `RuleWarning({ children })` and one shared delete-button class in `features/grade-rules/` | Button size per place |
+      | N14 | Page header row (title, "Your subjects, progress, and next step.", control on the right) | `StudentDashboard`, `SubjectMenu` | `PageHeader({ as, title, description, children })` in `components/layout/` | `div` vs `header` element (`as`). ⚠ Grade Rules, rule editor and Settings headers use other spacing and roles: not included |
+      | N15 | Term label | `TargetGradeSandbox` (`TERM_LABELS[termKey] ?? "Prelim"`) | `getTermLabel(termKey)` (same result for every key `toTermKey` returns) | — |
+      | N16 | Subject URLs (`/student/subject/:id`, `/sandbox`, `?term=`, `&task=`) built inline | Sidebar (×4), `EnrolledSubjectsTable`, `AllSubjectsHistory`, `SubjectGradeHistory`, `SubjectDetail`, `TargetGradeSandboxPage`, `SandboxSubjectPicker` | `subjectPath(classId, { term, task })` and `sandboxPath(classId, term)` in `lib/paths.js`, with unit tests | Exact same strings |
+
+    - **Look alike, not merged (⚠):**
+      - Score boxes in Current Term Records (saved on blur, `/` and max as two spans) and sandbox drafts (saved on each keystroke, `InputGroupText`).
+      - Target boxes on Subject Detail and the sandbox: different checks (B11), step and saving.
+      - Login `TextField` (reserved error line, `required`) and AddSubjectForm `textField` (muted label): both already compose the shadcn `Field` (G18).
+      - The sidebar's subject pop-out and its expanded sub-list: same data, different components and look.
+      - Rule tags on the card (outline with a dot) and in the editor (secondary).
+      - Subject Detail and sandbox page headings: different layout and content.
+      - Eyebrow labels (Settings, sandbox page, Subject Detail semester, sidebar group): different tracking and colours.
+      - Dialog footers with negative margins (`RuleDialog`, `SandboxSubjectPicker`, two in `SecuritySection`): each follows its dialog's own padding.
+      - `hasOfficialScore` in `CurrentTermRecords` and `lib/sandbox` (G9, B10); `withDraftScores`' task list and `toTaskList` (different rules for a single object).
+      - Professor name with "Awaiting assignment" (`lib/subjects`) vs "Awaiting professor assignment" (`SubjectDetail`).
+      - Repeated typography combinations such as `m-0 type-small text-muted-foreground` (15 places): the text roles in use, not duplication.
+    - **Owner decision (2026-11-13):** merge N1–N5, N8–N11, N13 and N15. N6, N7, N12, N14 and N16 stay as they are.
+    - **Noticed for T9.1:** 10 `max-md:h-control-touch` classes left in `RuleDetailPage` (8) and `CurrentTermRecords` (2), which T8.1's tokens appear to make redundant (to verify); and the stale path comments at the top of many files (`// src/components/student/…`, `// src/utils/…`).
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).
   - Remove the unused `@types/react` and `@types/react-dom` dev dependencies (D6, approved).
