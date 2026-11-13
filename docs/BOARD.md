@@ -181,7 +181,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-18 · CI on pull requests
 
-- State: claimed by June-05 on 2026-11-13, branch feat/tooling-ci
+- State: done in PR #121
 - Areas: tooling
 - Spec: TEAM_WORKFLOW.md §9, decision 7 (first task after the team docs)
 - Done when: a GitHub Actions workflow runs lint, format check, build and tests on every PR
