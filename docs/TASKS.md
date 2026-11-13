@@ -1098,6 +1098,14 @@ Nothing is left open.
 
 Owner decision (2026-11-13): the open `AGENTS.md` §5–7 items found in T9.5 become follow-up tasks. They are not part of the clean-up job; each needs its own branch or task, and any that changes behaviour needs the owner's approval first.
 
+They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, after PR #118), one commit each, with the clean-up's checks. The feature freeze (`AGENTS.md` §3) still applies until they are done.
+
+**Owner decisions (2026-11-13), before starting:**
+- FU3: move the whole history chart kit (`HistoryChart`, `HistoryChartFrame`, `HistoryTable`, `HistoryLegend`, `HistoryEmpty`, `HistoryTooltip`) to `src/components/history-chart/` and `usePointHover` to `src/hooks/`, as well as `TermNavigation` and `SandboxSubjectPicker`.
+- FU5: the `lib/` exports used only by tests stay exported, as an exception recorded in `AGENTS.md` §6.
+- FU10: the generated components keep their arbitrary values, as an exception recorded in `AGENTS.md` §7; only the unused chart tooltip's `font-mono` changes.
+- FU12: darken the control-outline tokens to reach 3:1 (a visible change, approved).
+
 - [ ] **FU1 Pages only compose.** Move the logic out of `RuleDetailPage` (validation, saving, dialogs), `GlobalSettings` (account and security state and handlers), `SubjectDetail` (celebration, audio, target saving) and `LoginRegister` (sign-in and registration flows) into hooks, `lib/` or `services/`.
 - [ ] **FU2 Remove-subject logic out of the Sidebar.** `removeSubjectEnrollment` becomes a pure function in `lib/subjects.js` or `services/`, with tests.
 - [ ] **FU3 Shared components to `src/components/`.** `HistoryChart` (used by the sandbox), `TermNavigation` (used by the sandbox page) and `SandboxSubjectPicker` (used by the Sidebar). Moves only.
