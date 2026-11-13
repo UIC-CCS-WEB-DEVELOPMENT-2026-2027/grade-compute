@@ -10,6 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { resolveColor } from "@/lib/dom/cssColor";
 import { PASSING_GRADE } from "@/lib/history";
 import { cn } from "@/lib/utils";
+import { HistoryEmpty } from "./HistoryEmpty";
 
 // scale: from getChartScale. plotRef: for the point tooltips (usePointHover).
 // ariaLabel: the chart described in words. overlay: drawn over the plot (the
@@ -37,9 +38,7 @@ export function HistoryChartFrame({
     return (
         <>
             {emptyMessage ? (
-                <p className="m-0 rounded-lg border border-dashed border-border px-5 py-7 text-center type-small text-muted-foreground">
-                    {emptyMessage}
-                </p>
+                <HistoryEmpty>{emptyMessage}</HistoryEmpty>
             ) : (
                 <div
                     ref={plotRef}

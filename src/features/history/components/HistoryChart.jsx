@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryEmpty } from "./HistoryEmpty";
 import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 import { HistoryTooltip } from "./HistoryTooltip";
@@ -214,10 +215,10 @@ export function HistoryChart({
     const plan = showPlan ? planPoints : [];
     if (points.length === 0 && plan.length === 0) {
         return (
-            <p className="m-0 rounded-lg border border-dashed border-border px-5 py-7 text-center type-small text-muted-foreground">
+            <HistoryEmpty>
                 No scored tasks for {termLabel} yet. Add a score in Current Term Records and it will
                 appear here.
-            </p>
+            </HistoryEmpty>
         );
     }
 

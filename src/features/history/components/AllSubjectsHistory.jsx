@@ -19,6 +19,7 @@ import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryEmpty } from "./HistoryEmpty";
 import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 
@@ -188,9 +189,9 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
 
             <CardContent className="flex flex-col gap-3">
                 {courses.length === 0 ? (
-                    <p className="m-0 rounded-lg border border-dashed border-border px-5 py-7 text-center type-small text-muted-foreground">
+                    <HistoryEmpty>
                         Add a subject below and its grade history will show here.
-                    </p>
+                    </HistoryEmpty>
                 ) : (
                     <>
                         <div
