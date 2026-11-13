@@ -1124,7 +1124,12 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
   - **As done:** the test-only exports stay, recorded as a second exception in `AGENTS.md` §6 (owner decision). `DraftInput` now always renders `InputGroupInput` and its `as` prop is gone, so the two callers no longer pass it. DOM of the 30 states identical; tests unchanged.
 - [x] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
   - **As done:** the "96%" uses `type-card-title`, which is exactly what its classes set (Khand 600, 20px on a 24px line). The ✦ and 🏆 are decorative glyphs, not text, so they use a new size token, `--text-glyph` (36px on a 40px line, as before), as `text-glyph`. Measured on the old and new code at 1440 and 375: same font sizes and line heights. Login screenshots match.
-- [ ] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
+- [x] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
+  - **As done (review, no code change):** each one falls under the rule.
+    - The "target 90%" note sits inside a pill-shaped toggle chip, which works like a badge.
+    - The legend pills belong to the chart, like its axis labels.
+    - The header's initials are a 36px avatar badge, hidden from screen readers.
+    - The login preview is a decorative mock chart: its labels are its axis values, its "On Track" badge and its eyebrow.
 - [ ] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
 - [ ] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
 - [ ] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
