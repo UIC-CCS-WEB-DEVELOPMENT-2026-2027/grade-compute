@@ -996,7 +996,16 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
     10. **§7 shadcn for every primitive, with documented exceptions:** the Account "Choose photo" file input (keeps its wording, T7.L2s), the inline 2FA "Turn off" confirmation (B5, T7.L3) and the pill editor's drag handles (custom by design, T7.K2).
     11. **Themes.** `@custom-variant dark` stays so the generated components' `dark:` classes remain inert; the app never sets `.dark`.
     12. **Accessibility outside AGENTS §7.** Input-border contrast (WCAG 1.4.11) is still only noted (§7 of this file). The "Show as a table" history tables scroll sideways at 375 (owner decision, 2026-11-13).
-- [ ] **T9.6** Check every `[BUILT]` feature in `SPEC.md`.
+- [x] **T9.6** Check every `[BUILT]` feature in `SPEC.md`.
+  - **As done (at `b5a837b`):** the behaviour of F1, F2, F4, F5, F7–F10, F12, F13, F15 and F17 (and the built parts of F3, F6, F11, F14 and F18) matches `SPEC.md`: the T9.3 walk covers each, and the values SPEC states were checked in the code (new class: 3 units, target 90, `pending`; status labels; table grades to 1 decimal, Subject Detail gauges 0 on screen and 2 in the label, sandbox gauges 0; the legacy keys still removed; the 767/1023 sidebar widths). Every file path in SPEC was checked to exist.
+  - **Differences, all in what SPEC says, not in what the app does.** SPEC and the code were left unchanged (SPEC protocol):
+    1. F10 Files lists `src/components/Dialog.jsx`, deleted in T7.Z (the rule dialogs use `RuleDialog` on the shadcn `Dialog`).
+    2. F14 Files lists `src/features/settings/components/SettingRow.jsx` and `ToggleSetting.jsx`, deleted in T7.L4s. The sections are now `ProfileSection`, `AccountSection`, `SecuritySection`, `NotificationsSection` and `AccountActionsSection`.
+    3. F17 Files names `TargetGradeSandbox.jsx` (`Gauge`); since T7.G2 both pages use `src/components/GradeGauge.jsx`.
+    4. §4 "Score-entry validation (inside the components, duplicated)": since T6.4 the rules are one function, `validateScore` in `src/lib/scores.js`; each component keeps its own message.
+    5. §4 Rounding says history and tooltips show 2 decimals. That holds for grades; a task's score percentage shows 1 decimal with the zero kept ("90.0% (official)"), unchanged since the Phase 2 baseline.
+    6. §6 (f) is listed under "The code already contains these non-student pieces", but the prototype was deleted in T5a.1, as (f) itself says.
+    7. Not wrong, but incomplete: F11 Files does not list `HistoryChartFrame` (T7.D2) or the T9.0 history parts (`HistoryTable`, `HistoryLegend`, `HistoryEmpty`, `HistoryCard`), and F10 does not list `RuleDialog`, `RuleSubjectList`, `RuleLegend`, `DeleteRuleButton` or `RuleWarning`.
 - [ ] **T9.7** Update `AGENTS.md` §4 and write `docs/REFACTOR_REPORT.md`, including the branding notes (AUDIT §9).
 
 ---
