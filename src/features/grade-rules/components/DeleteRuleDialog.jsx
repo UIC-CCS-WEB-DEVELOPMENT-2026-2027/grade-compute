@@ -9,9 +9,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
 import { RuleDialog } from "./RuleDialog";
 import { RuleSubjectList } from "./RuleSubjectList";
-
-const WARNING =
-    "m-0 border-0 border-l-4 border-solid border-warning bg-warning-soft px-3 py-2.5 text-foreground";
+import { RuleWarning } from "./RuleWarning";
 
 export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
     const otherRules = (db?.computationRules ?? []).filter((item) => item.id !== rule.id);
@@ -95,23 +93,19 @@ export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
                         </NativeSelect>
                     </label>
                     {impact?.lostTaskCount > 0 && (
-                        <p className={WARNING}>
+                        <RuleWarning>
                             {impact.lostTaskCount} recorded task
                             {impact.lostTaskCount === 1 ? "" : "s"} in{" "}
                             {impact.lostTasks.map((item) => item.name).join(", ")} won&apos;t count
                             under the new rule, because it has no matching criteria. The tasks stay
                             saved.
-                        </p>
+                        </RuleWarning>
                     )}
                 </>
             ) : (
                 <p className="m-0">No subjects use this rule. Deleting it can&apos;t be undone.</p>
             )}
-            {error && (
-                <p className={WARNING} role="alert">
-                    {error}
-                </p>
-            )}
+            {error && <RuleWarning role="alert">{error}</RuleWarning>}
         </RuleDialog>
     );
 }

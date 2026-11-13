@@ -28,9 +28,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { DeleteRuleButton } from "@/features/grade-rules/components/DeleteRuleButton";
 import { DeleteRuleDialog } from "@/features/grade-rules/components/DeleteRuleDialog";
 import { RuleDialog } from "@/features/grade-rules/components/RuleDialog";
 import { RuleSubjectList } from "@/features/grade-rules/components/RuleSubjectList";
+import { RuleWarning } from "@/features/grade-rules/components/RuleWarning";
 import { saveDbSafely } from "@/services/db";
 import {
     DEFAULT_TAGS,
@@ -309,16 +311,10 @@ function RuleDetail({ ruleId }) {
                             <Button variant="outline" className={ACTION} onClick={handleDuplicate}>
                                 Duplicate
                             </Button>
-                            <Button
-                                variant="outline"
-                                className={cn(
-                                    ACTION,
-                                    "text-destructive hover:border-destructive hover:bg-warning-soft hover:text-destructive",
-                                )}
+                            <DeleteRuleButton
+                                className={ACTION}
                                 onClick={() => setShowDelete(true)}
-                            >
-                                Delete
-                            </Button>
+                            />
                         </div>
                     )}
                 </header>
@@ -637,7 +633,7 @@ function RuleDetail({ ruleId }) {
                         </p>
                     )}
                     {pendingImpact.lostTaskCount > 0 && (
-                        <p className="m-0 border-0 border-l-4 border-solid border-warning bg-warning-soft px-3 py-2.5 text-foreground">
+                        <RuleWarning>
                             {pendingImpact.lostTaskCount} recorded task
                             {pendingImpact.lostTaskCount === 1 ? "" : "s"} in{" "}
                             {pendingImpact.lostTasks.map((item) => item.name).join(", ")} will stop
@@ -646,7 +642,7 @@ function RuleDetail({ ruleId }) {
                                 ? "that criterion was"
                                 : "those criteria were"}{" "}
                             removed. The tasks stay saved.
-                        </p>
+                        </RuleWarning>
                     )}
                     {pendingImpact.classes.length > 0 && (
                         <p className="m-0 type-small text-muted-foreground">

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DeleteRuleButton } from "./DeleteRuleButton";
 import { RuleBar } from "./RuleBar";
 import { RuleFormula } from "./RuleFormula";
 import { RuleHierarchyTable } from "./RuleHierarchyTable";
@@ -91,17 +92,7 @@ export function RuleCard({ rule, subjectCount, thumbnail, onDuplicate, onDelete 
                         >
                             Duplicate
                         </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className={cn(
-                                ACTION,
-                                "text-destructive hover:border-destructive hover:bg-warning-soft hover:text-destructive",
-                            )}
-                            onClick={onDelete}
-                        >
-                            Delete
-                        </Button>
+                        <DeleteRuleButton size="sm" className={ACTION} onClick={onDelete} />
                     </span>
                 </footer>
             </Card>
