@@ -37,20 +37,20 @@ import { focusTaskRow } from "@/lib/dom/focusTask";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
 
-// Confetti in the palette tokens.
+// Confetti in the palette tokens. Each piece's place, timing and colour come
+// from its index: the confetti-* utilities in index.css list every value.
 const CONFETTI_COLORS = [
-    "var(--color-criteria-1)",
-    "var(--color-criteria-2)",
-    "var(--success)",
-    "var(--color-criteria-4)",
-    "var(--color-criteria-3)",
+    "bg-criteria-1",
+    "bg-criteria-2",
+    "bg-success",
+    "bg-criteria-4",
+    "bg-criteria-3",
 ];
-const CONFETTI_PIECES = Array.from({ length: 44 }, (_, index) => ({
-    left: `${(index * 37) % 100}%`,
-    delay: `${(index % 11) * 0.08}s`,
-    duration: `${2.3 + (index % 7) * 0.22}s`,
-    color: CONFETTI_COLORS[index % CONFETTI_COLORS.length],
-}));
+const CONFETTI_PIECES = Array.from(
+    { length: 44 },
+    (_, index) =>
+        `confetti-left-${(index * 37) % 100} confetti-delay-${(index % 11) * 80} confetti-duration-${2300 + (index % 7) * 220} ${CONFETTI_COLORS[index % CONFETTI_COLORS.length]}`,
+);
 
 export function SubjectDetail() {
     // The selected term lives in the URL (?term=midterm), so the sandbox
@@ -357,14 +357,7 @@ function CelebrationDialog({ message, onClose }) {
                     {CONFETTI_PIECES.map((piece, index) => (
                         <span
                             key={index}
-                            className="absolute -top-4 h-3.5 w-2 animate-celebration-confetti rounded-xs opacity-0 motion-reduce:animate-none"
-                            // Each piece's place, color and timing.
-                            style={{
-                                left: piece.left,
-                                background: piece.color,
-                                "--confetti-delay": piece.delay,
-                                "--confetti-duration": piece.duration,
-                            }}
+                            className={`absolute -top-4 h-3.5 w-2 animate-celebration-confetti rounded-xs opacity-0 motion-reduce:animate-none ${piece}`}
                         />
                     ))}
                 </div>

@@ -37,14 +37,41 @@ import dottedHeaderDivider from "@/assets/dotted-header-divider.svg";
 import chartLowerRule from "@/assets/chart-lower-rule.svg";
 import { cn } from "@/lib/utils";
 
+// Each bar's height (24, 41, 54, 72 and 89px) and grow delay (180ms, then
+// 120ms more per bar).
 const previewScores = [
-    { value: 84, height: 24, label: "Quiz 1", bar: "from-self-reported/40 to-self-reported/30" },
-    { value: 88, height: 41, label: "Lab 1", bar: "from-self-reported/70 to-self-reported/55" },
-    { value: 91, height: 54, label: "Quiz 2", bar: "from-self-reported to-self-reported/80" },
-    { value: 93, height: 72, label: "Midterm", bar: "from-primary to-self-reported" },
+    {
+        value: 84,
+        height: "h-6",
+        delay: "animate-delay-180",
+        label: "Quiz 1",
+        bar: "from-self-reported/40 to-self-reported/30",
+    },
+    {
+        value: 88,
+        height: "h-10.25",
+        delay: "animate-delay-300",
+        label: "Lab 1",
+        bar: "from-self-reported/70 to-self-reported/55",
+    },
+    {
+        value: 91,
+        height: "h-13.5",
+        delay: "animate-delay-420",
+        label: "Quiz 2",
+        bar: "from-self-reported to-self-reported/80",
+    },
+    {
+        value: 93,
+        height: "h-18",
+        delay: "animate-delay-540",
+        label: "Midterm",
+        bar: "from-primary to-self-reported",
+    },
     {
         value: 95,
-        height: 89,
+        height: "h-22.25",
+        delay: "animate-delay-660",
         label: "Target",
         bar: "from-self-reported-foreground to-primary shadow-card",
     },
@@ -88,18 +115,12 @@ function AcademicPreview() {
                     className="relative mt-3 flex h-32 items-end gap-4 px-3 pt-1"
                     aria-hidden="true"
                 >
-                    {previewScores.map(({ value, height, label, bar }, index) => (
+                    {previewScores.map(({ value, height, delay, label, bar }) => (
                         <div
                             className="flex h-full min-w-0 flex-1 flex-col items-center justify-end"
                             key={label}
                         >
-                            <div
-                                className="group/bar relative mb-2 h-(--bar-height) w-full"
-                                style={{
-                                    "--bar-height": `${height}px`,
-                                    "--bar-delay": `${180 + index * 120}ms`,
-                                }}
-                            >
+                            <div className={cn("group/bar relative mb-2 w-full", height)}>
                                 <small className="absolute -top-6 left-0 w-full text-center type-caption font-normal text-muted-foreground">
                                     {value}%
                                 </small>
@@ -107,6 +128,7 @@ function AcademicPreview() {
                                     <i
                                         className={cn(
                                             "block size-full origin-bottom animate-auth-bar-grow rounded-t-md bg-linear-to-b",
+                                            delay,
                                             bar,
                                         )}
                                     />

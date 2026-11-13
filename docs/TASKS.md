@@ -1134,7 +1134,11 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
   - **As done:**
     - Settings' panel card and its five section cards now hold their content in `CardContent className="flex flex-col"`: the same padding and the same flex layout, so the Settings screenshots are pixel-identical at all four widths (the DOM gains the wrapper).
     - Subject Detail's summary card uses the card spacing instead of `p-4` and `xl:px-5`: unchanged at 375, and 8px more padding on each side from 768 up (the page is 16px taller at 1440 and 34px taller at 768 and 1024, where the notes wrap a little more). Approved as an appearance change.
-- [ ] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
+- [x] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
+  - **As done:**
+    - **Login bars:** each bar's height and grow delay are spacing and `animate-delay-*` classes in the bar list (`h-6`…`h-22.25`, `animate-delay-180`…`660`). The `--bar-delay` variable is gone from the `auth-bar-grow` token.
+    - **Confetti:** the 44 pieces build their classes from their index (the same formulas as before). New utilities `confetti-left-*`, `confetti-delay-*` and `confetti-duration-*` in `src/index.css` take whole numbers (percent and milliseconds); an `@source inline(...)` line lists every value used, so Tailwind generates them. The colours are token classes (`bg-criteria-1`, `bg-success`, …).
+    - **Measured** on the old and new code at 1440: the 5 bars and 44 pieces have identical computed heights, left positions, colours and animation timings. No inline style is left in `src/pages/`.
 - [ ] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
 - [ ] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.
 - [ ] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
