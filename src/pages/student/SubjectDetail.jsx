@@ -35,7 +35,7 @@ import {
 } from "@/lib/grades";
 import { getAchievement, getCelebrationMessage } from "@/lib/celebration";
 import { getSpaceSplitInitials } from "@/lib/format";
-import { getSubjectDetailTarget } from "@/lib/targets";
+import { getSubjectDetailTarget, parseTargetInput, setTermTarget } from "@/lib/targets";
 import { getTermLabel, toTermKey } from "@/lib/terms";
 import { getActiveStudentId } from "@/services/session";
 import { focusTaskRow } from "@/lib/dom/focusTask";
@@ -165,25 +165,14 @@ export function SubjectDetail() {
     const targetGrade = getSubjectDetailTarget(studentRecord, selectedTermKey);
 
     function updateTargetGrade(value) {
-        if (value === "") return;
-        const nextGrade = Number(value);
-        if (!Number.isFinite(nextGrade) || nextGrade < 0 || nextGrade > 100) return;
+        const nextGrade = parseTargetInput(value);
+        if (nextGrade === null) return;
 
         const currentDb = getDb();
         if (!currentDb) return;
-        const updatedDb = updateStudentRecord(currentDb, classItem.id, studentId, (record) => ({
-            ...record,
-            targetGradeSandbox: {
-                ...(record.targetGradeSandbox ?? {}),
-                terms: {
-                    ...(record.targetGradeSandbox?.terms ?? {}),
-                    [selectedTermKey]: {
-                        ...(record.targetGradeSandbox?.terms?.[selectedTermKey] ?? {}),
-                        desiredFinalGrade: nextGrade,
-                    },
-                },
-            },
-        }));
+        const updatedDb = updateStudentRecord(currentDb, classItem.id, studentId, (record) =>
+            setTermTarget(record, selectedTermKey, nextGrade),
+        );
 
         try {
             saveDb(updatedDb);

@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { focusTaskRow } from "@/lib/dom/focusTask";
-import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history";
+import { getEntryAccuracy, getGradeHistory, getPlanPoints, isSpotOn } from "@/lib/history";
 import { getTermTarget } from "@/lib/targets";
 import { getStudentClass } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
@@ -114,12 +114,12 @@ export function SubjectGradeHistory({ classId, termKey }) {
                 <p className="m-0 type-small text-muted-foreground *:text-foreground">
                     Your own entries were{" "}
                     <strong>
-                        {Math.abs(accuracy.averageGap) < 0.05
+                        {isSpotOn(accuracy.averageGap)
                             ? "spot on"
                             : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
                     </strong>
-                    {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the official
-                    scores that replaced them ({accuracy.count} task
+                    {isSpotOn(accuracy.averageGap) ? " compared with" : " than"} the official scores
+                    that replaced them ({accuracy.count} task
                     {accuracy.count === 1 ? "" : "s"}).
                 </p>
             )}

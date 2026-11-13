@@ -308,3 +308,20 @@ export function getChartScale(values, steps) {
     const yTop = 100 + Math.max(2, (100 - yTicks[0]) * 0.06);
     return { yDomain: [yTicks[0], yTop], yTicks, xDomain: [1, Math.max(lastStep, 2)], xTicks };
 }
+
+// How far the latest grade is from the target (positive: above it), or null
+// when either is missing.
+export function getTargetGap(latest, target) {
+    return latest === null || target === null ? null : latest - target;
+}
+
+// A gap this small counts as "on target".
+export function isOnTarget(gap) {
+    return Math.abs(gap) < 0.005;
+}
+
+// The student's own entries count as "spot on" when, on average, they were
+// this close to the official scores that replaced them.
+export function isSpotOn(averageGap) {
+    return Math.abs(averageGap) < 0.05;
+}

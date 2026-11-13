@@ -1111,7 +1111,15 @@ They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, aft
   - **As done:** `removeEnrollment(db, { classId, studentId, subjectCode, subjectName })` in `lib/subjects.js` holds the data change, moved unchanged; it returns the new db, or `null` for an unknown class. The Sidebar keeps reading the db, saving and leaving the subject's page. Four new tests (373 in all). Checklist F1–F4 pass at 1440 and 375; DOM of the 30 states identical.
 - [x] **FU3 Shared components to `src/components/`.** `HistoryChart` (used by the sandbox), `TermNavigation` (used by the sandbox page) and `SandboxSubjectPicker` (used by the Sidebar). Moves only.
   - **As done:** moved with `git mv`, imports fixed, nothing else changed. `src/components/history-chart/` now holds `HistoryChart`, `HistoryChartFrame`, `HistoryTable`, `HistoryLegend`, `HistoryEmpty` and `HistoryTooltip`; `usePointHover` is in `src/hooks/`; `TermNavigation` and `SandboxSubjectPicker` are in `src/components/`. `features/history/` keeps `AllSubjectsHistory`, `SubjectGradeHistory` and `HistoryCard`; its empty `hooks/` folder is gone. DOM of the 30 states identical; screenshots match apart from the usual noise. `SPEC.md` names the old paths in F7, F9 and F11 and needs an owner-approved update.
-- [ ] **FU4 Maths out of components.** The sandbox's "Upcoming tasks" round-and-clamp and weight-to-share conversion, the pill editor's drag share sums, the history gap and "on target" and "spot on" thresholds, and Subject Detail's target check and save (T9.0 N6 and N7) move to `lib/`, with tests.
+- [x] **FU4 Maths out of components.** The sandbox's "Upcoming tasks" round-and-clamp and weight-to-share conversion, the pill editor's drag share sums, the history gap and "on target" and "spot on" thresholds, and Subject Detail's target check and save (T9.0 N6 and N7) move to `lib/`, with tests.
+  - **As done:** seven helpers, each the same expression the component used, with 11 new unit tests (384 in all):
+    - `lib/sandbox.js`: `toUpcomingCount` (0–20, rounded; empty counts as 0).
+    - `lib/rules.js`: `weightToShare` and `getHandleRatio` (used by both the pointer drag and the arrow keys).
+    - `lib/history.js`: `getTargetGap`, `isOnTarget` (under 0.005) and `isSpotOn` (under 0.05).
+    - `lib/targets.js`: `parseTargetInput` (0–100, empty or text gives `null`) and `setTermTarget` (N6, writes only `terms[term].desiredFinalGrade`).
+    - The components keep their wording and number formatting.
+    - N7, Subject Detail's read-update-save step, is a save flow rather than maths; it stays in the page with its own error message, and FU1 covers it.
+    - Checked: checklist G4–G6, G8–G10, G12, I1, I2, I6, I7, K1, K3, K5 and K8 pass at 1440 and 375; DOM of the 30 states identical.
 - [ ] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
 - [ ] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
 - [ ] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.

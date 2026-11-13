@@ -58,6 +58,8 @@ import {
     updateRule,
     validateRuleDetails,
     validateTree,
+    getHandleRatio,
+    weightToShare,
 } from "./rules.js";
 
 const NEW_ID = /^crit-[a-z0-9]+$/;
@@ -1319,5 +1321,21 @@ describe("impact of rule changes on recorded tasks", () => {
             lostTasks: [],
             lostTaskCount: 0,
         });
+    });
+});
+
+describe("weightToShare", () => {
+    it("turns a fraction into hundredths of a percent", () => {
+        expect(weightToShare(0.7)).toBe(7000);
+        expect(weightToShare(1 / 3)).toBe(3333);
+        expect(weightToShare(1)).toBe(TOTAL_SHARE);
+    });
+});
+
+describe("getHandleRatio", () => {
+    it("adds the shares before the divider to the left criterion's new share", () => {
+        const children = [{ share: 2000 }, { share: 3000 }, { share: 5000 }];
+        expect(getHandleRatio(children, 0, 2500)).toBe(0.25);
+        expect(getHandleRatio(children, 1, 4000)).toBe(0.6);
     });
 });

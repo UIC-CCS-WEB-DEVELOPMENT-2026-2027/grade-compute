@@ -7,13 +7,14 @@ import { useState } from "react";
 import { getDb, saveDb } from "@/services/db";
 import { getStudentClass, updateStudentRecord } from "@/services/records";
 import { calculateOfficialGrade, calculateUnofficialGrade } from "@/lib/grades";
-import { formatPercent } from "@/lib/rules";
+import { formatPercent, weightToShare } from "@/lib/rules";
 import { getActiveStudentId } from "@/services/session";
 import {
     getSandboxPlan,
     MAX_UPCOMING,
     requiredScore,
     setDraftScore,
+    toUpcomingCount,
     updateSandboxSettings,
     withDraftScores,
 } from "@/lib/sandbox";
@@ -459,9 +460,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                             </span>
                                                             <small className={CELL_NOTE}>
                                                                 {formatPercent(
-                                                                    Math.round(
-                                                                        criterion.weight * 10000,
-                                                                    ),
+                                                                    weightToShare(criterion.weight),
                                                                 )}{" "}
                                                                 of the term
                                                             </small>
@@ -504,17 +503,8 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
                                                                 aria-label={`Upcoming ${criterion.name} tasks not added yet`}
                                                                 onChange={(event) =>
                                                                     saveCriterion(criterion.id, {
-                                                                        upcoming: Math.max(
-                                                                            0,
-                                                                            Math.min(
-                                                                                MAX_UPCOMING,
-                                                                                Math.round(
-                                                                                    Number(
-                                                                                        event.target
-                                                                                            .value,
-                                                                                    ) || 0,
-                                                                                ),
-                                                                            ),
+                                                                        upcoming: toUpcomingCount(
+                                                                            event.target.value,
                                                                         ),
                                                                     })
                                                                 }

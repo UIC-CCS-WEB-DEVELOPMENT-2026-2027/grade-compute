@@ -23,7 +23,6 @@ import {
     InputGroupText,
 } from "@/components/ui/input-group";
 import {
-    TOTAL_SHARE,
     addCriterion,
     canAddCriterion,
     canDeleteCriterion,
@@ -32,6 +31,7 @@ import {
     dragHandle,
     findCriterion,
     formatPercent,
+    getHandleRatio,
     getLevelSegments,
     getPreviewSegments,
     renameCriterion,
@@ -127,8 +127,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         const span = rightBox.right - leftBox.left;
         if (span <= 0) return;
         const local = Math.min(1, Math.max(0, (event.clientX - leftBox.left) / span));
-        const before = children.slice(0, index).reduce((total, child) => total + child.share, 0);
-        const ratio = (before + local * (left.share + right.share)) / TOTAL_SHARE;
+        const ratio = getHandleRatio(children, index, local * (left.share + right.share));
 
         apply(dragHandle(tree, levelId, index, ratio));
     }
@@ -158,8 +157,7 @@ export function PillLevel({ tree, levelId, depth, structureLocked, onChange }) {
         }
 
         event.preventDefault();
-        const before = children.slice(0, index).reduce((total, child) => total + child.share, 0);
-        apply(dragHandle(tree, levelId, index, (before + leftShare) / TOTAL_SHARE, 1));
+        apply(dragHandle(tree, levelId, index, getHandleRatio(children, index, leftShare), 1));
     }
 
     // ---- Hover preview (mouse hover, tap on touch, keyboard focus) -----------
