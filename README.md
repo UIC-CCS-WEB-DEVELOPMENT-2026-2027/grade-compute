@@ -139,18 +139,22 @@ src/
 │   │                         # TargetGradeSandboxPage, GradeRules, RuleDetailPage
 │   └── settings/             # GlobalSettings (account settings)
 ├── features/                 # Code that belongs to one feature
-│   ├── auth/lib/             # Sign-in and registration checks
-│   ├── subjects/             # EnrolledSubjectsTable, AddSubjectForm
-│   ├── term-records/         # CurrentTermRecords, TermNavigation
-│   ├── grade-rules/          # Pill editor, rule cards and visuals, rule dialogs
-│   ├── sandbox/              # TargetGradeSandbox, SandboxSubjectPicker
-│   ├── history/              # Grade history charts, table, legend and tooltip
-│   └── settings/             # Settings sections (Profile, Account, Security, ...)
+│   ├── auth/                 # Login form (useAuthForm), sign-in checks, login preview
+│   ├── subjects/             # EnrolledSubjectsTable, AddSubjectForm, Subject Detail's
+│   │                         # logic (useSubjectDetail) and celebration
+│   ├── term-records/         # CurrentTermRecords
+│   ├── grade-rules/          # Pill editor, rule cards and visuals, rule dialogs,
+│   │                         # the rule editor's logic (useRuleEditor)
+│   ├── sandbox/              # TargetGradeSandbox
+│   ├── history/              # Dashboard and Subject Detail history cards
+│   └── settings/             # Settings sections and their logic (useGlobalSettings)
 ├── components/
 │   ├── ui/                   # shadcn/ui components (added with the shadcn CLI)
 │   ├── layout/               # Sidebar, Header, PageFooter, PageShell
-│   └── ...                   # Shared parts: GradeGauge, DraftInput, BackLink, BrandMark, ...
-├── hooks/                    # useDb, useSidebarState, useIsMobile
+│   ├── history-chart/        # Grade history chart, table, legend and tooltip
+│   └── ...                   # Shared parts: GradeGauge, DraftInput, TermNavigation,
+│                             # SandboxSubjectPicker, BackLink, BrandMark, ...
+├── hooks/                    # useDb, useSidebarState, useIsMobile, usePointHover
 ├── lib/                      # Plain JavaScript logic (no React): grades, rules, sandbox,
 │                             # history, subjects, terms, targets, scores, format, ...
 ├── services/                 # Data access: db.js, db.json, migrations.js, session.js,
