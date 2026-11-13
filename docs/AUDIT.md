@@ -446,6 +446,35 @@ The same pages were also measured in the browser (overflow, font sizes, target s
 | B21 | Settings › Security › 2FA: with no verified email or phone, **"Turn on" shows no message**. `startTwoFactorEnable` sets "Add and verify an email address or phone number before enabling two-factor authentication.", but the error line only renders inside the verification block, which needs a contact. `docs/BEHAVIOUR_CHECKLIST.md` L7 expects the message. Found in T7.L3; the old code behaves the same. **To do (owner, 2026-11-13): fix after the clean-up; kept until then.** |
 | B22 | Current Term Records tags a task by its kind, not by its score: a custom task always shows "Custom Addition" (also after the student adds a score), and a regular task without an official score always shows "Self Reported", even when it has no score yet. Unchanged since the original code. **To do (owner, 2026-11-13): refine how tasks are tagged after the feature freeze is lifted; it changes user-facing wording.** |
 
+### Error-handling findings (T-21, 2026-11-14)
+
+From the error-handling review, `docs/ERROR_HANDLING_REVIEW.md`, which gives for each one where it happens in the code, what the student sees today and the proposed fix. They are reported only, like the rows above: each fix is a proposed task on `docs/BOARD.md` and needs the owner's approval. **High** = the student loses data or can't use the app. **Medium** = a screen breaks or a change is lost, but only with unusual data or a failed save. **Low** = confusing, but nothing is lost.
+
+| # | Severity | Finding | Task |
+| --- | --- | --- | --- |
+| E1 | High | Stored data (`compugrade_db`) that isn't JSON, or is JSON of the wrong shape, **sends every signed-in page to the login page**. Logging in says "Refresh and try again", which never helps; only clearing the site's data does, and nothing says so | T-24 |
+| E2 | High | If saving upgraded (v1) data fails, for example because storage is full, `getDb()` returns `null` although the data was read and upgraded. Same lock-out as E1 | T-24 |
+| E3 | Medium | When the browser blocks site data, the login page says "Refresh and try again" and never explains that storage is blocked | T-24 |
+| E4 | Low | Data with a `schemaVersion` above 2 is used as if it were current. Nothing writes that today | none: revisit with the next `SCHEMA_VERSION` |
+| E5 | Low | A legacy rule whose weights can't be read silently becomes the standard rule | none: legacy data only |
+| E6 | High | **No error boundary.** Any exception while a screen renders leaves a blank white page | T-25 |
+| E7 | Medium | A class without `studentRecords`, or a database without `subjects`, crashes the Sidebar, so every signed-in page goes blank | T-27 |
+| E8 | Medium | A `null` entry in a term's task list blanks the Dashboard, Subject Detail and the sandbox | T-27 |
+| E9 | High | **Grade Rules and the rule editor overwrite newer data.** They build every save from the copy read when the page opened, so removing a subject in the Sidebar and then pressing Duplicate on a rule brings the subject back | T-23 |
+| E10 | Medium | A second tab keeps showing old grades until it's reloaded: `useDb` doesn't listen to the browser's `storage` event | T-29 |
+| E11 | Medium | Removing a subject when the save fails: the confirmation stays open and nothing says why | T-28 |
+| E12 | Medium | Six save messages show the browser's technical error text (for example "Failed to execute 'setItem' on 'Storage'…") | T-28 |
+| E13 | Low | Current Term Records' save error says "Unable to save sandbox changes" | T-28 |
+| E14 | Medium | The sandbox and the Subject Detail target drop a change without a word when the data can't be read at the moment of saving | T-28 |
+| E15 | Low | A failed Duplicate on the rule editor does nothing; Grade Rules shows the error in the same case | T-23 |
+| E16 | High | A damaged `compugrade-account` (not JSON) blanks Settings: its read isn't guarded | T-26 |
+| E17 | High | A failed account save blanks Settings right after "Profile picture saved.". The likely cause is the profile photo: it's stored as a data URL with no size limit, and a phone photo of a few MB exceeds the browser's storage limit | T-26 |
+| E18 | Low | Signing out a session in Settings saves without a guard, so on a failed save the button seems to do nothing | T-26 |
+| E19 | Low | A photo that can't be read does nothing: `FileReader` has no `onerror` | T-26 |
+| E20 | Low | The password and verification features need HTTPS or `localhost` (`crypto.subtle`, `crypto.randomUUID`), so they fail when the dev server is opened over plain HTTP on a phone. The deployed site is fine | T-31 |
+| E21 | Low | A Subject Detail target outside 0–100 quietly goes back to the old value, with no message (the sandbox shows one) | T-30 |
+| E22 | Low | Settings' account fields (email, phone and so on) accept anything | none: belongs with T-11 |
+
 ## 13. Assumption check
 
 | Assumption | Verdict | Evidence |
