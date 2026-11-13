@@ -13,6 +13,7 @@ you which file answers which question, and how the pieces fit.
 | `AGENTS.md` | The coding rules: folders, naming, styling, components, accessibility | Once in full, then whenever you're unsure. Every AI agent reads it too |
 | `docs/TEAM_WORKFLOW.md` | How we work in parallel: claiming tasks, areas, locks, branches, PRs | Once in full before your first task |
 | `docs/BOARD.md` | The to-do tracker: every task and who is on it | Every time you pick up work |
+| `docs/AI_WORKFLOW.md` | Which kind of AI tool you have, and the workflow for each kind | Before you use any AI tool (§4) |
 | `docs/AGENT_GUIDE.md` | How to use an AI agent that can see the repo (Claude Code, Codex, Cursor, …) | Before you use one (§4.1) |
 | `docs/ai-context/` | How to get usable code from a chat AI that can't see the repo | Before you use one (§4.2) |
 | `docs/AUDIT.md` | Known bugs (§12) and why things are the way they are | When something looks wrong |
@@ -67,7 +68,9 @@ task it closes and which screen widths you checked (375, 768, 1024, 1440). Keep 
 
 ## 4. Using AI tools
 
-Two kinds of AI tool need two different setups.
+**`docs/AI_WORKFLOW.md`** tells you which of three kinds your tool is (an agent, an editor
+assistant or a chat model) and walks through a task with each. Two of them need a setup of their
+own, described below.
 
 ### 4.1 Agents that can see the repo
 

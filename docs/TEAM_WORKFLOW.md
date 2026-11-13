@@ -182,6 +182,7 @@ screen checks in step 3 stay manual.
 
 ## 8. AI tools
 
+- Which kind of AI tool you have, and the workflow for each kind: `docs/AI_WORKFLOW.md`.
 - An agent that can see the repo (Claude Code, Codex, Cursor, …) follows `AGENTS.md`. Tell it the
   task ID and its areas, and that it may change only those folders.
 - A chat model that can't see the repo gets `docs/ai-context/CONTEXT_PACK.md` and the template in

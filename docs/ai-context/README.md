@@ -118,8 +118,8 @@ them on as errors.
 
 Notes on the drafts:
 
-- `main.jsx` imports `@/index.css`, which the CSS pattern allows. Today `components/Dialog.jsx`
-  imports `./Dialog.css`; T7.Z deletes both.
+- `main.jsx` imports `@/index.css`, which the CSS pattern allows. No other file imports a
+  stylesheet.
 - `no-restricted-globals` doesn't catch `window.localStorage`. Add a
   `MemberExpression[object.name='window'][property.name='localStorage']` selector to the syntax
   rule if that matters.

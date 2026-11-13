@@ -27,6 +27,7 @@ the Claude Code settings. After cloning there is nothing to install for the agen
 | Codex | `AGENTS.md`; skills in `.agents/skills/` | |
 | Cursor, Copilot, others | Most read `AGENTS.md` from the repo root | Check your tool's docs. If it doesn't, start every session with "Read AGENTS.md in full before doing anything" |
 | Gemini CLI | `GEMINI.md` by default | Set its context file name to `AGENTS.md` in your Gemini settings, or tell it to read the file at the start |
+| Inline autocomplete (Copilot completions, Cursor Tab) and editor chat in ask-only mode | Mostly the files you have open; usually not `AGENTS.md` | Not an agent: it copies the code around it and can't run checks. Keep a similar, correct file open as a pattern. Treat what it writes like chat-model output: run the checks and the search list in `docs/ai-context/PROMPT_TEMPLATE.md` ("Before you use the answer", step 4) |
 
 - **Only Claude Code enforces the `SPEC.md` protection with a prompt.** In the other tools it relies
   on the agent following `AGENTS.md` §2. Check every diff for `SPEC.md` changes yourself.
