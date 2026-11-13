@@ -126,17 +126,18 @@ src/
     …             Shared app components used by two or more features
   hooks/          Shared hooks (e.g. useDb, useSidebarState)
   lib/            Pure logic and helpers, no React. Grade computation lives here
-                  Today in utils/: grades, rules, sandbox, history, subjects, terms
+                  (grades, rules, sandbox, history, subjects, terms, targets,
+                  scores, format, number, celebration)
                   DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
   services/       Data access and storage
-                  Today in utils/: db, db.json, migrations, session,
-                  localAccountStore, prototypeVerification
+                  (db, db.json, migrations, session, records,
+                  localAccountStore, prototypeVerification)
   assets/         Logo, images, fonts, sounds
   index.css       The only global stylesheet
 ```
 
 - A file lives with the feature that uses it. It moves to a shared folder only when a second feature needs it.
-- One exported component per file. The file name matches the component name. Small private sub-components that only that file uses may stay in it (for example chart dot renderers, `Gauge`, `PasswordField`).
+- One exported component per file. The file name matches the component name. Small private sub-components that only that file uses may stay in it (for example chart dot renderers, `SandboxStep`, `PasswordField`).
 - Import across folders with the `@/` alias (maps to `src/`). No `../../..` chains.
 
 ## 6. Code conventions

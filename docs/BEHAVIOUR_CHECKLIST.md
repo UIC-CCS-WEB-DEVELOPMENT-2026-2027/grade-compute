@@ -6,7 +6,7 @@ Some results below are known bugs (`docs/AUDIT.md` §12). They are listed as the
 
 ## Before you start
 
-1. Open the app (`npm run dev`, `http://localhost:5173`) in a fresh browser profile, or clear the site's storage. On load the app seeds `localStorage` (`compugrade_db`) from `src/utils/db.json`.
+1. Open the app (`npm run dev`, `http://localhost:5173`) in a fresh browser profile, or clear the site's storage. On load the app seeds `localStorage` (`compugrade_db`) from `src/services/db.json`.
 2. The date matters (AUDIT B12). The results below assume a date from **August to December 2026**, which is First Semester 2026–2027. From January to July, the seed subject drops off the Dashboard.
 3. Unless an item says otherwise, sign in as the demo student: `ysa@student.edu` (or `U1`) with the password `password123`.
 4. Seed data:

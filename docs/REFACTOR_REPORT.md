@@ -148,4 +148,4 @@ Nothing here was changed. What the branding branch will find:
 - **Owner to-dos:** fix B21, and review error handling.
 - **Follow-up branches in `SPEC.md` §2:** branding; semesters (B7, B12); the features the UI already points to (B13); gauge enhancements (F17).
 - **Decide one by one** which of the kept bugs in section 5 to fix (`SPEC.md` §9 Backlog).
-- **Optionally:** the SPEC text updates in section 7, and the AGENTS items in section 6.
+- **Follow-up tasks FU1–FU12** (`docs/TASKS.md` §9, owner decision 2026-11-13): the AGENTS items in section 6.

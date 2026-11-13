@@ -1093,3 +1093,20 @@ The owner answered on 2026-11-11:
 - the owner's homepage idea, in the §9 Backlog. It is a new feature, so it is not built in this job.
 
 Nothing is left open.
+
+## 9. Follow-up tasks (after the clean-up)
+
+Owner decision (2026-11-13): the open `AGENTS.md` §5–7 items found in T9.5 become follow-up tasks. They are not part of the clean-up job; each needs its own branch or task, and any that changes behaviour needs the owner's approval first.
+
+- [ ] **FU1 Pages only compose.** Move the logic out of `RuleDetailPage` (validation, saving, dialogs), `GlobalSettings` (account and security state and handlers), `SubjectDetail` (celebration, audio, target saving) and `LoginRegister` (sign-in and registration flows) into hooks, `lib/` or `services/`.
+- [ ] **FU2 Remove-subject logic out of the Sidebar.** `removeSubjectEnrollment` becomes a pure function in `lib/subjects.js` or `services/`, with tests.
+- [ ] **FU3 Shared components to `src/components/`.** `HistoryChart` (used by the sandbox), `TermNavigation` (used by the sandbox page) and `SandboxSubjectPicker` (used by the Sidebar). Moves only.
+- [ ] **FU4 Maths out of components.** The sandbox's "Upcoming tasks" round-and-clamp and weight-to-share conversion, the pill editor's drag share sums, the history gap and "on target" and "spot on" thresholds, and Subject Detail's target check and save (T9.0 N6 and N7) move to `lib/`, with tests.
+- [ ] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
+- [ ] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
+- [ ] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
+- [ ] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
+- [ ] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
+- [ ] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
+- [ ] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.
+- [ ] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
