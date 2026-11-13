@@ -1,7 +1,3 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getDb, saveDb } from "@/services/db";
-import { ACTIVE_USER_KEY } from "@/services/session";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -16,149 +12,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    authenticateAccount,
-    PASSWORD_REQUIREMENTS,
-    registerAccount,
-    validateAuthFields,
-} from "@/features/auth/lib/accounts";
+import { PASSWORD_REQUIREMENTS } from "@/features/auth/lib/accounts";
 import documentIcon from "@/assets/document-icon.svg";
-import graduationCap from "@/assets/graduation-cap.svg";
 import sparkle from "@/assets/decorative-sparkle.svg";
 import sparkleSmall from "@/assets/decorative-sparkle-small.svg";
 import sparkleTiny from "@/assets/decorative-sparkle-tiny.svg";
-import targetStar from "@/assets/target-star.svg";
-import openTargetButton from "@/assets/open-target-button.svg";
-import openArrow from "@/assets/open-arrow.svg";
-import greenStatusDot from "@/assets/green-status-dot.svg";
-import notificationCheckBadge from "@/assets/notification-check-badge.svg";
-import notificationCheck from "@/assets/notification-check.svg";
-import dottedHeaderDivider from "@/assets/dotted-header-divider.svg";
-import chartLowerRule from "@/assets/chart-lower-rule.svg";
 import { cn } from "@/lib/utils";
-
-// Each bar's height (24, 41, 54, 72 and 89px) and grow delay (180ms, then
-// 120ms more per bar).
-const previewScores = [
-    {
-        value: 84,
-        height: "h-6",
-        delay: "animate-delay-180",
-        label: "Quiz 1",
-        bar: "from-self-reported/40 to-self-reported/30",
-    },
-    {
-        value: 88,
-        height: "h-10.25",
-        delay: "animate-delay-300",
-        label: "Lab 1",
-        bar: "from-self-reported/70 to-self-reported/55",
-    },
-    {
-        value: 91,
-        height: "h-13.5",
-        delay: "animate-delay-420",
-        label: "Quiz 2",
-        bar: "from-self-reported to-self-reported/80",
-    },
-    {
-        value: 93,
-        height: "h-18",
-        delay: "animate-delay-540",
-        label: "Midterm",
-        bar: "from-primary to-self-reported",
-    },
-    {
-        value: 95,
-        height: "h-22.25",
-        delay: "animate-delay-660",
-        label: "Target",
-        bar: "from-self-reported-foreground to-primary shadow-card",
-    },
-];
-
-function AcademicPreview() {
-    return (
-        <div
-            className="relative mt-8 ml-6 w-full max-w-114 pb-7 animate-auth-float motion-reduce:animate-none max-xl:ml-3"
-            aria-label="Example grade progress, from 84 percent to a 95 percent target"
-        >
-            <div className="relative min-h-63 w-full -rotate-6 rounded-lg border border-border bg-card px-4 pt-4 pb-7 shadow-hover">
-                <div className="flex items-center gap-2">
-                    <span className="grid size-7 place-items-center rounded-md bg-secondary">
-                        <img className="block" src={graduationCap} alt="" />
-                    </span>
-                    <div className="grid flex-1 gap-px">
-                        <small className="type-caption text-primary">YOU'RE VERY ON TRACK</small>
-                        <span className="type-caption font-normal text-muted-foreground">
-                            A plan for your Q1 target
-                        </span>
-                    </div>
-                    <span className="relative grid size-6 place-items-center" aria-hidden="true">
-                        <img className="absolute inset-0" src={openTargetButton} alt="" />
-                        <img className="relative" src={openArrow} alt="" />
-                    </span>
-                </div>
-                <img className="mt-3 mb-2 block max-w-full" src={dottedHeaderDivider} alt="" />
-                <div className="flex items-center gap-3">
-                    <span className="type-caption font-normal text-muted-foreground">
-                        My grade target
-                    </span>
-                    <em className="flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-1.5 py-0.5 type-caption not-italic text-success">
-                        <img src={greenStatusDot} alt="" /> On Track
-                    </em>
-                    <strong className="ml-auto flex items-center gap-1 type-card-title text-primary">
-                        96% <img src={targetStar} alt="" />
-                    </strong>
-                </div>
-                <div
-                    className="relative mt-3 flex h-32 items-end gap-4 px-3 pt-1"
-                    aria-hidden="true"
-                >
-                    {previewScores.map(({ value, height, delay, label, bar }) => (
-                        <div
-                            className="flex h-full min-w-0 flex-1 flex-col items-center justify-end"
-                            key={label}
-                        >
-                            <div className={cn("group/bar relative mb-2 w-full", height)}>
-                                <small className="absolute -top-6 left-0 w-full text-center type-caption font-normal text-muted-foreground">
-                                    {value}%
-                                </small>
-                                <span className="block size-full origin-bottom transition duration-850 ease-auth group-hover/bar:scale-y-108 group-hover/bar:brightness-112 group-hover/bar:saturate-115">
-                                    <i
-                                        className={cn(
-                                            "block size-full origin-bottom animate-auth-bar-grow rounded-t-md bg-linear-to-b",
-                                            delay,
-                                            bar,
-                                        )}
-                                    />
-                                </span>
-                            </div>
-                            <span className="type-caption font-normal text-muted-foreground">
-                                {label}
-                            </span>
-                        </div>
-                    ))}
-                    <img
-                        className="absolute bottom-5 left-0 max-w-full"
-                        src={chartLowerRule}
-                        alt=""
-                    />
-                </div>
-            </div>
-            <div className="absolute -right-24 bottom-0 flex animate-auth-note-enter items-center gap-1.5 rounded-md border border-primary bg-card px-2.5 py-2 type-caption font-normal text-muted-foreground shadow-card motion-reduce:animate-none max-xl:-right-6">
-                <span
-                    className="relative grid size-5.5 shrink-0 place-items-center"
-                    aria-hidden="true"
-                >
-                    <img className="absolute inset-0" src={notificationCheckBadge} alt="" />
-                    <img className="relative" src={notificationCheck} alt="" />
-                </span>
-                <div>Make Your Target Grade a Reality</div>
-            </div>
-        </div>
-    );
-}
+import { AcademicPreview } from "@/features/auth/components/AcademicPreview";
+import { useAuthForm } from "@/features/auth/hooks/useAuthForm";
 
 // One line of space is kept under each field for its error, so the form
 // doesn't move when an error appears. The error is announced (role="alert").
@@ -237,160 +98,33 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, error, i
 }
 
 export function LoginRegister() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [activeTab, setActiveTab] = useState("login");
-    const [fullName, setFullName] = useState("");
-    const [registrationRole, setRegistrationRole] = useState("student");
-    const [identifier, setIdentifier] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [infoMessage, setInfoMessage] = useState("");
-    const [fieldErrors, setFieldErrors] = useState({});
-    const [showPasswordHints, setShowPasswordHints] = useState(false);
-    const isRegister = activeTab === "register";
-
-    const changeAuthMode = (mode) => {
-        if (mode === activeTab) return;
-        setActiveTab(mode);
-        setFullName("");
-        setRegistrationRole("student");
-        setIdentifier("");
-        setPassword("");
-        setConfirmPassword("");
-        setShowPassword(false);
-        setShowConfirmPassword(false);
-        setFieldErrors({});
-        setShowPasswordHints(false);
-        setErrorMessage("");
-        setInfoMessage("");
-    };
-
-    const clearFieldError = (field) => {
-        setFieldErrors((previous) => {
-            const next = { ...previous };
-            delete next[field];
-            return next;
-        });
-        setErrorMessage("");
-        setInfoMessage("");
-    };
-
-    const focusFirstError = (form, errors) => {
-        form.elements.namedItem(Object.keys(errors)[0])?.focus?.();
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        setErrorMessage("");
-        setInfoMessage("");
-        const fields = { fullName, role: registrationRole, identifier, password, confirmPassword };
-        const invalidFields = validateAuthFields({ ...fields, mode: activeTab });
-        setFieldErrors(invalidFields);
-        setShowPasswordHints(Boolean(isRegister && invalidFields.password));
-        if (Object.keys(invalidFields).length) {
-            focusFirstError(form, invalidFields);
-            return;
-        }
-        let database;
-        try {
-            database = getDb();
-        } catch {
-            setErrorMessage("Saved account data could not be read. Refresh and try again.");
-            return;
-        }
-        if (!database || !Array.isArray(database.users)) {
-            setErrorMessage("Account data is unavailable. Refresh and try again.");
-            return;
-        }
-        if (
-            database.users.some(
-                (account) =>
-                    !account || typeof account !== "object" || typeof account.id !== "string",
-            )
-        ) {
-            setErrorMessage(
-                "Saved account data is incomplete. Please contact your project administrator.",
-            );
-            return;
-        }
-        const clearPreviousSession = () => {
-            try {
-                localStorage.removeItem(ACTIVE_USER_KEY);
-                return true;
-            } catch {
-                setErrorMessage(
-                    "The previous sign-in could not be cleared. Check browser storage and try again.",
-                );
-                return false;
-            }
-        };
-        let user;
-        if (isRegister) {
-            const registration = registerAccount(database, fields);
-            if (registration.errors) {
-                setFieldErrors(registration.errors);
-                focusFirstError(form, registration.errors);
-                return;
-            }
-            user = registration.user;
-            try {
-                saveDb(registration.database);
-            } catch {
-                setErrorMessage(
-                    "Your account could not be saved. Check browser storage and try again.",
-                );
-                return;
-            }
-            if (user.role === "professor") {
-                if (!clearPreviousSession()) return;
-                changeAuthMode("login");
-                setIdentifier(user.email);
-                setInfoMessage("Professor account created. Your workspace is coming soon.");
-                return;
-            }
-        } else {
-            const authentication = authenticateAccount(database, identifier, password);
-            if (authentication.errors) {
-                setFieldErrors(authentication.errors);
-                focusFirstError(form, authentication.errors);
-                return;
-            }
-            user = authentication.user;
-            if (user.role !== "student") {
-                if (!clearPreviousSession()) return;
-                setInfoMessage(
-                    user.role === "professor"
-                        ? "Login verified. The Professor Workspace is coming soon."
-                        : "Login verified. This workspace is not available yet.",
-                );
-                return;
-            }
-        }
-        try {
-            localStorage.setItem(ACTIVE_USER_KEY, user.id);
-        } catch {
-            if (isRegister) {
-                changeAuthMode("login");
-                setIdentifier(user.email);
-                setErrorMessage("Account saved. Automatic sign-in failed; please log in.");
-            } else
-                setErrorMessage("Sign-in could not be saved. Check browser storage and try again.");
-            return;
-        }
-        const requestedPath = location.state?.from;
-        const destination =
-            !isRegister &&
-            typeof requestedPath === "string" &&
-            (requestedPath === "/settings" || requestedPath.startsWith("/student/"))
-                ? requestedPath
-                : "/student/dashboard";
-        navigate(destination, { replace: true });
-    };
+    const {
+        activeTab,
+        fullName,
+        setFullName,
+        registrationRole,
+        setRegistrationRole,
+        identifier,
+        setIdentifier,
+        password,
+        setPassword,
+        confirmPassword,
+        setConfirmPassword,
+        showPassword,
+        setShowPassword,
+        showConfirmPassword,
+        setShowConfirmPassword,
+        errorMessage,
+        setErrorMessage,
+        infoMessage,
+        setInfoMessage,
+        fieldErrors,
+        showPasswordHints,
+        isRegister,
+        changeAuthMode,
+        clearFieldError,
+        handleSubmit,
+    } = useAuthForm();
     return (
         <main className="flex min-h-svh flex-col bg-card font-sans text-foreground lg:grid lg:grid-cols-12">
             <section
