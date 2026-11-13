@@ -967,7 +967,8 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
     4. **Dependencies:** `@types/react` and `@types/react-dom` uninstalled (D6). Every other package is used.
     5. **Comments:** removed the 17 citations of the four missing `.txt` documents and the 35 first-line path comments naming old locations (`// src/utils/…`, `// src/components/student/…`, `/* src/index.css */`). Comments naming old paths mid-file now name the current ones (`lib/…`, `services/db.json`, `RuleDetailPage.jsx`), and the `index.css` notes no longer say which deleted stylesheet a rule came from.
     6. Checked: the rendered DOM of the 30 states differs only by the removed classes, and all 56 screenshots match apart from the usual login and Subject Detail chart noise.
-- [ ] **T9.2** Lint, format check, build, all tests.
+- [x] **T9.2** Lint, format check, build, all tests.
+  - **As done (at `23c97e5`):** `npm run lint` no problems; `npm run format:check` "All matched files use Prettier code style!"; `npm run build` succeeds (CSS 160 kB, 24.8 kB gzipped; JS 1,115 kB, 330 kB gzipped, with Vite's usual over-500 kB chunk warning, kept as in §7); `npm test` 19 files, 369 tests passed.
 - [ ] **T9.3** Walk `docs/BEHAVIOUR_CHECKLIST.md` in full.
 - [ ] **T9.4** `npm run screenshots -- docs/after`.
 - [ ] **T9.5** Check `AGENTS.md` §5–7 and list the remaining violations.
