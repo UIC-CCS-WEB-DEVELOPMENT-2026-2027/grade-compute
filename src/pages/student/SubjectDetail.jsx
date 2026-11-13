@@ -382,7 +382,7 @@ function CelebrationDialog({ message, onClose }) {
                         <XIcon aria-hidden="true" />
                     </DialogClose>
                     <span
-                        className="block animate-celebration-sparkle text-4xl leading-none text-highlight-text motion-reduce:animate-none"
+                        className="block animate-celebration-sparkle text-glyph leading-none text-highlight-text motion-reduce:animate-none"
                         aria-hidden="true"
                     >
                         ✦
@@ -397,7 +397,7 @@ function CelebrationDialog({ message, onClose }) {
                         {message}
                     </DialogDescription>
                     <span
-                        className="mt-4 block animate-celebration-trophy text-4xl motion-reduce:animate-none"
+                        className="mt-4 block animate-celebration-trophy text-glyph motion-reduce:animate-none"
                         aria-hidden="true"
                     >
                         🏆

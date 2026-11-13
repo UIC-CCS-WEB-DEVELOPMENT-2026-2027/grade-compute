@@ -233,6 +233,11 @@
     --spacing-picker-list: min(55vh, 26.25rem);
     --spacing-rule-dialog-list: min(40vh, 18.75rem);
 
+    /* Decorative glyphs that stand in for icons (the celebration's sparkle
+       and trophy). They are not text, so they sit outside the text roles. */
+    --text-glyph: 2.25rem;
+    --text-glyph--line-height: 2.5rem;
+
     /* Login page motion. */
     --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
     --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;

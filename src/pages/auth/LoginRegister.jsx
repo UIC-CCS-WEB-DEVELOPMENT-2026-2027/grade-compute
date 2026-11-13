@@ -80,7 +80,7 @@ function AcademicPreview() {
                     <em className="flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-1.5 py-0.5 type-caption not-italic text-success">
                         <img src={greenStatusDot} alt="" /> On Track
                     </em>
-                    <strong className="ml-auto flex items-center gap-1 font-heading text-xl leading-6 font-semibold text-primary">
+                    <strong className="ml-auto flex items-center gap-1 type-card-title text-primary">
                         96% <img src={targetStar} alt="" />
                     </strong>
                 </div>
