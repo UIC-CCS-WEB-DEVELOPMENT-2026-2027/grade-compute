@@ -143,7 +143,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - A subject a professor creates uses that professor's rule.
   - A subject a student creates uses a rule the student makes.
   - If a student-made subject is later linked to a professor-made one, it is overwritten by the professor-made subject and its rule (see §10).
-- **Files:** `src/lib/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/features/grade-rules/components/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,DeleteRuleDialog}.jsx`, `src/components/Dialog.jsx`
+- **Files:** `src/lib/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/features/grade-rules/components/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,RuleLegend,DeleteRuleDialog,DeleteRuleButton,RuleDialog,RuleSubjectList,RuleWarning}.jsx`
 
 ### F11. Historical analytics — [PARTIAL]
 
@@ -151,7 +151,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - per subject and term, a line of the expected term grade after each task, with ghost points, the target-reached marker, the 75% passing line, the plan line and a table fallback
   - the all-subjects chart on the Dashboard
 - **Missing:** semester-over-semester GPA growth, and trends across subject categories.
-- **Files:** `src/lib/history.js`, `src/features/history/components/{HistoryChart,AllSubjectsHistory,SubjectGradeHistory,HistoryTooltip}.jsx`, `src/features/history/hooks/usePointHover.js`, `src/lib/dom/cssColor.js`
+- **Files:** `src/lib/history.js`, `src/features/history/components/{HistoryChart,HistoryChartFrame,HistoryTable,HistoryLegend,HistoryEmpty,HistoryCard,AllSubjectsHistory,SubjectGradeHistory,HistoryTooltip}.jsx`, `src/features/history/hooks/usePointHover.js`, `src/lib/dom/cssColor.js`
 
 ### F12. Target-reached celebration — [BUILT]
 
@@ -180,7 +180,7 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
   - Help opens only from Security (B2)
   - Download and Clear do nothing, and the toggles aren't saved (B3)
   - the account is stored per browser, not per user, and changing the password here doesn't change the login password (B4)
-- **Files:** `src/pages/settings/GlobalSettings.jsx`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js`, `src/features/settings/components/SettingRow.jsx`, `src/features/settings/components/ToggleSetting.jsx`
+- **Files:** `src/pages/settings/GlobalSettings.jsx`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js`, `src/features/settings/components/{ProfileSection,AccountSection,SecuritySection,NotificationsSection,AccountActionsSection}.jsx`
 
 ### F15. Stored-data upgrade — [BUILT]
 
@@ -194,7 +194,7 @@ Data saved in schema v1 is upgraded to v2 when it is read. `src/services/migrati
 - **Subject Detail:** two ring gauges, official and expected. Each is filled with the term grade, clamped to 0–100, and has a marker at the target.
 - **Sandbox:** the same gauge.
 - **Planned:** enhancements to the gauge after the clean-up job (§2).
-- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/features/sandbox/components/TargetGradeSandbox.jsx` (`Gauge`)
+- **Files:** `src/components/GradeGauge.jsx`, used by `src/pages/student/SubjectDetail.jsx` and `src/features/sandbox/components/TargetGradeSandbox.jsx`
 
 ### F18. Conversational sandbox copy — [PARTIAL]
 
@@ -235,6 +235,7 @@ See §6.
   - enrolled-subjects table: 1 decimal, trailing zeros removed
   - Subject Detail gauges: 0 decimals on screen, 2 in the aria label
   - sandbox, history and tooltips: 2 decimals, trailing zeros removed
+  - a task's score percentage in the history table and tooltip: 1 decimal, trailing zero kept ("90.0%")
   - sandbox gauge aria label: 0 decimals
 - **Status** (`subjects.js`), from the expected final grade:
   - "Passing" at 75 or more (`PASSING_GRADE`)
@@ -298,7 +299,7 @@ See §6.
 - Only while the page is open, on the same subject and term.
 - Shows a message, plays audio and runs confetti for 6 seconds.
 
-**Score-entry validation** (inside the components, duplicated)
+**Score-entry validation** (`scores.js`, `validateScore`; each component shows its own message)
 
 - digits only
 - between 0 and `maxScore`
@@ -373,14 +374,14 @@ See §6.
   - the professor creates subjects with their own rules and enters official scores (F6, F10)
   - the administrator verifies subjects (F3)
 
-The code already contains these non-student pieces. All except (f) and (g) are kept. None of them gives access to anything:
+The code contains, or contained, these non-student pieces. (f) and (g) are gone; the rest are kept. None of them gives access to anything:
 
 - (a) **Registering as a Professor** saves the account and shows "Professor account created. Your workspace is coming soon."
 - (b) **Professor and admin logins** are checked and then stopped, with "Login verified. The Professor Workspace is coming soon." or "Login verified. This workspace is not available yet."
 - (c) **Commented-out routes and imports** in `src/app/App.jsx` point to professor and admin pages that don't exist.
 - (d) **Seed accounts:** professor `U2` and admin `U3`.
 - (e) **Verification data:** `verificationQueue` requests and the class `status` field. `addSubject` writes them, but no one can act on them yet.
-- (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It is dead code and is deleted in Phase 5a of the clean-up job (owner decision, Gate 3, 2026-11-11).
+- (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It was dead code and was deleted in Phase 5a of the clean-up job (T5a.1; owner decision, Gate 3, 2026-11-11).
 - (g) **Settings** shows the label "Workspace: Student", left over from a discontinued workspace-switching feature. It was removed when Settings moved onto the shared page shell (T7.L0, 2026-11-12; owner decision, 2026-11-11).
 
 ## 7. UX principles (from the project details)
@@ -450,3 +451,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-12:** F13: sidebar thresholds (767/1023) and the Ctrl/⌘+B shortcut, after the sidebar rebuild (owner approved).
 - **2026-11-12:** F14: Settings uses the shared page shell, with its sections as tabs (T7.L0, owner approved).
 - **2026-11-12:** §6 (g): the "Workspace: Student" label has been removed (T7.L0, owner approved).
+- **2026-11-13:** F10, F11, F14, F17, §4 and §6: file lists, score validation, score-percentage rounding and the deleted prototype brought up to date after the clean-up (T9.6, owner approved).
