@@ -171,8 +171,11 @@ quickly, then free the lock.
    never held back for the second.
 7. **The owner reviews and merges every PR** (Jun Mari Manla), then deletes the branch.
 
-CI comes next: task T-18 adds a GitHub Actions workflow that runs these checks on every PR. Until
-it is merged, step 1 is on the honour system.
+**CI checks step 1.** The GitHub Actions workflow in `.github/workflows/ci.yml` runs the same four
+checks on Node 22 for every pull request and every push to `main`. A PR with a failing run isn't
+merged: fix it and push again. Still run the checks locally before you open the PR, because CI
+confirms them and doesn't replace them. Playwright and the screenshots aren't part of CI, so the
+screen checks in step 3 stay manual.
 
 ## 8. AI tools
 
