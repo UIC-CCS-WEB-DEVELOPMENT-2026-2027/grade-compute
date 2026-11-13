@@ -9,32 +9,11 @@ file access) produce code that fits CompUGrade's standards.
 | `PROMPT_TEMPLATE.md` | The task block to fill in, what files to paste with it, and how to check the answer |
 | `README.md` | This file: placeholders to resolve, upkeep, and the lint rules that back the pack up |
 
-> **Status:** drafted on 2026-11-12, during the clean-up job, for use **after** it ends. It is not
-> part of the clean-up task list. Don't use it until §1 below is empty.
+## 1. Status
 
-## 1. Placeholders to resolve after the clean-up
-
-Each `⟦TBD-n⟧` in the other files is a fact that is still moving. Resolve them once Phase 9 is
-done, then delete the marker and its row here.
-
-| # | In | What to fill in | Settled by |
-| --- | --- | --- | --- |
-| TBD-1 | pack §2 | The final dependency list | T9.1 (unused dependencies removed) |
-| TBD-2 | pack §4 R1 | Files that still need a default export because a tool requires it, or "none" | T9.5 |
-| TBD-3 | pack §4 R15 | The touch-target convention: which prefix (`max-md:` or `max-lg:`) and whether `Button` / `Input` apply 44px themselves | Phase 8 (T8.1–T8.9) |
-| TBD-4 | pack §4 R23 | Branding rules once the branding branch is done; the `.brand-*` / `.auth-brand-*` CSS exception | The branding branch |
-| TBD-5 | pack §4 R25 | Scope rules for the next job (is the feature freeze lifted? what is allowed?) | Owner, when `AGENTS.md` §3 is updated |
-| TBD-6 | pack §5.1 | The final colour token table, checked against `src/index.css` | T7.Z (translucent-white tokens and aliases removed), Phase 8 |
-| TBD-7 | pack §5.2 | Whether headings still need `m-0`, and whether the base heading style remains | T7.P (Tailwind preflight on) |
-| TBD-8 | pack §6.1 | The final shadcn component list, and `Button` variants and sizes | T7.Z (`components/Dialog.jsx` removed), Phase 8 |
-| TBD-9 | pack §6.2 | The final shared and feature components worth reusing, with props | T9.1, T9.5 |
-| TBD-10 | pack §9 | One real, finished component (40–80 lines) to replace the illustration | T9.5 (pick one with no remaining violations) |
-| TBD-11 | template, "Before you use the answer" | Which manual checks can go once the lint rules in §4 are in place | When §4 is done |
-
-Also re-check, against the code at the end of the job, everything the pack states as fact:
-routes (§3), text role sizes (§5.2), control sizes (§5.3), shadows and layers (§5.5), the `lib/`
-function names (§7) and the test helpers (§8). They were correct on 2026-11-12, but Phases 7–9 may
-still change them.
+Ready to use. The placeholders were resolved on 2026-11-13, after the clean-up and its follow-ups,
+and every fact in the pack was re-checked against the code then. Re-check R23 when the branding
+branch is merged.
 
 ## 2. Keeping it accurate
 

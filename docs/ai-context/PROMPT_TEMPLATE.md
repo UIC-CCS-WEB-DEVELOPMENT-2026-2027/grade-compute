@@ -69,8 +69,8 @@ Paste the files into the repo, then:
 2. `npm run lint`, `npm run format:check`, `npm run build`, `npm test`. All must pass.
 3. Read the model's **Assumptions**, **Rule exceptions** and **Needs** lists. Check each assumption
    against the real code.
-4. Search the changed files for what lint can't catch yet ⟦TBD-11: drop the items that the lint
-   rules in `README.md` §4 cover once they are in place⟧:
+4. Search the changed files for what lint can't catch yet (drop an item here once the lint rules
+   in `README.md` §4 cover it; board task T-19):
    - `#`, `rgb(`, `hsl(`, `-[` inside `className` strings (R9, R10)
    - `text-xs`, `text-sm`, `text-lg`, `font-bold`, `leading-` without a `type-*` role (R11)
    - `<button`, `<input`, `<select`, `<dialog`, `role="dialog"` written by hand (R16)
