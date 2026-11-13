@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
@@ -264,20 +265,10 @@ export function HistoryChart({
         plan.length > 0 && ["plan", "Plan for remaining tasks"],
         target !== null && ["target", `${targetLabel} ${formatGrade(target)}`],
         ["passing", `Passing ${PASSING_GRADE}%`],
-    ].filter(Boolean);
-    const legend = (
-        <p className="m-0 flex flex-wrap gap-2 type-caption font-normal text-muted-foreground">
-            {legendItems.map(([mark, text]) => (
-                <span
-                    key={mark}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2 py-1"
-                >
-                    <i className={cn("inline-block", LEGEND_MARKS[mark])} aria-hidden="true" />{" "}
-                    {text}
-                </span>
-            ))}
-        </p>
-    );
+    ]
+        .filter(Boolean)
+        .map(([mark, text]) => ({ mark: LEGEND_MARKS[mark], text }));
+    const legend = <HistoryLegend items={legendItems} />;
 
     const table = (
         <HistoryTable

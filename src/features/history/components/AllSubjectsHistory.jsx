@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getCriteriaColor } from "@/lib/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
@@ -20,6 +19,7 @@ import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 
 // Strong colors first so the first lines read well on white.
@@ -123,27 +123,23 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
     }
 
     const legend = (
-        <p className="m-0 flex flex-wrap gap-2 type-caption font-normal text-muted-foreground">
-            {[
-                [
-                    "h-0.75 w-4.5 rounded-xs bg-primary",
-                    "Grade so far (filled dot: official, hollow: yours)",
-                ],
-                [
-                    "w-4.5 border-t-2 border-dashed border-foreground",
-                    "Target, in the subject's color",
-                ],
-                ["w-4.5 border-t-2 border-dotted border-destructive", "Passing grade"],
-                ["size-2.5 rounded-full border-2 border-success", "Target reached"],
-            ].map(([mark, text]) => (
-                <span
-                    key={text}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2 py-1"
-                >
-                    <i className={cn("inline-block", mark)} aria-hidden="true" /> {text}
-                </span>
-            ))}
-        </p>
+        <HistoryLegend
+            items={[
+                {
+                    mark: "h-0.75 w-4.5 rounded-xs bg-primary",
+                    text: "Grade so far (filled dot: official, hollow: yours)",
+                },
+                {
+                    mark: "w-4.5 border-t-2 border-dashed border-foreground",
+                    text: "Target, in the subject's color",
+                },
+                {
+                    mark: "w-4.5 border-t-2 border-dotted border-destructive",
+                    text: "Passing grade",
+                },
+                { mark: "size-2.5 rounded-full border-2 border-success", text: "Target reached" },
+            ]}
+        />
     );
 
     const table = visible
