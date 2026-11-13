@@ -40,3 +40,26 @@ export function getSubjectDetailTarget(studentRecord, termKey) {
         config.terms?.[termKey]?.desiredFinalGrade ?? config.desiredFinalGrade ?? DEFAULT_TARGET,
     );
 }
+
+// A target typed on Subject Detail: the number, or null when the box is
+// empty, not a number, or outside 0–100 (then nothing is saved).
+export function parseTargetInput(value) {
+    if (value === "") return null;
+    const target = Number(value);
+    return Number.isFinite(target) && target >= 0 && target <= 100 ? target : null;
+}
+
+// Sets the subject's target for one term on a student record (returns a copy).
+export function setTermTarget(studentRecord, termKey, target) {
+    const config = studentRecord.targetGradeSandbox ?? {};
+    return {
+        ...studentRecord,
+        targetGradeSandbox: {
+            ...config,
+            terms: {
+                ...(config.terms ?? {}),
+                [termKey]: { ...(config.terms?.[termKey] ?? {}), desiredFinalGrade: target },
+            },
+        },
+    };
+}

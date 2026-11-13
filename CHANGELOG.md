@@ -48,3 +48,22 @@ A codebase and UI clean-up. Grades, saved data and navigation behave as before. 
 - Grade maths, rounding and saved data.
 - Logo, product name, favicon and page title.
 - Known bugs, listed in the refactor report.
+
+## Follow-ups — `refactor/follow-ups` (2026-11-13)
+
+The open items from the clean-up's final check (`docs/TASKS.md` §9). Behaviour unchanged.
+
+### Changed
+
+- Page logic moved into feature hooks.
+- Remove-subject logic moved into `lib/`.
+- Remaining grade maths moved into `lib/`, with tests.
+- Shared chart kit moved to `src/components/history-chart/`.
+- One card padding for Settings and Subject Detail.
+- Login bars and confetti use classes, not inline styles.
+- Control outlines darkened to 3:1 contrast.
+
+### Removed
+
+- Last one-off text sizes.
+- `DraftInput`'s unused plain input.

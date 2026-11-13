@@ -57,7 +57,7 @@ All data stays in the browser. There is no backend.
 - **Register** as Student (the new user is signed in) or as Professor (see §6).
 - **Route guard:** every route except `/` needs a signed-in student. Anyone else is sent to `/`, and only the pathname is kept for the return trip (AUDIT B14).
 - **Passwords** are stored in plaintext (AUDIT B15).
-- **Files:** `src/pages/auth/LoginRegister.jsx`, `src/features/auth/lib/accounts.js`, `src/app/RequireStudent.jsx`, `src/services/session.js`, `src/services/db.js`
+- **Files:** `src/pages/auth/LoginRegister.jsx`, `src/features/auth/hooks/useAuthForm.js`, `src/features/auth/lib/accounts.js`, `src/app/RequireStudent.jsx`, `src/services/session.js`, `src/services/db.js`
 
 ### F2. Student Hub (`/student/dashboard`) — [BUILT]
 
@@ -88,7 +88,7 @@ The Dashboard shows a "Recent Updates" list, but its content is fixed sample tex
 
 ### F5. Remove subject — [BUILT]
 
-From the sidebar, after a confirmation dialog, removes the student's enrolment. `src/components/layout/Sidebar.jsx` (`removeSubjectEnrollment`)
+From the sidebar, after a confirmation dialog, removes the student's enrolment. `src/components/layout/Sidebar.jsx`, `src/lib/subjects.js` (`removeEnrollment`)
 
 ### F6. 3-state grading engine — [PARTIAL]
 
@@ -109,7 +109,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - target-reached celebration (F12)
 - `?task=` scrolls to that task and highlights it
 - **Known issue:** the semester label is hard-coded as "FIRST SEMESTER · 2026–2027" (AUDIT B7). The fix is planned for a follow-up branch (§2).
-- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/features/history/components/SubjectGradeHistory.jsx`, `src/features/term-records/components/TermNavigation.jsx`, `src/lib/targets.js`, `src/lib/dom/focusTask.js`
+- **Files:** `src/pages/student/SubjectDetail.jsx`, `src/features/subjects/hooks/useSubjectDetail.js`, `src/features/history/components/SubjectGradeHistory.jsx`, `src/components/TermNavigation.jsx`, `src/lib/targets.js`, `src/lib/dom/focusTask.js`
 
 ### F8. Current Term Records — [BUILT]
 
@@ -127,7 +127,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
 - **What the student sets:** a sandbox target per term, the number of upcoming tasks (0–20) and an expected % for each criterion, and draft scores ("Try draft scores").
 - **What it shows:** a result card (required score, reached, out of reach, complete or empty) and a plan chart.
 - **Draft scores** are draft-only: stored apart from the real scores and used only inside the sandbox. See the note in §4.
-- **Files:** `src/lib/sandbox.js`, `src/features/sandbox/components/TargetGradeSandbox.jsx`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/features/sandbox/components/SandboxSubjectPicker.jsx`
+- **Files:** `src/lib/sandbox.js`, `src/features/sandbox/components/TargetGradeSandbox.jsx`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/components/SandboxSubjectPicker.jsx`
 
 ### F10. Grade computation rules (dynamic syllabus computation) — [BUILT]
 
@@ -143,7 +143,7 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - A subject a professor creates uses that professor's rule.
   - A subject a student creates uses a rule the student makes.
   - If a student-made subject is later linked to a professor-made one, it is overwritten by the professor-made subject and its rule (see §10).
-- **Files:** `src/lib/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/features/grade-rules/components/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,RuleLegend,DeleteRuleDialog,DeleteRuleButton,RuleDialog,RuleSubjectList,RuleWarning}.jsx`
+- **Files:** `src/lib/rules.js`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/features/grade-rules/hooks/useRuleEditor.js`, `src/features/grade-rules/components/{PillEditor,PillLevel,RuleCard,RuleBar,RuleFormula,RuleHierarchyTable,RulePieChart,RuleLegend,DeleteRuleDialog,DeleteRuleButton,RuleDialog,RuleSubjectList,RuleWarning}.jsx`
 
 ### F11. Historical analytics — [PARTIAL]
 
@@ -151,11 +151,11 @@ From the sidebar, after a confirmation dialog, removes the student's enrolment. 
   - per subject and term, a line of the expected term grade after each task, with ghost points, the target-reached marker, the 75% passing line, the plan line and a table fallback
   - the all-subjects chart on the Dashboard
 - **Missing:** semester-over-semester GPA growth, and trends across subject categories.
-- **Files:** `src/lib/history.js`, `src/features/history/components/{HistoryChart,HistoryChartFrame,HistoryTable,HistoryLegend,HistoryEmpty,HistoryCard,AllSubjectsHistory,SubjectGradeHistory,HistoryTooltip}.jsx`, `src/features/history/hooks/usePointHover.js`, `src/lib/dom/cssColor.js`
+- **Files:** `src/lib/history.js`, `src/features/history/components/{AllSubjectsHistory,SubjectGradeHistory,HistoryCard}.jsx`, `src/components/history-chart/{HistoryChart,HistoryChartFrame,HistoryTable,HistoryLegend,HistoryEmpty,HistoryTooltip}.jsx`, `src/hooks/usePointHover.js`, `src/lib/dom/cssColor.js`
 
 ### F12. Target-reached celebration — [BUILT]
 
-Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/student/SubjectDetail.jsx`, `src/lib/celebration.js`, `src/assets/congrats-voice.mp3`
+Behaviour is in §4. It differs from the project details (§10, D3). `src/features/subjects/hooks/useSubjectDetail.js`, `src/features/subjects/components/CelebrationDialog.jsx`, `src/lib/celebration.js`, `src/assets/congrats-voice.mp3`
 
 ### F13. Navigation: sidebar, header, footer — [BUILT]
 
@@ -180,7 +180,7 @@ Behaviour is in §4. It differs from the project details (§10, D3). `src/pages/
   - Help opens only from Security (B2)
   - Download and Clear do nothing, and the toggles aren't saved (B3)
   - the account is stored per browser, not per user, and changing the password here doesn't change the login password (B4)
-- **Files:** `src/pages/settings/GlobalSettings.jsx`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js`, `src/features/settings/components/{ProfileSection,AccountSection,SecuritySection,NotificationsSection,AccountActionsSection}.jsx`
+- **Files:** `src/pages/settings/GlobalSettings.jsx`, `src/features/settings/hooks/useGlobalSettings.js`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js`, `src/features/settings/components/{ProfileSection,AccountSection,SecuritySection,NotificationsSection,AccountActionsSection}.jsx`
 
 ### F15. Stored-data upgrade — [BUILT]
 
@@ -293,7 +293,7 @@ See §6.
 - **"Target reached":** the last point is at or above the target.
 - **Plan points:** criteria that use the required % come first, then those with an expected %. The fill is `required`, or 100 if the target is impossible, or the current grade clamped to 0–100 if it is already reached.
 
-**Celebration** (`SubjectDetail.jsx`)
+**Celebration** (`useSubjectDetail.js`, `celebration.js`)
 
 - Fires when the **official or the expected** term grade goes from below the target to at or above it.
 - Only while the page is open, on the same subject and term.
@@ -452,3 +452,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-12:** F14: Settings uses the shared page shell, with its sections as tabs (T7.L0, owner approved).
 - **2026-11-12:** §6 (g): the "Workspace: Student" label has been removed (T7.L0, owner approved).
 - **2026-11-13:** F10, F11, F14, F17, §4 and §6: file lists, score validation, score-percentage rounding and the deleted prototype brought up to date after the clean-up (T9.6, owner approved).
+- **2026-11-13:** F1, F5, F7, F9–F12, F14 and §4: file paths updated after the follow-up tasks (FU1–FU3, owner approved).

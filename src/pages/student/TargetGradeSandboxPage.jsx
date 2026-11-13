@@ -4,7 +4,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { buttonVariants } from "@/components/ui/button";
 import { Empty, EmptyHeader } from "@/components/ui/empty";
 import { TargetGradeSandbox } from "@/features/sandbox/components/TargetGradeSandbox";
-import { TermNavigation } from "@/features/term-records/components/TermNavigation";
+import { TermNavigation } from "@/components/TermNavigation";
 import { getStudentClass } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";

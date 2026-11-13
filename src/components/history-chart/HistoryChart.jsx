@@ -9,13 +9,19 @@
 import { Line, ReferenceLine } from "recharts";
 import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
-import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
+import {
+    getChartScale,
+    getTargetGap,
+    getTargetReachedIndex,
+    isOnTarget,
+    PASSING_GRADE,
+} from "@/lib/history";
 import { HistoryChartFrame } from "./HistoryChartFrame";
 import { HistoryEmpty } from "./HistoryEmpty";
 import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 import { HistoryTooltip } from "./HistoryTooltip";
-import { usePointHover } from "@/features/history/hooks/usePointHover";
+import { usePointHover } from "@/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 
 // A dot grows when hovered (CSS only, so the chart is not redrawn).
@@ -253,7 +259,7 @@ export function HistoryChart({
         rows.length,
     );
     const latest = points.length ? points[points.length - 1].grade : null;
-    const gap = latest === null || target === null ? null : latest - target;
+    const gap = getTargetGap(latest, target);
     const hasGhosts = points.some(
         (point) => point.ghostGrade !== null && point.ghostGrade !== undefined,
     );
@@ -297,7 +303,7 @@ export function HistoryChart({
                             {targetLabel.toLowerCase()} {formatGrade(target)}
                             {" · "}
                             <span className={gap >= 0 ? "text-success" : "text-destructive"}>
-                                {Math.abs(gap) < 0.005
+                                {isOnTarget(gap)
                                     ? "on target"
                                     : gap > 0
                                       ? `${gap.toFixed(2)} points above`

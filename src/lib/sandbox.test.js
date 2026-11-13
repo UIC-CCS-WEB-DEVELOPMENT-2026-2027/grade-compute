@@ -11,6 +11,7 @@ import {
     taskPercent,
     updateSandboxSettings,
     withDraftScores,
+    toUpcomingCount,
 } from "./sandbox.js";
 
 const rule = makeStandardRule();
@@ -458,5 +459,19 @@ describe("withDraftScores", () => {
         expect(withDraftScores(record, "prelim").grades.prelim.Exam.studentReportedScore).toBe(
             "70",
         );
+    });
+});
+
+describe("toUpcomingCount", () => {
+    it("rounds to a whole number from 0 to 20", () => {
+        expect(toUpcomingCount("3")).toBe(3);
+        expect(toUpcomingCount("2.6")).toBe(3);
+        expect(toUpcomingCount("25")).toBe(20);
+        expect(toUpcomingCount("-4")).toBe(0);
+    });
+
+    it("counts empty or invalid text as 0", () => {
+        expect(toUpcomingCount("")).toBe(0);
+        expect(toUpcomingCount("abc")).toBe(0);
     });
 });

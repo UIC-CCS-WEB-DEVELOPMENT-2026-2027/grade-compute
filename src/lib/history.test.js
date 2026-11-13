@@ -11,6 +11,9 @@ import {
     getTargetReachedIndex,
     PASSING_GRADE,
     scoreTime,
+    getTargetGap,
+    isOnTarget,
+    isSpotOn,
 } from "./history.js";
 
 const rule = makeStandardRule();
@@ -424,5 +427,26 @@ describe("getChartScale", () => {
 
     it("re-exports the passing grade", () => {
         expect(PASSING_GRADE).toBe(75);
+    });
+});
+
+describe("target gap and accuracy thresholds", () => {
+    it("measures the latest grade against the target", () => {
+        expect(getTargetGap(92.5, 90)).toBe(2.5);
+        expect(getTargetGap(80, 90)).toBe(-10);
+        expect(getTargetGap(null, 90)).toBeNull();
+        expect(getTargetGap(80, null)).toBeNull();
+    });
+
+    it("treats a gap under 0.005 as on target", () => {
+        expect(isOnTarget(0.004)).toBe(true);
+        expect(isOnTarget(-0.004)).toBe(true);
+        expect(isOnTarget(0.005)).toBe(false);
+    });
+
+    it("treats an average gap under 0.05 as spot on", () => {
+        expect(isSpotOn(0.049)).toBe(true);
+        expect(isSpotOn(-0.049)).toBe(true);
+        expect(isSpotOn(0.05)).toBe(false);
     });
 });

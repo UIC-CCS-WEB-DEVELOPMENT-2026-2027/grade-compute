@@ -235,3 +235,9 @@ export function setDraftScore(studentRecord, termKey, taskId, value) {
         },
     };
 }
+
+// The "Upcoming tasks" box: a whole number from 0 to MAX_UPCOMING. Empty or
+// invalid text counts as 0 (AUDIT B16: the box can't be left empty).
+export function toUpcomingCount(value) {
+    return clamp(Math.round(Number(value) || 0), 0, MAX_UPCOMING);
+}

@@ -6,6 +6,8 @@ import {
     getSandboxTarget,
     getSubjectDetailTarget,
     getTermTarget,
+    parseTargetInput,
+    setTermTarget,
 } from "./targets.js";
 
 describe("getTermTarget", () => {
@@ -133,5 +135,53 @@ describe("getSubjectDetailTarget", () => {
             },
         };
         expect(getSubjectDetailTarget(record, "prelim")).toBe(0);
+    });
+});
+
+describe("parseTargetInput", () => {
+    it("accepts numbers from 0 to 100", () => {
+        expect(parseTargetInput("85")).toBe(85);
+        expect(parseTargetInput("0")).toBe(0);
+        expect(parseTargetInput("100")).toBe(100);
+        expect(parseTargetInput("85.5")).toBe(85.5);
+    });
+
+    it("rejects an empty box, text and values outside 0-100", () => {
+        for (const value of ["", "abc", "150", "-1", "Infinity"]) {
+            expect(parseTargetInput(value)).toBeNull();
+        }
+    });
+});
+
+describe("setTermTarget", () => {
+    it("sets one term's target and keeps everything else", () => {
+        const record = {
+            studentId: "U1",
+            grades: {},
+            targetGradeSandbox: {
+                desiredFinalGrade: 90,
+                terms: {
+                    prelim: { sandboxDesiredFinalGrade: 80 },
+                    midterm: { desiredFinalGrade: 70 },
+                },
+            },
+        };
+        const next = setTermTarget(record, "prelim", 85);
+        expect(next.targetGradeSandbox).toEqual({
+            desiredFinalGrade: 90,
+            terms: {
+                prelim: { sandboxDesiredFinalGrade: 80, desiredFinalGrade: 85 },
+                midterm: { desiredFinalGrade: 70 },
+            },
+        });
+        expect(next.grades).toBe(record.grades);
+        expect(record.targetGradeSandbox.terms.prelim).toEqual({ sandboxDesiredFinalGrade: 80 });
+    });
+
+    it("creates the sandbox settings when the record has none", () => {
+        expect(setTermTarget({ studentId: "U1" }, "finals", 75)).toEqual({
+            studentId: "U1",
+            targetGradeSandbox: { terms: { finals: { desiredFinalGrade: 75 } } },
+        });
     });
 });

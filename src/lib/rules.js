@@ -1147,3 +1147,16 @@ export function getRuleSwitchImpact(db, ruleId, replacementRuleId) {
     const keepIds = new Set(getRuleLeaves(replacement).map((leaf) => leaf.id));
     return countTasksOutside(db, ruleId, keepIds, leafNames(rule));
 }
+
+// A weight (a fraction of the parent) as a share in hundredths of a percent.
+export function weightToShare(weight) {
+    return Math.round(weight * TOTAL_SHARE);
+}
+
+// Where a dragged divider sits, as a fraction of its level: the shares of the
+// criteria before it plus the left-hand criterion's new share. Feed it to
+// dragHandle().
+export function getHandleRatio(children, index, leftShare) {
+    const before = children.slice(0, index).reduce((total, child) => total + child.share, 0);
+    return (before + leftShare) / TOTAL_SHARE;
+}

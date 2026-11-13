@@ -124,7 +124,10 @@
     --secondary-foreground: #406093;
     --accent: #e6edf9;
     --accent-foreground: #406093;
-    --input: #cbd5e1;
+    /* Control outlines (text boxes, selects, checkboxes, radios, the switch
+       track): at least 3:1 against every background they sit on (WCAG
+       1.4.11; FU12). Was #cbd5e1. */
+    --input: #7a879c;
     --success-foreground: #ffffff;
     --warning-foreground: #2c2c2c;
     --highlight-foreground: #2c2c2c;
@@ -201,13 +204,13 @@
     --radius-2xl: calc(var(--radius) + 8px);
     --radius-3xl: calc(var(--radius) + 16px);
 
-    /* Inline, so the variables resolve on each confetti piece, which sets
-       its own --confetti-duration and --confetti-delay. */
+    /* Inline, so the variables resolve on each confetti piece, whose
+       confetti-duration-* and confetti-delay-* classes set them. */
     --animate-celebration-confetti: celebration-confetti-fall var(--confetti-duration)
         var(--confetti-delay) ease-in forwards;
 
-    /* Inline for the same reason: each login bar sets its own --bar-delay. */
-    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--bar-delay, 180ms) var(--ease-auth) both;
+    /* Each login bar adds its own delay with animate-delay-*. */
+    --animate-auth-bar-grow: auth-bar-grow 1100ms var(--ease-auth) both;
 }
 
 @theme {
@@ -232,6 +235,11 @@
        picker, and the subjects in the rule dialogs. */
     --spacing-picker-list: min(55vh, 26.25rem);
     --spacing-rule-dialog-list: min(40vh, 18.75rem);
+
+    /* Decorative glyphs that stand in for icons (the celebration's sparkle
+       and trophy). They are not text, so they sit outside the text roles. */
+    --text-glyph: 2.25rem;
+    --text-glyph--line-height: 2.5rem;
 
     /* Login page motion. */
     --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -393,6 +401,21 @@
 @utility animate-delay-* {
     animation-delay: calc(--value(integer) * 1ms);
 }
+
+/* The target-reached confetti: each of its 44 pieces gets its place (left, in
+   percent) and its fall delay and duration (in milliseconds) from these
+   classes, built from the piece's index in SubjectDetail. @source inline
+   lists every value the pieces use, so Tailwind generates them. */
+@utility confetti-left-* {
+    left: calc(--value(integer) * 1%);
+}
+@utility confetti-delay-* {
+    --confetti-delay: calc(--value(integer) * 1ms);
+}
+@utility confetti-duration-* {
+    --confetti-duration: calc(--value(integer) * 1ms);
+}
+@source inline("confetti-left-{0..99} confetti-delay-{0..800..80} confetti-duration-{2300..3620..220}");
 
 /* The pill editor indents each level by its depth in the rule, which the
    level passes as --pill-depth: 32px a level, 14px on phones. */

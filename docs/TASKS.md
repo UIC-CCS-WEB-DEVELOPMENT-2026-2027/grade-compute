@@ -1098,15 +1098,60 @@ Nothing is left open.
 
 Owner decision (2026-11-13): the open `AGENTS.md` §5–7 items found in T9.5 become follow-up tasks. They are not part of the clean-up job; each needs its own branch or task, and any that changes behaviour needs the owner's approval first.
 
-- [ ] **FU1 Pages only compose.** Move the logic out of `RuleDetailPage` (validation, saving, dialogs), `GlobalSettings` (account and security state and handlers), `SubjectDetail` (celebration, audio, target saving) and `LoginRegister` (sign-in and registration flows) into hooks, `lib/` or `services/`.
-- [ ] **FU2 Remove-subject logic out of the Sidebar.** `removeSubjectEnrollment` becomes a pure function in `lib/subjects.js` or `services/`, with tests.
-- [ ] **FU3 Shared components to `src/components/`.** `HistoryChart` (used by the sandbox), `TermNavigation` (used by the sandbox page) and `SandboxSubjectPicker` (used by the Sidebar). Moves only.
-- [ ] **FU4 Maths out of components.** The sandbox's "Upcoming tasks" round-and-clamp and weight-to-share conversion, the pill editor's drag share sums, the history gap and "on target" and "spot on" thresholds, and Subject Detail's target check and save (T9.0 N6 and N7) move to `lib/`, with tests.
-- [ ] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
-- [ ] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
-- [ ] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
-- [ ] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
-- [ ] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
-- [ ] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
-- [ ] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.
-- [ ] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
+They are done on the branch `refactor/follow-ups` (from `main` at `89141f3`, after PR #118), one commit each, with the clean-up's checks. The feature freeze (`AGENTS.md` §3) still applies until they are done.
+
+**Owner decisions (2026-11-13), before starting:**
+- FU3: move the whole history chart kit (`HistoryChart`, `HistoryChartFrame`, `HistoryTable`, `HistoryLegend`, `HistoryEmpty`, `HistoryTooltip`) to `src/components/history-chart/` and `usePointHover` to `src/hooks/`, as well as `TermNavigation` and `SandboxSubjectPicker`.
+- FU5: the `lib/` exports used only by tests stay exported, as an exception recorded in `AGENTS.md` §6.
+- FU10: the generated components keep their arbitrary values, as an exception recorded in `AGENTS.md` §7; only the unused chart tooltip's `font-mono` changes.
+- FU12: darken the control-outline tokens to reach 3:1 (a visible change, approved).
+
+- [x] **FU1 Pages only compose.** Move the logic out of `RuleDetailPage` (validation, saving, dialogs), `GlobalSettings` (account and security state and handlers), `SubjectDetail` (celebration, audio, target saving) and `LoginRegister` (sign-in and registration flows) into hooks, `lib/` or `services/`.
+  - **As done (four commits, one per page):** each page's state, effects and handlers moved verbatim into a hook in its feature; the pages keep only their markup.
+    1. `features/subjects/hooks/useSubjectDetail.js`: the term in the URL, the `?task=` focus, lookups and grades, target saving and the celebration (message, 6-second close, audio). `CelebrationDialog` and its confetti moved to `features/subjects/components/`. Checked G1–G13, C4, H3, H8, I1, A15, B8 and M1.
+    2. `features/settings/hooks/useGlobalSettings.js`: the open section, account, photo, status line, notifications, logout confirmation and the Security flow (bugs B1–B6 and B21 kept). Checked L1–L12.
+    3. `features/auth/hooks/useAuthForm.js`: the login and registration form and its submit. `AcademicPreview`, its sample bars and assets moved to `features/auth/components/`. `TextField`, `PasswordField` and `FieldErrorLine` stay in the page as small private parts (AGENTS §5). Checked A1–A18.
+    4. `features/grade-rules/hooks/useRuleEditor.js`: the editor's state, validation, saving, impact dialog, save as new, duplicate, discard and the tag and school edits. Only two lines changed, so that the "Rule not found" case never reads a missing rule (`usage` and `isCopy` give the same values otherwise). Checked J1–J8 and K1–K15.
+    - Each part: the checklist items at 1440 and 375 pass, the DOM of the 30 states is identical, tests unchanged (384).
+- [x] **FU2 Remove-subject logic out of the Sidebar.** `removeSubjectEnrollment` becomes a pure function in `lib/subjects.js` or `services/`, with tests.
+  - **As done:** `removeEnrollment(db, { classId, studentId, subjectCode, subjectName })` in `lib/subjects.js` holds the data change, moved unchanged; it returns the new db, or `null` for an unknown class. The Sidebar keeps reading the db, saving and leaving the subject's page. Four new tests (373 in all). Checklist F1–F4 pass at 1440 and 375; DOM of the 30 states identical.
+- [x] **FU3 Shared components to `src/components/`.** `HistoryChart` (used by the sandbox), `TermNavigation` (used by the sandbox page) and `SandboxSubjectPicker` (used by the Sidebar). Moves only.
+  - **As done:** moved with `git mv`, imports fixed, nothing else changed. `src/components/history-chart/` now holds `HistoryChart`, `HistoryChartFrame`, `HistoryTable`, `HistoryLegend`, `HistoryEmpty` and `HistoryTooltip`; `usePointHover` is in `src/hooks/`; `TermNavigation` and `SandboxSubjectPicker` are in `src/components/`. `features/history/` keeps `AllSubjectsHistory`, `SubjectGradeHistory` and `HistoryCard`; its empty `hooks/` folder is gone. DOM of the 30 states identical; screenshots match apart from the usual noise. `SPEC.md` names the old paths in F7, F9 and F11 and needs an owner-approved update.
+- [x] **FU4 Maths out of components.** The sandbox's "Upcoming tasks" round-and-clamp and weight-to-share conversion, the pill editor's drag share sums, the history gap and "on target" and "spot on" thresholds, and Subject Detail's target check and save (T9.0 N6 and N7) move to `lib/`, with tests.
+  - **As done:** seven helpers, each the same expression the component used, with 11 new unit tests (384 in all):
+    - `lib/sandbox.js`: `toUpcomingCount` (0–20, rounded; empty counts as 0).
+    - `lib/rules.js`: `weightToShare` and `getHandleRatio` (used by both the pointer drag and the arrow keys).
+    - `lib/history.js`: `getTargetGap`, `isOnTarget` (under 0.005) and `isSpotOn` (under 0.05).
+    - `lib/targets.js`: `parseTargetInput` (0–100, empty or text gives `null`) and `setTermTarget` (N6, writes only `terms[term].desiredFinalGrade`).
+    - The components keep their wording and number formatting.
+    - N7, Subject Detail's read-update-save step, is a save flow rather than maths; it stays in the page with its own error message, and FU1 covers it.
+    - Checked: checklist G4–G6, G8–G10, G12, I1, I2, I6, I7, K1, K3, K5 and K8 pass at 1440 and 375; DOM of the 30 states identical.
+- [x] **FU5 Test-only exports.** Decide whether the 26 `lib/` exports used only by tests stay exported. Remove `DraftInput`'s unused plain `<input>` default.
+  - **As done:** the test-only exports stay, recorded as a second exception in `AGENTS.md` §6 (owner decision). `DraftInput` now always renders `InputGroupInput` and its `as` prop is gone, so the two callers no longer pass it. DOM of the 30 states identical; tests unchanged.
+- [x] **FU6 One-off text sizes.** Give the login preview's "96%" (`text-xl`) and the celebration's ✦ and 🏆 (`text-4xl`) a text role or a token.
+  - **As done:** the "96%" uses `type-card-title`, which is exactly what its classes set (Khand 600, 20px on a 24px line). The ✦ and 🏆 are decorative glyphs, not text, so they use a new size token, `--text-glyph` (36px on a 40px line, as before), as `text-glyph`. Measured on the old and new code at 1440 and 375: same font sizes and line heights. Login screenshots match.
+- [x] **FU7 Caption role.** Review the 12px caption outside axes, badges and eyebrows: the history chips' "target 90%" note, the chart legends, the header avatar's initials, the login preview's labels.
+  - **As done (review, no code change):** each one falls under the rule.
+    - The "target 90%" note sits inside a pill-shaped toggle chip, which works like a badge.
+    - The legend pills belong to the chart, like its axis labels.
+    - The header's initials are a 36px avatar badge, hidden from screen readers.
+    - The login preview is a decorative mock chart: its labels are its axis values, its "On Track" badge and its eyebrow.
+- [x] **FU8 One card padding.** Subject Detail's summary card uses the card spacing; the Settings section cards use `CardContent`.
+  - **As done:**
+    - Settings' panel card and its five section cards now hold their content in `CardContent className="flex flex-col"`: the same padding and the same flex layout, so the Settings screenshots are pixel-identical at all four widths (the DOM gains the wrapper).
+    - Subject Detail's summary card uses the card spacing instead of `p-4` and `xl:px-5`: unchanged at 375, and 8px more padding on each side from 768 up (the page is 16px taller at 1440 and 34px taller at 768 and 1024, where the notes wrap a little more). Approved as an appearance change.
+- [x] **FU9 Fixed values in inline styles.** The login preview's bar heights and delays and the celebration's confetti positions move to classes or tokens.
+  - **As done:**
+    - **Login bars:** each bar's height and grow delay are spacing and `animate-delay-*` classes in the bar list (`h-6`…`h-22.25`, `animate-delay-180`…`660`). The `--bar-delay` variable is gone from the `auth-bar-grow` token.
+    - **Confetti:** the 44 pieces build their classes from their index (the same formulas as before). New utilities `confetti-left-*`, `confetti-delay-*` and `confetti-duration-*` in `src/index.css` take whole numbers (percent and milliseconds); an `@source inline(...)` line lists every value used, so Tailwind generates them. The colours are token classes (`bg-criteria-1`, `bg-success`, …).
+    - **Measured** on the old and new code at 1440: the 5 bars and 44 pieces have identical computed heights, left positions, colours and animation timings. No inline style is left in `src/pages/`.
+- [x] **FU10 Generated components.** Decide on the 21 arbitrary values in `src/components/ui/` and the unused chart tooltip's `font-mono`.
+  - **As done:** the arbitrary values stay as generated, recorded as an exception in `AGENTS.md` §7 (owner decision); fonts and colours still follow the rules. `ChartTooltipContent`'s value no longer sets `font-mono`, so it uses the body font (the app does not use that tooltip, so no screen changes).
+- [x] **FU11 Hand-built controls.** Revisit the Account "Choose photo" file input, the inline 2FA confirmation (with B5) and the pill editor's drag handles if shadcn gains a fitting primitive or the wording may change.
+  - **As done (review, kept):** "Choose photo" stays a styled real file input, because the shadcn file `Input` would show the browser's own "Choose file" wording. The 2FA "Turn off" confirmation stays inline, because B5's shared state is kept and a modal would block that path. The pill editor's handles stay custom, because shadcn's `Slider` has no multi-segment divider. Revisit with the B5 fix or a wording change after the freeze.
+- [x] **FU12 Contrast of control outlines** (WCAG 1.4.11, 3:1), not required by `AGENTS.md` today.
+  - **As done (approved visible change):** the control-outline token `--input` is `#7a879c` (was `#cbd5e1`), at least 3:1 against every background a control sits on: card 3.64, page 3.38, muted 3.32, secondary 3.09, the yellows 3.29–3.39.
+    - It outlines text boxes, selects, text areas, input groups, checkboxes, radios, the login role choices and toggles, and fills the switch's "off" track.
+    - Side effects of the same token: disabled controls' 50% fill is a little darker, and the Dashboard's two decorative "·"/"•" separators are darker.
+    - Card borders and dividers keep the light `--border` (they are not controls). Buttons are identified by their labels, so their outlines are unchanged.
+    - Screenshots change only on screens with those controls (login, Dashboard, My Subjects, Grade Rules, sandbox, rule editor, Settings › Account); DOM unchanged.

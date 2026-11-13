@@ -112,19 +112,23 @@ src/
   pages/          Page components, grouped by area: auth/, student/, settings/
                   Pages only compose
   features/       Code that belongs to one feature:
-    auth/           login and register
-    subjects/       enrolled-subjects table, add subject
-    term-records/   current term records, term navigation
-    grade-rules/    pill editor, rule card and visuals, delete-rule dialog
-    sandbox/        target grade sandbox, subject picker
-    history/        grade history charts and tooltip
-    settings/       account settings sections
+    auth/           login and register (useAuthForm, the login preview)
+    subjects/       enrolled-subjects table, add subject, Subject Detail's
+                    useSubjectDetail and celebration
+    term-records/   current term records
+    grade-rules/    pill editor, rule card and visuals, rule dialogs, useRuleEditor
+    sandbox/        target grade sandbox
+    history/        the Dashboard and Subject Detail history cards
+    settings/       account settings sections, useGlobalSettings
     <feature>/    components/, hooks/, and logic for that feature
   components/
     ui/           shadcn/ui components (added through the shadcn CLI)
     layout/       Sidebar, Header, PageFooter, the page shell
+    history-chart/ The grade-history chart kit (chart, frame, table, legend,
+                  tooltip), used by history and the sandbox
     …             Shared app components used by two or more features
-  hooks/          Shared hooks (e.g. useDb, useSidebarState)
+                  (e.g. TermNavigation, SandboxSubjectPicker, GradeGauge)
+  hooks/          Shared hooks (e.g. useDb, useSidebarState, usePointHover)
   lib/            Pure logic and helpers, no React. Grade computation lives here
                   (grades, rules, sandbox, history, subjects, terms, targets,
                   scores, format, number, celebration)
@@ -147,7 +151,7 @@ src/
 - Named exports. Default exports only where a tool requires them. Today 39 files use default exports. Convert them in dedicated Phase 6 tasks, never inside a file-move commit.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3).
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0), except the dead settings prototype (Gate 3, section 3). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
 - **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes
@@ -170,6 +174,7 @@ src/
   - replace its one-off values with tokens and the Tailwind scale
   - set its control heights to the token sizes (`h-control` and its siblings)
   - keep its structure and API as generated
+  - exception (owner decision, 2026-11-13): arbitrary values that come with the generated component (grid templates, transition lists, `calc()` on tokens, small position nudges) may stay as generated, so that later shadcn CLI updates stay easy to merge. Fonts and colours still follow the rules
 
 **Styling**
 

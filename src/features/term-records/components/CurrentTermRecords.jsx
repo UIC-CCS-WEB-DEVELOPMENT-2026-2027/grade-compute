@@ -7,7 +7,7 @@ import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { DisclosureTrigger } from "@/components/DisclosureTrigger";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { getDb, saveDb } from "@/services/db";
 import { getStudentClass, updateStudentRecord } from "@/services/records";
@@ -339,7 +339,6 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                                 <div className="shrink-0">
                                                     <InputGroup className="w-36 border-self-reported bg-card has-aria-invalid:bg-warning-soft max-md:w-44">
                                                         <DraftInput
-                                                            as={InputGroupInput}
                                                             type="text"
                                                             inputMode="decimal"
                                                             min="0"

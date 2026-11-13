@@ -1,5 +1,6 @@
-// An <input> that keeps what the user types as a local draft and only
-// reports it (onCommit) when the box loses focus or Enter is pressed.
+// The input of an InputGroup that keeps what the user types as a local
+// draft and only reports it (onCommit) when the box loses focus or Enter is
+// pressed.
 // Nothing is saved while typing, so grades are not recalculated (and the
 // target celebration does not fire) for half-typed values like "8" on the
 // way to "85". Escape throws the draft away.
@@ -8,19 +9,12 @@
 // onCommit(text): called once with the final text, only if it changed.
 // acceptTyping(text): optional; return false to reject a keystroke
 //                 (the box keeps its previous text).
-// as:             the input component to render (default: a plain <input>).
 // Any other props (type, aria-*, placeholder, ...) go to the input.
+// Render it inside an InputGroup.
 import { useRef, useState } from "react";
+import { InputGroupInput } from "@/components/ui/input-group";
 
-export function DraftInput({
-    value,
-    onCommit,
-    acceptTyping,
-    onBlur,
-    onKeyDown,
-    as: InputComponent = "input",
-    ...inputProps
-}) {
+export function DraftInput({ value, onCommit, acceptTyping, onBlur, onKeyDown, ...inputProps }) {
     const savedText = value === null || value === undefined ? "" : String(value);
     const [draft, setDraft] = useState(null);
     const cancelled = useRef(false);
@@ -36,7 +30,7 @@ export function DraftInput({
     }
 
     return (
-        <InputComponent
+        <InputGroupInput
             {...inputProps}
             value={draft ?? savedText}
             onChange={(event) => {
