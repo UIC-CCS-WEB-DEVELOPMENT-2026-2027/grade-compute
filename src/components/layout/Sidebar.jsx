@@ -42,7 +42,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { getDb, saveDb } from "@/services/db";
-import { getEnrolledSubjects } from "@/lib/subjects";
+import { getEnrolledSubjects, removeEnrollment } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "@/services/session";
 import { SandboxSubjectPicker } from "@/components/SandboxSubjectPicker";
@@ -106,46 +106,13 @@ export function Sidebar() {
 
     const removeSubjectEnrollment = ({ classId, subjectCode, subjectName }) => {
         const currentDb = getDb() || dbData;
-        const classToRemove = currentDb.classes.find((classItem) => classItem.id === classId);
-        if (!classToRemove) return;
-
-        const subjectId = classToRemove.subjectId;
-        const remainingClasses = currentDb.classes.flatMap((classItem) => {
-            if (classItem.id !== classId) return [classItem];
-
-            const remainingRecords = classItem.studentRecords.filter(
-                (record) => record.studentId !== activeStudentId,
-            );
-            return remainingRecords.length > 0
-                ? [{ ...classItem, studentRecords: remainingRecords }]
-                : [];
+        const updatedDb = removeEnrollment(currentDb, {
+            classId,
+            studentId: activeStudentId,
+            subjectCode,
+            subjectName,
         });
-        const subjectStillUsed = remainingClasses.some(
-            (classItem) => classItem.subjectId === subjectId,
-        );
-        const normalizedCode = subjectCode.trim().toLowerCase();
-        const normalizedName = subjectName.trim().toLowerCase();
-        const matchesSubject = (item) =>
-            item.subjectCode?.trim().toLowerCase() === normalizedCode &&
-            item.subjectName?.trim().toLowerCase() === normalizedName;
-        const updatedDb = {
-            ...currentDb,
-            classes: remainingClasses,
-            subjects: subjectStillUsed
-                ? currentDb.subjects
-                : currentDb.subjects.filter((subject) => subject.id !== subjectId),
-            verificationQueue: (currentDb.verificationQueue ?? []).filter((request) => {
-                const isThisStudentRequest = request.requestedByStudentId === activeStudentId;
-                const isThisSubjectRequest =
-                    request.subjectId === subjectId ||
-                    (request.subjectId == null && matchesSubject(request));
-                return !(
-                    isThisStudentRequest &&
-                    isThisSubjectRequest &&
-                    request.status === "pending"
-                );
-            }),
-        };
+        if (!updatedDb) return;
 
         saveDb(updatedDb);
         setDbData(updatedDb);

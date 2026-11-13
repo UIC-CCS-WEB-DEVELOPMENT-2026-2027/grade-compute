@@ -220,3 +220,53 @@ export function addSubject(db, studentId, values, date = new Date()) {
         },
     };
 }
+
+// ---------------------------------------------------------------------------
+// Removing a subject
+// ---------------------------------------------------------------------------
+
+// Removes one student's enrolment in a class (the sidebar's "Remove this
+// subject?"). Returns a new db, or null when the class doesn't exist:
+// - the student's record leaves the class, and a class with no records left
+//   is removed;
+// - the shared subject is removed when no remaining class uses it;
+// - the student's pending verification requests for that subject are removed
+//   (matched by subject id, or by code and name when a request has no id).
+export function removeEnrollment(db, { classId, studentId, subjectCode, subjectName }) {
+    const classToRemove = db.classes.find((classItem) => classItem.id === classId);
+    if (!classToRemove) return null;
+
+    const subjectId = classToRemove.subjectId;
+    const remainingClasses = db.classes.flatMap((classItem) => {
+        if (classItem.id !== classId) return [classItem];
+
+        const remainingRecords = classItem.studentRecords.filter(
+            (record) => record.studentId !== studentId,
+        );
+        return remainingRecords.length > 0
+            ? [{ ...classItem, studentRecords: remainingRecords }]
+            : [];
+    });
+    const subjectStillUsed = remainingClasses.some(
+        (classItem) => classItem.subjectId === subjectId,
+    );
+    const normalizedCode = subjectCode.trim().toLowerCase();
+    const normalizedName = subjectName.trim().toLowerCase();
+    const matchesSubject = (item) =>
+        item.subjectCode?.trim().toLowerCase() === normalizedCode &&
+        item.subjectName?.trim().toLowerCase() === normalizedName;
+    return {
+        ...db,
+        classes: remainingClasses,
+        subjects: subjectStillUsed
+            ? db.subjects
+            : db.subjects.filter((subject) => subject.id !== subjectId),
+        verificationQueue: (db.verificationQueue ?? []).filter((request) => {
+            const isThisStudentRequest = request.requestedByStudentId === studentId;
+            const isThisSubjectRequest =
+                request.subjectId === subjectId ||
+                (request.subjectId == null && matchesSubject(request));
+            return !(isThisStudentRequest && isThisSubjectRequest && request.status === "pending");
+        }),
+    };
+}

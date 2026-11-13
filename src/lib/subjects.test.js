@@ -11,6 +11,7 @@ import {
     getInitialRuleId,
     getSemesterOptions,
     PASSING_GRADE,
+    removeEnrollment,
 } from "./subjects.js";
 
 const FIRST = "first-2026–2027";
@@ -279,5 +280,80 @@ describe("addSubject", () => {
         const result = addSubject(makeSeedDb(), "U1", { computationRuleId: "CR-1" });
         expect(result.ok).toBe(true);
         expect(result.db.subjects[1]).toMatchObject({ subjectCode: "", subjectName: "" });
+    });
+});
+
+describe("removeEnrollment", () => {
+    const remove = (db, overrides = {}) =>
+        removeEnrollment(db, {
+            classId: "C101",
+            studentId: "U1",
+            subjectCode: "IT101",
+            subjectName: "Computer Systems Servicing",
+            ...overrides,
+        });
+
+    it("removes the class, its unused subject and the student's pending request", () => {
+        const db = makeSeedDb();
+        const next = remove(db);
+        expect(next.classes).toEqual([]);
+        expect(next.subjects).toEqual([]);
+        expect(next.verificationQueue).toEqual(
+            db.verificationQueue.filter(
+                (request) =>
+                    !(
+                        request.requestedByStudentId === "U1" &&
+                        request.subjectId === "SUB-1" &&
+                        request.status === "pending"
+                    ),
+            ),
+        );
+        expect(next.users).toBe(db.users);
+    });
+
+    it("keeps a class that other students still have, and its subject", () => {
+        const db = makeSeedDb();
+        db.classes[0].studentRecords.push({ studentId: "U9", grades: {} });
+        const next = remove(db);
+        expect(next.classes).toHaveLength(1);
+        expect(next.classes[0].studentRecords.map((record) => record.studentId)).toEqual(["U9"]);
+        expect(next.subjects).toBe(db.subjects);
+    });
+
+    it("matches a request without a subject id by code and name, ignoring case and spaces", () => {
+        const db = makeSeedDb();
+        db.verificationQueue = [
+            {
+                id: "REQ-A",
+                requestedByStudentId: "U1",
+                subjectId: null,
+                subjectCode: " it101 ",
+                subjectName: "computer systems servicing",
+                status: "pending",
+            },
+            {
+                id: "REQ-B",
+                requestedByStudentId: "U1",
+                subjectId: null,
+                subjectCode: "CS201",
+                subjectName: "Other",
+                status: "pending",
+            },
+            { id: "REQ-C", requestedByStudentId: "U2", subjectId: "SUB-1", status: "pending" },
+            { id: "REQ-D", requestedByStudentId: "U1", subjectId: "SUB-1", status: "approved" },
+        ];
+        expect(remove(db).verificationQueue.map((request) => request.id)).toEqual([
+            "REQ-B",
+            "REQ-C",
+            "REQ-D",
+        ]);
+    });
+
+    it("returns null for an unknown class and leaves the db unchanged", () => {
+        const db = makeSeedDb();
+        const before = structuredClone(db);
+        expect(remove(db, { classId: "C999" })).toBeNull();
+        remove(db);
+        expect(db).toEqual(before);
     });
 });
