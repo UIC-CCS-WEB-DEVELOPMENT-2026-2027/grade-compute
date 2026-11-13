@@ -289,7 +289,6 @@ Import by part name, e.g.
 | `DraftInput` from `@/components/DraftInput` | `value`, `onCommit(text)`, `acceptTyping(text)?`, other input props | the input of an `InputGroup` that commits only on blur / Enter; Escape discards. Use for score entry, so grades aren't recalculated mid-typing |
 | `GradeGauge` from `@/components/GradeGauge` | `label`, `grade` (0–100 or null), `target`, `tone` (`"official"` \| `"expected"`), `ariaLabelPrefix`, `ariaDecimals`, `focusable`, `details`, `className` | the grade ring with a target marker |
 | `BrandMark` from `@/components/BrandMark` | `className` | the logo mark — branding, don't change it |
-
 | `DisclosureTrigger` from `@/components/DisclosureTrigger` | `className`, `children` | the ghost toggle with a turning chevron, inside a `Collapsible` |
 | `DialogEyebrowTitle` from `@/components/DialogEyebrowTitle` | `eyebrow`, `dot` (`"primary"` \| `"warning"`), `children` | a dialog title with a small dot-and-label eyebrow, inside a `DialogHeader` |
 | `TermNavigation` from `@/components/TermNavigation` | `termKey`, `onTermChange(key)`, `note`, `className` | the Prelim / Midterm / Finals switch |
