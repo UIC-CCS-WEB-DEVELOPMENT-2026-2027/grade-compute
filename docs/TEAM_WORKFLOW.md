@@ -75,6 +75,9 @@ Rules for claims:
   message `chore(board): release T-3`.
 - **Stale claims:** a claim with no pushed commits on its branch for 7 days may be released by
   the owner.
+- **Your AI agent can claim for you.** Ask it to, and give it your GitHub username and the branch
+  name. It follows these same steps (`AGENTS.md` §8), and the claim is still yours: it counts as
+  your one claimed task.
 
 `main` allows these direct pushes for claim commits; every other change goes through a pull
 request.
@@ -171,8 +174,11 @@ quickly, then free the lock.
    never held back for the second.
 7. **The owner reviews and merges every PR** (Jun Mari Manla), then deletes the branch.
 
-CI comes next: task T-18 adds a GitHub Actions workflow that runs these checks on every PR. Until
-it is merged, step 1 is on the honour system.
+**CI checks step 1.** The GitHub Actions workflow in `.github/workflows/ci.yml` runs the same four
+checks on Node 22 for every pull request and every push to `main`. A PR with a failing run isn't
+merged: fix it and push again. Still run the checks locally before you open the PR, because CI
+confirms them and doesn't replace them. Playwright and the screenshots aren't part of CI, so the
+screen checks in step 3 stay manual.
 
 ## 8. AI tools
 
@@ -180,15 +186,17 @@ it is merged, step 1 is on the honour system.
   task ID and its areas, and that it may change only those folders.
 - A chat model that can't see the repo gets `docs/ai-context/CONTEXT_PACK.md` and the template in
   `docs/ai-context/PROMPT_TEMPLATE.md`.
-- **People claim tasks, not agents.** An agent never edits `BOARD.md`, never pushes, and never
-  merges. AGENTS.md §8 already forbids agents to push.
+- **An agent may claim or release a task** for the developer who asks, following §3 (`AGENTS.md`
+  §8). That commit on `main` is the only thing an agent pushes. Agents never push a branch, never
+  merge, and never change any other part of `BOARD.md`: locks and `done in PR #<n>` stay with
+  people.
 
 ## 9. Decisions (owner, 2026-11-13)
 
 | # | Decision |
 | --- | --- |
 | 1 | A claim with no pushed commits for 7 days is stale; the owner may release it |
-| 2 | `main` allows direct pushes for board claims only |
+| 2 | `main` allows direct pushes for board claims only. An AI agent may make that push for the developer who asks (§3, §8) |
 | 3 | The area table in §4 matches the folders after the clean-up and its follow-ups |
 | 4 | Open the PR within 5 days of branching |
 | 5 | Commit types: `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs` (`AGENTS.md` §8) |

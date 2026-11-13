@@ -189,13 +189,21 @@ src/
 
 ## 8. Working rules
 
-- Work on one task from `docs/BOARD.md` at a time, on its own branch, and change only the folders in its Areas. People claim tasks; an agent never edits `docs/BOARD.md`.
+- Work on one task from `docs/BOARD.md` at a time, on its own branch, and change only the folders in its Areas.
+- **Claiming (owner decision, 2026-11-13).** When the developer asks, an agent may claim or release the task it was given, exactly as `docs/TEAM_WORKFLOW.md` §3 describes:
+  - on an up-to-date `main`, change only that task's State line, with the developer's GitHub username and the branch name. Ask for them if you don't have them
+  - first read the Areas of every claimed task, and stop and ask if one overlaps
+  - commit `chore(board): claim T-n` (or `release T-n`) and push it to `main` straight away
+  - if the push is rejected and `git pull --rebase` conflicts on the State line, run `git rebase --abort` and stop: someone else has the task
+  - then create the task's branch from that `main`
+
+  Apart from this, an agent never edits `docs/BOARD.md`. Locks and the `done in PR #n` State stay with people.
 - One logical change per commit. A pull request closes one task.
 - Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
 - Commit messages: `type(scope): summary` — types `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`.
 - Stage files by name (`git add <path>`), never `git add .` or `-A`.
-- Never push, force-push, rewrite history, merge, or delete branches. People do that.
+- Never push, force-push, rewrite history, merge, or delete branches. People do that. The only exception is the claim or release commit on `main` above.
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
 - When resuming in a new session, read `SPEC.md`, this file, and the task's block on `docs/BOARD.md` first.
 
