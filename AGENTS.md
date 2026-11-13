@@ -170,6 +170,7 @@ src/
   - replace its one-off values with tokens and the Tailwind scale
   - set its control heights to the token sizes (`h-control` and its siblings)
   - keep its structure and API as generated
+  - exception (owner decision, 2026-11-13): arbitrary values that come with the generated component (grid templates, transition lists, `calc()` on tokens, small position nudges) may stay as generated, so that later shadcn CLI updates stay easy to merge. Fonts and colours still follow the rules
 
 **Styling**
 
