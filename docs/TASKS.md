@@ -944,6 +944,8 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
       - Professor name with "Awaiting assignment" (`lib/subjects`) vs "Awaiting professor assignment" (`SubjectDetail`).
       - Repeated typography combinations such as `m-0 type-small text-muted-foreground` (15 places): the text roles in use, not duplication.
     - **Owner decision (2026-11-13):** merge N1–N5, N8–N11, N13 and N15. N6, N7, N12, N14 and N16 stay as they are.
+    - **Merges**, one commit each. Each is checked against `5db22d4`: the rendered DOM of 30 UI states at 1440 and 375 is identical (dashboard and Subject Detail tables open, the breakdown and "How this is calculated" open, the picker, the rule dialogs, every Settings view), and all 56 screenshots match apart from the usual login and Subject Detail chart noise.
+      - **T9.0.1 (N1)** `HistoryTable` serves both "Show as a table" views. Props keep the differences: `caption`, `actionLabel`, `onSelect` (no button column without it), `canSelect` (Subject Detail: points with a task id only) and `showReplacedEntry` (Subject Detail's wrapping Score cell with "you entered x%").
     - **Noticed for T9.1:** 10 `max-md:h-control-touch` classes left in `RuleDetailPage` (8) and `CurrentTermRecords` (2), which T8.1's tokens appear to make redundant (to verify); and the stale path comments at the top of many files (`// src/components/student/…`, `// src/utils/…`).
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).

@@ -8,20 +8,11 @@
 // Used on Subject Detail (SubjectGradeHistory) and in the sandbox.
 // Data comes from utils/history.js.
 import { Line, ReferenceLine } from "recharts";
-import { Button } from "@/components/ui/button";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";
 import { getChartScale, getTargetReachedIndex, PASSING_GRADE } from "@/lib/history";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryTable } from "./HistoryTable";
 import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
@@ -289,68 +280,15 @@ export function HistoryChart({
     );
 
     const table = (
-        <Table className="rounded-lg border border-border">
-            <TableCaption className="mt-0 mb-2 caption-top text-left text-foreground">
-                {termLabel} grade after each task
-            </TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Step</TableHead>
-                    <TableHead>Task</TableHead>
-                    <TableHead>Score</TableHead>
-                    <TableHead>Grade so far</TableHead>
-                    {onSelect && (
-                        <TableHead>
-                            <span className="sr-only">Go to task</span>
-                        </TableHead>
-                    )}
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {points.map((point) => (
-                    <TableRow key={`real-${point.step}`}>
-                        <TableCell>{point.step}</TableCell>
-                        <TableCell className="whitespace-normal">
-                            {point.criterionName} · {point.label}
-                        </TableCell>
-                        <TableCell className="whitespace-normal">
-                            {point.percent.toFixed(1)}%{" "}
-                            {point.isOfficial ? "(official)" : "(yours)"}
-                            {point.replacedEntry &&
-                                ` · you entered ${point.replacedEntry.percent.toFixed(1)}%`}
-                        </TableCell>
-                        <TableCell>{formatGrade(point.grade)}</TableCell>
-                        {onSelect && (
-                            <TableCell className="text-right">
-                                {point.taskId && (
-                                    <Button
-                                        variant="link"
-                                        className="h-auto p-0 tap:min-h-11"
-                                        onClick={() => onSelect(point)}
-                                    >
-                                        Go to task
-                                    </Button>
-                                )}
-                            </TableCell>
-                        )}
-                    </TableRow>
-                ))}
-                {plan.map((point) => (
-                    <TableRow key={`plan-${point.step}`} className="text-muted-foreground italic">
-                        <TableCell>{point.step}</TableCell>
-                        <TableCell className="whitespace-normal">
-                            {point.criterionName} · {point.label} (planned)
-                        </TableCell>
-                        <TableCell className="whitespace-normal">
-                            {formatGrade(point.percent)}{" "}
-                            {point.isExpected ? "(your estimate)" : "(needed)"}
-                        </TableCell>
-                        <TableCell>{formatGrade(point.planGrade)}</TableCell>
-                        {onSelect && <TableCell />}
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+        <HistoryTable
+            caption={`${termLabel} grade after each task`}
+            points={points}
+            planPoints={plan}
+            actionLabel="Go to task"
+            onSelect={onSelect}
+            canSelect={(point) => Boolean(point.taskId)}
+            showReplacedEntry
+        />
     );
 
     return (

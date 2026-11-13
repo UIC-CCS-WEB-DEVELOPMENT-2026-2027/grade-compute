@@ -9,15 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { Line, ReferenceLine } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
@@ -29,6 +20,7 @@ import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import { HistoryChartFrame } from "./HistoryChartFrame";
+import { HistoryTable } from "./HistoryTable";
 
 // Strong colors first so the first lines read well on white.
 const LINE_COLOR_ORDER = [1, 4, 3, 5, 2, 8, 7, 6];
@@ -157,46 +149,13 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
     const table = visible
         .filter((course) => course.points.length > 0)
         .map((course) => (
-            <Table key={course.classId} className="rounded-lg border border-border">
-                <TableCaption className="mt-0 mb-2 caption-top text-left text-foreground">
-                    {course.subjectCode} {course.subjectName} · target {course.target}%
-                </TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Step</TableHead>
-                        <TableHead>Task</TableHead>
-                        <TableHead>Score</TableHead>
-                        <TableHead>Grade so far</TableHead>
-                        <TableHead>
-                            <span className="sr-only">Open task</span>
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {course.points.map((point) => (
-                        <TableRow key={point.step}>
-                            <TableCell>{point.step}</TableCell>
-                            <TableCell className="whitespace-normal">
-                                {point.criterionName} · {point.label}
-                            </TableCell>
-                            <TableCell>
-                                {point.percent.toFixed(1)}%{" "}
-                                {point.isOfficial ? "(official)" : "(yours)"}
-                            </TableCell>
-                            <TableCell>{formatGrade(point.grade)}</TableCell>
-                            <TableCell className="text-right">
-                                <Button
-                                    variant="link"
-                                    className="h-auto p-0 tap:min-h-11"
-                                    onClick={() => openTask(course, point)}
-                                >
-                                    Open task
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <HistoryTable
+                key={course.classId}
+                caption={`${course.subjectCode} ${course.subjectName} · target ${course.target}%`}
+                points={course.points}
+                actionLabel="Open task"
+                onSelect={(point) => openTask(course, point)}
+            />
         ));
 
     return (
