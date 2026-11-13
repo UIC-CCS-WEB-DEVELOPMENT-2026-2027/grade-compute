@@ -1,0 +1,2 @@
+# Store and check out every text file with LF line endings, on every machine (T-17).
+* text=auto eol=lf
