@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { getDb, saveDb } from "@/services/db";
-import { updateStudentRecord } from "@/services/records";
+import { getStudentClass, updateStudentRecord } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { toTaskList, withStudentScore } from "@/lib/grades";
 import { formatPercent, getHierarchyRows, getRuleLeaves, ruleToTree } from "@/lib/rules";
@@ -46,11 +46,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [addTaskError, setAddTaskError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
 
-    const classItem = dbData?.classes?.find((item) => item.id === classId);
-    const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === studentId,
-    );
-    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
+    const { record: studentRecord, rule } = getStudentClass(dbData, classId, studentId);
     const criteria = getRuleLeaves(rule);
     const criteriaIds = new Set(criteria.map((criterion) => criterion.id));
     const selectedCategory = criteriaIds.has(taskCategory) ? taskCategory : (criteria[0]?.id ?? "");

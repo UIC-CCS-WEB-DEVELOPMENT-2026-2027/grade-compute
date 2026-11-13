@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Empty, EmptyHeader } from "@/components/ui/empty";
 import { TargetGradeSandbox } from "@/features/sandbox/components/TargetGradeSandbox";
 import { TermNavigation } from "@/features/term-records/components/TermNavigation";
+import { getStudentClass } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { toTermKey } from "@/lib/terms";
 import { useDb } from "@/hooks/useDb";
@@ -18,16 +19,11 @@ export function TargetGradeSandboxPage() {
     const [dbData] = useDb();
     const studentId = getActiveStudentId(dbData);
 
-    const classItem = dbData?.classes?.find((item) => item.id === subjectId);
-    const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
-    const hasStudentRecord = classItem?.studentRecords?.some(
-        (record) => record.studentId === studentId,
-    );
-    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
+    const { classItem, subject, record, rule } = getStudentClass(dbData, subjectId, studentId);
 
     return (
         <PageShell headerProps={{ title: "Target Grade Sandbox", subtitle: null }}>
-            {classItem && subject && hasStudentRecord ? (
+            {classItem && subject && record ? (
                 <>
                     <div className="mb-2.5 flex">
                         <BackLink to={`/student/subject/${classItem.id}?term=${termKey}`}>

@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history";
 import { getTermTarget } from "@/lib/targets";
+import { getStudentClass } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
 import { HistoryCard } from "./HistoryCard";
@@ -24,9 +25,7 @@ export function SubjectGradeHistory({ classId, termKey }) {
     const [showPlan, setShowPlan] = useState(true);
 
     const studentId = getActiveStudentId(dbData);
-    const classItem = dbData?.classes?.find((item) => item.id === classId);
-    const record = classItem?.studentRecords?.find((item) => item.studentId === studentId);
-    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
+    const { record, rule } = getStudentClass(dbData, classId, studentId);
     const termLabel = getTermLabel(termKey);
     if (!record || !rule) return null;
 

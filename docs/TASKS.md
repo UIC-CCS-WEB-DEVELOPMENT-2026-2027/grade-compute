@@ -949,6 +949,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
       - **T9.0.2 (N2)** `HistoryLegend({ items: [{ mark, text }] })` draws both charts' legend pills; each chart keeps its own marks and text.
       - **T9.0.3 (N3)** `HistoryEmpty` is the dashed "nothing to chart" box in `HistoryChartFrame`, `HistoryChart` and `AllSubjectsHistory`.
       - **T9.0.4 (N4)** `HistoryCard({ titleId, title, description, actions, contentClassName })` is the region card of `AllSubjectsHistory` and `SubjectGradeHistory`; the content gap stays per chart (3 and 3.5).
+      - **T9.0.5 (N5)** `getStudentClass(db, classId, studentId)` in `services/records.js` returns `{ classItem, subject, record, rule }` with the same lookups as before (each `undefined` when missing), with 4 new unit tests. Used by Subject Detail (twice), Current Term Records, the sandbox, its page and SubjectGradeHistory. The sandbox page's `.some(...)` check became the found record, which is truthy in exactly the same cases.
     - **Noticed for T9.1:** 10 `max-md:h-control-touch` classes left in `RuleDetailPage` (8) and `CurrentTermRecords` (2), which T8.1's tokens appear to make redundant (to verify); and the stale path comments at the top of many files (`// src/components/student/…`, `// src/utils/…`).
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).

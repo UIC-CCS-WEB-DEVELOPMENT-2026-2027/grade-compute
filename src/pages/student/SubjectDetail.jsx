@@ -26,7 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { TermNavigation } from "@/features/term-records/components/TermNavigation";
 import { SubjectGradeHistory } from "@/features/history/components/SubjectGradeHistory";
 import { getDb, saveDb } from "@/services/db";
-import { updateStudentRecord } from "@/services/records";
+import { getStudentClass, updateStudentRecord } from "@/services/records";
 import congratulationAudio from "@/assets/congrats-voice.mp3";
 import {
     calculateOfficialGrade,
@@ -74,13 +74,10 @@ export function SubjectDetail() {
     const { subjectId } = useParams();
 
     useEffect(() => {
-        const currentDb = dbData;
-        const currentClass = currentDb?.classes?.find((item) => item.id === subjectId);
-        const currentRecord = currentClass?.studentRecords?.find(
-            (record) => record.studentId === studentId,
-        );
-        const currentRule = currentDb?.computationRules?.find(
-            (rule) => rule.id === currentClass?.computationRuleId,
+        const { record: currentRecord, rule: currentRule } = getStudentClass(
+            dbData,
+            subjectId,
+            studentId,
         );
         if (!currentRecord) return;
 
@@ -140,18 +137,16 @@ export function SubjectDetail() {
         };
     }, [celebration]);
 
-    const classItem = dbData?.classes?.find((item) => item.id === subjectId);
-    const subject = dbData?.subjects?.find((item) => item.id === classItem?.subjectId);
+    const {
+        classItem,
+        subject,
+        record: studentRecord,
+        rule: computationRule,
+    } = getStudentClass(dbData, subjectId, studentId);
     const professor =
         classItem?.professorName ??
         dbData?.users?.find((user) => user.id === classItem?.professorId)?.name ??
         "Awaiting professor assignment";
-    const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === studentId,
-    );
-    const computationRule = dbData?.computationRules?.find(
-        (rule) => rule.id === classItem?.computationRuleId,
-    );
 
     if (!classItem || !subject || !studentRecord) {
         return (

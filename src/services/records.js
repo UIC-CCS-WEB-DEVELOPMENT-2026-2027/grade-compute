@@ -18,3 +18,17 @@ export function updateStudentRecord(db, classId, studentId, update) {
         ),
     };
 }
+
+// One student's view of one class: the class, its subject, the student's
+// record in it and its grading rule. Each is undefined when it isn't found
+// (no class, no record for this student, a missing subject or rule).
+// db may be null (no stored data yet).
+export function getStudentClass(db, classId, studentId) {
+    const classItem = db?.classes?.find((item) => item.id === classId);
+    return {
+        classItem,
+        subject: db?.subjects?.find((item) => item.id === classItem?.subjectId),
+        record: classItem?.studentRecords?.find((item) => item.studentId === studentId),
+        rule: db?.computationRules?.find((item) => item.id === classItem?.computationRuleId),
+    };
+}

@@ -6,7 +6,7 @@
 // scores are stored apart from the real scores and are used only here.
 import { useState } from "react";
 import { getDb, saveDb } from "@/services/db";
-import { updateStudentRecord } from "@/services/records";
+import { getStudentClass, updateStudentRecord } from "@/services/records";
 import { calculateOfficialGrade, calculateUnofficialGrade } from "@/lib/grades";
 import { formatPercent } from "@/lib/rules";
 import { getActiveStudentId } from "@/services/session";
@@ -201,11 +201,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const [invalidScoreId, setInvalidScoreId] = useState("");
 
     const termLabel = TERM_LABELS[termKey] ?? "Prelim";
-    const classItem = dbData?.classes?.find((item) => item.id === classId);
-    const studentRecord = classItem?.studentRecords?.find(
-        (record) => record.studentId === studentId,
-    );
-    const rule = dbData?.computationRules?.find((item) => item.id === classItem?.computationRuleId);
+    const { record: studentRecord, rule } = getStudentClass(dbData, classId, studentId);
 
     if (!studentRecord) {
         return (
