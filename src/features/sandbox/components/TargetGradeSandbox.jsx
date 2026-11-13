@@ -22,7 +22,7 @@ import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
 import { getTermLabel } from "@/lib/terms";
-import { HistoryChart } from "@/features/history/components/HistoryChart";
+import { HistoryChart } from "@/components/history-chart/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
 import { DisclosureTrigger } from "@/components/DisclosureTrigger";

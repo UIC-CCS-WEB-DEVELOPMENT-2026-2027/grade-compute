@@ -14,7 +14,7 @@ import { getStudentClass } from "@/services/records";
 import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
 import { HistoryCard } from "./HistoryCard";
-import { HistoryChart } from "./HistoryChart";
+import { HistoryChart } from "@/components/history-chart/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { useDb } from "@/hooks/useDb";
 

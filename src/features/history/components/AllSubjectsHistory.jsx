@@ -13,14 +13,14 @@ import { resolveColor } from "@/lib/dom/cssColor";
 import { getCriteriaColor } from "@/lib/rules";
 import { getChartScale, getCoursesHistory, PASSING_GRADE } from "@/lib/history";
 import { TERMS, getTermLabel } from "@/lib/terms";
-import { HistoryTooltip } from "./HistoryTooltip";
-import { usePointHover } from "@/features/history/hooks/usePointHover";
+import { HistoryTooltip } from "@/components/history-chart/HistoryTooltip";
+import { usePointHover } from "@/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 import { HistoryCard } from "./HistoryCard";
-import { HistoryChartFrame } from "./HistoryChartFrame";
-import { HistoryEmpty } from "./HistoryEmpty";
-import { HistoryLegend } from "./HistoryLegend";
-import { HistoryTable } from "./HistoryTable";
+import { HistoryChartFrame } from "@/components/history-chart/HistoryChartFrame";
+import { HistoryEmpty } from "@/components/history-chart/HistoryEmpty";
+import { HistoryLegend } from "@/components/history-chart/HistoryLegend";
+import { HistoryTable } from "@/components/history-chart/HistoryTable";
 
 // Strong colors first so the first lines read well on white.
 const LINE_COLOR_ORDER = [1, 4, 3, 5, 2, 8, 7, 6];

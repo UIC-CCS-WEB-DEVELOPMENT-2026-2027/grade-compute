@@ -23,7 +23,7 @@ import {
     InputGroupText,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
-import { TermNavigation } from "@/features/term-records/components/TermNavigation";
+import { TermNavigation } from "@/components/TermNavigation";
 import { SubjectGradeHistory } from "@/features/history/components/SubjectGradeHistory";
 import { getDb, saveDb } from "@/services/db";
 import { getStudentClass, updateStudentRecord } from "@/services/records";

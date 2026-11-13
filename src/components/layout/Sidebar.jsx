@@ -45,7 +45,7 @@ import { getDb, saveDb } from "@/services/db";
 import { getEnrolledSubjects } from "@/lib/subjects";
 import { toTermKey } from "@/lib/terms";
 import { getActiveStudentId, signOut } from "@/services/session";
-import { SandboxSubjectPicker } from "@/features/sandbox/components/SandboxSubjectPicker";
+import { SandboxSubjectPicker } from "@/components/SandboxSubjectPicker";
 import { useSidebarState } from "@/hooks/useSidebarState";
 import { useDb } from "@/hooks/useDb";
 

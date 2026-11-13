@@ -15,7 +15,7 @@ import { HistoryEmpty } from "./HistoryEmpty";
 import { HistoryLegend } from "./HistoryLegend";
 import { HistoryTable } from "./HistoryTable";
 import { HistoryTooltip } from "./HistoryTooltip";
-import { usePointHover } from "@/features/history/hooks/usePointHover";
+import { usePointHover } from "@/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
 
 // A dot grows when hovered (CSS only, so the chart is not redrawn).
