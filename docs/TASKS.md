@@ -904,7 +904,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
 
 ### Phase 9 — Clean-up and verification (as in the workflow)
 
-- [ ] **T9.0 Duplication re-scan** (added by the owner, 2026-11-13). Phases 6 and 7 merged the duplication groups found in Phase 0 (AUDIT §7, §2 above); nobody has looked again since Phases 7 and 8 rewrote the screens.
+- [x] **T9.0 Duplication re-scan** (added by the owner, 2026-11-13). Phases 6 and 7 merged the duplication groups found in Phase 0 (AUDIT §7, §2 above); nobody has looked again since Phases 7 and 8 rewrote the screens.
   - Scan `src/` (outside `components/ui/`) for markup, class strings and logic that appear in two or more places. Group them as AUDIT §7 does, and mark which groups serve the same purpose and which only look alike (⚠, not merged).
   - Known candidate: the "Show as a table" history tables in `AllSubjectsHistory.jsx` and `HistoryChart.jsx` (same columns and "Open task" button). Their sideways scroll at 375 stays (owner decision, 2026-11-13).
   - Write the groups and a proposed shared component, hook or function for each into this task's "As done" note. **Stop and ask the owner** which groups to merge before changing code.
@@ -955,6 +955,7 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
       - **T9.0.8 (N10)** `features/settings/buttonStyles.js` holds `PRIMARY_BUTTON`, `SECONDARY_BUTTON` and `DANGER_BUTTON` (the exact old class strings) for Security, Account and Account Actions. Account Actions' Cancel was the same secondary style written out, so it uses the constant too. Account keeps its `PHONE_FULL` for the "Choose photo" label.
       - **T9.0.9 (N11)** `SettingText({ title, description })` is the left side of a Settings row, used by Account Actions (was its private `ActionText`) and Notifications.
       - **T9.0.10 (N13)** In `features/grade-rules/components/`: `DeleteRuleButton` (the destructive outline "Delete" on the rule card and in the editor; size and the caller's classes passed in) and `RuleWarning` (the coral-bar line for lost tasks in both rule dialogs, and DeleteRuleDialog's save error, which keeps `role="alert"`).
+      - **T9.0.11 (N15)** The sandbox's term label uses `getTermLabel(termKey)` instead of `TERM_LABELS[termKey] ?? "Prelim"`; the same label for every key `toTermKey` gives. `TERM_LABELS` stays for `lib/history`.
     - **Noticed for T9.1:** 10 `max-md:h-control-touch` classes left in `RuleDetailPage` (8) and `CurrentTermRecords` (2), which T8.1's tokens appear to make redundant (to verify); and the stale path comments at the top of many files (`// src/components/student/…`, `// src/utils/…`).
 - [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).

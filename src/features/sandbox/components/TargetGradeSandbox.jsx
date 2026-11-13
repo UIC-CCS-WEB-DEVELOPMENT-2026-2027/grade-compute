@@ -22,7 +22,7 @@ import { focusTaskRow } from "@/lib/dom/focusTask";
 import { getGradeHistory, getPlanPoints } from "@/lib/history";
 import { validateScore } from "@/lib/scores";
 import { getSandboxTarget } from "@/lib/targets";
-import { TERM_LABELS } from "@/lib/terms";
+import { getTermLabel } from "@/lib/terms";
 import { HistoryChart } from "@/features/history/components/HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { GradeGauge } from "@/components/GradeGauge";
@@ -199,7 +199,7 @@ export function TargetGradeSandbox({ classId, termKey = "prelim" }) {
     const [targetError, setTargetError] = useState("");
     const [invalidScoreId, setInvalidScoreId] = useState("");
 
-    const termLabel = TERM_LABELS[termKey] ?? "Prelim";
+    const termLabel = getTermLabel(termKey);
     const { record: studentRecord, rule } = getStudentClass(dbData, classId, studentId);
 
     if (!studentRecord) {
