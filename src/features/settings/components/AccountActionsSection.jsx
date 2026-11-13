@@ -3,9 +3,8 @@
 // either (B1). The confirmation state stays in GlobalSettings.
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DANGER_BUTTON, SECONDARY_BUTTON } from "@/features/settings/buttonStyles";
 import { cn } from "@/lib/utils";
-
-const DANGER = "bg-destructive text-primary-foreground hover:bg-destructive/90";
 
 const ROWS = [
     {
@@ -54,7 +53,7 @@ export function AccountActionsSection({
 
             <div className="mt-4 flex items-center justify-between gap-4.5 rounded-xl bg-warning-soft p-4 max-sm:gap-3">
                 <ActionText title="Log out" description="Sign out of your CompuGrade account." />
-                <Button className={cn("shrink-0", DANGER)} onClick={onLogout}>
+                <Button className={cn("shrink-0", DANGER_BUTTON)} onClick={onLogout}>
                     Log Out
                 </Button>
             </div>
@@ -67,12 +66,15 @@ export function AccountActionsSection({
                     <div className="flex justify-end gap-3 max-lg:justify-start max-sm:flex-col-reverse">
                         <Button
                             variant="outline"
-                            className="bg-card max-sm:w-full"
+                            className={SECONDARY_BUTTON}
                             onClick={onCancelLogout}
                         >
                             Cancel
                         </Button>
-                        <Button className={cn("max-sm:w-full", DANGER)} onClick={onConfirmLogout}>
+                        <Button
+                            className={cn("max-sm:w-full", DANGER_BUTTON)}
+                            onClick={onConfirmLogout}
+                        >
                             Log Out
                         </Button>
                     </div>

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PRIMARY_BUTTON, SECONDARY_BUTTON } from "@/features/settings/buttonStyles";
 import { cn } from "@/lib/utils";
 
 const FIELDS = [
@@ -77,7 +78,7 @@ export function AccountSection({
                     </label>
                     <Button
                         variant="outline"
-                        className={cn("bg-card", PHONE_FULL)}
+                        className={SECONDARY_BUTTON}
                         onClick={onSavePhoto}
                         disabled={!isEditing}
                     >
@@ -111,21 +112,11 @@ export function AccountSection({
 
             <div className="mt-6 flex justify-end max-lg:mt-5 max-lg:justify-start">
                 {isEditing ? (
-                    <Button
-                        className={cn(
-                            "bg-highlight-strong text-foreground hover:bg-highlight-strong/80",
-                            PHONE_FULL,
-                        )}
-                        onClick={onSave}
-                    >
+                    <Button className={PRIMARY_BUTTON} onClick={onSave}>
                         Save changes
                     </Button>
                 ) : (
-                    <Button
-                        variant="outline"
-                        className={cn("bg-card", PHONE_FULL)}
-                        onClick={onEditAgain}
-                    >
+                    <Button variant="outline" className={SECONDARY_BUTTON} onClick={onEditAgain}>
                         Edit again
                     </Button>
                 )}

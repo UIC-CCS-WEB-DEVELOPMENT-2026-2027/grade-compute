@@ -50,6 +50,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsIcon } from "@/features/settings/components/SettingsIcon";
 import { createPrototypeChallenge, getVerifiedMethods } from "@/services/prototypeVerification";
+import { DANGER_BUTTON, PRIMARY_BUTTON, SECONDARY_BUTTON } from "@/features/settings/buttonStyles";
 import { cn } from "@/lib/utils";
 
 const PASSWORD_LABELS = {
@@ -59,10 +60,6 @@ const PASSWORD_LABELS = {
 };
 const STRENGTH_FILL = ["", "bg-destructive", "bg-highlight-strong", "bg-success"];
 
-// The yellow main action, as on the Account section.
-const PRIMARY = "bg-highlight-strong text-foreground hover:bg-highlight-strong/80 max-sm:w-full";
-const SECONDARY = "bg-card max-sm:w-full";
-const DANGER = "bg-destructive text-primary-foreground hover:bg-destructive/90";
 const NOTE = "m-0 type-small text-muted-foreground";
 const ERROR = "m-0 type-small text-destructive";
 const SUBTITLE = "m-0 mb-1.5 type-card-title text-primary";
@@ -404,7 +401,7 @@ export function SecuritySection({ security }) {
                                         </p>
                                     )}
                                     <div>
-                                        <Button type="submit" className={PRIMARY}>
+                                        <Button type="submit" className={PRIMARY_BUTTON}>
                                             Continue to verification
                                         </Button>
                                     </div>
@@ -441,7 +438,7 @@ export function SecuritySection({ security }) {
                                     <div>
                                         <Button
                                             variant="outline"
-                                            className={SECONDARY}
+                                            className={SECONDARY_BUTTON}
                                             onClick={sendSecurityVerification}
                                             disabled={!methods.length}
                                         >
@@ -458,7 +455,7 @@ export function SecuritySection({ security }) {
                                                 autoComplete="one-time-code"
                                             />
                                             <div>
-                                                <Button type="submit" className={PRIMARY}>
+                                                <Button type="submit" className={PRIMARY_BUTTON}>
                                                     Verify and change password
                                                 </Button>
                                             </div>
@@ -480,7 +477,7 @@ export function SecuritySection({ security }) {
                                         local account store.
                                     </p>
                                     <Button
-                                        className={PRIMARY}
+                                        className={PRIMARY_BUTTON}
                                         onClick={() => setSecurityView("overview")}
                                     >
                                         Done
@@ -507,13 +504,16 @@ export function SecuritySection({ security }) {
                                 </div>
                                 {profile.twoFactorEnabled ? (
                                     <Button
-                                        className={DANGER}
+                                        className={DANGER_BUTTON}
                                         onClick={() => setConfirmCurrentLogout(true)}
                                     >
                                         Turn off
                                     </Button>
                                 ) : (
-                                    <Button className={PRIMARY} onClick={startTwoFactorEnable}>
+                                    <Button
+                                        className={PRIMARY_BUTTON}
+                                        onClick={startTwoFactorEnable}
+                                    >
                                         Turn on
                                     </Button>
                                 )}
@@ -557,7 +557,7 @@ export function SecuritySection({ security }) {
                                     <div>
                                         <Button
                                             variant="outline"
-                                            className={SECONDARY}
+                                            className={SECONDARY_BUTTON}
                                             onClick={() => {
                                                 const challenge =
                                                     createPrototypeChallenge(verificationMethod);
@@ -581,7 +581,7 @@ export function SecuritySection({ security }) {
                                                 onChange={setVerificationCode}
                                             />
                                             <div>
-                                                <Button type="submit" className={PRIMARY}>
+                                                <Button type="submit" className={PRIMARY_BUTTON}>
                                                     Verify and enable
                                                 </Button>
                                             </div>
@@ -609,7 +609,10 @@ export function SecuritySection({ security }) {
                                         >
                                             Cancel
                                         </Button>
-                                        <Button className={DANGER} onClick={disableTwoFactor}>
+                                        <Button
+                                            className={DANGER_BUTTON}
+                                            onClick={disableTwoFactor}
+                                        >
                                             Turn off 2FA
                                         </Button>
                                     </div>
@@ -629,7 +632,7 @@ export function SecuritySection({ security }) {
                                 </div>
                                 <Button
                                     variant="outline"
-                                    className={SECONDARY}
+                                    className={SECONDARY_BUTTON}
                                     onClick={() => setConfirmLogoutAll(true)}
                                 >
                                     Log Out All Other Sessions
@@ -725,14 +728,14 @@ export function SecuritySection({ security }) {
                             {sessionDetails.isCurrent ? (
                                 confirmCurrentLogout ? (
                                     <Button
-                                        className={DANGER}
+                                        className={DANGER_BUTTON}
                                         onClick={() => logoutSession(sessionDetails)}
                                     >
                                         Confirm Log Out
                                     </Button>
                                 ) : (
                                     <Button
-                                        className={DANGER}
+                                        className={DANGER_BUTTON}
                                         onClick={() => setConfirmCurrentLogout(true)}
                                     >
                                         Log Out
@@ -741,7 +744,7 @@ export function SecuritySection({ security }) {
                             ) : (
                                 sessionDetails.isActive && (
                                     <Button
-                                        className={DANGER}
+                                        className={DANGER_BUTTON}
                                         onClick={() => logoutSession(sessionDetails)}
                                     >
                                         Log Out
@@ -764,7 +767,10 @@ export function SecuritySection({ security }) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction className={DANGER} onClick={logoutAllOtherSessions}>
+                        <AlertDialogAction
+                            className={DANGER_BUTTON}
+                            onClick={logoutAllOtherSessions}
+                        >
                             Log Out All Other Sessions
                         </AlertDialogAction>
                     </AlertDialogFooter>
@@ -869,7 +875,7 @@ export function SecuritySection({ security }) {
                             </TabsContent>
                         </Tabs>
                         <DialogFooter className="-mx-6 -mb-6 px-6">
-                            <Button className={PRIMARY} onClick={() => setHelpDialog(null)}>
+                            <Button className={PRIMARY_BUTTON} onClick={() => setHelpDialog(null)}>
                                 Done
                             </Button>
                         </DialogFooter>
