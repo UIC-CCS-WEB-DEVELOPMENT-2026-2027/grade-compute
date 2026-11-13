@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Line, ReferenceLine } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { resolveColor } from "@/lib/dom/cssColor";
@@ -18,6 +17,7 @@ import { TERMS, getTermLabel } from "@/lib/terms";
 import { HistoryTooltip } from "./HistoryTooltip";
 import { usePointHover } from "@/features/history/hooks/usePointHover";
 import { formatGrade } from "@/lib/format";
+import { HistoryCard } from "./HistoryCard";
 import { HistoryChartFrame } from "./HistoryChartFrame";
 import { HistoryEmpty } from "./HistoryEmpty";
 import { HistoryLegend } from "./HistoryLegend";
@@ -156,17 +156,17 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
         ));
 
     return (
-        <Card className="mt-7 gap-3.5" role="region" aria-labelledby="all-history-title">
-            <CardHeader className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                    <h2 id="all-history-title" className="m-0 type-section-title text-foreground">
-                        {termLabel} Grade History
-                    </h2>
-                    <CardDescription className="mt-1 max-w-prose">
-                        Each subject&apos;s {termLabel} grade after every scored task. Dashed lines
-                        are targets in the subject&apos;s color. Click a point to open that task.
-                    </CardDescription>
-                </div>
+        <HistoryCard
+            titleId="all-history-title"
+            title={`${termLabel} Grade History`}
+            description={
+                <>
+                    Each subject&apos;s {termLabel} grade after every scored task. Dashed lines are
+                    targets in the subject&apos;s color. Click a point to open that task.
+                </>
+            }
+            contentClassName="flex flex-col gap-3"
+            actions={
                 <ToggleGroup
                     aria-label="Term shown"
                     value={[termKey]}
@@ -185,128 +185,126 @@ export function AllSubjectsHistory({ db, studentId, semesterId, initialTerm = "p
                         </ToggleGroupItem>
                     ))}
                 </ToggleGroup>
-            </CardHeader>
-
-            <CardContent className="flex flex-col gap-3">
-                {courses.length === 0 ? (
-                    <HistoryEmpty>
-                        Add a subject below and its grade history will show here.
-                    </HistoryEmpty>
-                ) : (
-                    <>
-                        <div
-                            className="flex flex-wrap gap-2"
-                            role="group"
-                            aria-label="Subjects shown in the chart"
-                        >
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="rounded-full font-normal text-primary"
-                                onClick={() =>
-                                    setHiddenIds(
-                                        allShown
-                                            ? new Set(courses.map((course) => course.classId))
-                                            : new Set(),
-                                    )
-                                }
-                            >
-                                {allShown ? "Hide all" : "Show all"}
-                            </Button>
-                            {courses.map((course) => (
-                                <Toggle
-                                    key={course.classId}
-                                    variant="outline"
-                                    pressed={!hiddenIds.has(course.classId)}
-                                    onPressedChange={() => toggle(course.classId)}
-                                    title={course.subjectName}
-                                    className="group/chip rounded-full bg-card px-3 font-normal text-muted-foreground aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-foreground"
-                                >
-                                    <i
-                                        className="size-2.5 rounded-full bg-(--chip-color) opacity-35 group-aria-pressed/chip:opacity-100"
-                                        style={{ "--chip-color": course.color }}
-                                        aria-hidden="true"
-                                    />
-                                    {course.subjectCode}
-                                    <small className="type-caption font-normal text-muted-foreground">
-                                        {course.points.length === 0
-                                            ? "no scores"
-                                            : course.reachedIndex >= 0
-                                              ? "target reached"
-                                              : `target ${course.target}%`}
-                                    </small>
-                                </Toggle>
-                            ))}
-                        </div>
-
-                        <HistoryChartFrame
-                            scale={scale}
-                            plotRef={plotRef}
-                            ariaLabel={`${termLabel} grade after each task for ${plotted
-                                .map(
-                                    (course) =>
-                                        `${course.subjectCode} (latest ${formatGrade(course.points.at(-1)?.grade)}, target ${course.target}%)`,
+            }
+        >
+            {courses.length === 0 ? (
+                <HistoryEmpty>
+                    Add a subject below and its grade history will show here.
+                </HistoryEmpty>
+            ) : (
+                <>
+                    <div
+                        className="flex flex-wrap gap-2"
+                        role="group"
+                        aria-label="Subjects shown in the chart"
+                    >
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full font-normal text-primary"
+                            onClick={() =>
+                                setHiddenIds(
+                                    allShown
+                                        ? new Set(courses.map((course) => course.classId))
+                                        : new Set(),
                                 )
-                                .join(", ")}. The same data is in the table below.`}
-                            overlay={<HistoryTooltip store={store} />}
-                            emptyMessage={
-                                plotted.length > 0
-                                    ? null
-                                    : visible.length === 0
-                                      ? "Choose at least one subject above to see its line."
-                                      : `The subjects you chose have no scored tasks for ${termLabel} yet.`
                             }
-                            legend={legend}
-                            table={table}
                         >
-                            {plotted.map((course) => (
-                                <ReferenceLine
-                                    key={`target-${course.classId}`}
-                                    y={course.target}
-                                    stroke={course.color}
-                                    strokeDasharray="7 5"
-                                    strokeWidth={1.5}
+                            {allShown ? "Hide all" : "Show all"}
+                        </Button>
+                        {courses.map((course) => (
+                            <Toggle
+                                key={course.classId}
+                                variant="outline"
+                                pressed={!hiddenIds.has(course.classId)}
+                                onPressedChange={() => toggle(course.classId)}
+                                title={course.subjectName}
+                                className="group/chip rounded-full bg-card px-3 font-normal text-muted-foreground aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-foreground"
+                            >
+                                <i
+                                    className="size-2.5 rounded-full bg-(--chip-color) opacity-35 group-aria-pressed/chip:opacity-100"
+                                    style={{ "--chip-color": course.color }}
+                                    aria-hidden="true"
                                 />
-                            ))}
-                            {plotted.map((course) => {
-                                const reachedStep =
-                                    course.reachedIndex >= 0
-                                        ? course.points[course.reachedIndex].step
-                                        : null;
-                                const dotProps = {
-                                    course,
-                                    surface: colors.surface,
-                                    success: colors.success,
-                                    onSelect: (point) => openTask(course, point),
-                                    hover,
-                                };
-                                return (
-                                    <Line
-                                        key={course.classId}
-                                        data={course.points}
-                                        dataKey="grade"
-                                        name={course.subjectCode}
-                                        type="linear"
-                                        stroke={course.color}
-                                        strokeWidth={2.5}
-                                        dot={(props) => (
-                                            <SubjectDot
-                                                key={`${course.classId}-${props.index}`}
-                                                {...props}
-                                                {...dotProps}
-                                                reached={props.payload?.step === reachedStep}
-                                            />
-                                        )}
-                                        activeDot={false}
-                                        isAnimationActive={false}
-                                        connectNulls={false}
-                                    />
-                                );
-                            })}
-                        </HistoryChartFrame>
-                    </>
-                )}
-            </CardContent>
-        </Card>
+                                {course.subjectCode}
+                                <small className="type-caption font-normal text-muted-foreground">
+                                    {course.points.length === 0
+                                        ? "no scores"
+                                        : course.reachedIndex >= 0
+                                          ? "target reached"
+                                          : `target ${course.target}%`}
+                                </small>
+                            </Toggle>
+                        ))}
+                    </div>
+
+                    <HistoryChartFrame
+                        scale={scale}
+                        plotRef={plotRef}
+                        ariaLabel={`${termLabel} grade after each task for ${plotted
+                            .map(
+                                (course) =>
+                                    `${course.subjectCode} (latest ${formatGrade(course.points.at(-1)?.grade)}, target ${course.target}%)`,
+                            )
+                            .join(", ")}. The same data is in the table below.`}
+                        overlay={<HistoryTooltip store={store} />}
+                        emptyMessage={
+                            plotted.length > 0
+                                ? null
+                                : visible.length === 0
+                                  ? "Choose at least one subject above to see its line."
+                                  : `The subjects you chose have no scored tasks for ${termLabel} yet.`
+                        }
+                        legend={legend}
+                        table={table}
+                    >
+                        {plotted.map((course) => (
+                            <ReferenceLine
+                                key={`target-${course.classId}`}
+                                y={course.target}
+                                stroke={course.color}
+                                strokeDasharray="7 5"
+                                strokeWidth={1.5}
+                            />
+                        ))}
+                        {plotted.map((course) => {
+                            const reachedStep =
+                                course.reachedIndex >= 0
+                                    ? course.points[course.reachedIndex].step
+                                    : null;
+                            const dotProps = {
+                                course,
+                                surface: colors.surface,
+                                success: colors.success,
+                                onSelect: (point) => openTask(course, point),
+                                hover,
+                            };
+                            return (
+                                <Line
+                                    key={course.classId}
+                                    data={course.points}
+                                    dataKey="grade"
+                                    name={course.subjectCode}
+                                    type="linear"
+                                    stroke={course.color}
+                                    strokeWidth={2.5}
+                                    dot={(props) => (
+                                        <SubjectDot
+                                            key={`${course.classId}-${props.index}`}
+                                            {...props}
+                                            {...dotProps}
+                                            reached={props.payload?.step === reachedStep}
+                                        />
+                                    )}
+                                    activeDot={false}
+                                    isAnimationActive={false}
+                                    connectNulls={false}
+                                />
+                            );
+                        })}
+                    </HistoryChartFrame>
+                </>
+            )}
+        </HistoryCard>
     );
 }

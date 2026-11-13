@@ -6,7 +6,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { focusTaskRow } from "@/lib/dom/focusTask";
@@ -14,6 +13,7 @@ import { getEntryAccuracy, getGradeHistory, getPlanPoints } from "@/lib/history"
 import { getTermTarget } from "@/lib/targets";
 import { getActiveStudentId } from "@/services/session";
 import { getTermLabel } from "@/lib/terms";
+import { HistoryCard } from "./HistoryCard";
 import { HistoryChart } from "./HistoryChart";
 import { formatGrade } from "@/lib/format";
 import { useDb } from "@/hooks/useDb";
@@ -43,20 +43,17 @@ export function SubjectGradeHistory({ classId, termKey }) {
     const sandboxLink = `/student/subject/${classId}/sandbox?term=${termKey}`;
 
     return (
-        <Card className="mt-7 gap-3.5" role="region" aria-labelledby="subject-history-title">
-            <CardHeader className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                    <h2
-                        id="subject-history-title"
-                        className="m-0 type-section-title text-foreground"
-                    >
-                        {termLabel} Grade History
-                    </h2>
-                    <CardDescription className="mt-1 max-w-prose">
-                        Your {termLabel} grade after each scored task. Official scores replace your
-                        own entries. Click a point to jump to its task.
-                    </CardDescription>
-                </div>
+        <HistoryCard
+            titleId="subject-history-title"
+            title={`${termLabel} Grade History`}
+            description={
+                <>
+                    Your {termLabel} grade after each scored task. Official scores replace your own
+                    entries. Click a point to jump to its task.
+                </>
+            }
+            contentClassName="flex flex-col gap-3.5"
+            actions={
                 <div className="flex flex-wrap items-center gap-2">
                     {planPoints.length > 0 && (
                         <Toggle
@@ -78,58 +75,56 @@ export function SubjectGradeHistory({ classId, termKey }) {
                         Plan in sandbox
                     </Link>
                 </div>
-            </CardHeader>
+            }
+        >
+            <HistoryChart
+                points={points}
+                planPoints={planPoints}
+                showPlan={showPlan}
+                target={target}
+                targetLabel="Target"
+                termLabel={termLabel}
+                onSelect={(point) => focusTaskRow(point.taskId)}
+            />
 
-            <CardContent className="flex flex-col gap-3.5">
-                <HistoryChart
-                    points={points}
-                    planPoints={planPoints}
-                    showPlan={showPlan}
-                    target={target}
-                    targetLabel="Target"
-                    termLabel={termLabel}
-                    onSelect={(point) => focusTaskRow(point.taskId)}
-                />
+            {showPlan && planPoints.length > 0 && (
+                <p className="m-0 type-small text-muted-foreground *:text-foreground">
+                    {plan.status === "required" && (
+                        <>
+                            Plan: score <strong>{formatGrade(plan.required)}</strong> on each
+                            remaining task to end at your target.{" "}
+                        </>
+                    )}
+                    {plan.status === "impossible" && (
+                        <>
+                            Plan: even 100% on every remaining task ends at{" "}
+                            <strong>{formatGrade(plan.best)}</strong>.{" "}
+                        </>
+                    )}
+                    {plan.status === "reached" && (
+                        <>
+                            You&apos;re already above target. The plan assumes you keep scoring
+                            around your current grade.{" "}
+                        </>
+                    )}
+                    Remaining tasks come from your sandbox settings; their order is a guess, so the
+                    end point is what matters.
+                </p>
+            )}
 
-                {showPlan && planPoints.length > 0 && (
-                    <p className="m-0 type-small text-muted-foreground *:text-foreground">
-                        {plan.status === "required" && (
-                            <>
-                                Plan: score <strong>{formatGrade(plan.required)}</strong> on each
-                                remaining task to end at your target.{" "}
-                            </>
-                        )}
-                        {plan.status === "impossible" && (
-                            <>
-                                Plan: even 100% on every remaining task ends at{" "}
-                                <strong>{formatGrade(plan.best)}</strong>.{" "}
-                            </>
-                        )}
-                        {plan.status === "reached" && (
-                            <>
-                                You&apos;re already above target. The plan assumes you keep scoring
-                                around your current grade.{" "}
-                            </>
-                        )}
-                        Remaining tasks come from your sandbox settings; their order is a guess, so
-                        the end point is what matters.
-                    </p>
-                )}
-
-                {accuracy && (
-                    <p className="m-0 type-small text-muted-foreground *:text-foreground">
-                        Your own entries were{" "}
-                        <strong>
-                            {Math.abs(accuracy.averageGap) < 0.05
-                                ? "spot on"
-                                : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
-                        </strong>
-                        {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the
-                        official scores that replaced them ({accuracy.count} task
-                        {accuracy.count === 1 ? "" : "s"}).
-                    </p>
-                )}
-            </CardContent>
-        </Card>
+            {accuracy && (
+                <p className="m-0 type-small text-muted-foreground *:text-foreground">
+                    Your own entries were{" "}
+                    <strong>
+                        {Math.abs(accuracy.averageGap) < 0.05
+                            ? "spot on"
+                            : `${Math.abs(accuracy.averageGap).toFixed(1)} points ${accuracy.averageGap < 0 ? "higher" : "lower"}`}
+                    </strong>
+                    {Math.abs(accuracy.averageGap) < 0.05 ? " compared with" : " than"} the official
+                    scores that replaced them ({accuracy.count} task
+                    {accuracy.count === 1 ? "" : "s"}).
+                </p>
+            )}
+        </HistoryCard>
     );
 }
