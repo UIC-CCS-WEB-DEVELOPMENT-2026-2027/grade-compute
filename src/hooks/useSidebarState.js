@@ -10,7 +10,6 @@
 // The thresholds match Tailwind md (768) and lg (1024) and useIsMobile.
 import { useSyncExternalStore } from "react";
 
-export const PHONE_MAX_WIDTH = 767;
 const TABLET_MAX_WIDTH = 1023;
 const STORAGE_KEY = "compugrade-sidebar-minimized";
 

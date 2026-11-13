@@ -1,4 +1,3 @@
-// src/utils/migrations.js
 // Upgrades data saved in older formats, so browsers that already have
 // "compugrade_db" in localStorage keep working after a format change.
 // Called by db.js. Safe to run more than once.

@@ -1,4 +1,3 @@
-// src/utils/focusTask.js
 // Scrolls to a task row in Current Term Records (rows carry
 // data-task-id) and highlights it briefly. Used when a point on a History
 // chart is clicked. Returns false if the row isn't on the page.

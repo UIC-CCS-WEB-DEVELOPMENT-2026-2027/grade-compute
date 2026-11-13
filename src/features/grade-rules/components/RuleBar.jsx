@@ -1,6 +1,5 @@
-// src/components/shared/RuleBar.jsx
 // Flattened bar of a rule's deepest criteria, sized by their share of the
-// grade (grade-rules-spec.txt, PART 3 and PART 7).
+// grade.
 import { formatPercent, getFlattenedSegments } from "@/lib/rules";
 import { RuleLegend } from "./RuleLegend";
 

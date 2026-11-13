@@ -5,8 +5,8 @@ import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 import { makeSeedDb } from "./fixtures.js";
 
-export const DB_KEY = "compugrade_db";
-export const ACTIVE_USER_KEY = "activeUserId";
+const DB_KEY = "compugrade_db";
+const ACTIVE_USER_KEY = "activeUserId";
 
 // Saves a database and signs in a user (the seed student U1 by default).
 export function seedBrowser(db = makeSeedDb(), userId = "U1") {
@@ -14,7 +14,7 @@ export function seedBrowser(db = makeSeedDb(), userId = "U1") {
     if (userId) localStorage.setItem(ACTIVE_USER_KEY, userId);
 }
 
-export function readDb() {
+function readDb() {
     return JSON.parse(localStorage.getItem(DB_KEY));
 }
 

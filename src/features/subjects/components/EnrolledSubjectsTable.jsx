@@ -1,6 +1,5 @@
-// src/components/student/EnrolledSubjectsTable.jsx
 // The Enrolled Subjects table used on the Dashboard and My Subjects pages.
-// Rows come from getEnrolledSubjects() in utils/subjects.js.
+// Rows come from getEnrolledSubjects() in lib/subjects.js.
 // It also holds the "+ Add subject" button and form, so both pages add
 // subjects the same way.
 import { useState } from "react";

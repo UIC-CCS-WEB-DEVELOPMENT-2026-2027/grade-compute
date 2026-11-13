@@ -1,4 +1,3 @@
-// src/components/shared/RuleCard.jsx
 // One rule in the rules collection. The whole card opens the rule; the
 // thumbnail shows the rule as a bar, pie chart, or table.
 import { Link } from "react-router-dom";

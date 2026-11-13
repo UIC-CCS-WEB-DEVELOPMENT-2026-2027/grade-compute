@@ -1,4 +1,3 @@
-// src/utils/terms.js
 // The three grading terms and how they appear in URLs (?term=midterm).
 export const TERMS = [
     { key: "prelim", label: "Prelim" },

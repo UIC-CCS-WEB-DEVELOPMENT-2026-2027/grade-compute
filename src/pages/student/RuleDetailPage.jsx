@@ -1,7 +1,5 @@
-// src/pages/student/RuleDetail.jsx
-// View/edit page for one grade computation rule, and the "New rule" page
-// (grade-rules-spec.txt, PART 4-8). Routes: /student/rules/new and
-// /student/rules/:ruleId.
+// View/edit page for one grade computation rule, and the "New rule" page.
+// Routes: /student/rules/new and /student/rules/:ruleId.
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { XIcon } from "lucide-react";
@@ -54,8 +52,6 @@ import { cn } from "@/lib/utils";
 // The page's three sections (Details, Criteria, Breakdown) inside one card.
 const SECTION = "flex flex-col gap-5 px-(--card-spacing) py-6";
 const SECTION_TITLE = "m-0 type-section-title text-foreground";
-// The page's buttons: 44px below md.
-const ACTION = "max-md:h-control-touch";
 
 // A saved value shown while not editing.
 const READONLY_VALUE =
@@ -105,9 +101,7 @@ function RuleDetail({ ruleId }) {
             <PageShell showFooter={false}>
                 <div className="flex flex-col gap-7">
                     <div>
-                        <BackLink to="/student/rules" className="max-md:h-control-touch">
-                            All rules
-                        </BackLink>
+                        <BackLink to="/student/rules">All rules</BackLink>
                     </div>
                     <Empty className="rounded-xl border border-solid border-border bg-card">
                         <EmptyHeader>
@@ -269,9 +263,7 @@ function RuleDetail({ ruleId }) {
         <PageShell showFooter={false}>
             <div className="flex flex-col gap-7">
                 <div>
-                    <BackLink to="/student/rules" className="max-md:h-control-touch">
-                        All rules
-                    </BackLink>
+                    <BackLink to="/student/rules">All rules</BackLink>
                 </div>
 
                 <header className="flex flex-wrap items-end justify-between gap-4">
@@ -290,16 +282,11 @@ function RuleDetail({ ruleId }) {
                     {!isNew && (
                         <div className="flex flex-wrap gap-2">
                             {isEditing ? (
-                                <Button
-                                    variant="outline"
-                                    className={ACTION}
-                                    onClick={cancelEditing}
-                                >
+                                <Button variant="outline" onClick={cancelEditing}>
                                     Cancel editing
                                 </Button>
                             ) : (
                                 <Button
-                                    className={ACTION}
                                     onClick={() => {
                                         setStatus("");
                                         setIsEditing(true);
@@ -308,13 +295,10 @@ function RuleDetail({ ruleId }) {
                                     Edit
                                 </Button>
                             )}
-                            <Button variant="outline" className={ACTION} onClick={handleDuplicate}>
+                            <Button variant="outline" onClick={handleDuplicate}>
                                 Duplicate
                             </Button>
-                            <DeleteRuleButton
-                                className={ACTION}
-                                onClick={() => setShowDelete(true)}
-                            />
+                            <DeleteRuleButton onClick={() => setShowDelete(true)} />
                         </div>
                     )}
                 </header>
@@ -345,7 +329,7 @@ function RuleDetail({ ruleId }) {
                                     {isEditing ? (
                                         <Input
                                             id="rule-name"
-                                            className="bg-card max-md:h-control-touch"
+                                            className="bg-card"
                                             value={details.ruleName}
                                             onChange={(event) =>
                                                 setDetails((current) => ({
@@ -456,7 +440,7 @@ function RuleDetail({ ruleId }) {
                                         <div className="flex gap-2">
                                             <Input
                                                 id="rule-school-input"
-                                                className="min-w-0 flex-1 bg-card max-md:h-control-touch"
+                                                className="min-w-0 flex-1 bg-card"
                                                 value={schoolInput}
                                                 onChange={(event) =>
                                                     setSchoolInput(event.target.value)
@@ -471,7 +455,7 @@ function RuleDetail({ ruleId }) {
                                             />
                                             <Button
                                                 variant="outline"
-                                                className="shrink-0 bg-card max-md:h-control-touch"
+                                                className="shrink-0 bg-card"
                                                 onClick={addSchool}
                                             >
                                                 Add school
@@ -535,7 +519,7 @@ function RuleDetail({ ruleId }) {
                                         key={id}
                                         value={id}
                                         size="sm"
-                                        className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-md:h-control-touch"
+                                        className="px-3 font-normal text-foreground hover:bg-secondary hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                                     >
                                         {label}
                                     </ToggleGroupItem>
@@ -556,24 +540,19 @@ function RuleDetail({ ruleId }) {
                             </p>
                             <div className="flex flex-wrap gap-2">
                                 {!isNew && (
-                                    <Button
-                                        variant="outline"
-                                        className={ACTION}
-                                        onClick={handleDiscard}
-                                    >
+                                    <Button variant="outline" onClick={handleDiscard}>
                                         Discard changes
                                     </Button>
                                 )}
                                 {!isNew && (
                                     <Button
                                         variant="outline"
-                                        className={ACTION}
                                         onClick={() => validate() && handleSaveAsNew()}
                                     >
                                         Save as new rule
                                     </Button>
                                 )}
-                                <Button className={ACTION} onClick={handleSave} disabled={!isDirty}>
+                                <Button onClick={handleSave} disabled={!isDirty}>
                                     {isNew ? "Create rule" : "Save changes"}
                                 </Button>
                             </div>
@@ -594,25 +573,15 @@ function RuleDetail({ ruleId }) {
                     actions={
                         pendingImpact.classes.length > 0 ? (
                             <>
-                                <Button
-                                    variant="outline"
-                                    className={ACTION}
-                                    onClick={handleSaveAsNew}
-                                >
+                                <Button variant="outline" onClick={handleSaveAsNew}>
                                     Save as new rule
                                 </Button>
-                                <Button
-                                    className={cn(ACTION, "hover:shadow-card")}
-                                    onClick={applyUpdate}
-                                >
+                                <Button className="hover:shadow-card" onClick={applyUpdate}>
                                     Update anyway
                                 </Button>
                             </>
                         ) : (
-                            <Button
-                                className={cn(ACTION, "hover:shadow-card")}
-                                onClick={applyUpdate}
-                            >
+                            <Button className="hover:shadow-card" onClick={applyUpdate}>
                                 Save changes
                             </Button>
                         )

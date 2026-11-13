@@ -1,11 +1,10 @@
-// src/utils/history.js
 // Grade history charts: how a subject's term grade changed as each scored
 // task came in, plus the sandbox plan drawn after it.
 // Pure functions only (no React, no localStorage).
 //
 // - A task counts once it has a score. Its score follows the 3-State rule:
 //   officialScore if present, otherwise studentReportedScore
-//   (grades-guide.txt), so official scores take precedence.
+//   so official scores take precedence.
 // - Tasks are ordered by when they were first scored (studentScoredAt /
 //   officialScoredAt), falling back to when they were added (createdAt, or
 //   the time in "CUSTOM-<ms>" ids). Tasks with no time (seed data) come

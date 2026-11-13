@@ -143,7 +143,7 @@ export function saveLocalAccount(account) {
     );
 }
 
-export function updateLocalSecuritySettings(changes) {
+function updateLocalSecuritySettings(changes) {
     const storedAccount = getStoredAccount();
     localStorage.setItem(
         accountStorageKey,

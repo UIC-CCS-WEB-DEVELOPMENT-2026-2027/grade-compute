@@ -1,6 +1,5 @@
-// src/pages/student/GradeRules.jsx
-// Grade computation rules collection (grade-rules-spec.txt, PART 3).
-// Cards open the view/edit page (RuleDetail.jsx).
+// Grade computation rules collection.
+// Cards open the view/edit page (RuleDetailPage.jsx).
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";

@@ -1,8 +1,7 @@
-// src/components/shared/PillLevel.jsx
 // One row of the pill editor: the children of a single criterion drawn as a
 // segmented slider. Each section shows a dot per 10% of the level, a slider
 // handle sits in the gap between sections, and the typed percentage sits
-// under each section. All math comes from src/utils/rules.js.
+// under each section. All math comes from src/lib/rules.js.
 import { useRef, useState } from "react";
 import { PencilIcon, PlusIcon, XIcon } from "lucide-react";
 import {

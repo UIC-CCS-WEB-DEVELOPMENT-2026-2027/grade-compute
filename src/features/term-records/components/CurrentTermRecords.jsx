@@ -33,7 +33,7 @@ function hasOfficialScore(task) {
 
 // Sections come from the subject's grading rule: one per deepest criterion
 // (e.g. AT, TLA, Exam, or any custom criterion). Tasks are stored under the
-// criterion's id in each term (see grades-guide.txt).
+// criterion's id in each term.
 export function CurrentTermRecords({ classId, term = "Prelim" }) {
     const [dbData, setDbData] = useDb({ live: false });
     const studentId = getActiveStudentId(dbData);
@@ -410,7 +410,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                             value={selectedCategory}
                             onChange={(event) => setTaskCategory(event.target.value)}
                             aria-label="Sandbox task category"
-                            className="max-w-full bg-card max-md:*:h-control-touch"
+                            className="max-w-full bg-card"
                         >
                             {criteria.map((criterion) => (
                                 <NativeSelectOption key={criterion.id} value={criterion.id}>
@@ -467,9 +467,7 @@ export function CurrentTermRecords({ classId, term = "Prelim" }) {
                                 <FieldError>{addTaskError}</FieldError>
                             )}
                         </Field>
-                        <Button type="submit" className="max-md:h-control-touch">
-                            Add
-                        </Button>
+                        <Button type="submit">Add</Button>
                         <Button
                             type="button"
                             variant="outline"

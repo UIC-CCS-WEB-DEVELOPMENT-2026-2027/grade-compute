@@ -1,4 +1,3 @@
-// src/components/student/HistoryTooltip.jsx
 // Tooltip for the history charts. Shows only the point under the pointer
 // (see usePointHover.js): the task, its score, the entry an official score
 // replaced or the planned score, and the grade right after it.

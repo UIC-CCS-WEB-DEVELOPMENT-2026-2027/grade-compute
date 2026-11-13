@@ -1,5 +1,4 @@
-// src/components/shared/PillEditor.jsx
-// The "pill" grade computation rule editor (grade-rules-spec.txt, PART 4-6).
+// The "pill" grade computation rule editor.
 // It draws one pill for the total grade, then one pill for every criterion
 // that has subcriteria, indented by depth.
 //

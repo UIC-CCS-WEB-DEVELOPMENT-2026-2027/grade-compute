@@ -1,5 +1,3 @@
-/* src/index.css */
-
 /* Tailwind CSS v4 with its preflight reset (turned on in docs/TASKS.md
    T7.P). Cascade layers, lowest priority first: theme, base, components,
    utilities. Anything not in a layer still beats every layer. */
@@ -60,7 +58,7 @@
    alternate between blue and warm so sections next to each other differ.
    Each "-on" token is the text and dot color that reads on that color.
    Tailwind theme colors (bg-criteria-1, text-criteria-1-on, ...). "static"
-   keeps them all emitted, because src/utils/rules.js builds the variable
+   keeps them all emitted, because src/lib/rules.js builds the variable
    names at runtime (var(--color-criteria-N)). */
 @theme static {
     --color-criteria-1: #406093; /* primary blue */
@@ -235,7 +233,7 @@
     --spacing-picker-list: min(55vh, 26.25rem);
     --spacing-rule-dialog-list: min(40vh, 18.75rem);
 
-    /* Login page motion (moved from LoginRegister.css, T7.L3a). */
+    /* Login page motion. */
     --ease-auth: cubic-bezier(0.2, 0.7, 0.2, 1);
     --animate-auth-enter: auth-enter 540ms var(--ease-auth) both;
     --animate-auth-content-enter: auth-content-enter 300ms ease-out both;
@@ -309,14 +307,13 @@
         }
     }
 
-    /* Target-reached celebration on Subject Detail (moved from
-       SubjectDetail.css, T7.G3). The confetti token is in @theme inline
-       above. */
+    /* Target-reached celebration on Subject Detail. The confetti token is in
+       @theme inline above. */
     --animate-celebration-card-in: celebration-card-in 550ms cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
     --animate-celebration-sparkle: celebration-sparkle 1.3s ease-in-out infinite alternate;
     --animate-celebration-trophy: celebration-trophy 1s ease-in-out infinite alternate;
 
-    /* The task-row highlight (moved from CurrentTermRecords.css, T7.G4). */
+    /* The task-row highlight. */
     --animate-record-highlight: record-highlight 2.4s ease-out;
 
     @keyframes record-highlight {
@@ -546,8 +543,7 @@
     }
 }
 
-/* Login page brand (branding, kept exactly as it was; moved from
-   LoginRegister.css in T7.L3a). */
+/* Login page brand (branding, kept exactly as it was). */
 .auth-brand-icon {
     display: grid;
     place-items: center;
@@ -590,8 +586,8 @@
 }
 
 /* Reduced motion for the whole app: transitions and animations finish at
-   once. Moved unchanged from GlobalSettings.css (T7.L0), which loaded on
-   every page, so its reach is the same (docs/AUDIT.md B19). */
+   once. It reaches every page, as it did before the clean-up (docs/AUDIT.md
+   B19). */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

@@ -1,4 +1,3 @@
-// src/utils/sandbox.js
 // Target Grade Sandbox math. Pure functions only (no React, no localStorage).
 //
 // Question it answers: "What percentage do I need on each remaining task
@@ -6,7 +5,7 @@
 //
 // - Works with any grading rule: every deepest criterion of the rule
 //   (getRuleLeaves) is planned separately, using effectiveMultipliers.
-// - A task's score follows the 3-State rule (grades-guide.txt): officialScore
+// - A task's score follows the 3-State rule: officialScore
 //   if present, otherwise studentReportedScore. Scored tasks are fixed.
 // - Remaining tasks ("slots") are the criterion's tasks without a score plus
 //   the upcoming tasks the student expects (not saved as tasks).

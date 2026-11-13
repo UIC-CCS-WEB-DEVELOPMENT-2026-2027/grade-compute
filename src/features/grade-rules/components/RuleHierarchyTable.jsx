@@ -1,5 +1,4 @@
-// src/components/shared/RuleHierarchyTable.jsx
-// Hierarchy table of a rule (grade-rules-spec.txt, PART 7): each criterion,
+// Hierarchy table of a rule: each criterion,
 // indented by level, with its share of its parent and of the whole grade.
 import {
     Table,

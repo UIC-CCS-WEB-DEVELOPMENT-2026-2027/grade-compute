@@ -1,4 +1,3 @@
-// src/utils/db.js
 import mockData from "./db.json";
 import { migrateDb, needsMigration } from "./migrations.js";
 

@@ -1,4 +1,3 @@
-// src/utils/session.js
 // Who is signed in. LoginRegister saves the user's id under "activeUserId"
 // when a student logs in or registers; every student page reads it from
 // here instead of assuming a fixed account.

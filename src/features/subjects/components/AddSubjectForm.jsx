@@ -1,4 +1,3 @@
-// src/components/student/AddSubjectForm.jsx
 // The "New Subject Request" form. It saves the subject itself, so any page
 // can show it (Dashboard and My Subjects use it through EnrolledSubjectsTable).
 import { useState } from "react";

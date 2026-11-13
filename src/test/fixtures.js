@@ -1,7 +1,7 @@
 // Shared inputs for the characterization tests.
 import seedDb from "@/services/db.json";
 
-// A fresh copy of the seed database (src/utils/db.json) for each test.
+// A fresh copy of the seed database (src/services/db.json) for each test.
 export function makeSeedDb() {
     return structuredClone(seedDb);
 }

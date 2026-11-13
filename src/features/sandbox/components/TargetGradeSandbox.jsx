@@ -1,7 +1,6 @@
-// src/components/student/TargetGradeSandbox.jsx
 // Target Grade Sandbox for one subject and term. Works with any grading
 // rule: each deepest criterion of the rule gets its own row.
-// The math lives in utils/sandbox.js. Sandbox settings and draft scores
+// The math lives in lib/sandbox.js. Sandbox settings and draft scores
 // are private to the student and never change official scores. Draft
 // scores are stored apart from the real scores and are used only here.
 import { useState } from "react";

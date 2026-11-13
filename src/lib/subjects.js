@@ -1,4 +1,3 @@
-// src/utils/subjects.js
 // Subject helpers shared by the Dashboard and My Subjects pages: semesters,
 // the student's enrolled subjects, and adding a subject.
 // Pure functions only (no React, no localStorage). Save results with saveDb().
@@ -56,7 +55,7 @@ export function getClassSemesterId(classItem, date = new Date()) {
 
 // One row per subject the student is enrolled in (optionally one semester).
 // grades: official = professor scores only; expected = official scores with
-// the student's own scores filling the gaps (grades-guide.txt). Both are the
+// the student's own scores filling the gaps. Both are the
 // final grade so far, with the three terms counting equally.
 export function getEnrolledSubjects(db, studentId, semesterId = null) {
     return (db?.classes ?? []).flatMap((classItem) => {

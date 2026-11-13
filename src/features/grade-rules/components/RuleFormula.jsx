@@ -1,5 +1,4 @@
-// src/components/shared/RuleFormula.jsx
-// Formula text for a rule (grade-rules-spec.txt, PART 7).
+// Formula text for a rule.
 // Pass "tree" while editing (updates live) or "rule" for a saved rule.
 // className: changes to the boxed look (a rule card shows it as plain text).
 import { getFormulaText, getRuleFormulaText } from "@/lib/rules";

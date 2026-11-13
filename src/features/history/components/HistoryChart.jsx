@@ -1,4 +1,3 @@
-// src/components/student/HistoryChart.jsx
 // One subject's term grade after each scored task (solid line), with:
 // - the target and the 75% passing grade as reference lines,
 // - a faded dot where an official score replaced your own entry,
@@ -6,7 +5,7 @@
 //   target (on the plan's last task when only the plan gets there),
 // - optionally the sandbox plan for the remaining tasks (dotted line).
 // Used on Subject Detail (SubjectGradeHistory) and in the sandbox.
-// Data comes from utils/history.js.
+// Data comes from lib/history.js.
 import { Line, ReferenceLine } from "recharts";
 import { cn } from "@/lib/utils";
 import { resolveColor } from "@/lib/dom/cssColor";

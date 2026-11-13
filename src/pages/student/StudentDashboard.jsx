@@ -1,5 +1,3 @@
-// src/pages/student/StudentDashboard.jsx
-
 import { PageShell } from "@/components/layout/PageShell";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";

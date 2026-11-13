@@ -1,4 +1,3 @@
-// src/utils/cssColor.js
 // Chart libraries draw SVG with fill/stroke attributes, which can't read CSS
 // variables. This returns the actual color of a token like
 // "var(--primary)" so charts still use the design system.

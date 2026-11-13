@@ -1,4 +1,3 @@
-// src/components/shared/DraftInput.jsx
 // An <input> that keeps what the user types as a local draft and only
 // reports it (onCommit) when the box loses focus or Enter is pressed.
 // Nothing is saved while typing, so grades are not recalculated (and the

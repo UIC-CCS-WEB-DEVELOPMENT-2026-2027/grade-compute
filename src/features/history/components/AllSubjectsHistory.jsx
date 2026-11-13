@@ -1,4 +1,3 @@
-// src/components/student/AllSubjectsHistory.jsx
 // Dashboard chart: one line per subject for the chosen term (this
 // semester's subjects), each with its target as a dashed line in the same
 // color, the 75% passing line, and a "target reached" marker on the latest

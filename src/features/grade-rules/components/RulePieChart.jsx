@@ -1,5 +1,4 @@
-// src/components/shared/RulePieChart.jsx
-// Nested pie chart of a rule (grade-rules-spec.txt, PART 7). The inner ring
+// Nested pie chart of a rule. The inner ring
 // is the top-level criteria; each outer ring splits them further. Slice
 // sizes are each criterion's share of the total grade.
 import { Pie, PieChart } from "recharts";

@@ -1,5 +1,4 @@
-// src/components/shared/DeleteRuleDialog.jsx
-// Delete flow for a rule (grade-rules-spec.txt, PART 8): the last rule can't
+// Delete flow for a rule: the last rule can't
 // be deleted, and subjects that use the rule must move to another rule.
 // Calls onDeleted(newDb) with the updated database; the page saves it.
 // Render it only while it should be open.

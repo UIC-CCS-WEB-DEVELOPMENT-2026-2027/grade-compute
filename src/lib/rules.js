@@ -1,9 +1,8 @@
-// src/utils/rules.js
-// CompUGrade grade computation rule logic (see grade-rules-spec.txt).
+// CompUGrade grade computation rule logic.
 //
 // Pure functions only: no React, no localStorage. Every function returns new
 // objects and never changes its inputs. Pages save results themselves with
-// saveDb() + setDbData(), following database-guide.txt.
+// saveDb() + setDbData().
 //
 // UNITS: every percentage is a whole number of hundredths of a percent
 // ("share units"), so the math never hits floating-point errors:

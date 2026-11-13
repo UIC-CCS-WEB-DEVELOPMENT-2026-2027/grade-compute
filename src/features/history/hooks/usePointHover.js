@@ -1,4 +1,3 @@
-// src/components/student/usePointHover.js
 // Hover for the history charts: the tooltip shows only the point under the
 // pointer (not every point at that step), placed next to it.
 //

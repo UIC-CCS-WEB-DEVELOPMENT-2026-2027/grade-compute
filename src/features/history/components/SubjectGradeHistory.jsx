@@ -1,4 +1,3 @@
-// src/components/student/SubjectGradeHistory.jsx
 // "<Term> Grade History" section on Subject Detail, under Current Term
 // Records. Follows the selected term. Shows the sandbox plan for the
 // remaining tasks (on at first, can be turned off) and links to the

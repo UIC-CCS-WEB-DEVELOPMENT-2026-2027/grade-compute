@@ -957,9 +957,16 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
       - **T9.0.10 (N13)** In `features/grade-rules/components/`: `DeleteRuleButton` (the destructive outline "Delete" on the rule card and in the editor; size and the caller's classes passed in) and `RuleWarning` (the coral-bar line for lost tasks in both rule dialogs, and DeleteRuleDialog's save error, which keeps `role="alert"`).
       - **T9.0.11 (N15)** The sandbox's term label uses `getTermLabel(termKey)` instead of `TERM_LABELS[termKey] ?? "Prelim"`; the same label for every key `toTermKey` gives. `TERM_LABELS` stays for `lib/history`.
     - **Noticed for T9.1:** 10 `max-md:h-control-touch` classes left in `RuleDetailPage` (8) and `CurrentTermRecords` (2), which T8.1's tokens appear to make redundant (to verify); and the stale path comments at the top of many files (`// src/components/student/…`, `// src/utils/…`).
-- [ ] **T9.1 Remove unused files, exports, CSS and dependencies.**
+- [x] **T9.1 Remove unused files, exports, CSS and dependencies.**
   - Also remove the stale comments that cite documents not in the repo (AUDIT §11).
   - Remove the unused `@types/react` and `@types/react-dom` dev dependencies (D6, approved).
+  - **As done:**
+    1. **Files:** none unused. An import-graph scan from `src/app/main.jsx` (imports, `url()`, `@import`) reaches every file in `src/`, assets included; the four draft docs in `docs/` are not app files and were left alone.
+    2. **Exports:** five had no user anywhere: `PHONE_MAX_WIDTH` (`useSidebarState`; the phone switch is `useIsMobile`) is deleted, and `updateLocalSecuritySettings` (`localAccountStore`) and `DB_KEY`, `ACTIVE_USER_KEY` and `readDb` (`src/test/browser.js`) are no longer exported (used only inside their file). The 26 `lib/` exports used only by the characterization tests stay: they are the tested API.
+    3. **CSS:** no unused utility, variant, keyframes or class. Tokens that look unused but stay: the `criteria-N` colours and their `-on` pairs (built at runtime by `lib/rules.js`), and `highlight-foreground` and `sidebar-primary-foreground`, which complete their colour pairs (shadcn's sidebar set and the status-token pairs). Removed: the 10 `max-md:h-control-touch` classes left in the rule editor (8) and the add-task form (2). T8.1's tokens already make those controls 44px below `lg`; measured at 375 and 768 on the old and new code, every one of them is 44px either way. The rule editor's `ACTION` constant held only that class and went with it.
+    4. **Dependencies:** `@types/react` and `@types/react-dom` uninstalled (D6). Every other package is used.
+    5. **Comments:** removed the 17 citations of the four missing `.txt` documents and the 35 first-line path comments naming old locations (`// src/utils/…`, `// src/components/student/…`, `/* src/index.css */`). Comments naming old paths mid-file now name the current ones (`lib/…`, `services/db.json`, `RuleDetailPage.jsx`), and the `index.css` notes no longer say which deleted stylesheet a rule came from.
+    6. Checked: the rendered DOM of the 30 states differs only by the removed classes, and all 56 screenshots match apart from the usual login and Subject Detail chart noise.
 - [ ] **T9.2** Lint, format check, build, all tests.
 - [ ] **T9.3** Walk `docs/BEHAVIOUR_CHECKLIST.md` in full.
 - [ ] **T9.4** `npm run screenshots -- docs/after`.

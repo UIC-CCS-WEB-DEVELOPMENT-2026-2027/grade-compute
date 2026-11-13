@@ -1,6 +1,5 @@
-// src/utils/grades.js
 // CompUGrade grading engine.
-// All math uses the rule's effectiveMultipliers (project-master-context.txt, 6B).
+// All math uses the rule's effectiveMultipliers.
 // effectiveMultipliers is keyed by the id of each deepest criterion, and each
 // term stores its tasks under those same ids:
 //   rule.effectiveMultipliers = { AT: 0.49, TLA: 0.21, Exam: 0.3 }
@@ -85,7 +84,7 @@ export function calculateUnofficialGrade(studentRecord, term, computationRule) {
     return calculateTermGrade(studentRecord, term, computationRule, true);
 }
 
-// Final grade: the three terms count equally (grade-rules-spec.txt, PART 10).
+// Final grade: the three terms count equally.
 // Only terms that have a grade are averaged, so this is the final grade so far.
 function calculateFinalGrade(studentRecord, computationRule, includeSelfReported) {
     const termGrades = TERM_KEYS.map((term) =>
