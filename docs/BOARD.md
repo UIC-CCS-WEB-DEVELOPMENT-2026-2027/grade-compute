@@ -174,7 +174,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-17 · Line endings: .gitattributes
 
-- State: Claimed by June-05
+- State: done in PR #123
 - Areas: tooling
 - Spec: TEAM_WORKFLOW.md §9, decision 8 (after T-18)
 - Done when: `.gitattributes` with `* text=auto eol=lf` is committed, followed by a separate `git add --renormalize .` commit. Do it when no other branch is open, because the renormalize commit touches many files
