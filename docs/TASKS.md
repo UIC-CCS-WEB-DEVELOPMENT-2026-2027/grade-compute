@@ -1006,7 +1006,8 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
     5. §4 Rounding says history and tooltips show 2 decimals. That holds for grades; a task's score percentage shows 1 decimal with the zero kept ("90.0% (official)"), unchanged since the Phase 2 baseline.
     6. §6 (f) is listed under "The code already contains these non-student pieces", but the prototype was deleted in T5a.1, as (f) itself says.
     7. Not wrong, but incomplete: F11 Files does not list `HistoryChartFrame` (T7.D2) or the T9.0 history parts (`HistoryTable`, `HistoryLegend`, `HistoryEmpty`, `HistoryCard`), and F10 does not list `RuleDialog`, `RuleSubjectList`, `RuleLegend`, `DeleteRuleButton` or `RuleWarning`.
-- [ ] **T9.7** Update `AGENTS.md` §4 and write `docs/REFACTOR_REPORT.md`, including the branding notes (AUDIT §9).
+- [x] **T9.7** Update `AGENTS.md` §4 and write `docs/REFACTOR_REPORT.md`, including the branding notes (AUDIT §9).
+  - **As done:** `AGENTS.md` §4 now gives the current Tailwind and shadcn setup, `src/index.css` as the only stylesheet, the `src/app/`, `src/hooks/` and `src/services/` paths, the test count and the `docs/after/` screenshots. `docs/REFACTOR_REPORT.md` covers the outcome, each phase, the owner decisions, the approved behaviour and data changes, B1–B21 with their status, the open AGENTS §5–7 items (T9.5), the SPEC text differences (T9.6), the branding notes (AUDIT §9, with what changed since) and the follow-ups. `npm audit` now lists 9 dev-only advisories (B20 had 4): the ESLint chain plus the shadcn CLI's dependencies.
 
 ---
 
