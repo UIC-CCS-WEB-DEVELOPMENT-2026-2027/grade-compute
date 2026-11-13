@@ -978,7 +978,8 @@ Each of T8.1–T8.9 follows §5 for its screen. Check: no horizontal page scroll
        - H6: clearing AT 2 clears the score, but with the seed data the expected grade stays 90% (AT 1 is 18/20 and AT 2 was 45/50, both 90%), so "The expected grade changes" does not show.
        - B11: on phones the profile chevron is hidden (below `md`; at the baseline below 761px), so only the bell can be tried there.
        - K8: the depth limit shows as a missing Split button on third-level criteria, not as a tooltip; the 8-criteria limit is the "+" tooltip "A level can have at most 8 criteria."
-- [ ] **T9.4** `npm run screenshots -- docs/after`.
+- [x] **T9.4** `npm run screenshots -- docs/after`.
+  - **As done (at `d7992e6`):** the 56 shots (14 screens × 375, 768, 1024, 1440) are in `docs/after/`. Against the shots taken before T9.0 (`5db22d4`) they match apart from the usual noise (login 4 px, Subject Detail charts 10–17 px), so Phase 9 changed nothing on screen. Against the Phase 2 `docs/baseline/` all 56 differ, as planned: Phases 7 and 8 restyled every screen.
 - [ ] **T9.5** Check `AGENTS.md` §5–7 and list the remaining violations.
 - [ ] **T9.6** Check every `[BUILT]` feature in `SPEC.md`.
 - [ ] **T9.7** Update `AGENTS.md` §4 and write `docs/REFACTOR_REPORT.md`, including the branding notes (AUDIT §9).
