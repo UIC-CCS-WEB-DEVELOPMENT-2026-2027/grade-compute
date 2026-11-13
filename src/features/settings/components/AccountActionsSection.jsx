@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DANGER_BUTTON, SECONDARY_BUTTON } from "@/features/settings/buttonStyles";
 import { cn } from "@/lib/utils";
+import { SettingText } from "./SettingText";
 
 const ROWS = [
     {
@@ -18,16 +19,6 @@ const ROWS = [
         action: "Clear",
     },
 ];
-
-// One action: its name and line on the left, the button on the right.
-function ActionText({ title, description }) {
-    return (
-        <div className="min-w-0">
-            <h4 className="m-0 mb-1 type-small font-semibold text-foreground">{title}</h4>
-            <p className="m-0 type-small text-muted-foreground">{description}</p>
-        </div>
-    );
-}
 
 // showLogoutConfirm: the "Are you sure?" panel is open.
 // onLogout(), onCancelLogout(), onConfirmLogout(): the GlobalSettings handlers.
@@ -44,7 +35,7 @@ export function AccountActionsSection({
                     key={title}
                     className="flex min-h-19 items-center justify-between gap-4.5 rounded-lg border-0 border-b border-solid border-border px-1 py-4 last:border-b-0 hover:bg-muted max-sm:gap-3"
                 >
-                    <ActionText title={title} description={description} />
+                    <SettingText title={title} description={description} />
                     <Button variant="outline" className="shrink-0 bg-card max-sm:w-29">
                         {action}
                     </Button>
@@ -52,7 +43,7 @@ export function AccountActionsSection({
             ))}
 
             <div className="mt-4 flex items-center justify-between gap-4.5 rounded-xl bg-warning-soft p-4 max-sm:gap-3">
-                <ActionText title="Log out" description="Sign out of your CompuGrade account." />
+                <SettingText title="Log out" description="Sign out of your CompuGrade account." />
                 <Button className={cn("shrink-0", DANGER_BUTTON)} onClick={onLogout}>
                     Log Out
                 </Button>

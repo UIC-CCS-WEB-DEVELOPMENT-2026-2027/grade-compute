@@ -4,6 +4,7 @@
 import { ChevronRightIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { SettingText } from "./SettingText";
 
 const ROWS = [
     {
@@ -42,12 +43,7 @@ export function NotificationsSection({ notifications, onToggle }) {
                         onToggle(key);
                     }}
                 >
-                    <div className="min-w-0">
-                        <h4 className="m-0 mb-1 type-small font-semibold text-foreground">
-                            {title}
-                        </h4>
-                        <p className="m-0 type-small text-muted-foreground">{description}</p>
-                    </div>
+                    <SettingText title={title} description={description} />
                     <span className="flex shrink-0 items-center gap-2 max-md:min-h-11">
                         {/* The word the old toggle showed; the switch states it too. */}
                         <span aria-hidden="true" className="type-small text-muted-foreground">
