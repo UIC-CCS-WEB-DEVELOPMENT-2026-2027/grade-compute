@@ -305,7 +305,7 @@ owner makes its decisions during implementation.
 
 ### T-21 · Error-handling review
 
-- State: claimed by June-05 on 2026-11-13, branch docs/error-handling-review
+- State: done in PR #124
 - Areas: shared (src/services/, src/hooks/, src/lib/), all screens
 - Spec: owner request, 2026-11-13. The clean-up kept error handling as it was (feature freeze)
 - Done when: a read-only review in `docs/` lists every place an error can happen (reading, parsing and saving `localStorage`, bad or old stored data, failed saves, invalid input that slips through, exceptions while rendering), what the student sees today, and a proposed fix for each. The fixes become separate tasks, each approved by the owner, because they change behaviour
