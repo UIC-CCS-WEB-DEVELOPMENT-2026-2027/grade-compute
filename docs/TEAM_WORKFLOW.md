@@ -122,7 +122,7 @@ quickly, then free the lock.
 | --- | --- | --- |
 | `LOCK-data` | `src/services/migrations.js`, `src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
 | `LOCK-deps` | `package.json`, `package-lock.json` | The lockfile almost never merges cleanly |
-| `LOCK-spec` | `SPEC.md` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
+| `LOCK-spec` | `SPEC.md`, `spec/` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
 
 **Rule files** (anyone can change them, following these rules):
 
