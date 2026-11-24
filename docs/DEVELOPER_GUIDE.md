@@ -40,7 +40,7 @@ yours, talk to that person first.
 ```sh
 git switch main
 git pull --rebase
-# edit docs/BOARD.md:  - State: claimed by your-github-name on 2026-11-20, branch feat/sandbox-copy
+# edit docs/BOARD.md:  - State: claimed by your-github-name on 2026-11-20, branch Lastname_feat-sandbox-copy
 git add docs/BOARD.md
 git commit -m "chore(board): claim T-6"
 git push
@@ -50,7 +50,7 @@ If the push is rejected, run `git pull --rebase`. If that conflicts on your Stat
 claimed the task before you: run `git rebase --abort` and `git reset --hard origin/main`, then
 pick another task.
 
-**3. Branch out:** `git switch -c feat/sandbox-copy`.
+**3. Branch out:** `git switch -c Lastname_feat-sandbox-copy`.
 
 **4. Work inside your areas.** Only change the folders listed in your task's Areas. Need a shared
 file (a token in `src/index.css`, a route in `App.jsx`, a new dependency, a data change)? Check

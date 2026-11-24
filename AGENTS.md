@@ -189,7 +189,7 @@ src/
 
 ## 8. Working rules
 
-- Work on one task from `docs/BOARD.md` at a time, on its own branch, and change only the folders in its Areas.
+- Work on one task from `docs/BOARD.md` at a time, on its own branch named `<Lastname>_<type>-<short-name>` (`docs/TEAM_WORKFLOW.md` §6), and change only the folders in its Areas.
 - **Claiming (owner decision, 2026-11-13).** When the developer asks, an agent may claim or release the task it was given, exactly as `docs/TEAM_WORKFLOW.md` §3 describes:
   - on an up-to-date `main`, change only that task's State line, with the developer's GitHub username and the branch name. Ask for them if you don't have them
   - first read the Areas of every claimed task, and stop and ask if one overlaps
