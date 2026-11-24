@@ -140,145 +140,110 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: SPEC.md §9 backlog; AUDIT B15
 - Done when: to be specified with the owner. Changes stored data, so it needs LOCK-data
 
-## laravel
+## backend
 
-Tasks for the move to a Laravel app (`docs/LARAVEL_PLAN.md`). The Laravel folders get their
-areas in T-JM-1; until then these tasks name their folders directly. T-JM-1 to T-JM-5 come
-first, in order; the port tasks after them can run side by side.
+A Laravel API behind the React app (`docs/LARAVEL_PLAN.md`). Spec first: T-JM-1 comes before
+everything else, and gives the back-end folders their areas. T-JM-2 to T-JM-5 follow in order.
 
-### T-JM-1 · Laravel move: spec and rules
+### T-JM-1 · Back end: spec and rules
 
 - State: proposed
 - Areas: SPEC.md, spec/ (LOCK-spec), AGENTS.md, docs/TEAM_WORKFLOW.md
-- Spec: docs/LARAVEL_PLAN.md §1, §4 (decisions L1–L7 first)
-- Done when: `SPEC.md` §2, §5, §6 and §8 describe the Laravel app through the protocol; `AGENTS.md` §3–§7 give its stack, folders, approved packages and code style; `docs/TEAM_WORKFLOW.md` §4 has areas for its folders
+- Spec: docs/LARAVEL_PLAN.md §3, §4 (decisions B1–B7 first)
+- Done when: `SPEC.md` §2 and §6, `spec/data-model.md` §5 and a new `spec/api.md` describe the back end through the protocol; `AGENTS.md` §4, §5 and §8 and `docs/TEAM_WORKFLOW.md` §4 give its stack, folders, approved packages and areas
 
-### T-JM-2 · Laravel project skeleton
+### T-JM-2 · Laravel API skeleton
 
 - State: proposed
-- Areas: the Laravel app's root (see L3), .github/
-- Spec: docs/LARAVEL_PLAN.md §3, §5 step 2, §7 (E6)
-- Done when: a Laravel app with the chosen front end runs locally; the tokens, fonts and text roles from `src/index.css` are carried over; Pest, Pint and the build run in CI next to the React checks; 404, 419, 500 and 503 pages are friendly and lead back to the Dashboard
+- Areas: backend/, .github/
+- Spec: docs/LARAVEL_PLAN.md §5 step 2, §7; spec/api.md
+- Done when: a Laravel API in `backend/` runs locally, Pest and Pint run in CI next to the React checks, and every endpoint returns errors in the one format `spec/api.md` gives
 
 ### T-JM-3 · Database schema and seed data
 
 - State: proposed
-- Areas: the Laravel app's database/ and app/Models/
-- Spec: docs/LARAVEL_PLAN.md §5 (database notes), §7; spec/data-model.md §5
-- Done when: migrations, models and seeders cover the data model, with roles on users, owners on rules and subjects, scores in their own tables, the parent–student link and verification requests; the seeders reproduce `src/services/db.json`
+- Areas: backend/ (database/, app/Models/)
+- Spec: docs/LARAVEL_PLAN.md §3 (data-model notes); spec/data-model.md §5
+- Done when: migrations, models and seeders cover the data model in the spec, and the seeders reproduce `src/services/db.json`
 
-### T-JM-4 · Grade maths in PHP
-
-- State: proposed
-- Areas: the Laravel app's grade-maths folder (set in T-JM-1)
-- Spec: docs/LARAVEL_PLAN.md §5 step 4; spec/grading-rules.md §4
-- Done when: the maths in `src/lib/` (grades, rules, scores, targets, sandbox, history, terms) works the same in PHP, and Pest tests built from the JavaScript tests' cases pass
-
-### T-JM-5 · Accounts, sign-in and roles
+### T-JM-4 · Accounts, sign-in and roles
 
 - State: proposed
-- Areas: the Laravel app's auth folders
-- Spec: docs/LARAVEL_PLAN.md §5 step 5, §7; F1, F15; replaces T-13
-- Done when: students can register, sign in and sign out with hashed passwords; every user has a role; pages are protected by role, and the server lets only the right people write each kind of score
+- Areas: backend/ (auth)
+- Spec: docs/LARAVEL_PLAN.md §4 (B3); F1, F15; replaces T-11 and T-13
+- Done when: register, sign in and sign out work through the API with hashed passwords; every user has a role; permissions let only the right people read and write each record
 
-### T-JM-6 · Port the Dashboard and My Subjects
-
-- State: proposed
-- Areas: the Laravel app's dashboard and subjects folders
-- Spec: F2, F2a, F3, F4, F5; docs/LARAVEL_PLAN.md §7
-- Done when: the screens, add subject and remove subject work as `spec/features.md` describes, checked against `docs/BEHAVIOUR_CHECKLIST.md` at 375, 768, 1024 and 1440
-
-### T-JM-7 · Port Subject Detail and Current Term Records
+### T-JM-5 · Student endpoints
 
 - State: proposed
-- Areas: the Laravel app's subject-detail and term-records folders
-- Spec: F6, F7, F8, F12, F17; docs/LARAVEL_PLAN.md §7 (E9, E21)
-- Done when: the screen works as `spec/features.md` describes, including the gauges and the celebration, and an out-of-range target shows "Enter a target from 0 to 100."
+- Areas: backend/
+- Spec: spec/api.md; spec/grading-rules.md §4 (ranges to check)
+- Done when: every endpoint the student screens need (subjects, enrolments, tasks and scores, rules, targets, sandbox settings and drafts, Settings) exists as `spec/api.md` describes, with Pest tests
 
-### T-JM-8 · Port the Target Grade Sandbox
-
-- State: proposed
-- Areas: the Laravel app's sandbox folder
-- Spec: F9; spec/grading-rules.md §4
-- Done when: the sandbox works as `spec/features.md` describes, with its chart and draft scores
-
-### T-JM-9 · Port Grade Rules and the rule editor
+### T-JM-6 · The React app uses the API
 
 - State: proposed
-- Areas: the Laravel app's grade-rules folder
-- Spec: F10; docs/LARAVEL_PLAN.md §3 (the pill editor needs browser JavaScript)
-- Done when: the rules list and the editor work as `spec/features.md` describes, including dragging and typing percentages
+- Areas: shared (src/services/, src/hooks/useDb.js), then each screen's area
+- Spec: docs/LARAVEL_PLAN.md §2, §7; spec/api.md
+- Done when: `src/services/` and `useDb` call the API instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes. Split into one task per area once the spec exists
 
-### T-JM-10 · Port the grade-history charts
-
-- State: proposed
-- Areas: the Laravel app's history folder
-- Spec: F11; docs/LARAVEL_PLAN.md §3 (a chart library needs the owner's approval)
-- Done when: the Dashboard and Subject Detail history charts work as `spec/features.md` describes, with their table view
-
-### T-JM-11 · Port Settings
+### T-JM-7 · Bring over browser data
 
 - State: proposed
-- Areas: the Laravel app's settings folder
-- Spec: F14; docs/LARAVEL_PLAN.md §7 (E17); covers T-8 to T-11 and T-20
-- Done when: Settings works on the signed-in user's own account, its known bugs are fixed as the owner decides, and profile photos have a size limit
+- Areas: shared (src/services/), backend/
+- Spec: docs/LARAVEL_PLAN.md §4 (B4)
+- Done when: only if B4 chooses it: a student can bring their browser data into their account
 
-### T-JM-12 · Bring over browser data
-
-- State: proposed
-- Areas: the React app (export), the Laravel app (import)
-- Spec: docs/LARAVEL_PLAN.md §4 (L5)
-- Done when: only if L5 chooses it: a student can export their data from the React app and import it into their Laravel account
-
-### T-JM-13 · Switch over to the Laravel app
+### T-JM-8 · Switch over to the back end
 
 - State: proposed
 - Areas: hosting, docs/
 - Spec: docs/LARAVEL_PLAN.md §5 step 8
-- Done when: the Laravel app is deployed, every screen passes `docs/BEHAVIOUR_CHECKLIST.md`, and the React app is retired
+- Done when: the API and the React app are deployed, every screen passes `docs/BEHAVIOUR_CHECKLIST.md`, and `localStorage` holds only per-browser settings (such as the sidebar state)
 
 ## roles
 
-Built in the Laravel app after the student screens (`docs/LARAVEL_PLAN.md` §6). Each one starts
-with its `spec/roles/<role>.md` through the protocol, and is then split into smaller tasks.
+After the switch (`docs/LARAVEL_PLAN.md` §6). Each role starts with its `spec/roles/<role>.md`
+through the protocol, then is split into smaller tasks. Each adds React screens and the API
+endpoints behind them.
 
-### T-JM-14 · Professor workspace
+### T-JM-9 · Professor workspace
 
 - State: proposed
-- Areas: the Laravel app's professor folders
+- Areas: to be set in its spec (React pages and features for the professor, backend/)
 - Spec: F20; SPEC.md §6, §10 question 1, D1, D2; F6, F10
 - Done when: to be specified in `spec/roles/professor.md`: professors create subjects with their own rules and enter official scores that students see as locked
 
-### T-JM-15 · Administrator workspace
+### T-JM-10 · Administrator workspace
 
 - State: proposed
-- Areas: the Laravel app's admin folders
+- Areas: to be set in its spec (React pages and features for the administrator, backend/)
 - Spec: F20; SPEC.md §6, D11; F3
 - Done when: to be specified in `spec/roles/admin.md`: administrators verify subjects
 
-### T-JM-16 · Parent portal
+### T-JM-11 · Parent portal
 
 - State: proposed
-- Areas: the Laravel app's parent folders
+- Areas: to be set in its spec (React pages and features for the parent, backend/)
 - Spec: F20; SPEC.md §1, §8
 - Done when: to be specified in `spec/roles/parent.md`: a parent linked to a student sees that student's grades, read-only
 
 ## accessibility
 
-Built in the Laravel app (`docs/ACCESSIBILITY_PLAN.md`). The owner makes its decisions during
-implementation.
+Built in the React app; it doesn't wait for the back end (`docs/ACCESSIBILITY_PLAN.md`). The
+owner makes its decisions during implementation.
 
-### T-JM-17 · Accessibility audit
+### T-JM-12 · Accessibility audit
 
 - State: proposed
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
-- Done when: a WCAG 2.2 AA review of the Laravel app's screens is written up in `docs/`, with a proposed fix for each finding
+- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding
 
-### T-JM-18 · Accessibility and reading preferences (F21)
+### T-JM-13 · Accessibility and reading preferences (F21)
 
 - State: proposed
-- Areas: the Laravel app's settings folder and stylesheet
+- Areas: settings, src/index.css (rule file), index.html (coordinate with T-16)
 - Spec: docs/ACCESSIBILITY_PLAN.md; F21 in `spec/features.md` through the protocol
 - Done when: to be specified with the owner, one option at a time
 
