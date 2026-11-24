@@ -42,6 +42,7 @@ Open the address Vite prints (usually `http://localhost:5173`).
 | `npm run lint` | Checks the code with ESLint (including React Hooks rules) |
 | `npm run format` / `npm run format:check` | Formats the code with Prettier, or checks that it is formatted |
 | `npm test` | Runs the unit and characterization tests (Vitest) |
+| `npm run test:related -- <files>` | Runs only the tests that import the given files, directly or through other files. A quick check while working; it doesn't replace `npm test` before a commit |
 | `npm run screenshots [folder]` | Takes screenshots of every screen at 375, 768, 1024 and 1440px wide (Playwright) |
 
 Before every commit, `npm run lint`, `npm run format:check`, `npm run build` and `npm test` must pass. The project rules for people and AI tools are in `AGENTS.md`; what the app does is in `SPEC.md`.
