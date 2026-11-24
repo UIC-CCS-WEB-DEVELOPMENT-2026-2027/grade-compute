@@ -2,8 +2,9 @@
 
 A proposal (2026-11-24), not part of the spec. It lists options for students with dyslexia and
 other disabilities. **The owner makes the decisions during implementation** (2026-11-24), so
-every option below is open. The work is built in the Laravel app (`docs/LARAVEL_PLAN.md`), as
-tasks T-JM-17 and T-JM-18 on `docs/BOARD.md` (state `proposed`). Once a decision is made, the
+every option below is open. The work is built in the React app and doesn't wait for the
+back end (`docs/LARAVEL_PLAN.md`). It's tasks T-JM-12 and T-JM-13 on `docs/BOARD.md` (state
+`proposed`). Once a decision is made, the
 feature is written into `spec/features.md` as F21 through the protocol in `AGENTS.md` §2.
 
 ## 1. The feature
@@ -39,14 +40,17 @@ These are for the owner to decide when each option is built:
 
 - `AGENTS.md` §7 allows only Khand and General Sans. A readable font is a third family.
 - `AGENTS.md` §7 allows one theme (light). A high-contrast mode is a second theme.
-- Where the preferences are kept: on the user's account in the Laravel app, so they follow the
+- Where the preferences are kept: in the browser for now, like the sidebar setting (no stored-data
+  change, so no LOCK-data). Once the back end exists, on the user's account, so they follow the
   student to every device.
 - Automated checks (for example axe-core) are a new package and need approval.
 
 ## 4. Order
 
-1. **Audit (T-JM-17):** a WCAG 2.2 AA review of the Laravel app's screens, written up in
-   `docs/`. Its fixes become tasks of their own. They help every student, not only those who turn
+1. **Audit (T-JM-12):** a WCAG 2.2 AA review of all 14 screens, written up in `docs/`, like
+   T-21. Its fixes become tasks of their own. They help every student, not only those who turn
    an option on.
-2. **Preferences (T-JM-18):** the Settings section and the token switches, then one option at a
+2. **Preferences (T-JM-13):** the Settings section and the token switches, then one option at a
    time, each with its decision made at the time.
+3. Preferences should apply before the page first draws, which means a small script in
+   `index.html`. That file is in T-16's (branding) areas, so coordinate with T-16.
