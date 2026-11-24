@@ -9,30 +9,30 @@ CompUGrade is a React + Vite web app that turns syllabus grading rules into a da
 When instructions conflict, the higher item wins:
 
 1. The project owner's direct instruction in the current session
-2. `SPEC.md` — the project's truth
+2. `SPEC.md` and the files in `spec/` (the spec) — the project's truth
 3. This file (`AGENTS.md`)
 4. The task being worked on (`docs/BOARD.md`) and `docs/TEAM_WORKFLOW.md`
 
-If the code and `SPEC.md` disagree, stop and report the difference. Do not change either one to make them match.
+If the code and the spec disagree, stop and report the difference. Do not change either one to make them match.
 
-## 2. SPEC.md is protected
+## 2. The spec is protected
 
-`SPEC.md` records what CompUGrade is and does. Agents read it; agents do not edit it on their own initiative.
+`SPEC.md` and the files in `spec/` (together, the spec) record what CompUGrade is and does. Agents read them; agents do not edit them on their own initiative. Start with `SPEC.md`: its "Where things are" table says which `spec/` file a task needs.
 
-To change it, every step below is required, in order:
+To change a spec file, every step below is required, in order:
 
 1. **Propose.** Show the exact text to add, change, or remove (before and after) and the reason.
 2. **First approval.** Wait for the owner to approve that proposal explicitly.
-3. **Confirm.** Restate the final change in one sentence and ask: "Confirm writing this to SPEC.md?"
+3. **Confirm.** Restate the final change in one sentence and ask: "Confirm writing this to `<file>`?", naming the spec file or files.
 4. **Second approval.** Edit only after a second explicit yes.
-5. **Log.** Add a dated line to the Changelog section of `SPEC.md` describing the change.
+5. **Log.** Add a dated line to the Changelog, `SPEC.md` §11, describing the change. It is the one changelog for every spec file.
 
 Rules around the protocol:
 
 - One approval covers one change. It does not carry over to later changes.
 - Silence, "continue", "looks good", or approval of a larger plan that happens to mention the spec are not confirmations.
-- Never edit `SPEC.md` through shell commands, scripts, or any route other than the normal file-edit tool.
-- Ideas, suggestions, and open questions go in the chat or in `docs/`, never straight into `SPEC.md`.
+- Never edit a spec file through shell commands, scripts, or any route other than the normal file-edit tool.
+- Ideas, suggestions, and open questions go in the chat or in `docs/`, never straight into the spec.
 
 ## 3. Scope
 
@@ -197,7 +197,11 @@ src/
   - if the push is rejected and `git pull --rebase` conflicts on the State line, run `git rebase --abort` and stop: someone else has the task
   - then create the task's branch from that `main`
 
-  Apart from this, an agent never edits `docs/BOARD.md`. Locks and the `done in PR #n` State stay with people.
+- **Board edits (owner decision, 2026-11-24).** Apart from claiming, an agent edits `docs/BOARD.md` only when the owner asks:
+  - it makes exactly the change the owner describes: task blocks, State lines, locks, `done in PR #n`
+  - it commits that change on its own: `chore(board)` for States and locks, `docs(board)` for task text
+  - it does not push it. A person pushes it
+  - a developer who is not the owner can ask an agent only for a claim or a release, the same as their own board rights (`docs/TEAM_WORKFLOW.md` §5)
 - One logical change per commit. A pull request closes one task.
 - Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
@@ -205,7 +209,7 @@ src/
 - Stage files by name (`git add <path>`), never `git add .` or `-A`.
 - Never push, force-push, rewrite history, merge, or delete branches. People do that. The only exception is the claim or release commit on `main` above.
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
-- When resuming in a new session, read `SPEC.md`, this file, and the task's block on `docs/BOARD.md` first.
+- When resuming in a new session, read `SPEC.md`, the `spec/` files its "Where things are" table lists for the task, this file, and the task's block on `docs/BOARD.md` first.
 
 ## 9. Definition of done for any task
 

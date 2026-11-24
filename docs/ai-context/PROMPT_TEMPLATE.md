@@ -24,7 +24,7 @@ Done when:
 - [Behaviour that must not change, e.g. "same wording, same saved data"]
 
 Type of change: [refactor / style / new feature (owner-approved) / test]
-[If it is a feature: the SPEC.md feature id and its text, pasted below.]
+[If it is a feature: its feature id from `spec/features.md` and its text, pasted below.]
 
 Files you may change: [paths]
 Files you may create: [paths, or "none"]
@@ -50,11 +50,11 @@ Follow every rule in the context pack. Answer in the format of its §10.
 | --- | --- |
 | Any component | that component and the parent that renders it |
 | A shadcn component the task uses | its file from `src/components/ui/` |
-| Grades, scores, targets | the relevant `src/lib/*.js` file, its test, and `SPEC.md` §4 (grading rules) |
-| Stored data | `SPEC.md` §5 (data model) and the `services/` file involved |
+| Grades, scores, targets | the relevant `src/lib/*.js` file, its test, and `spec/grading-rules.md` (`SPEC.md` §4) |
+| Stored data | `spec/data-model.md` (`SPEC.md` §5) and the `services/` file involved |
 | Styling questions | the `@theme` and `:root` blocks of `src/index.css`, when §5 of the pack is not enough |
 | Tests | the file under test, an existing test from the same folder, and `src/test/fixtures.js` |
-| A new feature | its `SPEC.md` entry, the page it lives on, and one similar component as a pattern |
+| A new feature | its entry in `spec/features.md`, the page it lives on, and one similar component as a pattern |
 
 Leave out anything the task doesn't need. Extra files use up space and give the model more to
 copy wrongly.

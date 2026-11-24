@@ -211,7 +211,7 @@ is merged. See TEAM_WORKFLOW.md §5.
 - State: free
 - Files: package.json, package-lock.json
 
-### LOCK-spec · SPEC.md
+### LOCK-spec · SPEC.md, spec/
 
 - State: free
-- Files: SPEC.md (changes go through the protocol in AGENTS.md §2)
+- Files: SPEC.md, spec/ (changes go through the protocol in AGENTS.md §2)

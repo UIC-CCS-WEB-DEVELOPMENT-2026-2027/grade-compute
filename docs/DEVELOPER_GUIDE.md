@@ -85,8 +85,8 @@ When you give an agent a task, tell it three things:
 - that you will push the branch yourself
 
 An agent can also claim the task for you if you ask it to. Give it your GitHub username and the
-branch name; it follows `docs/TEAM_WORKFLOW.md` §3. Apart from that one claim commit, agents never
-edit `docs/BOARD.md`, push or merge. People do that.
+branch name; it follows `docs/TEAM_WORKFLOW.md` §3. Apart from that one claim commit, agents edit
+`docs/BOARD.md` only when the owner asks, and never push or merge. People do that.
 
 **`docs/AGENT_GUIDE.md`** has the details: setup per tool, a task prompt to copy, running two
 agents at once, and how to check what an agent did.

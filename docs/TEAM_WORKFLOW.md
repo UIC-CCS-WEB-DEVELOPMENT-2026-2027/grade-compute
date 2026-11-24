@@ -122,7 +122,7 @@ quickly, then free the lock.
 | --- | --- | --- |
 | `LOCK-data` | `src/services/migrations.js`, `src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
 | `LOCK-deps` | `package.json`, `package-lock.json` | The lockfile almost never merges cleanly |
-| `LOCK-spec` | `SPEC.md` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
+| `LOCK-spec` | `SPEC.md`, `spec/` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
 
 **Rule files** (anyone can change them, following these rules):
 
@@ -188,9 +188,9 @@ screen checks in step 3 stay manual.
 - A chat model that can't see the repo gets `docs/ai-context/CONTEXT_PACK.md` and the template in
   `docs/ai-context/PROMPT_TEMPLATE.md`.
 - **An agent may claim or release a task** for the developer who asks, following §3 (`AGENTS.md`
-  §8). That commit on `main` is the only thing an agent pushes. Agents never push a branch, never
-  merge, and never change any other part of `BOARD.md`: locks and `done in PR #<n>` stay with
-  people.
+  §8). That commit on `main` is the only thing an agent pushes. Agents never push a branch and
+  never merge. They change other parts of `BOARD.md` (tasks, locks, `done in PR #<n>`) only when
+  the owner asks, and a person pushes that change (owner decision, 2026-11-24).
 
 ## 9. Decisions (owner, 2026-11-13)
 
