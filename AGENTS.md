@@ -197,7 +197,11 @@ src/
   - if the push is rejected and `git pull --rebase` conflicts on the State line, run `git rebase --abort` and stop: someone else has the task
   - then create the task's branch from that `main`
 
-  Apart from this, an agent never edits `docs/BOARD.md`. Locks and the `done in PR #n` State stay with people.
+- **Board edits (owner decision, 2026-11-24).** Apart from claiming, an agent edits `docs/BOARD.md` only when the owner asks:
+  - it makes exactly the change the owner describes: task blocks, State lines, locks, `done in PR #n`
+  - it commits that change on its own: `chore(board)` for States and locks, `docs(board)` for task text
+  - it does not push it. A person pushes it
+  - a developer who is not the owner can ask an agent only for a claim or a release, the same as their own board rights (`docs/TEAM_WORKFLOW.md` §5)
 - One logical change per commit. A pull request closes one task.
 - Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.

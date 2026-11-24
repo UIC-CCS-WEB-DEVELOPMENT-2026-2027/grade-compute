@@ -114,7 +114,8 @@ Whatever the kind, an AI tool never:
   that exact change
 - pushes a branch, merges, or deletes a branch. The only push an agent makes is a claim or release
   on `main`, when you ask for it
-- edits `docs/BOARD.md` beyond that claim
+- edits `docs/BOARD.md` beyond that claim, unless the owner asked for that change
+  (`AGENTS.md` §8)
 - adds a dependency (`AGENTS.md` §4)
 - changes files outside your task's Areas, or fixes a bug it noticed on the way
 - changes wording, grade maths or stored data unless the task says so

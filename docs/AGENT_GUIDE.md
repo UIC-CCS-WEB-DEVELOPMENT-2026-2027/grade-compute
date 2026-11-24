@@ -43,7 +43,8 @@ the Claude Code settings. After cloning there is nothing to install for the agen
 1. **Claim the task** on `main` (`docs/TEAM_WORKFLOW.md` §3), then create the branch. Do it
    yourself, or ask the agent to as the first step of the session (the optional line in the §4
    prompt). An agent that claims follows the same steps and pushes only that one commit
-   (`AGENTS.md` §8). Apart from the claim, agents never edit `docs/BOARD.md`, push or merge.
+   (`AGENTS.md` §8). Apart from the claim, agents edit `docs/BOARD.md` only when the owner asks,
+   and never push or merge.
 2. **One task per session.** Start a fresh session for each task. Long sessions drift: the agent
    forgets early instructions and carries assumptions from the last task into the next.
 3. **Two agents at once? Use a separate folder for each.** Two agents in the same folder will
