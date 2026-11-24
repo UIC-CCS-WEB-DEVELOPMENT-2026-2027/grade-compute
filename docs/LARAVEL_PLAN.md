@@ -1,149 +1,139 @@
-# CompUGrade — Laravel Plan
+# CompUGrade — Laravel Back-End Plan
 
-A proposal (2026-11-24), not part of the spec. It plans the move from the React + Vite app to a
-Laravel app, and how the professor, parent and administrator roles and the error-handling fixes
-fit around it. **Nothing here is approved** except the two owner decisions in §1. The tasks it
-suggests are `proposed` on `docs/BOARD.md` (T-JM-1 to T-JM-16) and need the owner's approval, one
-by one, with `SPEC.md` updated through its protocol (`AGENTS.md` §2).
+A proposal (2026-11-24), not part of the spec. It plans a Laravel back end for the React app, and
+how the professor, parent and administrator roles and the error-handling fixes fit around it.
+**Nothing here is approved** except the owner decisions in §1. The tasks it suggests are
+`proposed` on `docs/BOARD.md` (T-JM-1 to T-JM-13). Each one needs the owner's approval, and the
+spec comes first (§3).
 
 ## 1. Owner decisions so far (2026-11-24)
 
-1. CompUGrade moves to a Laravel-based app.
-2. Features are built in PHP/Laravel, even when an existing React feature has to be moved over.
+1. **The front end stays the React app**: React + Vite, react-router, shadcn/ui, the Tailwind
+   tokens and the grade maths in `src/lib/`. Moving the screens to PHP (Blade and Livewire) was
+   considered and dropped, because it means rewriting the React code and shadcn/ui is React-only.
+2. **Laravel becomes a separate back end** (an API). It stores the data, handles sign-in, and
+   decides who may read and write what. The React app calls it instead of `localStorage`.
+3. **Spec first, built later.** Each part is written into the spec through the protocol
+   (`AGENTS.md` §2) before anyone writes its code. There is no date for the build yet.
 
-## 2. Recommendation: start the Laravel app now
+## 2. What changes and what stays
 
-The owner's plan is to build every role and feature soon, whether or not the move has happened.
-That makes now the cheapest time to move:
-
-- **The roles can't work in the current app.** All data is in one browser's `localStorage`
-  (`spec/data-model.md` §5). Scores a professor enters on their own device never reach a
-  student's device, a parent can't see a child's data, and an administrator can't see anyone's.
-  Any role built now in React would be built twice.
-- **Every feature added to the React app is one more feature to move.** The app is still small:
-  seven student screens, a spec that describes them, and 384 tests that pin down how the grade
-  maths behaves.
-- **Official scores need a server.** In the browser, a student can change any stored value,
-  including "locked" official scores. Only a server can lock them, hash passwords and run
-  verification.
-
-**What it costs:** a period with no new features for students, the team learning Laravel and
-Livewire, and a rewrite of the parts that need JavaScript in the browser (§4).
-
-**While the Laravel app is built,** the React app stays deployed as it is, and it doubles as the
-reference for how every screen behaves. It gets only fixes that protect students' data (§7).
-New features and roles go into the Laravel app.
-
-## 3. Front end: Blade and Livewire, or Inertia and React
-
-Laravel can draw pages in two ways.
-
-| | **Blade + Livewire** (PHP first) | **Inertia + React** |
+| Part | Today | With the back end |
 | --- | --- | --- |
-| What it is | Pages are Blade templates. Livewire components are PHP classes. A click or an input goes to the server, which re-renders the changed part of the page. Alpine.js covers small things that must run in the browser | Laravel handles routes, sign-in, validation and data. Inertia hands that data to React pages as props, without building a separate API |
-| Fits "build it in PHP" | Yes: logic and most UI code are PHP | Partly: back end in PHP, screens stay React |
-| What carries over | Tailwind tokens, fonts, layout ideas, the spec. Components are rewritten | Almost all of `src/` (pages, features, shadcn/ui), adapted to load data from Laravel |
-| UI kit | shadcn/ui is React-only, so it goes. Options: Flux UI (Livewire's official kit; some components are paid) or Blade components built on the same tokens | shadcn/ui stays |
-| Grade maths | In PHP, on the server | Could stay in JavaScript, but official grades should still be checked on the server |
+| Screens, routes, components | React, react-router, shadcn/ui | The same |
+| Grade maths | `src/lib/`, in the browser | The same (§4, B6) |
+| Stored data | `localStorage` (`compugrade_db`, `compugrade-account`) | A database, through the API |
+| Data access | `src/services/` and `useDb`, read and written at once | `src/services/` calls the API. Calls take time and can fail, so screens get loading and error states |
+| Sign-in | Checked in the browser; passwords in plain text (AUDIT B15) | Laravel sessions; hashed passwords |
+| Who may write what | Anyone can change any stored value, including "locked" official scores | The server checks: only a class's professor writes official scores, and only a student writes their own self-reported scores |
 
-Laravel's official starter kits come in both forms (Livewire, and React with Inertia). The React
-kit is written in TypeScript, which `AGENTS.md` §4 rules out today.
+**The biggest change in the React app** is that reading data stops being instant. Today every
+screen reads the whole database at once (`getDb()`). With an API, each screen asks for what it
+needs, waits, and handles a failure. The work is in `src/services/`, `src/hooks/useDb.js` and
+each screen's loading and error states. The screens' layout and the grade maths stay as they
+are.
 
-**Recommendation: Blade + Livewire**, because it matches decision 2. The parts below need
-JavaScript in the browser, written with Alpine.js:
+**Why a back end at all:** with `localStorage`, each user's data stays in their own browser.
+Scores a professor enters never reach a student, a parent can't see a child's grades, and an
+administrator can't see anyone's. The roles need a shared database.
 
-- the pill editor's dragging (F10)
-- the grade-history and sandbox charts. Recharts is React-only, so a JavaScript chart library
-  is needed (for example Chart.js or ApexCharts). That's a new dependency for the owner to approve
-- the gauge (F17), the confetti and the celebration sound (F12)
-- the sidebar's Ctrl/⌘+B shortcut (F13)
+## 3. Spec first
 
-## 4. Decisions needed before T-JM-1
+Before any code, these are written through the protocol, in this order (task T-JM-1):
 
-| # | Decision | Recommendation |
-| --- | --- | --- |
-| L1 | Start now or later (§2) | Now |
-| L2 | Blade + Livewire or Inertia + React (§3) | Blade + Livewire |
-| L3 | Where the Laravel app lives | This repository, so the board, spec and docs stay in one place. The React app moves to `legacy/` in a move-only PR, made when no other branch is open (like T-17), and the Laravel app goes at the root. The other option is a new repository, with this one kept as the reference |
-| L4 | Database and hosting | MySQL or PostgreSQL. A host that runs PHP (Vercel only serves the static React app), for example Laravel Cloud, Forge or a school server |
-| L5 | Students' existing data in their browsers | Either an export from the React app and an import into Laravel (T-JM-12), or a fresh start. With no real users yet, a fresh start is simpler |
-| L6 | What happens to the open React tasks on the board | Mark each one `dropped: moved to Laravel` and fold it into the matching port task, or keep it if it protects data (§7) |
-| L7 | Approved packages for the Laravel app | Laravel, Livewire, Alpine.js, Tailwind CSS, Pest (tests), Pint (PHP code style), plus a chart library (§3). Everything else needs the owner's approval, as today |
+1. `SPEC.md` §2: the back end is in scope. §6: roles and access as the server enforces them.
+   §11: the changelog.
+2. `spec/data-model.md` §5: the database tables, in place of the `localStorage` shape (notes
+   below).
+3. A new `spec/api.md`: every endpoint, who may call it, what it accepts, and its errors (§7).
+   It needs a row in `SPEC.md`'s "Where things are" table.
+4. Then, as each role is planned: `spec/roles/<role>.md` (§6).
 
-## 5. Order of work
+The rules files change with it, outside the protocol but with the owner's approval:
+`AGENTS.md` §4 (stack, no-network rule, approved packages), §5 (folders) and §8, and
+`docs/TEAM_WORKFLOW.md` §4 (areas for the back-end folders).
 
-Each step is a task on the board (state `proposed`). Port tasks are cut so that one screen is
-one task. Steps 1–5 come first. After them, the port tasks can run side by side.
-
-| Step | Task | What |
-| --- | --- | --- |
-| 1 | T-JM-1 | Update the rules: `SPEC.md` (§2, §5, §6, §8), `AGENTS.md` (§3–§7) and `docs/TEAM_WORKFLOW.md` §4 (areas for the Laravel folders) describe the Laravel app, through the protocol for the spec |
-| 2 | T-JM-2 | The Laravel project: Livewire starter kit, the tokens and fonts from `src/index.css`, the text roles, Pest, Pint, CI jobs, error pages (§7) |
-| 3 | T-JM-3 | Database: migrations and seeders for the data model, with owners on rules and subjects, and roles on users |
-| 4 | T-JM-4 | The grade maths in PHP (`src/lib/` grades, rules, scores, targets, sandbox, history, terms), with Pest tests whose cases come from the JavaScript tests |
-| 5 | T-JM-5 | Accounts: register, sign in, sign out, hashed passwords, the role on each user, route protection. Student role first |
-| 6 | T-JM-6 to T-JM-11 | Port the student screens: Dashboard and My Subjects; Subject Detail and Current Term Records; the sandbox; Grade Rules and the rule editor; grade history; Settings |
-| 7 | T-JM-12 | Bring over browser data, if L5 says so |
-| 8 | T-JM-13 | Switch over: deploy the Laravel app, check every screen against `docs/BEHAVIOUR_CHECKLIST.md`, retire the React app |
-| 9 | T-JM-14 to T-JM-16 | The roles (§6) |
-
-Accessibility (`docs/ACCESSIBILITY_PLAN.md`) is built into the Laravel app, so it starts once
-the screens it touches are ported.
-
-**Database design notes for T-JM-3** (from `spec/data-model.md` §5):
+**Notes for the data model:**
 
 - The scores nested in `studentRecords` become their own tables: enrolments, tasks and scores.
   Official and self-reported scores stay separate fields, so the 3-state engine (F6) keeps
   working.
-- A rule's criteria tree can be a JSON column, as today, or a table of criteria. A JSON column is
-  closer to the current code and easier to port.
+- A rule's criteria tree can stay a JSON column, as today, or become a table of criteria. A JSON
+  column matches what `src/lib/rules.js` already reads.
 - Rules and subjects get an owner (`user_id`). Today every account shares them.
-- New: a parent–student link and verification requests that an administrator can act on.
+- New: a parent–student link, and verification requests an administrator can act on.
 
-## 6. Roles, after the student screens
+## 4. Decisions for the spec
 
-Each role starts as `spec/roles/<role>.md`, written through the protocol (`SPEC.md`, "Where
-things are"). Once its spec exists, the role's task is split into smaller tasks on the board.
+| # | Decision | Recommendation |
+| --- | --- | --- |
+| B1 | Where the Laravel code lives | This repository, in `backend/`. The React app stays where it is, so nothing has to move, and the board, spec and docs stay in one place. CI gets a second job for the back end |
+| B2 | Database and hosting | MySQL or PostgreSQL. The React app can stay on Vercel; the API needs a host that runs PHP (for example Laravel Cloud, Forge or a school server). Both should be on one domain (for example `app.` and `api.` under the same name), which B3 needs |
+| B3 | How the React app signs in | Laravel Sanctum's cookie sign-in for a front end on the same domain. It's the standard way for a React app and needs no tokens stored in the browser |
+| B4 | Students' existing data in their browsers | A fresh start, as long as there are no real users yet. Otherwise an export from the React app and an import into the API (T-JM-7) |
+| B5 | Using the app without an account | Drop it: everything needs an account, as today |
+| B6 | Where grades are computed | In the browser, with `src/lib/` as today. The server stores raw scores and checks permissions and ranges. If a server feature later needs computed grades (reports, alerts, at-risk students), the maths moves or is shared then, with tests built from the JavaScript tests |
+| B7 | Approved packages | Back end: Laravel, Sanctum, Pest (tests), Pint (PHP code style). React: nothing new. Calls can use the browser's `fetch` |
 
-1. **Professor (T-JM-14):** creates subjects with their own rules (D2, F10), and enters
-   official scores that students see as locked (F6, D1). It needs an answer to `SPEC.md` §10
-   question 1 first: when a student-made subject is linked to a professor-made one, what gets
-   overwritten?
-2. **Administrator (T-JM-15):** verifies subjects (F3, D11). It needs professor-made subjects,
+**The React tasks already on the board** mostly stay as they are, because the React app stays.
+T-11 (linking Settings to the signed-in user) and T-13 (hashing passwords) are replaced by
+T-JM-4. T-10's saving of the notification toggles moves to the API.
+
+## 5. Order of work
+
+| Step | Task | What |
+| --- | --- | --- |
+| 1 | T-JM-1 | The spec and the rules files (§3), with decisions B1–B7 made |
+| 2 | T-JM-2 | The Laravel project in `backend/`: Pest, Pint, CI, and one error format for every endpoint (§7) |
+| 3 | T-JM-3 | Database: migrations, models and seeders. The seeders reproduce `src/services/db.json` |
+| 4 | T-JM-4 | Accounts: register, sign in, sign out, hashed passwords, a role on each user, permissions |
+| 5 | T-JM-5 | The student endpoints: subjects, enrolments, tasks and scores, rules, targets, sandbox settings and drafts, Settings |
+| 6 | T-JM-6 | The React app uses the API: `src/services/` and `useDb` call it; every screen gets loading and error states. Split by area once the spec exists |
+| 7 | T-JM-7 | Bring over browser data, if B4 chooses it |
+| 8 | T-JM-8 | Switch over: deploy both, check every screen against `docs/BEHAVIOUR_CHECKLIST.md` |
+| 9 | T-JM-9 to T-JM-11 | The roles (§6) |
+
+Accessibility (`docs/ACCESSIBILITY_PLAN.md`) is built in the React app and doesn't wait for the
+back end.
+
+## 6. Roles, after the switch
+
+Each role starts as `spec/roles/<role>.md`, through the protocol. It adds React screens and the
+API endpoints behind them. Once its spec exists, the task is split into smaller ones.
+
+1. **Professor (T-JM-9):** creates subjects with their own rules (D2, F10), and enters official
+   scores that students see as locked (F6, D1). `SPEC.md` §10 question 1 needs an answer first:
+   when a student-made subject is linked to a professor-made one, what gets overwritten?
+2. **Administrator (T-JM-10):** verifies subjects (F3, D11). It needs professor-made subjects,
    so it comes after the professor.
-3. **Parent (T-JM-16):** linked to a student's account, with a read-only view of their grades.
+3. **Parent (T-JM-11):** linked to a student's account, with a read-only view of their grades.
    Email and SMS alerts (`SPEC.md` §8) are a later task.
 
-School counsellors and administrators looking for at-risk students across a whole school
-(`docs/project_details.md`) need data from many students, which the Laravel app makes possible.
-It's a later task, once these three roles exist.
+Finding at-risk students across a whole school (`docs/project_details.md`) is later still, once
+these three roles exist.
 
 ## 7. Error handling
 
-The review (`docs/ERROR_HANDLING_REVIEW.md`, T-21) found 22 cases in the React app. Its fix tasks
-(T-23 to T-31) are on the local branch `docs/error-handling-tasks`, which isn't pushed or merged
-yet.
+**The React app stays, so the review's fixes stay useful** (`docs/ERROR_HANDLING_REVIEW.md`,
+T-21; tasks T-23 to T-31 on the branch `docs/error-handling-tasks`). They split into two groups:
 
-**In the React app, while it's still deployed,** the fixes worth making are the ones that stop
-data loss or a blank screen:
-
-| Task | Why it's still worth doing |
+| Group | Tasks |
 | --- | --- |
-| T-23 Rule pages save fresh data (E9) | A removed subject comes back. Small fix, worst data loss |
-| T-25 App-wide error boundary (E6) | Any crash is a blank page with no way out |
+| Useful with or without the back end | T-23 (E9, E15), T-25 (E6), T-27 (E7, E8), T-28 (E11–E14), T-30 (E21), T-31 (E20) |
+| Needed only until the switch, because they fix `localStorage` | T-24 (E1–E3), T-26 (E16–E18; E19 and the photo size limit stay useful), T-29 (E10) |
 
-The others (T-24, T-26 to T-31) fix how the browser stores data, which the Laravel app replaces.
-The suggestion is to mark them `dropped: replaced by the Laravel app (docs/LARAVEL_PLAN.md §7)`
-and keep the review as the list of cases the Laravel app must handle.
+The back end only starts after its spec, so the React app will run on `localStorage` for a while
+yet. That's why the second group is still worth doing if real students use the app before the
+switch.
 
-**In the Laravel app,** the same cases become requirements of the tasks that build each part:
+**With the API, new cases join the list.** `spec/api.md` (T-JM-1) should say what the student
+sees for each of these. The save-error helper from T-28 extends to them:
 
-| Review | In the Laravel app | Task |
-| --- | --- | --- |
-| E6 blank page on a crash | Friendly 404, 419 (expired session), 500 and 503 pages, with a way back to the Dashboard. Errors go to Laravel's log, not to the screen | T-JM-2 |
-| E1–E3, E16 unreadable stored data | Handled by the database. Migrations and seeders replace the browser's upgrade code | T-JM-3 |
-| E9 a save overwriting newer data | Each save updates only what changed, inside a database transaction. Where two people can edit the same thing (a professor and a student), the save checks the record hasn't changed since it was read | T-JM-3, T-JM-6 to T-JM-11, T-JM-14 |
-| E11–E15 raw or missing save messages | Validation errors under each field, in plain words. A failed save says so and keeps what the student typed | each port task |
-| E17 a large profile photo | Upload validation with a size limit (the owner sets it), and the file goes to storage, not the database | T-JM-11 |
-| E21 a target out of range | Server-side validation that shows "Enter a target from 0 to 100." | T-JM-7 |
-| Official scores changed in the browser (new) | The server decides who may write what: only a class's professor writes official scores, and only the student writes their own self-reported scores | T-JM-5, T-JM-14 |
+| Case | What the student should see |
+| --- | --- |
+| No connection, or the API is down | "You're offline" or "CompUGrade can't be reached", with "Try again". What they typed stays in the form |
+| Session expired (401, 419) | They go to the login page and come back to where they were |
+| Not allowed (403) | "You don't have access to this", for example a student trying to write an official score |
+| Invalid input (422) | The server's message under each field, in plain words |
+| Changed by someone else (409) | "This was changed since you opened it", with the newer data. It's E9 again, now across users: a professor and a student editing the same class |
+| Server error (500) | A short message with "Try again". The details go to Laravel's log, not to the screen |
