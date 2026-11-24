@@ -21,7 +21,7 @@ That makes now the cheapest time to move:
   student's device, a parent can't see a child's data, and an administrator can't see anyone's.
   Any role built now in React would be built twice.
 - **Every feature added to the React app is one more feature to move.** The app is still small:
-  seven student screens, a spec that describes them, and 369 tests that pin down how the grade
+  seven student screens, a spec that describes them, and 384 tests that pin down how the grade
   maths behaves.
 - **Official scores need a server.** In the browser, a student can change any stored value,
   including "locked" official scores. Only a server can lock them, hash passwords and run
