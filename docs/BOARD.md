@@ -258,7 +258,7 @@ T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-17 · Backend scaffold
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_chore-backend-scaffold
 - Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
 - Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
 - Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; CI also runs `npm audit` and `composer audit`, and `.github/dependabot.yml` checks npm, Composer and GitHub Actions (OWASP A03:2025, Software Supply Chain Failures); `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd) and warns that every `VITE_*` variable is bundled into the browser's code, so the front end holds no keys; `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
