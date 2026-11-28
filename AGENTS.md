@@ -200,14 +200,18 @@ src/
 - **Board edits (owner decision, 2026-11-24).** Apart from claiming, an agent edits `docs/BOARD.md` only when the owner asks:
   - it makes exactly the change the owner describes: task blocks, State lines, locks, `done in PR #n`
   - it commits that change on its own: `chore(board)` for States and locks, `docs(board)` for task text
-  - it does not push it. A person pushes it
+  - it commits on a branch, never on `main`, and may push that branch (see Pushing below)
   - a developer who is not the owner can ask an agent only for a claim or a release, the same as their own board rights (`docs/TEAM_WORKFLOW.md` §5)
 - One logical change per commit. A pull request closes one task.
 - Before every commit: lint, format check (`npm run format:check`), build, and tests all pass.
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
 - Commit messages: `type(scope): summary` — types `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`.
 - Stage files by name (`git add <path>`), never `git add .` or `-A`.
-- Never push, force-push, rewrite history, merge, or delete branches. People do that. The only exception is the claim or release commit on `main` above.
+- **Pushing (owner decision, 2026-11-28, for the pre-feature sprint in `docs/ROADMAP.md`).** An agent may push its own task branch and the claim or release commit on `main` above. It never:
+  - pushes any other commit to `main`
+  - force-pushes or rewrites pushed history
+  - opens, merges or closes a pull request. A developer opens and merges every PR
+  - deletes a branch
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
 - When resuming in a new session, read `SPEC.md`, the `spec/` files its "Where things are" table lists for the task, this file, and the task's block on `docs/BOARD.md` first.
 
