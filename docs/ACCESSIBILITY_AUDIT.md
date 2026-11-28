@@ -76,7 +76,8 @@ stop that; it can go with AX14.
 
 ## 6. Proposed tasks (for the owner to approve)
 
-Grouped so each task stays inside a few areas. None is on `docs/BOARD.md` yet.
+Grouped so each task stays inside a few areas. On `docs/BOARD.md` as T-JM-30 to T-JM-34, in this
+order (owner request, 2026-11-29); task 2's AX4 stays with T-JM-22, so T-JM-31 covers AX5.
 
 | # | Task | Fixes | Areas | Needs |
 | --- | --- | --- | --- | --- |
