@@ -86,13 +86,17 @@ export function Sidebar() {
 
     const activeStudentId = getActiveStudentId(dbData);
 
+    // Damaged stored data may lack a list; treat it as empty so every page
+    // still renders (docs/ERROR_HANDLING_REVIEW.md E7).
+    const asList = (value) => (Array.isArray(value) ? value : []);
+
     const myClasses =
         dbData?.classes?.filter((c) =>
-            c.studentRecords.some((record) => record.studentId === activeStudentId),
+            asList(c.studentRecords).some((record) => record.studentId === activeStudentId),
         ) || [];
 
     const enrolledSubjects = myClasses.map((c) => {
-        const subjectDetails = dbData.subjects.find((s) => s.id === c.subjectId);
+        const subjectDetails = asList(dbData.subjects).find((s) => s.id === c.subjectId);
         return {
             classId: c.id,
             subjectCode: subjectDetails?.subjectCode || "Unknown",
