@@ -42,9 +42,10 @@ the Claude Code settings. After cloning there is nothing to install for the agen
 
 1. **Claim the task** on `main` (`docs/TEAM_WORKFLOW.md` §3), then create the branch. Do it
    yourself, or ask the agent to as the first step of the session (the optional line in the §4
-   prompt). An agent that claims follows the same steps and pushes only that one commit
-   (`AGENTS.md` §8). Apart from the claim, agents edit `docs/BOARD.md` only when the owner asks,
-   and never push or merge.
+   prompt). An agent that claims follows the same steps and pushes that one commit to `main`
+   (`AGENTS.md` §8). Apart from the claim, agents edit `docs/BOARD.md` only when the owner asks.
+   An agent may push its own task branch, but never pushes anything else to `main`, never
+   force-pushes, and never opens, merges or closes a PR.
 2. **One task per session.** Start a fresh session for each task. Long sessions drift: the agent
    forgets early instructions and carries assumptions from the last task into the next.
 3. **Two agents at once? Use a separate folder for each.** Two agents in the same folder will
@@ -77,12 +78,13 @@ src/services/migrations.js, src/components/ui/, SPEC.md), stop and ask me first.
 Read first: AGENTS.md, SPEC.md [the feature's section], docs/TEAM_WORKFLOW.md §4–5.
 
 [Optional] First claim the task for me on main (docs/TEAM_WORKFLOW.md §3):
-GitHub username [username], branch [branch]. Push only that claim commit,
-then create the branch from main.
+GitHub username [username], branch [branch]. Push only that claim commit to
+main, then create the branch from main.
 
 Rules for this session:
-- Don't edit SPEC.md, or docs/BOARD.md beyond the claim. Don't push anything
-  but the claim, don't merge, and don't switch branches after creating yours.
+- Don't edit SPEC.md, or docs/BOARD.md beyond the claim. You may push your own
+  branch. Push nothing else to main, don't force-push, don't open or merge a PR,
+  and don't switch branches after creating yours.
 - Stage files by name (git add <path>), never git add . or -A.
 - If you find a bug outside this task, tell me; don't fix it.
 

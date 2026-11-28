@@ -207,10 +207,10 @@ src/
 - A commit that moves or renames files changes nothing else. Content changes go in a separate commit.
 - Commit messages: `type(scope): summary` — types `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`.
 - Stage files by name (`git add <path>`), never `git add .` or `-A`.
-- **Pushing (owner decision, 2026-11-28, for the pre-feature sprint in `docs/ROADMAP.md`).** An agent may push its own task branch and the claim or release commit on `main` above. It never:
+- **Pushing (owner decision, 2026-11-28).** An agent may push its own task branch and the claim or release commit on `main` above. It never:
   - pushes any other commit to `main`
   - force-pushes or rewrites pushed history
-  - opens, merges or closes a pull request. A developer opens and merges every PR
+  - opens, merges or closes a pull request. A person opens every PR, and the owner reviews and merges it (`docs/TEAM_WORKFLOW.md` §9, decision 6)
   - deletes a branch
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
 - When resuming in a new session, read `SPEC.md`, the `spec/` files its "Where things are" table lists for the task, this file, and the task's block on `docs/BOARD.md` first.

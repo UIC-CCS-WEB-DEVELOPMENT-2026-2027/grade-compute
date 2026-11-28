@@ -82,11 +82,12 @@ When you give an agent a task, tell it three things:
 
 - the task ID from the board and what "done" means
 - the **Areas** it may change, and that everything else is off limits
-- that you will push the branch yourself
+- that it may push its own branch, but you open the PR
 
 An agent can also claim the task for you if you ask it to. Give it your GitHub username and the
 branch name; it follows `docs/TEAM_WORKFLOW.md` §3. Apart from that one claim commit, agents edit
-`docs/BOARD.md` only when the owner asks, and never push or merge. People do that.
+`docs/BOARD.md` only when the owner asks. They may push their own task branch, but never push
+anything else to `main`, never force-push, and never open or merge a PR. People do that.
 
 **`docs/AGENT_GUIDE.md`** has the details: setup per tool, a task prompt to copy, running two
 agents at once, and how to check what an agent did.

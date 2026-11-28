@@ -6,7 +6,7 @@ to the deployed back end. `AGENTS.md` holds the standing rules, `docs/BOARD.md` 
 
 **The idea:** automated tasks run first, and the owner's input is batched at checkpoints (✋),
 because the owner is busy until the review sitting at CP3. Agents push their task branches; a
-developer opens and merges every PR.
+person opens every PR and the owner merges it.
 
 **Status (2026-11-28):** A0 to A3 are done (PRs #128 to #130, and this file). Next: CP1.
 

@@ -45,7 +45,7 @@ The steps are the same whatever tool you use. What changes is who does each one.
 | 7. Check what no machine checks yet (§7) | You read the whole diff (`docs/AGENT_GUIDE.md` §5) | You, with the search list in `PROMPT_TEMPLATE.md` | You, with the same list, plus the model's Assumptions and Needs |
 | 8. Look at every touched screen at 375, 768, 1024 and 1440 px | You | You | You |
 | 9. Commit: one logical change, `type(scope): summary`, files staged by name | The agent, or you | You | You |
-| 10. Push the branch and open the PR | You | You | You |
+| 10. Push the branch and open the PR | The agent pushes, or you; you open the PR | You | You |
 | 11. CI runs the four checks on the PR | Automatic | Automatic | Automatic |
 | 12. Set `done in PR #<n>` (`docs/TEAM_WORKFLOW.md` §7); the owner reviews and merges | You, then the owner | You, then the owner | You, then the owner |
 
@@ -63,7 +63,7 @@ The steps are the same whatever tool you use. What changes is who does each one.
    dependencies, stored-data changes and bugs to the owner (`docs/AGENT_GUIDE.md` §7).
 5. When it says it's done: read the whole diff, run the four checks yourself, and look at the
    screens. Its report is what it thinks it did.
-6. Push the branch and open the PR yourself.
+6. Push the branch, or let the agent push it, then open the PR yourself.
 
 ### 4.2 Editor assistant (kind B)
 
@@ -112,8 +112,9 @@ Whatever the kind, an AI tool never:
 
 - edits `SPEC.md`. In Claude Code an edit asks you first: answer "no" unless the owner approved
   that exact change
-- pushes a branch, merges, or deletes a branch. The only push an agent makes is a claim or release
-  on `main`, when you ask for it
+- pushes anything to `main` except a claim or release, when you ask for it. An agent may push its
+  own task branch (`AGENTS.md` §8)
+- force-pushes, opens, merges or closes a PR, or deletes a branch
 - edits `docs/BOARD.md` beyond that claim, unless the owner asked for that change
   (`AGENTS.md` §8)
 - adds a dependency (`AGENTS.md` §4)
