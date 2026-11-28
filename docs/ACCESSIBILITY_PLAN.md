@@ -13,8 +13,8 @@ feature is written into `spec/features.md` as F21 through the protocol in `AGENT
 device's own settings (reduced motion, more contrast, forced colours), lets the student change
 them, and applies the choice on every screen.
 
-The styles already use tokens for fonts and sizes (`--font-heading`, `--font-body` and the
-`type-*` roles in `src/index.css`). Most options can be one attribute on `<html>`, for example
+The styles already use tokens for fonts and sizes (`--font-heading`, `--font-body` and the `type-*`
+roles in `frontend/src/index.css`). Most options can be one attribute on `<html>`, for example
 `data-reading="readable"`, that switches token values, without changing each component.
 
 ## 2. Options by need
@@ -53,4 +53,4 @@ These are for the owner to decide when each option is built:
 2. **Preferences (T-JM-13):** the Settings section and the token switches, then one option at a
    time, each with its decision made at the time.
 3. Preferences should apply before the page first draws, which means a small script in
-   `index.html`. That file is in T-16's (branding) areas, so coordinate with T-16.
+   `frontend/index.html`. That file is in T-16's (branding) areas, so coordinate with T-16.

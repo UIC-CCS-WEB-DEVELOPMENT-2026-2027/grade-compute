@@ -246,7 +246,7 @@ resource (the owner approves that board edit).
 > `frontend/src/lib/`. Check each screen at 375, 768, 1024 and 1440. Push the branch and stop
 > with a summary.
 
-The shared part (`src/services/`, `useDb`) goes first, in its own PR. The last area's PR
+The shared part (`frontend/src/services/`, `useDb`) goes first, in its own PR. The last area's PR
 removes the `localStorage` storage.
 
 ### B6 — Reading preferences (T-JM-13)

@@ -23,16 +23,16 @@ the model will follow it with confidence.
 - `AGENTS.md` and `SPEC.md` stay the source of truth. The pack is a condensed copy for models that
   can't open them. If they disagree, the pack is wrong.
 - Update the pack in the same commit as any change to:
-  - tokens, text roles or control sizes in `src/index.css`
-  - an added or removed component in `src/components/ui/`
+  - tokens, text roles or control sizes in `frontend/src/index.css`
+  - an added or removed component in `frontend/src/components/ui/`
   - a shared component's props
   - a route
   - an `AGENTS.md` rule
 - Keep it short. It should stay around 3,000–4,000 words, so it fits in any model's context with
   room for the task's files. Point to a `SPEC.md` section instead of copying it.
 - Optional, later: a small script that rebuilds §5.1 (tokens) and §6.1 (component list) from
-  `src/index.css` and `src/components/ui/`, so those two never go stale. That would need the
-  owner's approval as a task.
+  `frontend/src/index.css` and `frontend/src/components/ui/`, so those two never go stale. That
+  would need the owner's approval as a task.
 
 ## 3. Why there are two halves
 
@@ -45,9 +45,9 @@ instead of quietly.
 ## 4. Lint rules to back up the pack (proposal, not applied)
 
 These use only ESLint's built-in rules, so they need no new dependency. They would go in
-`eslint.config.js` as one task after the clean-up, with the owner's approval. They are drafts:
-run them against the finished codebase first, and fix or exempt what they flag before turning
-them on as errors.
+`frontend/eslint.config.js` as one task after the clean-up, with the owner's approval. They are
+drafts: run them against the finished codebase first, and fix or exempt what they flag before
+turning them on as errors.
 
 ```js
 // App code only: the generated shadcn components keep their own patterns

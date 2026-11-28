@@ -122,22 +122,22 @@ quickly, then free the lock.
 
 | Lock | Files | Why it must be one at a time |
 | --- | --- | --- |
-| `LOCK-data` | `src/services/migrations.js`, `src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
-| `LOCK-deps` | `package.json`, `package-lock.json` | The lockfile almost never merges cleanly |
+| `LOCK-data` | `frontend/src/services/migrations.js`, `frontend/src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
+| `LOCK-deps` | `frontend/package.json`, `frontend/package-lock.json` | The lockfile almost never merges cleanly |
 | `LOCK-spec` | `SPEC.md`, `spec/` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
 
 **Rule files** (anyone can change them, following these rules):
 
 | Files | Rules |
 | --- | --- |
-| `src/index.css` | Add a token **inside its group** (colours with colours, spacing with spacing), never at the end of the file. Never reorder or reformat existing tokens. Token additions go in a small PR merged before the feature PR that uses them |
-| `src/app/App.jsx` | One route per PR. Add it next to related routes, not at the end |
-| `src/components/ui/` | Add shadcn components only through the shadcn CLI, in their own commit. Before adding one, check that it isn't already there or claimed |
+| `frontend/src/index.css` | Add a token **inside its group** (colours with colours, spacing with spacing), never at the end of the file. Never reorder or reformat existing tokens. Token additions go in a small PR merged before the feature PR that uses them |
+| `frontend/src/app/App.jsx` | One route per PR. Add it next to related routes, not at the end |
+| `frontend/src/components/ui/` | Add shadcn components only through the shadcn CLI, in their own commit. Before adding one, check that it isn't already there or claimed |
 | `docs/BOARD.md` | Only your own task's State line, as in §3 |
 
-**`package-lock.json` conflict anyway?** Don't edit it by hand. Take `main`'s copy
-(`git checkout --theirs package-lock.json` during a merge of `main` into your branch), run
-`npm install`, and commit the regenerated file.
+**`frontend/package-lock.json` conflict anyway?** Don't edit it by hand. Take `main`'s copy
+(`git checkout --theirs frontend/package-lock.json` during a merge of `main` into your branch),
+run `npm install` in `frontend/`, and commit the regenerated file.
 
 ## 6. While you work
 

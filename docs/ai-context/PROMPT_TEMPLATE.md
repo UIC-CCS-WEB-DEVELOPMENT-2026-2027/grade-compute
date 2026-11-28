@@ -49,11 +49,11 @@ Follow every rule in the context pack. Answer in the format of its §10.
 | Task touches | Paste |
 | --- | --- |
 | Any component | that component and the parent that renders it |
-| A shadcn component the task uses | its file from `src/components/ui/` |
-| Grades, scores, targets | the relevant `src/lib/*.js` file, its test, and `spec/grading-rules.md` (`SPEC.md` §4) |
+| A shadcn component the task uses | its file from `frontend/src/components/ui/` |
+| Grades, scores, targets | the relevant `frontend/src/lib/*.js` file, its test, and `spec/grading-rules.md` (`SPEC.md` §4) |
 | Stored data | `spec/data-model.md` (`SPEC.md` §5) and the `services/` file involved |
-| Styling questions | the `@theme` and `:root` blocks of `src/index.css`, when §5 of the pack is not enough |
-| Tests | the file under test, an existing test from the same folder, and `src/test/fixtures.js` |
+| Styling questions | the `@theme` and `:root` blocks of `frontend/src/index.css`, when §5 of the pack is not enough |
+| Tests | the file under test, an existing test from the same folder, and `frontend/src/test/fixtures.js` |
 | A new feature | its entry in `spec/features.md`, the page it lives on, and one similar component as a pattern |
 
 Leave out anything the task doesn't need. Extra files use up space and give the model more to
@@ -74,7 +74,7 @@ Paste the files into the repo, then:
    - `#`, `rgb(`, `hsl(`, `-[` inside `className` strings (R9, R10)
    - `text-xs`, `text-sm`, `text-lg`, `font-bold`, `leading-` without a `type-*` role (R11)
    - `<button`, `<input`, `<select`, `<dialog`, `role="dialog"` written by hand (R16)
-   - `localStorage` outside `src/services/` (R4)
+   - `localStorage` outside `frontend/src/services/` (R4)
    - `export default` (R1), `../` imports (§3)
    - maths on scores or grades inside a `.jsx` file (R3)
    - changed user-facing text (R22)

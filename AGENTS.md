@@ -41,7 +41,7 @@ The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `d
 **Allowed, inside the task you were given and its Areas on `docs/BOARD.md`:**
 
 - What the task's "Done when" describes, including new features, screens, routes, form fields and user flows
-- Changes to how a grade is computed, rounded or displayed, to user-facing wording, or to stored data, only when the task says so. Stored-data changes come with a migration in `src/services/migrations.js` and a new `SCHEMA_VERSION`
+- Changes to how a grade is computed, rounded or displayed, to user-facing wording, or to stored data, only when the task says so. Stored-data changes come with a migration in `frontend/src/services/migrations.js` and a new `SCHEMA_VERSION`
 - Refactoring, tests and styling fixes inside the task's Areas that the task needs
 
 **Needs the owner first (stop and ask):**
@@ -61,7 +61,7 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 | Item | Value |
 | --- | --- |
-| App folder | `frontend/` holds the React app and its configs. Run every npm and npx command there (the shadcn CLI too). Everything else (docs, the spec, `.github/`, `.claude/`) stays at the root. Elsewhere in this file, a path that starts with `src/` means `frontend/src/` |
+| App folder | `frontend/` holds the React app and its configs. Run every npm and npx command there (the shadcn CLI too). Everything else (docs, the spec, `.github/`, `.claude/`) stays at the root |
 | Language | JavaScript (JSX, ES modules). Do not migrate to TypeScript |
 | Package manager | npm (`frontend/package-lock.json`). Use only npm |
 | Dev server | `npm run dev` (Vite, `http://localhost:5173`) |
@@ -132,8 +132,8 @@ frontend/         The React app. Run npm and npx commands here
 - Named exports. Default exports only where a tool requires them.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
-- **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0). Second exception: a function in `frontend/src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
+- **Code style is Prettier's, with the project config in `frontend/.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes
   - semicolons
@@ -141,7 +141,7 @@ frontend/         The React app. Run npm and npx commands here
   - lines up to 100 characters
 - Every JavaScript, JSX, CSS, JSON and HTML file follows it, including tests and scripts. Markdown is written by hand and is not formatted.
 - Run `npm run format` before committing. `npm run format:check` must pass.
-- ESLint and Prettier decide formatting. Do not hand-format against them, change `.prettierrc.json`, or disable rules inline without a comment giving the reason. Changing the style needs the owner's approval.
+- ESLint and Prettier decide formatting. Do not hand-format against them, change `frontend/.prettierrc.json`, or disable rules inline without a comment giving the reason. Changing the style needs the owner's approval.
 
 ## 7. UI standards
 
@@ -151,7 +151,7 @@ frontend/         The React app. Run npm and npx commands here
 - Add components with the shadcn CLI and follow the installed shadcn skill. Do not copy component code from memory or from other projects.
 - Set up shadcn for **Base UI** (owner decision, Gate 0) in JavaScript (`tsx: false`), with the `@/` alias.
 - Build app-specific components by composing shadcn primitives.
-- Generated components in `src/components/ui/` follow the styling rules too (owner decision, Gate 4). In the commit that adds a component:
+- Generated components in `frontend/src/components/ui/` follow the styling rules too (owner decision, Gate 4). In the commit that adds a component:
   - replace its one-off values with tokens and the Tailwind scale
   - set its control heights to the token sizes (`h-control` and its siblings)
   - keep its structure and API as generated
@@ -172,7 +172,7 @@ frontend/         The React app. Run npm and npx commands here
   - `criteria-1` to `criteria-8`, each with its `-on` pair
 - Themes: the app has one theme (light). Do not add a theme without a task for it.
 - Typography: one font family set and one fixed scale of text roles, defined once and reused. No one-off sizes.
-  - Fonts: Khand for headings and General Sans for everything else, from the files in `src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
+  - Fonts: Khand for headings and General Sans for everything else, from the files in `frontend/src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
   - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/archive/TASKS.md` §4.2.
   - Minimum sizes: 14px for body text, inputs and buttons.
   - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
@@ -181,7 +181,7 @@ frontend/         The React app. Run npm and npx commands here
 
 **Responsive**
 
-- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The JS sidebar thresholds match them (767 and 1023, `src/hooks/useSidebarState.js`).
+- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The JS sidebar thresholds match them (767 and 1023, `frontend/src/hooks/useSidebarState.js`).
 - Every screen must work at 375 (phone), 768 (tablet), 1024 (laptop), and 1440 (desktop) wide:
   - no horizontal scroll
   - no clipped or overlapping content
@@ -225,7 +225,7 @@ frontend/         The React app. Run npm and npx commands here
 ## 9. Definition of done for any task
 
 1. The task's "Done when" on `docs/BOARD.md` is met.
-2. Lint, format check, build, and tests pass. New logic in `src/lib/` or `src/services/` has tests.
+2. Lint, format check, build, and tests pass. New logic in `frontend/src/lib/` or `frontend/src/services/` has tests.
 3. Behaviour changes only as the task describes; any screen touched was checked at 375, 768, 1024, and 1440.
 4. `SPEC.md` describes any feature or behaviour the task added or changed (section 2).
 5. No rule in sections 5 to 7 is newly broken.

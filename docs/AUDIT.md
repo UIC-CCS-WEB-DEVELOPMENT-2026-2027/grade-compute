@@ -4,6 +4,7 @@
 - **Base commit:** `7c3178a`
 - **Date:** 2026-11-11
 - **Gate 0 status:** passed. The decisions are in §14.
+- **Paths:** written before the React app moved into `frontend/` (T-JM-14, 2026-11-28). Add `frontend/` in front of `src/`, `scripts/`, `public/`, `index.html` and the app's config files. `docs/TASKS.md`, `docs/REFACTOR_WORKFLOW.md`, `docs/REFACTOR_REPORT.md`, `docs/baseline/` and `docs/after/` are now in `docs/archive/`.
 
 Everything below comes from files that were opened and read. File paths are relative to the repo root unless they start with `src/`.
 
