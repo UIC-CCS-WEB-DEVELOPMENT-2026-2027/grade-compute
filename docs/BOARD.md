@@ -311,7 +311,7 @@ owner makes its decisions during implementation.
 
 ### T-JM-12 · Accessibility audit
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_docs-accessibility-audit
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
 - Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`), and whether form fields set `autocomplete` (`email`, `current-password`, `new-password`; WCAG 2.2 SC 1.3.5)
