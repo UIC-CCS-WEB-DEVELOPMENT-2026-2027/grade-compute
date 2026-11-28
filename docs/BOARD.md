@@ -205,7 +205,7 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: backend/ (auth)
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B3), §7; F1, F15; spec/api.md; replaces T-11 and T-13
-- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record; every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, and a 500 shows no details outside Laravel's log; Pest tests cover each
+- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record, and the tests try every role against every kind of record (OWASP A01:2025, Broken Access Control); every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, and a 500 shows no details outside Laravel's log; Pest tests cover each
 
 ### T-JM-5 · Student endpoints
 
@@ -233,21 +233,28 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
-- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
+- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`, where the CSP's `style-src` allows shadcn's chart `<style>` and the inline accent-colour variables (`'unsafe-inline'` or hashes, decided in this task); the API runs with `APP_DEBUG=false` and `php artisan optimize` on every deploy (OWASP A02:2025, Security Misconfiguration); the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ### T-JM-16 · Back-end spec drafts
 
 - State: todo
 - Areas: docs/proposals/
 - Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
-- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
+- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer. Among them: B5; what the student sees while a sleeping host wakes up (a free host can take about a minute: a "Starting the server…" state, a longer timeout and an automatic retry); where uploaded files such as profile photos are kept, since a host's disk can be wiped on every redeploy (a size-limited database column, or a file-storage service); and dates (stored in UTC, shown in Manila time, UTC+8, sent as ISO 8601). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
 
 ### T-JM-17 · Backend scaffold
 
 - State: todo
 - Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
 - Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
-- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd); `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
+- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; CI also runs `npm audit` and `composer audit`, and `.github/dependabot.yml` checks npm, Composer and GitHub Actions (OWASP A03:2025, Software Supply Chain Failures); `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd) and warns that every `VITE_*` variable is bundled into the browser's code, so the front end holds no keys; `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
+
+### T-JM-26 · Database backup plan
+
+- State: proposed
+- Areas: docs/, backend/ (only if the plan needs a scheduled export)
+- Spec: the hosted database's backup docs. TiDB Cloud Starter's free tier keeps automatic backups for 1 day, with no point-in-time restore
+- Done when: a backup plan in `docs/` says what is backed up, how often, where the copies are kept (never in the repository) and how long, and how a restore is tested once; it is agreed with the owner before T-JM-8 switches over
 
 ## roles
 
@@ -276,6 +283,13 @@ spec, and adds React screens and the API endpoints behind them.
 - Spec: F20; SPEC.md §1, §8; spec/roles/parent.md
 - Done when: the portal works as `spec/roles/parent.md` describes: a parent linked to a student sees that student's grades, read-only
 
+### T-JM-27 · Data privacy review and privacy notice
+
+- State: proposed
+- Areas: docs/proposals/, then a privacy-notice page (its area set by the review)
+- Spec: the Data Privacy Act of 2012 (RA 10173) and its IRR; NPC guidance for schools. Grades are likely sensitive personal information (a secondary source; to check against the law). Before the role workspaces (T-JM-9 to T-JM-11) and before any real user
+- Done when: a review in `docs/proposals/`, checked against the primary sources and with the professor or UIC's data protection officer, says what the Act asks of CompUGrade: the lawful basis, a privacy notice, showing each role only what it needs, how a parent–student link is verified, and what happens after a breach. Then the notice's wording goes into `SPEC.md` through its protocol, and the app shows it
+
 ## accessibility
 
 Built in the React app; it doesn't wait for the back end (`docs/ACCESSIBILITY_PLAN.md`). The
@@ -286,7 +300,7 @@ owner makes its decisions during implementation.
 - State: todo
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
-- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`)
+- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`), and whether form fields set `autocomplete` (`email`, `current-password`, `new-password`; WCAG 2.2 SC 1.3.5)
 
 ### T-JM-13 · Accessibility and reading preferences (F21)
 
