@@ -52,7 +52,7 @@ the Claude Code settings. After cloning there is nothing to install for the agen
    worktree:
 
    ```sh
-   git worktree add ../grade-compute-T-6 -b feat/sandbox-copy
+   git worktree add ../grade-compute-T-6 -b Lastname_feat-sandbox-copy
    cd ../grade-compute-T-6
    npm install
    ```

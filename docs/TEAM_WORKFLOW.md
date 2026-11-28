@@ -47,7 +47,7 @@ git switch main
 git pull --rebase
 
 # Edit docs/BOARD.md: change only your task's State line, e.g.
-#   - State: claimed by your-github-name on 2026-11-20, branch feat/sandbox-copy
+#   - State: claimed by your-github-name on 2026-11-20, branch Lastname_feat-sandbox-copy
 
 git add docs/BOARD.md
 git commit -m "chore(board): claim T-3"
@@ -61,7 +61,7 @@ git push
 - **Then branch out** from the `main` you just pushed:
 
   ```sh
-  git switch -c feat/sandbox-copy
+  git switch -c Lastname_feat-sandbox-copy
   ```
 
 Rules for claims:
@@ -139,8 +139,13 @@ quickly, then free the lock.
 
 ## 6. While you work
 
-- **Branch names:** `feat/<area>-<short-name>`, `fix/<area>-<short-name>`, `docs/<short-name>`.
-  For example `feat/sandbox-copy`.
+- **Branch names:** `<Lastname>_<type>-<short-name>` (owner decision, 2026-11-24):
+  - `<Lastname>` is your last name, capitalised, written the same way on every branch
+  - `<type>` is one of the commit types in AGENTS.md §8: `feat`, `fix`, `refactor`, `style`,
+    `test`, `chore`, `docs`
+  - `<short-name>` is a few lowercase words joined by hyphens
+  - For example `Manla_feat-sandbox-copy` or `Manla_docs-error-handling-tasks`. Branches made
+    before this rule keep their names.
 - **Keep branches short:** aim to open the PR within 5 days. Split a big task into
   several tasks on the board rather than keeping one long branch.
 - **Bring in `main` every day you work** (merge, not rebase, so you never need to force-push):
@@ -206,3 +211,4 @@ screen checks in step 3 stay manual.
 | 8 | Line endings: `.gitattributes` (T-17) in its own PR right after CI, while no other branch is open |
 | 9 | `proposed` tasks stay proposed until the owner approves each one (with `SPEC.md` updated through its protocol) |
 | 10 | Old branches: the 20 already merged into `main` are deleted; `SettingsniMarco` and `SubjectDetail(Add-on)`, built on pre-clean-up code, are closed without merging. Anything still wanted from them becomes a board task |
+| 11 | Branch names: `<Lastname>_<type>-<short-name>`, for example `Manla_feat-sandbox-copy` (§6; owner decision, 2026-11-24) |
