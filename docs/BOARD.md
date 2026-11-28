@@ -251,7 +251,7 @@ T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-16 · Back-end spec drafts
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_docs-backend-spec-drafts
 - Areas: docs/proposals/
 - Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
 - Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer. Among them: B5; what the student sees while a sleeping host wakes up (a free host can take about a minute: a "Starting the server…" state, a longer timeout and an automatic retry); where uploaded files such as profile photos are kept, since a host's disk can be wiped on every redeploy (a size-limited database column, or a file-storage service); and dates (stored in UTC, shown in Manila time, UTC+8, sent as ISO 8601). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
