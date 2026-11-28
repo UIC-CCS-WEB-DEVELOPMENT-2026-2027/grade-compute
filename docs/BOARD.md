@@ -434,7 +434,7 @@ owner makes its decisions during implementation.
 
 ### T-31 · Note on testing security features over HTTP
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_docs-http-security-note
 - Areas: docs/DEVELOPER_GUIDE.md
 - Spec: docs/ERROR_HANDLING_REVIEW.md E20 (T-21); AUDIT §12. Docs only
 - Done when: `docs/DEVELOPER_GUIDE.md` §6 says the password and verification features need HTTPS or `localhost`, so they don't work when the dev server is opened by its network address on a phone
