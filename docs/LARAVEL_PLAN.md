@@ -125,9 +125,9 @@ T-JM-4. T-10's saving of the notification toggles moves to the API.
 
 | Step | Task | What |
 | --- | --- | --- |
-| 1 | The move into `frontend/` | The React app moves in one moves-only commit; a second commit fixes the paths (CI, `.claude/`, `AGENTS.md` §4–5, `docs/TEAM_WORKFLOW.md` §4, the README and `docs/DEVELOPER_GUIDE.md`) |
-| 2 | The backend scaffold | Laravel 12 in `backend/` with `install:api`, Pest, `pint --test`, a CI job, the Vite dev proxy, back-end setup in `docs/DEVELOPER_GUIDE.md` and back-end areas in `docs/TEAM_WORKFLOW.md`. No tables and no endpoints yet, so it doesn't wait for the spec |
-| 3 | The spec drafts | The drafts in `docs/proposals/` (§3), then the owner's review |
+| 1 | T-JM-14 | The React app moves in one moves-only commit; a second commit fixes the paths (CI, `.claude/`, `AGENTS.md` §4–5, `docs/TEAM_WORKFLOW.md` §4, the README and `docs/DEVELOPER_GUIDE.md`) |
+| 2 | T-JM-17 | Laravel 12 in `backend/` with `install:api`, Pest, `pint --test`, a CI job, the Vite dev proxy, back-end setup in `docs/DEVELOPER_GUIDE.md` and back-end areas in `docs/TEAM_WORKFLOW.md`. No tables and no endpoints yet, so it doesn't wait for the spec |
+| 3 | T-JM-16 | The drafts in `docs/proposals/` (§3), then the owner's review |
 | 4 | T-JM-1 | The approved drafts written into the spec through the protocol (§3) |
 | 5 | T-JM-3 | Database: migrations, models and seeders for every role's tables. The seeders are written fresh from `db.json` |
 | 6 | T-JM-4 | Accounts: register, sign in, sign out, hashed passwords, a role on each user, permissions, and the one error format every endpoint returns (§7). It adds the first endpoints, so the format starts here (owner decision, 2026-11-28; it was T-JM-2) |
@@ -136,8 +136,8 @@ T-JM-4. T-10's saving of the notification toggles moves to the API.
 | 9 | T-JM-8 | Switch over: deploy both (§4, B2), check every screen against `docs/BEHAVIOUR_CHECKLIST.md`. The owner creates the TiDB, Render and Vercel accounts first |
 | 10 | T-JM-9 to T-JM-11 | The role workspaces (§6) |
 
-Steps 1 and 2 have their own tasks on the board. Accessibility (`docs/ACCESSIBILITY_PLAN.md`)
-is built in the React app and doesn't wait for the back end.
+Steps 2 and 3 can run side by side once step 1 is merged. Accessibility
+(`docs/ACCESSIBILITY_PLAN.md`) is built in the React app and doesn't wait for the back end.
 
 ## 6. Roles
 
@@ -194,5 +194,5 @@ From the CC013.23 documents:
 - **No secrets in code:** keys and passwords live in `.env`, which is never committed. Locally:
   `DB_CONNECTION=mysql`, `127.0.0.1:3306`, `DB_DATABASE=webdev2`, user `root`, empty password.
 - **Code Defense:** each student must be able to explain every line in a one-on-one defense, or
-  the work earns no credit. A study guide in `docs/defense/` has its own task.
+  the work earns no credit. A study guide in `docs/defense/` has its own task (T-JM-15).
 - **Every team member pushes verifiable commits.**

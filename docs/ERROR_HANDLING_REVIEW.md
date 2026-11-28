@@ -108,19 +108,24 @@ tasks" box forces 0).
 
 Each one is a behaviour change, so it needs the owner's approval and, where it changes what the
 student sees, a `SPEC.md` update through its protocol. Suggested order: data loss and lock-outs
-first.
+first. They are on `docs/BOARD.md` as `proposed` tasks (2026-11-14), and every finding is listed
+in `docs/AUDIT.md` §12.
 
-| # | Task | Fixes | Areas | Needs |
-| --- | --- | --- | --- | --- |
-| 1 | Rule pages save fresh data | E9, E15 | grade-rules | A test for the probe's case. Smallest fix, worst data loss |
-| 2 | Recover from unreadable stored data | E1, E2, E3 | shared (`src/services/db.js`), auth | A recovery screen and its wording (`SPEC.md` F1, F15). A backup key changes stored data: LOCK-data and `SPEC.md` §5 |
-| 3 | App-wide error boundary | E6 | `src/app/` (in no area today), shared (a new component) | Its wording in `SPEC.md`. `App.jsx` is a rule file (`docs/TEAM_WORKFLOW.md` §5) |
-| 4 | Settings storage can fail safely | E16–E19 | settings | The photo size limit or resize (owner), `SPEC.md` F14 |
-| 5 | Damaged records don't crash screens | E7, E8 | layout (Sidebar), term-records (`src/lib/grades.js`) | Tests for each damaged shape in §4 |
-| 6 | Plain-language save errors | E11–E14 | shared (the helper) first, then layout, sandbox, subject-detail, term-records, subjects, grade-rules | Wording in `SPEC.md`. It touches six areas, so: one small shared PR for the helper, then one PR per area |
-| 7 | Other tabs stay in sync | E10 | shared (`src/hooks/useDb.js`) | A test |
-| 8 | Out-of-range target message on Subject Detail | E21 | subject-detail | `SPEC.md` §4 |
-| 9 | Note on testing security features over HTTP | E20 | docs | Nothing |
+| # | Board | Task | Fixes | Areas | Needs |
+| --- | --- | --- | --- | --- | --- |
+| 1 | T-23 | Rule pages save fresh data | E9, E15 | grade-rules | A test for the probe's case. Smallest fix, worst data loss |
+| 2 | T-24 | Recover from unreadable stored data | E1, E2, E3 | shared (`src/services/db.js`), auth | A recovery screen and its wording (`SPEC.md` F1, F15). A backup key changes stored data: LOCK-data and `SPEC.md` §5 |
+| 3 | T-25 | App-wide error boundary | E6 | `src/app/` (in no area today), shared (a new component) | Its wording in `SPEC.md`. `App.jsx` is a rule file (`docs/TEAM_WORKFLOW.md` §5) |
+| 4 | T-26 | Settings storage can fail safely | E16–E19 | settings | The photo size limit or resize (owner), `SPEC.md` F14 |
+| 5 | T-27 | Damaged records don't crash screens | E7, E8 | layout (Sidebar), term-records (`src/lib/grades.js`) | Tests for each damaged shape in §4 |
+| 6 | T-28 | Plain-language save errors | E11–E14 | shared (the helper) first, then layout, sandbox, subject-detail, term-records, subjects, grade-rules | Wording in `SPEC.md`. It touches six areas, so: one small shared PR for the helper, then one PR per area |
+| 7 | T-29 | Other tabs stay in sync | E10 | shared (`src/hooks/useDb.js`) | A test |
+| 8 | T-30 | Out-of-range target message on Subject Detail | E21 | subject-detail | `SPEC.md` §4 |
+| 9 | T-31 | Note on testing security features over HTTP | E20 | docs | Nothing |
+
+Owner decision, 2026-11-28: T-24 and T-29 are dropped, and T-26 is narrowed to E19 and the photo
+size limit. They only fixed `localStorage`, and the back end starts with fresh data and no real
+users (`docs/LARAVEL_PLAN.md` §7).
 
 Not proposed as tasks: E4, E5 and E22 (recorded above).
 

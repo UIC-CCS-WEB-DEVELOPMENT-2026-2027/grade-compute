@@ -37,6 +37,13 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: SPEC.md §2 (features the UI already points to); AUDIT B13
 - Done when: the header's bell and profile chevron do what the owner decides; today they do nothing
 
+### T-27 · Damaged records don't crash screens
+
+- State: proposed
+- Areas: layout (Sidebar), term-records (src/lib/grades.js)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E7, E8 (T-21); AUDIT §12
+- Done when: the Sidebar treats a missing `studentRecords` or `subjects` list as empty, `toTaskList` drops task entries that aren't objects, and tests cover each damaged shape in the review's §4
+
 ### T-3 · CSV export promised in the sidebar Help
 
 - State: todo
@@ -69,6 +76,15 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: AUDIT B22 (owner to-do, 2026-11-13). Changes user-facing wording, so `SPEC.md` F8 gets the tag rules through its protocol
 - Done when: the tags in Current Term Records reflect both the kind of task and whether it has a score (for example a custom task with a student score, and a regular task with no score yet), as agreed with the owner, and `docs/BEHAVIOUR_CHECKLIST.md` H-items are updated in the same PR
 
+## subject-detail
+
+### T-30 · Out-of-range target message on Subject Detail
+
+- State: proposed
+- Areas: subject-detail
+- Spec: docs/ERROR_HANDLING_REVIEW.md E21 (T-21); AUDIT §12. Changes `SPEC.md` §4 through its protocol
+- Done when: a Subject Detail target outside 0–100 shows "Enter a target from 0 to 100.", as the sandbox does, instead of quietly going back to the old value
+
 ## sandbox
 
 ### T-6 · Conversational sandbox copy
@@ -77,6 +93,15 @@ ones in TEAM_WORKFLOW.md §4.
 - Areas: sandbox
 - Spec: F18 [PARTIAL]; SPEC.md §10 D8
 - Done when: the sandbox result messages use encouraging wording approved by the owner
+
+## grade-rules
+
+### T-23 · Rule pages save fresh data
+
+- State: proposed
+- Areas: grade-rules
+- Spec: docs/ERROR_HANDLING_REVIEW.md E9, E15 (T-21); AUDIT §12. Fixes the worst data loss the review found
+- Done when: Grade Rules and the rule editor build every save from the data as it is at the moment of saving, so a subject removed in the Sidebar (or in another tab) doesn't come back; a failed Duplicate on the rule editor shows its error; a test covers removing a subject and then pressing Duplicate
 
 ## history
 
@@ -124,6 +149,13 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: F14; AUDIT B21 (owner: fix after the clean-up, 2026-11-13)
 - Done when: with no verified email or phone, "Turn on" shows "Add and verify an email address or phone number before enabling two-factor authentication." (today the message is set but never rendered), and `docs/BEHAVIOUR_CHECKLIST.md` L7 is updated in the same PR
 
+### T-26 · Settings photo upload fails safely
+
+- State: proposed
+- Areas: settings
+- Spec: docs/ERROR_HANDLING_REVIEW.md E19 and E17's photo size (T-21); AUDIT §12; F14 in `SPEC.md` through its protocol. The photo size limit, or resizing, is the owner's decision. Narrowed (owner decision, 2026-11-28): E16, E18 and the rest of E17 only fix `localStorage`, so they are dropped
+- Done when: an unreadable image says "That image couldn't be read. Try another file."; a photo over the limit the owner sets is refused with a message, or resized, as the owner decides
+
 ## auth
 
 ### T-12 · Interactive homepage hero
@@ -143,8 +175,9 @@ ones in TEAM_WORKFLOW.md §4.
 ## backend
 
 A Laravel 12 API in `backend/` behind the React app in `frontend/` (`docs/LARAVEL_PLAN.md`).
-The move into `frontend/` and the backend scaffold come first and don't wait for the spec. Then
-spec first: T-JM-1 comes before T-JM-3 to T-JM-5, which follow in order.
+The move into `frontend/` (T-JM-14) comes first. The backend scaffold (T-JM-17) and the spec
+drafts (T-JM-16) follow it and don't wait for the spec. Then spec first: T-JM-1 comes before
+T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-1 · Back end: spec
 
@@ -202,6 +235,20 @@ spec first: T-JM-1 comes before T-JM-3 to T-JM-5, which follow in order.
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
 - Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
+### T-JM-16 · Back-end spec drafts
+
+- State: todo
+- Areas: docs/proposals/
+- Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
+- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
+
+### T-JM-17 · Backend scaffold
+
+- State: todo
+- Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
+- Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
+- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd); `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
+
 ## roles
 
 Each role's spec is written in full before the database design (T-JM-1); its workspace is built
@@ -236,7 +283,7 @@ owner makes its decisions during implementation.
 
 ### T-JM-12 · Accessibility audit
 
-- State: proposed
+- State: todo
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
 - Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding
@@ -273,10 +320,38 @@ owner makes its decisions during implementation.
 
 ### T-21 · Error-handling review
 
-- State: claimed by June-05 on 2026-11-13, branch docs/error-handling-review
+- State: done in PR #124
 - Areas: shared (src/services/, src/hooks/, src/lib/), all screens
 - Spec: owner request, 2026-11-13. The clean-up kept error handling as it was (feature freeze)
 - Done when: a read-only review in `docs/` lists every place an error can happen (reading, parsing and saving `localStorage`, bad or old stored data, failed saves, invalid input that slips through, exceptions while rendering), what the student sees today, and a proposed fix for each. The fixes become separate tasks, each approved by the owner, because they change behaviour
+
+### T-24 · Recover from unreadable stored data
+
+- State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
+- Areas: shared (src/services/db.js), auth
+- Spec: docs/ERROR_HANDLING_REVIEW.md E1, E2, E3 (T-21); AUDIT §12. Changes what the student sees (F1, F15 in `SPEC.md`) and stored data (a backup key), so it needs LOCK-data and `SPEC.md` §5 through its protocol
+- Done when: stored data that can't be used is copied to a backup key and the student sees a recovery screen with "Start again with fresh data" (after a confirmation) instead of the login page; upgraded data is still returned when its write-back fails; blocked storage gets its own message on the login page. Wording agreed with the owner
+
+### T-25 · App-wide error boundary
+
+- State: proposed
+- Areas: src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5), shared (a new component)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E6 (T-21); AUDIT §12. Its wording goes in `SPEC.md` through its protocol
+- Done when: an exception while a screen renders shows a short message with "Reload" and "Go to the Dashboard" instead of a blank page, and the error is logged to the console
+
+### T-28 · Plain-language save errors
+
+- State: proposed
+- Areas: shared (the helper) first, then layout, sandbox, subject-detail, term-records, subjects, grade-rules
+- Spec: docs/ERROR_HANDLING_REVIEW.md E11–E14 (T-21); AUDIT §12. Wording goes in `SPEC.md` through its protocol. It touches six areas: one small shared PR for the helper, then one PR per area
+- Done when: one helper in `src/services/` turns a save error into plain words and logs the details, and every save message uses it; Remove subject shows its error in the dialog; the sandbox and the Subject Detail target say so when the data can't be read; Current Term Records no longer says "sandbox changes"
+
+### T-29 · Other tabs stay in sync
+
+- State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
+- Areas: shared (src/hooks/useDb.js)
+- Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
+- Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
 
 ## tooling
 
@@ -300,6 +375,27 @@ owner makes its decisions during implementation.
 - Areas: tooling
 - Spec: docs/ai-context/README.md §4
 - Done when: the draft rules are tried on the code, false positives fixed or exempted, and the rules turned on as errors
+
+### T-31 · Note on testing security features over HTTP
+
+- State: proposed
+- Areas: docs/DEVELOPER_GUIDE.md
+- Spec: docs/ERROR_HANDLING_REVIEW.md E20 (T-21); AUDIT §12. Docs only
+- Done when: `docs/DEVELOPER_GUIDE.md` §6 says the password and verification features need HTTPS or `localhost`, so they don't work when the dev server is opened by its network address on a phone
+
+### T-JM-14 · Move the React app into frontend/
+
+- State: todo
+- Areas: everything (the whole React app moves), tooling, .claude/, AGENTS.md §4–5, docs/TEAM_WORKFLOW.md §4, README.md, docs/DEVELOPER_GUIDE.md
+- Spec: docs/LARAVEL_PLAN.md §1.3, §5 step 1. First of the back-end tasks
+- Done when: the React app (`src/`, `public/`, `index.html`, `package.json`, `package-lock.json`, the Vite, ESLint, Prettier and `components.json` configs, `scripts/`) is in `frontend/` in one moves-only commit; a second commit fixes the paths in CI, `.claude/`, `AGENTS.md` §4–5, `docs/TEAM_WORKFLOW.md` §4, the README and `docs/DEVELOPER_GUIDE.md`, and adds Axios to `AGENTS.md` §4's approved list; docs, the spec, `AGENTS.md`, `CLAUDE.md`, `.claude/` and `.github/` stay at the root; lint, format check, build, tests and screenshots run from `frontend/`. Do it when no other task branch is open, because the move touches every file
+
+### T-JM-15 · Code Defense Guide
+
+- State: todo
+- Areas: docs/defense/, .claude/skills/defense-update/
+- Spec: owner decision, 2026-11-27 (the CC013.23 Code Defense standard; docs/LARAVEL_PLAN.md §8). No spec change. After T-JM-14
+- Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
 
 ---
 
