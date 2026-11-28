@@ -40,7 +40,7 @@ ones in TEAM_WORKFLOW.md §4.
 ### T-27 · Damaged records don't crash screens
 
 - State: todo
-- Areas: layout (Sidebar), term-records (src/lib/grades.js)
+- Areas: layout (Sidebar), term-records (frontend/src/lib/grades.js)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E7, E8 (T-21); AUDIT §12
 - Done when: the Sidebar treats a missing `studentRecords` or `subjects` list as empty, `toTaskList` drops task entries that aren't objects, and tests cover each damaged shape in the review's §4
 
@@ -56,7 +56,7 @@ ones in TEAM_WORKFLOW.md §4.
 ### T-4 · Semesters: real semester on Subject Detail, no dependence on today's date
 
 - State: todo
-- Areas: subjects, subject-detail, shared (src/lib/subjects.js)
+- Areas: subjects, subject-detail, shared (frontend/src/lib/subjects.js)
 - Spec: SPEC.md §2 (Semesters); AUDIT B7, B12; SPEC.md §10 D9, D10
 - Done when: Subject Detail shows the class's real semester, and semester assignment no longer depends on the current date. May need LOCK-data
 
@@ -168,7 +168,7 @@ ones in TEAM_WORKFLOW.md §4.
 ### T-13 · Hash the login passwords
 
 - State: proposed
-- Areas: auth, shared (src/services/)
+- Areas: auth, shared (frontend/src/services/)
 - Spec: SPEC.md §9 backlog; AUDIT B15
 - Done when: to be specified with the owner. Changes stored data, so it needs LOCK-data
 
@@ -219,12 +219,12 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: shared (frontend/src/services/, frontend/src/hooks/useDb.js), then each screen's area
 - Spec: docs/LARAVEL_PLAN.md §2, §7; spec/api.md
-- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; loading states follow one convention: shadcn's `Skeleton` for layouts whose shape is known (tables, cards, charts) and a pending button or spinner for actions, checked against the full NN/g skeleton-screens article; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
+- Done when: one area at a time, `frontend/src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; loading states follow one convention: shadcn's `Skeleton` for layouts whose shape is known (tables, cards, charts) and a pending button or spinner for actions, checked against the full NN/g skeleton-screens article; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
 
 ### T-JM-7 · Bring over browser data
 
 - State: dropped: a fresh start with seeders from db.json, no browser data to import (owner decision, 2026-11-28)
-- Areas: shared (src/services/), backend/
+- Areas: shared (frontend/src/services/), backend/
 - Spec: docs/LARAVEL_PLAN.md §1.5, §4 (B4)
 - Done when: not done
 
@@ -233,7 +233,7 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
-- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`, where the CSP's `style-src` allows shadcn's chart `<style>` and the inline accent-colour variables (`'unsafe-inline'` or hashes, decided in this task); the API runs with `APP_DEBUG=false` and `php artisan optimize` on every deploy (OWASP A02:2025, Security Misconfiguration); the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
+- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `frontend/vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`, where the CSP's `style-src` allows shadcn's chart `<style>` and the inline accent-colour variables (`'unsafe-inline'` or hashes, decided in this task); the API runs with `APP_DEBUG=false` and `php artisan optimize` on every deploy (OWASP A02:2025, Security Misconfiguration); the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ### T-JM-16 · Back-end spec drafts
 
@@ -305,7 +305,7 @@ owner makes its decisions during implementation.
 ### T-JM-13 · Accessibility and reading preferences (F21)
 
 - State: proposed
-- Areas: settings, src/index.css (rule file), index.html (coordinate with T-16)
+- Areas: settings, frontend/src/index.css (rule file), frontend/index.html (coordinate with T-16)
 - Spec: docs/ACCESSIBILITY_PLAN.md; F21 in `spec/features.md` through the protocol
 - Done when: to be specified with the owner, one option at a time
 
@@ -321,7 +321,7 @@ owner makes its decisions during implementation.
 ### T-14 · Gauge enhancements
 
 - State: proposed
-- Areas: shared (src/components/GradeGauge.jsx), subject-detail, sandbox
+- Areas: shared (frontend/src/components/GradeGauge.jsx), subject-detail, sandbox
 - Spec: F17; SPEC.md §2 (details to be decided)
 - Done when: to be specified with the owner
 
@@ -335,28 +335,28 @@ owner makes its decisions during implementation.
 ### T-16 · Branding: logo, product name, favicon and page title
 
 - State: todo
-- Areas: shared (src/components/BrandMark.jsx), layout, auth, src/index.css brand classes, index.html, public/
+- Areas: shared (frontend/src/components/BrandMark.jsx), layout, auth, frontend/src/index.css brand classes, frontend/index.html, frontend/public/
 - Spec: SPEC.md §2 (Branding); AUDIT §9
 - Done when: the branding notes in docs/AUDIT.md §9 are resolved. Touches several areas: coordinate before claiming
 
 ### T-21 · Error-handling review
 
 - State: done in PR #124
-- Areas: shared (src/services/, src/hooks/, src/lib/), all screens
+- Areas: shared (frontend/src/services/, frontend/src/hooks/, frontend/src/lib/), all screens
 - Spec: owner request, 2026-11-13. The clean-up kept error handling as it was (feature freeze)
 - Done when: a read-only review in `docs/` lists every place an error can happen (reading, parsing and saving `localStorage`, bad or old stored data, failed saves, invalid input that slips through, exceptions while rendering), what the student sees today, and a proposed fix for each. The fixes become separate tasks, each approved by the owner, because they change behaviour
 
 ### T-24 · Recover from unreadable stored data
 
 - State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
-- Areas: shared (src/services/db.js), auth
+- Areas: shared (frontend/src/services/db.js), auth
 - Spec: docs/ERROR_HANDLING_REVIEW.md E1, E2, E3 (T-21); AUDIT §12. Changes what the student sees (F1, F15 in `SPEC.md`) and stored data (a backup key), so it needs LOCK-data and `SPEC.md` §5 through its protocol
 - Done when: stored data that can't be used is copied to a backup key and the student sees a recovery screen with "Start again with fresh data" (after a confirmation) instead of the login page; upgraded data is still returned when its write-back fails; blocked storage gets its own message on the login page. Wording agreed with the owner
 
 ### T-25 · App-wide error boundary
 
 - State: proposed
-- Areas: src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5), shared (a new component)
+- Areas: frontend/src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5), shared (a new component)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E6 (T-21); AUDIT §12. Its wording goes in `SPEC.md` through its protocol
 - Done when: an exception while a screen renders shows a short message with "Reload" and "Go to the Dashboard" instead of a blank page, and the error is logged to the console
 
@@ -365,12 +365,12 @@ owner makes its decisions during implementation.
 - State: proposed
 - Areas: shared (the helper) first, then layout, sandbox, subject-detail, term-records, subjects, grade-rules
 - Spec: docs/ERROR_HANDLING_REVIEW.md E11–E14 (T-21); AUDIT §12. Wording goes in `SPEC.md` through its protocol. It touches six areas: one small shared PR for the helper, then one PR per area
-- Done when: one helper in `src/services/` turns a save error into plain words and logs the details, and every save message uses it; Remove subject shows its error in the dialog; the sandbox and the Subject Detail target say so when the data can't be read; Current Term Records no longer says "sandbox changes"
+- Done when: one helper in `frontend/src/services/` turns a save error into plain words and logs the details, and every save message uses it; Remove subject shows its error in the dialog; the sandbox and the Subject Detail target say so when the data can't be read; Current Term Records no longer says "sandbox changes"
 
 ### T-29 · Other tabs stay in sync
 
 - State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
-- Areas: shared (src/hooks/useDb.js)
+- Areas: shared (frontend/src/hooks/useDb.js)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
 - Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
 
@@ -386,7 +386,7 @@ owner makes its decisions during implementation.
 - State: proposed
 - Areas: frontend/src/assets/, frontend/src/index.css (rule file)
 - Spec: AGENTS.md §7 (Khand and General Sans only). After T-JM-14. Khand is a 347 kB TTF and General Sans Regular a 46 kB OTF; no `@font-face` sets `font-display`
-- Done when: every font file is WOFF2 (from the font's own source where it ships one, or converted where its licence allows; the conversion tool is not added to `package.json`); every `@font-face` sets `font-display: swap`; the fonts look the same at all four widths; the sizes before and after are in the PR
+- Done when: every font file is WOFF2 (from the font's own source where it ships one, or converted where its licence allows; the conversion tool is not added to `frontend/package.json`); every `@font-face` sets `font-display: swap`; the fonts look the same at all four widths; the sizes before and after are in the PR
 
 ### T-JM-20 · Empty states on every screen
 
@@ -444,7 +444,7 @@ owner makes its decisions during implementation.
 - State: todo
 - Areas: docs/defense/, .claude/skills/defense-update/
 - Spec: owner decision, 2026-11-27 (the CC013.23 Code Defense standard; docs/LARAVEL_PLAN.md §8). No spec change. After T-JM-14
-- Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
+- Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `frontend/src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
 
 ### T-JM-23 · End-to-end tests with Playwright
 
@@ -456,7 +456,7 @@ owner makes its decisions during implementation.
 ### T-JM-24 · Performance budget in CI
 
 - State: blocked: approved by the owner (2026-11-28); waits for T-JM-18, T-JM-19 and the API (T-JM-6)
-- Areas: tooling (`scripts/`, `.github/`)
+- Areas: tooling (`frontend/scripts/`, `.github/`)
 - Spec: web.dev Core Web Vitals (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1); the numbers from T-JM-25
 - Done when: CI fails when the main JavaScript chunk or the total font size grows past a budget the owner sets from T-JM-25's numbers, using a script with no new dependency; Lighthouse CI is added only if the owner approves it as a dependency
 
@@ -478,12 +478,12 @@ is merged. See TEAM_WORKFLOW.md §5.
 ### LOCK-data · Stored data shape
 
 - State: free
-- Files: src/services/migrations.js, src/services/db.json, SCHEMA_VERSION
+- Files: frontend/src/services/migrations.js, frontend/src/services/db.json, SCHEMA_VERSION
 
 ### LOCK-deps · Dependencies
 
 - State: free
-- Files: package.json, package-lock.json
+- Files: frontend/package.json, frontend/package-lock.json
 
 ### LOCK-spec · SPEC.md, spec/
 
