@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
 import { getDb } from "@/services/db";
+import { DATA_UNAVAILABLE_MESSAGE } from "../messages";
 import { RuleDialog } from "./RuleDialog";
 import { RuleSubjectList } from "./RuleSubjectList";
 import { RuleWarning } from "./RuleWarning";
@@ -41,7 +42,12 @@ export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
 
     function confirmDelete() {
         // The delete starts from the stored data as it is now (E9).
-        const result = deleteRule(getDb() ?? db, rule.id, usage.isUsed ? replacementId : null);
+        const currentDb = getDb();
+        if (!currentDb) {
+            setError(DATA_UNAVAILABLE_MESSAGE);
+            return;
+        }
+        const result = deleteRule(currentDb, rule.id, usage.isUsed ? replacementId : null);
         if (!result.ok) {
             setError(result.error);
             return;

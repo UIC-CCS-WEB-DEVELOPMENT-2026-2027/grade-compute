@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDb } from "@/hooks/useDb";
 import { getDb, saveDbSafely } from "@/services/db";
+import { DATA_UNAVAILABLE_MESSAGE } from "../messages";
 import {
     buildRuleMath,
     createDefaultTree,
@@ -60,10 +61,15 @@ export function useRuleEditor(ruleId) {
     const isDirty = isNew || hasEdits;
     const usage = isNew || !rule ? null : getRuleUsage(dbData, rule.id);
 
-    // Checks and saves start from the stored data as it is now, not the copy
-    // read when the page opened, so changes made since (the Sidebar, another
-    // tab) aren't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
-    const currentDb = () => getDb() ?? dbData;
+    // Checks and saves start from the stored data as it is now, so changes
+    // made in another tab aren't overwritten (docs/ERROR_HANDLING_REVIEW.md
+    // E9). null when it can't be read; then nothing is saved and the status
+    // says why.
+    function readCurrentDb() {
+        const currentDb = getDb();
+        if (!currentDb) setStatus(DATA_UNAVAILABLE_MESSAGE);
+        return currentDb;
+    }
 
     function commit(updatedDb) {
         const saved = saveDbSafely(updatedDb);
@@ -77,7 +83,9 @@ export function useRuleEditor(ruleId) {
 
     // Checks name, tags, schools, and criteria before any save.
     function validate() {
-        const detailCheck = validateRuleDetails(currentDb(), details, rule?.id ?? null);
+        const currentDb = readCurrentDb();
+        if (!currentDb) return false;
+        const detailCheck = validateRuleDetails(currentDb, details, rule?.id ?? null);
         const math = buildRuleMath(tree);
         const nextErrors = { ...detailCheck.errors, ...(math.ok ? {} : { tree: math.error }) };
         setErrors(nextErrors);
@@ -88,8 +96,8 @@ export function useRuleEditor(ruleId) {
         return true;
     }
 
-    function saveNewRule(ruleName, successNotice = "") {
-        const result = createRule(currentDb(), { ...details, ruleName, tree });
+    function saveNewRule(currentDb, ruleName, successNotice = "") {
+        const result = createRule(currentDb, { ...details, ruleName, tree });
         if (!result.ok) {
             setErrors(result.errors);
             setStatus(result.error);
@@ -105,7 +113,9 @@ export function useRuleEditor(ruleId) {
 
     function applyUpdate() {
         setPendingImpact(null);
-        const result = updateRule(currentDb(), rule.id, { ...details, tree });
+        const currentDb = readCurrentDb();
+        if (!currentDb) return;
+        const result = updateRule(currentDb, rule.id, { ...details, tree });
         if (!result.ok) {
             setErrors(result.errors);
             setStatus(result.error);
@@ -123,11 +133,13 @@ export function useRuleEditor(ruleId) {
     function handleSave() {
         setStatus("");
         if (!validate()) return;
+        const currentDb = readCurrentDb();
+        if (!currentDb) return;
         if (isNew) {
-            saveNewRule(details.ruleName);
+            saveNewRule(currentDb, details.ruleName);
             return;
         }
-        const impact = getRuleChangeImpact(currentDb(), rule.id, tree);
+        const impact = getRuleChangeImpact(currentDb, rule.id, tree);
         if (impact.classes.length > 0 || isCopy) {
             setPendingImpact({ ...impact, isCopy });
             return;
@@ -138,15 +150,20 @@ export function useRuleEditor(ruleId) {
     function handleSaveAsNew() {
         setPendingImpact(null);
         setStatus("");
+        const currentDb = readCurrentDb();
+        if (!currentDb) return;
         const sameName = details.ruleName.trim().toLowerCase() === rule.ruleName.toLowerCase();
         saveNewRule(
-            sameName ? getCopyName(currentDb(), rule.ruleName) : details.ruleName,
+            currentDb,
+            sameName ? getCopyName(currentDb, rule.ruleName) : details.ruleName,
             "Your changes were successfully saved as a new rule.",
         );
     }
 
     function handleDuplicate() {
-        const result = duplicateRule(currentDb(), rule.id);
+        const currentDb = readCurrentDb();
+        if (!currentDb) return;
+        const result = duplicateRule(currentDb, rule.id);
         if (!result.ok) {
             setStatus(result.error);
             return;
