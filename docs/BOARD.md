@@ -39,7 +39,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-27 · Damaged records don't crash screens
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_fix-damaged-records
+- State: done in PR #138
 - Areas: layout (Sidebar), term-records (frontend/src/lib/grades.js)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E7, E8 (T-21); AUDIT §12
 - Done when: the Sidebar treats a missing `studentRecords` or `subjects` list as empty, `toTaskList` drops task entries that aren't objects, and tests cover each damaged shape in the review's §4
@@ -98,14 +98,14 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-23 · Rule pages save fresh data
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_fix-rule-pages-fresh-data
+- State: done in PR #139
 - Areas: grade-rules
 - Spec: docs/ERROR_HANDLING_REVIEW.md E9, E15 (T-21); AUDIT §12. Fixes the worst data loss the review found
 - Done when: Grade Rules and the rule editor build every save from the data as it is at the moment of saving, so a subject removed in the Sidebar (or in another tab) doesn't come back; a failed Duplicate on the rule editor shows its error; a test covers removing a subject and then pressing Duplicate
 
 ### T-32 · Rule pages show current data
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_fix-rule-pages-live-data
+- State: done in PR #141
 - Areas: grade-rules
 - Spec: owner decision, 2026-11-28, after T-23 (docs/ERROR_HANDLING_REVIEW.md E9). Builds on T-23's branch
 - Done when: Grade Rules and the rule editor re-read the data when it is saved elsewhere on the page (the Sidebar), so their subject counts, "used by" line and delete dialogs are current; a rule-page save whose stored data can't be read saves nothing and says "Your changes could not be saved because local data is unavailable."; tests cover both
@@ -441,7 +441,7 @@ owner makes its decisions during implementation.
 
 ### T-31 · Note on testing security features over HTTP
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_docs-http-security-note
+- State: done in PR #140
 - Areas: docs/DEVELOPER_GUIDE.md
 - Spec: docs/ERROR_HANDLING_REVIEW.md E20 (T-21); AUDIT §12. Docs only
 - Done when: `docs/DEVELOPER_GUIDE.md` §6 says the password and verification features need HTTPS or `localhost`, so they don't work when the dev server is opened by its network address on a phone
