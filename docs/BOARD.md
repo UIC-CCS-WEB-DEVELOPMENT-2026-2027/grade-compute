@@ -149,12 +149,12 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: F14; AUDIT B21 (owner: fix after the clean-up, 2026-11-13)
 - Done when: with no verified email or phone, "Turn on" shows "Add and verify an email address or phone number before enabling two-factor authentication." (today the message is set but never rendered), and `docs/BEHAVIOUR_CHECKLIST.md` L7 is updated in the same PR
 
-### T-26 · Settings storage can fail safely
+### T-26 · Settings photo upload fails safely
 
 - State: proposed
 - Areas: settings
-- Spec: docs/ERROR_HANDLING_REVIEW.md E16–E19 (T-21); AUDIT §12; F14 in `SPEC.md` through its protocol. The photo size limit, or resizing, is the owner's decision
-- Done when: a damaged `compugrade-account` loads the defaults (keeping a backup copy) and says so; a failed save, including signing out a session, shows a message instead of a blank page; a large photo is resized or refused as the owner decides; an unreadable image says "That image couldn't be read. Try another file."
+- Spec: docs/ERROR_HANDLING_REVIEW.md E19 and E17's photo size (T-21); AUDIT §12; F14 in `SPEC.md` through its protocol. The photo size limit, or resizing, is the owner's decision. Narrowed (owner decision, 2026-11-28): E16, E18 and the rest of E17 only fix `localStorage`, so they are dropped
+- Done when: an unreadable image says "That image couldn't be read. Try another file."; a photo over the limit the owner sets is refused with a message, or resized, as the owner decides
 
 ## auth
 
@@ -175,8 +175,9 @@ ones in TEAM_WORKFLOW.md §4.
 ## backend
 
 A Laravel 12 API in `backend/` behind the React app in `frontend/` (`docs/LARAVEL_PLAN.md`).
-The move into `frontend/` and the backend scaffold come first and don't wait for the spec. Then
-spec first: T-JM-1 comes before T-JM-3 to T-JM-5, which follow in order.
+The move into `frontend/` (T-JM-14) comes first. The backend scaffold (T-JM-17) and the spec
+drafts (T-JM-16) follow it and don't wait for the spec. Then spec first: T-JM-1 comes before
+T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-1 · Back end: spec
 
@@ -233,6 +234,20 @@ spec first: T-JM-1 comes before T-JM-3 to T-JM-5, which follow in order.
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
 - Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
+
+### T-JM-16 · Back-end spec drafts
+
+- State: todo
+- Areas: docs/proposals/
+- Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
+- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
+
+### T-JM-17 · Backend scaffold
+
+- State: todo
+- Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
+- Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
+- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd); `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
 
 ## roles
 
@@ -367,6 +382,20 @@ owner makes its decisions during implementation.
 - Areas: docs/DEVELOPER_GUIDE.md
 - Spec: docs/ERROR_HANDLING_REVIEW.md E20 (T-21); AUDIT §12. Docs only
 - Done when: `docs/DEVELOPER_GUIDE.md` §6 says the password and verification features need HTTPS or `localhost`, so they don't work when the dev server is opened by its network address on a phone
+
+### T-JM-14 · Move the React app into frontend/
+
+- State: todo
+- Areas: everything (the whole React app moves), tooling, .claude/, AGENTS.md §4–5, docs/TEAM_WORKFLOW.md §4, README.md, docs/DEVELOPER_GUIDE.md
+- Spec: docs/LARAVEL_PLAN.md §1.3, §5 step 1. First of the back-end tasks
+- Done when: the React app (`src/`, `public/`, `index.html`, `package.json`, `package-lock.json`, the Vite, ESLint, Prettier and `components.json` configs, `scripts/`) is in `frontend/` in one moves-only commit; a second commit fixes the paths in CI, `.claude/`, `AGENTS.md` §4–5, `docs/TEAM_WORKFLOW.md` §4, the README and `docs/DEVELOPER_GUIDE.md`, and adds Axios to `AGENTS.md` §4's approved list; docs, the spec, `AGENTS.md`, `CLAUDE.md`, `.claude/` and `.github/` stay at the root; lint, format check, build, tests and screenshots run from `frontend/`. Do it when no other task branch is open, because the move touches every file
+
+### T-JM-15 · Code Defense Guide
+
+- State: todo
+- Areas: docs/defense/, .claude/skills/defense-update/
+- Spec: owner decision, 2026-11-27 (the CC013.23 Code Defense standard; docs/LARAVEL_PLAN.md §8). No spec change. After T-JM-14
+- Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
 
 ---
 
