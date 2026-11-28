@@ -219,7 +219,7 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: shared (frontend/src/services/, frontend/src/hooks/useDb.js), then each screen's area
 - Spec: docs/LARAVEL_PLAN.md §2, §7; spec/api.md
-- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
+- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; loading states follow one convention: shadcn's `Skeleton` for layouts whose shape is known (tables, cards, charts) and a pending button or spinner for actions, checked against the full NN/g skeleton-screens article; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
 
 ### T-JM-7 · Bring over browser data
 
@@ -233,14 +233,14 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
-- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
+- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ### T-JM-16 · Back-end spec drafts
 
 - State: todo
 - Areas: docs/proposals/
 - Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
-- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
+- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
 
 ### T-JM-17 · Backend scaffold
 
@@ -286,7 +286,7 @@ owner makes its decisions during implementation.
 - State: todo
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
-- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding
+- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`)
 
 ### T-JM-13 · Accessibility and reading preferences (F21)
 
