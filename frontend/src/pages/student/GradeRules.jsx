@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RuleCard } from "@/features/grade-rules/components/RuleCard";
 import { DeleteRuleDialog } from "@/features/grade-rules/components/DeleteRuleDialog";
+import { DATA_UNAVAILABLE_MESSAGE } from "@/features/grade-rules/messages";
 import { getDb, saveDbSafely } from "@/services/db";
 import { duplicateRule, getRuleUsage, searchRules } from "@/lib/rules";
 import { useDb } from "@/hooks/useDb";
@@ -42,7 +43,7 @@ function writeThumbnail(value) {
 
 export function GradeRules() {
     const navigate = useNavigate();
-    const [dbData, setDbData] = useDb({ live: false });
+    const [dbData, setDbData] = useDb();
     const [query, setQuery] = useState("");
     const [thumbnail, setThumbnail] = useState(readThumbnail);
     const [deleteTarget, setDeleteTarget] = useState(null);
@@ -50,11 +51,6 @@ export function GradeRules() {
 
     const rules = dbData?.computationRules ?? [];
     const visibleRules = searchRules(rules, query);
-
-    // Saves start from the stored data as it is now, not the copy read when
-    // the page opened, so changes made since (the Sidebar, another tab)
-    // aren't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
-    const currentDb = () => getDb() ?? dbData;
 
     function commit(updatedDb) {
         const saved = saveDbSafely(updatedDb);
@@ -72,7 +68,14 @@ export function GradeRules() {
     }
 
     function handleDuplicate(ruleId) {
-        const result = duplicateRule(currentDb(), ruleId);
+        // Saves start from the stored data as it is now, so changes made in
+        // another tab aren't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
+        const currentDb = getDb();
+        if (!currentDb) {
+            setMessage(DATA_UNAVAILABLE_MESSAGE);
+            return;
+        }
+        const result = duplicateRule(currentDb, ruleId);
         if (!result.ok) {
             setMessage(result.error);
             return;

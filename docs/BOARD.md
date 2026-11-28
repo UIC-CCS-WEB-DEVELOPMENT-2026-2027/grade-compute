@@ -103,6 +103,13 @@ ones in TEAM_WORKFLOW.md §4.
 - Spec: docs/ERROR_HANDLING_REVIEW.md E9, E15 (T-21); AUDIT §12. Fixes the worst data loss the review found
 - Done when: Grade Rules and the rule editor build every save from the data as it is at the moment of saving, so a subject removed in the Sidebar (or in another tab) doesn't come back; a failed Duplicate on the rule editor shows its error; a test covers removing a subject and then pressing Duplicate
 
+### T-32 · Rule pages show current data
+
+- State: claimed by June-05 on 2026-11-28, branch Manla_fix-rule-pages-live-data
+- Areas: grade-rules
+- Spec: owner decision, 2026-11-28, after T-23 (docs/ERROR_HANDLING_REVIEW.md E9). Builds on T-23's branch
+- Done when: Grade Rules and the rule editor re-read the data when it is saved elsewhere on the page (the Sidebar), so their subject counts, "used by" line and delete dialogs are current; a rule-page save whose stored data can't be read saves nothing and says "Your changes could not be saved because local data is unavailable."; tests cover both
+
 ## history
 
 ### T-7 · GPA growth and category trends
