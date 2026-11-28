@@ -155,6 +155,7 @@ The full list is in `AGENTS.md` §5–7. These are the ones broken most often:
 | Conflict in `frontend/package-lock.json` | Don't edit it by hand. Take `main`'s copy, run `npm install` in `frontend/`, commit the result (`TEAM_WORKFLOW.md` §5) |
 | Lint or format check fails | Run `npm run format` first, then read the lint message. It usually names the rule |
 | The AI's code doesn't fit the project | Check you pasted the whole context pack. Then reply with the rule number it broke and ask for the full file again |
+| On my phone, Settings says "Could not verify your current password" or "Could not create a verification code" | Not a bug. The password and verification features use browser features (`crypto.subtle`, `crypto.randomUUID`) that only work on HTTPS or `localhost`. Opening the dev server by its network address (`http://192.168.x.x:5173`) is plain HTTP, so they fail there. Test them on `localhost` or on the deployed site (HTTPS) |
 | Two tasks need the same file | Talk to each other. Usually one person lands a small PR first, and the other builds on it |
 | A task is bigger than it looked | Split it: add new tasks to the board, finish the first part, and release or narrow your claim |
 | I can't finish my task | Set its State back to `todo` on `main` (`chore(board): release T-6`) so someone else can take it |
