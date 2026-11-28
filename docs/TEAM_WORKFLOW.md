@@ -87,20 +87,22 @@ request.
 After the clean-up, each feature lives in its own folder. Tasks in different areas almost never
 conflict, so they can run side by side.
 
+The React app is in `frontend/`; everything else stays at the root.
+
 | Area | Folders |
 | --- | --- |
-| `auth` | `src/features/auth/`, `src/pages/auth/` |
-| `subjects` | `src/features/subjects/components/{EnrolledSubjectsTable,AddSubjectForm}.jsx`, `src/pages/student/SubjectMenu.jsx`, `src/lib/subjects.js` |
-| `term-records` | `src/features/term-records/`, `src/lib/scores.js`, `src/lib/grades.js` |
-| `subject-detail` | `src/pages/student/SubjectDetail.jsx` and its test, `src/features/subjects/hooks/useSubjectDetail.js`, `src/features/subjects/components/CelebrationDialog.jsx`, `src/lib/celebration.js` |
-| `sandbox` | `src/features/sandbox/`, `src/pages/student/TargetGradeSandboxPage.jsx`, `src/lib/sandbox.js`, `src/lib/targets.js` |
-| `grade-rules` | `src/features/grade-rules/`, `src/pages/student/GradeRules.jsx`, `src/pages/student/RuleDetailPage.jsx`, `src/lib/rules.js` |
-| `history` | `src/features/history/`, `src/components/history-chart/`, `src/hooks/usePointHover.js`, `src/lib/history.js` |
-| `dashboard` | `src/pages/student/StudentDashboard.jsx` |
-| `settings` | `src/features/settings/`, `src/pages/settings/`, `src/services/localAccountStore.js`, `src/services/prototypeVerification.js` |
-| `layout` | `src/components/layout/`, `src/components/SandboxSubjectPicker.jsx` |
-| `shared` | `src/components/` (outside `ui/`, `layout/` and `history-chart/`), `src/hooks/` (outside `usePointHover.js`), `src/lib/` files not listed above, `src/services/` files not listed above |
-| `tooling` | `.github/`, `scripts/`, `eslint.config.js`, `.prettierrc.json`, `vite.config.js`, `.gitattributes` |
+| `auth` | `frontend/src/features/auth/`, `frontend/src/pages/auth/` |
+| `subjects` | `frontend/src/features/subjects/components/{EnrolledSubjectsTable,AddSubjectForm}.jsx`, `frontend/src/pages/student/SubjectMenu.jsx`, `frontend/src/lib/subjects.js` |
+| `term-records` | `frontend/src/features/term-records/`, `frontend/src/lib/scores.js`, `frontend/src/lib/grades.js` |
+| `subject-detail` | `frontend/src/pages/student/SubjectDetail.jsx` and its test, `frontend/src/features/subjects/hooks/useSubjectDetail.js`, `frontend/src/features/subjects/components/CelebrationDialog.jsx`, `frontend/src/lib/celebration.js` |
+| `sandbox` | `frontend/src/features/sandbox/`, `frontend/src/pages/student/TargetGradeSandboxPage.jsx`, `frontend/src/lib/sandbox.js`, `frontend/src/lib/targets.js` |
+| `grade-rules` | `frontend/src/features/grade-rules/`, `frontend/src/pages/student/GradeRules.jsx`, `frontend/src/pages/student/RuleDetailPage.jsx`, `frontend/src/lib/rules.js` |
+| `history` | `frontend/src/features/history/`, `frontend/src/components/history-chart/`, `frontend/src/hooks/usePointHover.js`, `frontend/src/lib/history.js` |
+| `dashboard` | `frontend/src/pages/student/StudentDashboard.jsx` |
+| `settings` | `frontend/src/features/settings/`, `frontend/src/pages/settings/`, `frontend/src/services/localAccountStore.js`, `frontend/src/services/prototypeVerification.js` |
+| `layout` | `frontend/src/components/layout/`, `frontend/src/components/SandboxSubjectPicker.jsx` |
+| `shared` | `frontend/src/components/` (outside `ui/`, `layout/` and `history-chart/`), `frontend/src/hooks/` (outside `usePointHover.js`), `frontend/src/lib/` files not listed above, `frontend/src/services/` files not listed above |
+| `tooling` | `.github/`, `frontend/scripts/`, `frontend/eslint.config.js`, `frontend/.prettierrc.json`, `frontend/vite.config.js`, `.gitattributes` |
 
 - **`shared` is high-risk.** A change there affects every area that imports it. Keep it to its
   own small PR and get it merged before you build on it. Don't change a shared component's props in
@@ -120,22 +122,22 @@ quickly, then free the lock.
 
 | Lock | Files | Why it must be one at a time |
 | --- | --- | --- |
-| `LOCK-data` | `src/services/migrations.js`, `src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
-| `LOCK-deps` | `package.json`, `package-lock.json` | The lockfile almost never merges cleanly |
+| `LOCK-data` | `frontend/src/services/migrations.js`, `frontend/src/services/db.json`, `SCHEMA_VERSION` | Two schema changes can't share one version number |
+| `LOCK-deps` | `frontend/package.json`, `frontend/package-lock.json` | The lockfile almost never merges cleanly |
 | `LOCK-spec` | `SPEC.md`, `spec/` | Changes go through the owner's protocol in AGENTS.md §2 anyway |
 
 **Rule files** (anyone can change them, following these rules):
 
 | Files | Rules |
 | --- | --- |
-| `src/index.css` | Add a token **inside its group** (colours with colours, spacing with spacing), never at the end of the file. Never reorder or reformat existing tokens. Token additions go in a small PR merged before the feature PR that uses them |
-| `src/app/App.jsx` | One route per PR. Add it next to related routes, not at the end |
-| `src/components/ui/` | Add shadcn components only through the shadcn CLI, in their own commit. Before adding one, check that it isn't already there or claimed |
+| `frontend/src/index.css` | Add a token **inside its group** (colours with colours, spacing with spacing), never at the end of the file. Never reorder or reformat existing tokens. Token additions go in a small PR merged before the feature PR that uses them |
+| `frontend/src/app/App.jsx` | One route per PR. Add it next to related routes, not at the end |
+| `frontend/src/components/ui/` | Add shadcn components only through the shadcn CLI, in their own commit. Before adding one, check that it isn't already there or claimed |
 | `docs/BOARD.md` | Only your own task's State line, as in §3 |
 
-**`package-lock.json` conflict anyway?** Don't edit it by hand. Take `main`'s copy
-(`git checkout --theirs package-lock.json` during a merge of `main` into your branch), run
-`npm install`, and commit the regenerated file.
+**`frontend/package-lock.json` conflict anyway?** Don't edit it by hand. Take `main`'s copy
+(`git checkout --theirs frontend/package-lock.json` during a merge of `main` into your branch),
+run `npm install` in `frontend/`, and commit the regenerated file.
 
 ## 6. While you work
 

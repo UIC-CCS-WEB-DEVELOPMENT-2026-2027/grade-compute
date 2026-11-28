@@ -10,13 +10,12 @@ The basis is the CC013.23 (Web Development 2) course documents: the Full-Stack S
 Week 1 slides and the TLA 1 worksheet. They are not in the repository. When they disagree, the
 Setup Guide wins, then the slides, then the worksheet.
 
-Paths in the React app are written as they are today (`src/lib/`, `src/services/`). After the
-move in §5 step 1 they are under `frontend/`.
+Paths in the React app start with `frontend/`, where the app moved in §5 step 1 (T-JM-14).
 
 ## 1. Owner decisions (2026-11-24 to 2026-11-28)
 
-1. **The front end stays the React app**: React + Vite, react-router, shadcn/ui, the Tailwind
-   tokens and the grade maths in `src/lib/`. Moving the screens to PHP (Blade and Livewire) was
+1. **The front end stays the React app**: React + Vite, react-router, shadcn/ui, the Tailwind tokens
+   and the grade maths in `frontend/src/lib/`. Moving the screens to PHP (Blade and Livewire) was
    considered and dropped, because it means rewriting the React code and shadcn/ui is React-only.
 2. **Laravel 12 becomes a separate REST API** in API-only mode (`php artisan install:api`,
    `routes/api.php`). It stores the data, handles sign-in, and decides who may read and write
@@ -26,9 +25,9 @@ move in §5 step 1 they are under `frontend/`.
 3. **One repository, `frontend/` and `backend/`.** The React app moves into `frontend/` in a
    moves-only commit, before any back-end work. Docs, the spec, `AGENTS.md`, `CLAUDE.md`,
    `.claude/` and `.github/` stay at the root.
-4. **Grade maths stays in the browser** (`src/lib/`). The API stores rules and scores and
+4. **Grade maths stays in the browser** (`frontend/src/lib/`). The API stores rules and scores and
    validates input.
-5. **A fresh start for data.** New Laravel seeders are written from `src/services/db.json`.
+5. **A fresh start for data.** New Laravel seeders are written from `frontend/src/services/db.json`.
    Nothing is imported from students' browsers, so T-JM-7 is dropped. Each feature moves to the
    API in its own task; the `localStorage` storage is removed once the last one has moved.
 6. **Sign-in is Sanctum's SPA cookie auth**, not API tokens. Axios sends `withCredentials` and
@@ -38,8 +37,8 @@ move in §5 step 1 they are under `frontend/`.
      `x-vercel-enable-rewrite-caching: 0` is set on `/api/*`, so grade data is never cached.
    - **Locally:** the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to
      `127.0.0.1:8000`.
-7. **Approved packages and tools.** Front end: Axios, called only from `src/services/`. Back
-   end: Laravel 12, Sanctum, Pest and Pint. `./vendor/bin/pint --test` must pass before every
+7. **Approved packages and tools.** Front end: Axios, called only from `frontend/src/services/`.
+   Back end: Laravel 12, Sanctum, Pest and Pint. `./vendor/bin/pint --test` must pass before every
    commit in `backend/`, as `npm run format:check` does in `frontend/`.
 8. **The local environment is Laragon** (Full: PHP 8.2+, Composer 2.6+, MySQL 8), not Herd. The
    database is `webdev2`. MySQL Workbench is for looking only.
@@ -54,16 +53,16 @@ move in §5 step 1 they are under `frontend/`.
 | --- | --- | --- |
 | Folders | The React app at the repository root | The React app in `frontend/`, the API in `backend/` |
 | Screens, routes, components | React, react-router, shadcn/ui | The same |
-| Grade maths | `src/lib/`, in the browser | The same (§1.4) |
+| Grade maths | `frontend/src/lib/`, in the browser | The same (§1.4) |
 | Stored data | `localStorage` (`compugrade_db`, `compugrade-account`) | MySQL 8 (`webdev2` on Laragon locally, TiDB Cloud hosted), through the API |
-| Data access | `src/services/` and `useDb`, read and written at once | `src/services/` calls the API with Axios. Calls take time and can fail, so screens get loading and error states |
+| Data access | `frontend/src/services/` and `useDb`, read and written at once | `frontend/src/services/` calls the API with Axios. Calls take time and can fail, so screens get loading and error states |
 | Sign-in | Checked in the browser; passwords in plain text (AUDIT B15) | Sanctum session cookies; hashed passwords |
 | Who may write what | Anyone can change any stored value, including "locked" official scores | The server checks: only a class's professor writes official scores, and only a student writes their own self-reported scores |
 
-**The biggest change in the React app** is that reading data stops being instant. Today every
-screen reads the whole database at once (`getDb()`). With an API, each screen asks for what it
-needs, waits, and handles a failure. The work is in `src/services/`, `src/hooks/useDb.js` and
-each screen's loading and error states. The screens' layout and the grade maths stay as they
+**The biggest change in the React app** is that reading data stops being instant. Today every screen
+reads the whole database at once (`getDb()`). With an API, each screen asks for what it needs,
+waits, and handles a failure. The work is in `frontend/src/services/`, `frontend/src/hooks/useDb.js`
+and each screen's loading and error states. The screens' layout and the grade maths stay as they
 are.
 
 **Why a back end at all:** with `localStorage`, each user's data stays in their own browser.
@@ -98,7 +97,7 @@ the backend scaffold adds the back-end stack and the `backend/` areas.
   Official and self-reported scores stay separate fields, so the 3-state engine (F6) keeps
   working.
 - A rule's criteria tree can stay a JSON column, as today, or become a table of criteria. A JSON
-  column matches what `src/lib/rules.js` already reads.
+  column matches what `frontend/src/lib/rules.js` already reads.
 - Rules and subjects get an owner (`user_id`). Today every account shares them.
 - From the role specs: a role on each user, professor-made subjects, a parent–student link, and
   verification requests an administrator can act on.
@@ -114,7 +113,7 @@ the backend scaffold adds the back-end stack and the `backend/` areas.
 | B3 | How the React app signs in | **Approved:** Sanctum SPA cookies through the Vercel rewrite proxy (§1.6) |
 | B4 | Students' existing data in their browsers | **Approved:** a fresh start, with seeders from `db.json` (§1.5). T-JM-7 is dropped |
 | B5 | Using the app without an account | Open. Recommendation: drop it, so everything needs an account, as today |
-| B6 | Where grades are computed | **Approved:** in the browser, with `src/lib/` (§1.4). If a server feature later needs computed grades (reports, alerts, at-risk students), the maths moves or is shared then, with tests built from the JavaScript tests |
+| B6 | Where grades are computed | **Approved:** in the browser, with `frontend/src/lib/` (§1.4). If a server feature later needs computed grades (reports, alerts, at-risk students), the maths moves or is shared then, with tests built from the JavaScript tests |
 | B7 | Approved packages | **Approved:** Laravel 12, Sanctum, Pest, Pint; Axios in the React app (§1.7) |
 
 **The React tasks already on the board** mostly stay as they are, because the React app stays.
@@ -132,7 +131,7 @@ T-JM-4. T-10's saving of the notification toggles moves to the API.
 | 5 | T-JM-3 | Database: migrations, models and seeders for every role's tables. The seeders are written fresh from `db.json` |
 | 6 | T-JM-4 | Accounts: register, sign in, sign out, hashed passwords, a role on each user, permissions, and the one error format every endpoint returns (§7). It adds the first endpoints, so the format starts here (owner decision, 2026-11-28; it was T-JM-2) |
 | 7 | T-JM-5 | The student endpoints, one resource at a time: subjects, enrolments, tasks and scores, rules, targets, sandbox settings and drafts, Settings |
-| 8 | T-JM-6 | The React app uses the API, one area at a time: `src/services/` and `useDb` call it; every screen gets loading and error states |
+| 8 | T-JM-6 | The React app uses the API, one area at a time: `frontend/src/services/` and `useDb` call it; every screen gets loading and error states |
 | 9 | T-JM-8 | Switch over: deploy both (§4, B2), check every screen against `docs/BEHAVIOUR_CHECKLIST.md`. The owner creates the TiDB, Render and Vercel accounts first |
 | 10 | T-JM-9 to T-JM-11 | The role workspaces (§6) |
 

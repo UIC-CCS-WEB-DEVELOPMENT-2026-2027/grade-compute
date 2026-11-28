@@ -5,6 +5,8 @@ happen, what the student sees today, and a proposed fix for each. **Nothing here
 fix changes behaviour, so it becomes a separate task once the owner approves it (§8).
 
 - **Code reviewed:** `main` at `3bad8a7` (2026-11-13).
+- **Paths:** written before the React app moved into `frontend/` (T-JM-14, 2026-11-28). Add
+  `frontend/` in front of every `src/` path below.
 - **How:** the code was read, and a temporary test rendered every signed-in screen with damaged
   stored data and failing saves (§9). Results marked **(probe)** were seen in that test, not only
   read in the code.

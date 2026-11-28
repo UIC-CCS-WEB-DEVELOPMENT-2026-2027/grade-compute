@@ -45,7 +45,7 @@ of using it. The full list: `react`, `react-dom`, `react-router-dom`, `recharts`
 ## 3. Where code lives
 
 ```
-src/
+frontend/src/
   app/             App.jsx (routes), main.jsx, RequireStudent.jsx
   pages/           auth/, student/, settings/ — page components; pages only compose
   features/<name>/ components/, hooks/, lib/ for one feature
@@ -89,8 +89,9 @@ Signed-in pages are wrapped in `<RequireStudent>` in `App.jsx` and render inside
 
 **Code**
 
-- **R1.** Named exports only: `export function Foo()`. No `export default`. No file in `src/` needs
-  one; only tool config files (`vite.config.js`, `eslint.config.js`) use a default export.
+- **R1.** Named exports only: `export function Foo()`. No `export default`. No file in
+  `frontend/src/` needs one; only tool config files (`vite.config.js`, `eslint.config.js`) use a
+  default export.
 - **R2.** Names: `PascalCase` components and files, `useCamelCase` hooks, `camelCase` functions and
   variables, `UPPER_SNAKE_CASE` constants.
 - **R3.** Grade computation, rounding and formatting are pure functions in `lib/`. Components call
@@ -345,7 +346,8 @@ self-reported ones.
 - Tests sit next to the code as `Name.test.js` / `Name.test.jsx`. Component tests start with the
   comment `// @vitest-environment jsdom`.
 - Import `describe`, `it`, `expect`, `vi` from `vitest`.
-- The date is frozen at 2026-11-11 in every test (`src/test/setup.js`). Don't fake the date again.
+- The date is frozen at 2026-11-11 in every test (`frontend/src/test/setup.js`). Don't fake the date
+  again.
 - Helpers: `makeSeedDb()`, `makeStandardRule()`, `makeTask(id, maxScore, officialScore,
   studentReportedScore, extra)` and `makeMixedRecord()` from `@/test/fixtures.js`;
   `setupBrowserTests()`, `seedBrowser(db, userId)` and `readRecord(classId, studentId)` from
@@ -354,9 +356,9 @@ self-reported ones.
 
 ## 9. Example of a correct component
 
-This is a real file, `src/features/grade-rules/components/RuleDialog.jsx`: a comment that says
-what it is, documented props, named export, shadcn parts composed (no hand-built modal), a shared
-app component reused, tokens and the Tailwind scale only.
+This is a real file, `frontend/src/features/grade-rules/components/RuleDialog.jsx`: a comment that
+says what it is, documented props, named export, shadcn parts composed (no hand-built modal), a
+shared app component reused, tokens and the Tailwind scale only.
 
 ```jsx
 // The frame of the rule dialogs (delete a rule, confirm a rule update): an
@@ -416,8 +418,8 @@ export function RuleDialog({
 ## 10. How to answer
 
 1. If the request is unclear, or needs something not in this pack or the pasted files, ask first.
-2. Return **complete files** with their path as a heading (`src/features/…/Name.jsx`), never
-   fragments or "… rest unchanged".
+2. Return **complete files** with their path as a heading (`frontend/src/features/…/Name.jsx`),
+   never fragments or "… rest unchanged".
 3. After the code, list:
    - **Assumptions:** anything you guessed about code you couldn't see.
    - **Rule exceptions:** any rule from §4 you couldn't follow, and why.

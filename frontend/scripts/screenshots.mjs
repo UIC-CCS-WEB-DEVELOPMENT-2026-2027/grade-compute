@@ -1,7 +1,8 @@
 // Takes a full-page screenshot of every screen at 375, 768, 1024 and 1440px.
 //
-//   npm run screenshots                -> docs/baseline/
-//   npm run screenshots -- docs/after  -> docs/after/
+// Run from frontend/. The folder is relative to the repository root:
+//   npm run screenshots                  -> docs/screenshots/ (git-ignored)
+//   npm run screenshots -- docs/my-shots -> docs/my-shots/
 //
 // Every shot runs on the same fixed state, so "before" and "after" shots
 // can be compared:
@@ -18,8 +19,10 @@ import { chromium } from "playwright";
 import { createServer } from "vite";
 import { FIXED_NOW } from "../src/test/fixedDate.js";
 
+// root is the app (frontend/); repoRoot holds docs/.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outDir = path.resolve(root, process.argv[2] ?? "docs/baseline");
+const repoRoot = path.resolve(root, "..");
+const outDir = path.resolve(repoRoot, process.argv[2] ?? "docs/screenshots");
 const seedDb = await readFile(path.join(root, "src/services/db.json"), "utf8");
 
 const WIDTHS = [375, 768, 1024, 1440];
@@ -86,7 +89,7 @@ try {
 
             const file = path.join(outDir, `${screen.name}-${width}.png`);
             await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
-            console.log(path.relative(root, file));
+            console.log(path.relative(repoRoot, file));
             await context.close();
         }
     }

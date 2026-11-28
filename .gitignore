@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Screenshots from npm run screenshots (frontend/scripts/screenshots.mjs)
+docs/screenshots
 dist
 dist-ssr
 *.local

@@ -72,8 +72,9 @@ Done when:
 - [what must not change: wording, saved data, other screens]
 
 You may change only these folders and files: [the task's Areas, as paths].
-If you need to change anything else (src/index.css, src/app/App.jsx, package.json,
-src/services/migrations.js, src/components/ui/, SPEC.md), stop and ask me first.
+If you need to change anything else (frontend/src/index.css, frontend/src/app/App.jsx,
+frontend/package.json, frontend/src/services/migrations.js, frontend/src/components/ui/, SPEC.md),
+stop and ask me first.
 
 Read first: AGENTS.md, SPEC.md [the feature's section], docs/TEAM_WORKFLOW.md §4–5.
 
@@ -110,7 +111,7 @@ An agent's report says what it **thinks** it did. Check before you commit or ope
    - `SPEC.md` or `docs/BOARD.md` changes
    - changed user-facing wording
    - reformatted lines the task didn't need
-   - new dependencies in `package.json`
+   - new dependencies in `frontend/package.json`
    - a new `.css` file
 2. **Run the checks yourself:** `npm run lint`, `npm run format:check`, `npm run build`, `npm test`.
    Don't take "all tests pass" on trust.
@@ -127,10 +128,10 @@ An agent's report says what it **thinks** it did. Check before you commit or ope
 | --- | --- |
 | Fixes a bug it noticed on the way, which changes behaviour | "If you find a bug, tell me; don't fix it" in the prompt. Read the diff |
 | Edits files outside the task, often "small clean-ups" | The Areas line. Check `git diff --stat` |
-| Adds a token at the end of `src/index.css`, or reformats it | Tokens go inside their group (`TEAM_WORKFLOW.md` §5). Check the `index.css` diff line by line |
+| Adds a token at the end of `frontend/src/index.css`, or reformats it | Tokens go inside their group (`TEAM_WORKFLOW.md` §5). Check the `index.css` diff line by line |
 | Changes `SPEC.md` to match the code, or the code to match `SPEC.md` | `AGENTS.md` §1 says to stop and report. Refuse the `SPEC.md` prompt in Claude Code |
 | Stages everything with `git add .`, including other people's or untracked files | "Stage files by name" in the prompt. Check `git status` before each commit |
-| Installs a package to solve a problem | `AGENTS.md` §4 lists the approved dependencies. Look for `package.json` in the diff |
+| Installs a package to solve a problem | `AGENTS.md` §4 lists the approved dependencies. Look for `frontend/package.json` in the diff |
 | Hand-writes a shadcn component, or a Radix version of one | Components are added with the shadcn CLI (`AGENTS.md` §7). Look for `@radix-ui` imports |
 | Claims tests pass without running them | Run them yourself (§5) |
 | Claims a task carelessly: another task's line, the wrong username or branch, or an overlapping area | Check the claim commit on `main` (`git show origin/main --stat`): one State line, yours, with the right branch |

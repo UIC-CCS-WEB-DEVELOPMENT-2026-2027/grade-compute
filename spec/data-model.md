@@ -9,7 +9,7 @@ Part of the spec; `SPEC.md` lists every spec file. Changes only through the prot
 
 - There is no backend and no network call.
 - The whole database lives in the browser's `localStorage` under `compugrade_db` (`schemaVersion: 2`).
-- It is seeded from `src/services/db.json` on first load.
+- It is seeded from `frontend/src/services/db.json` on first load.
 - Hosted on Vercel as a single-page app.
 
 | Entity | Attributes |

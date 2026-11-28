@@ -36,12 +36,12 @@ Rules around the protocol:
 
 ## 3. Scope
 
-The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `docs/REFACTOR_REPORT.md`). Work now comes from tasks on `docs/BOARD.md`, done as `docs/TEAM_WORKFLOW.md` describes.
+The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `docs/archive/REFACTOR_REPORT.md`). Work now comes from tasks on `docs/BOARD.md`, done as `docs/TEAM_WORKFLOW.md` describes.
 
 **Allowed, inside the task you were given and its Areas on `docs/BOARD.md`:**
 
 - What the task's "Done when" describes, including new features, screens, routes, form fields and user flows
-- Changes to how a grade is computed, rounded or displayed, to user-facing wording, or to stored data, only when the task says so. Stored-data changes come with a migration in `src/services/migrations.js` and a new `SCHEMA_VERSION`
+- Changes to how a grade is computed, rounded or displayed, to user-facing wording, or to stored data, only when the task says so. Stored-data changes come with a migration in `frontend/src/services/migrations.js` and a new `SCHEMA_VERSION`
 - Refactoring, tests and styling fixes inside the task's Areas that the task needs
 
 **Needs the owner first (stop and ask):**
@@ -61,63 +61,69 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 | Item | Value |
 | --- | --- |
+| App folder | `frontend/` holds the React app and its configs. Run every npm and npx command there (the shadcn CLI too). Everything else (docs, the spec, `.github/`, `.claude/`) stays at the root |
 | Language | JavaScript (JSX, ES modules). Do not migrate to TypeScript |
-| Package manager | npm (`package-lock.json`). Use only npm |
+| Package manager | npm (`frontend/package-lock.json`). Use only npm |
 | Dev server | `npm run dev` (Vite, `http://localhost:5173`) |
-| Build | `npm run build` (Vite, output in `dist/`) |
-| Lint | `npm run lint` (ESLint 10 flat config, `eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
-| Format | `npm run format` / `npm run format:check` (Prettier 3, `.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
-| Test | `npm test` (Vitest 5, React Testing Library, jsdom). Unit and characterization tests next to the code (`*.test.js(x)`, 19 files, 369 tests at the end of the clean-up); helpers in `src/test/`. The date is frozen at 2026-11-11 |
-| Screenshots | `npm run screenshots [outDir]` (Playwright, `scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440). Before the clean-up in `docs/baseline/`, after it in `docs/after/`; manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
-| Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `src/app/App.jsx`. `src/app/RequireStudent.jsx` guards every route except `/` |
-| State management | React local state per component. Components read the database with `useDb` (`src/hooks/useDb.js`), which re-reads on the `compugrade-db-updated` window event that `saveDb` sends. The sidebar's minimised state is a `useSyncExternalStore` module store (`src/hooks/useSidebarState.js`). No state library |
-| Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`, schema v2), seeded from `src/services/db.json` through `src/services/db.js`; schema-v1 data is upgraded by `src/services/migrations.js`. Grade computation lives in `src/lib/` |
-| Tailwind version | Tailwind CSS v4 (`@tailwindcss/vite`), with its preflight reset on. shadcn/ui on Base UI (`components.json`, style `base-nova`, JavaScript), components in `src/components/ui/`; `cn()` comes from `src/lib/utils.js` |
-| Global stylesheet | `src/index.css`, the only stylesheet: design tokens, the `type-*` text roles, the `tap:` touch variant and the control sizes (44px below `lg` or on touch screens). The 19 per-component and per-page CSS files found in Phase 0 were merged into it and deleted |
+| Build | `npm run build` (Vite, output in `frontend/dist/`) |
+| Lint | `npm run lint` (ESLint 10 flat config, `frontend/eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
+| Format | `npm run format` / `npm run format:check` (Prettier 3, `frontend/.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
+| Test | `npm test` (Vitest 5, React Testing Library, jsdom). Unit and characterization tests next to the code (`*.test.js(x)`, 19 files, 369 tests at the end of the clean-up); helpers in `frontend/src/test/`. The date is frozen at 2026-11-11 |
+| Screenshots | `npm run screenshots [outDir]` (Playwright, `frontend/scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440; `outDir` is relative to the repository root, default `docs/screenshots/`, which git ignores). The clean-up's shots are in `docs/archive/baseline/` (before) and `docs/archive/after/` (after); manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
+| Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `frontend/src/app/App.jsx`. `frontend/src/app/RequireStudent.jsx` guards every route except `/` |
+| State management | React local state per component. Components read the database with `useDb` (`frontend/src/hooks/useDb.js`), which re-reads on the `compugrade-db-updated` window event that `saveDb` sends. The sidebar's minimised state is a `useSyncExternalStore` module store (`frontend/src/hooks/useSidebarState.js`). No state library |
+| Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`, schema v2), seeded from `frontend/src/services/db.json` through `frontend/src/services/db.js`; schema-v1 data is upgraded by `frontend/src/services/migrations.js`. Grade computation lives in `frontend/src/lib/` |
+| Tailwind version | Tailwind CSS v4 (`@tailwindcss/vite`), with its preflight reset on. shadcn/ui on Base UI (`frontend/components.json`, style `base-nova`, JavaScript), components in `frontend/src/components/ui/`; `cn()` comes from `frontend/src/lib/utils.js` |
+| Global stylesheet | `frontend/src/index.css`, the only stylesheet: design tokens, the `type-*` text roles, the `tap:` touch variant and the control sizes (44px below `lg` or on touch screens). The 19 per-component and per-page CSS files found in Phase 0 were merged into it and deleted |
 
-**Approved dependencies:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
+**Approved dependencies:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots), Axios (owner decision, 2026-11-27, for calling the back-end API; installed by the first task that uses it). Anything else needs the owner's approval first.
 
 ## 5. File structure
 
-The layout the code follows (set up in the clean-up, `docs/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
+The layout the code follows (set up in the clean-up, `docs/archive/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
 
 ```
-src/
-  app/            App shell, router, providers (today: App.jsx, main.jsx)
-  pages/          Page components, grouped by area: auth/, student/, settings/
-                  Pages only compose
-  features/       Code that belongs to one feature:
-    auth/           login and register (useAuthForm, the login preview)
-    subjects/       enrolled-subjects table, add subject, Subject Detail's
-                    useSubjectDetail and celebration
-    term-records/   current term records
-    grade-rules/    pill editor, rule card and visuals, rule dialogs, useRuleEditor
-    sandbox/        target grade sandbox
-    history/        the Dashboard and Subject Detail history cards
-    settings/       account settings sections, useGlobalSettings
-    <feature>/    components/, hooks/, and logic for that feature
-  components/
-    ui/           shadcn/ui components (added through the shadcn CLI)
-    layout/       Sidebar, Header, PageFooter, the page shell
-    history-chart/ The grade-history chart kit (chart, frame, table, legend,
-                  tooltip), used by history and the sandbox
-    …             Shared app components used by two or more features
-                  (e.g. TermNavigation, SandboxSubjectPicker, GradeGauge)
-  hooks/          Shared hooks (e.g. useDb, useSidebarState, usePointHover)
-  lib/            Pure logic and helpers, no React. Grade computation lives here
-                  (grades, rules, sandbox, history, subjects, terms, targets,
-                  scores, format, number, celebration)
-                  DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
-  services/       Data access and storage
-                  (db, db.json, migrations, session, records,
-                  localAccountStore, prototypeVerification)
-  assets/         Logo, images, fonts, sounds
-  index.css       The only global stylesheet
+frontend/         The React app. Run npm and npx commands here
+  index.html, package.json, package-lock.json, vite.config.js, eslint.config.js,
+  .prettierrc.json, .prettierignore, jsconfig.json, components.json, vercel.json
+  public/         Static files served as-is (favicon)
+  scripts/        Node scripts (screenshots)
+  src/
+    app/            App shell, router, providers (today: App.jsx, main.jsx)
+    pages/          Page components, grouped by area: auth/, student/, settings/
+                    Pages only compose
+    features/       Code that belongs to one feature:
+      auth/           login and register (useAuthForm, the login preview)
+      subjects/       enrolled-subjects table, add subject, Subject Detail's
+                      useSubjectDetail and celebration
+      term-records/   current term records
+      grade-rules/    pill editor, rule card and visuals, rule dialogs, useRuleEditor
+      sandbox/        target grade sandbox
+      history/        the Dashboard and Subject Detail history cards
+      settings/       account settings sections, useGlobalSettings
+      <feature>/    components/, hooks/, and logic for that feature
+    components/
+      ui/           shadcn/ui components (added through the shadcn CLI)
+      layout/       Sidebar, Header, PageFooter, the page shell
+      history-chart/ The grade-history chart kit (chart, frame, table, legend,
+                    tooltip), used by history and the sandbox
+      …             Shared app components used by two or more features
+                    (e.g. TermNavigation, SandboxSubjectPicker, GradeGauge)
+    hooks/          Shared hooks (e.g. useDb, useSidebarState, usePointHover)
+    lib/            Pure logic and helpers, no React. Grade computation lives here
+                    (grades, rules, sandbox, history, subjects, terms, targets,
+                    scores, format, number, celebration)
+                    DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
+    services/       Data access and storage
+                    (db, db.json, migrations, session, records,
+                    localAccountStore, prototypeVerification)
+    assets/         Logo, images, fonts, sounds
+    index.css       The only global stylesheet
 ```
 
 - A file lives with the feature that uses it. It moves to a shared folder only when a second feature needs it.
 - One exported component per file. The file name matches the component name. Small private sub-components that only that file uses may stay in it (for example chart dot renderers, `SandboxStep`, `PasswordField`).
-- Import across folders with the `@/` alias (maps to `src/`). No `../../..` chains.
+- Import across folders with the `@/` alias (maps to `frontend/src/`). No `../../..` chains.
 
 ## 6. Code conventions
 
@@ -126,8 +132,8 @@ src/
 - Named exports. Default exports only where a tool requires them.
 - Grade computation is pure functions in `lib/`: no React, no storage, no network. Components call them; components never redo the maths.
 - Extract when the same markup or logic, serving the same purpose, appears in two or more places. Do not merge things that only look alike but mean different things.
-- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0). Second exception: a function in `src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
-- **Code style is Prettier's, with the project config in `.prettierrc.json`** (owner decision, Gate 2):
+- No commented-out code, no unused files, no unused exports. Exception: keep the commented-out Phase 2 professor and admin imports and routes in `App.jsx` exactly as they are, and keep all other non-student code (owner decision, Gate 0). Second exception: a function in `frontend/src/lib/` may be exported only so its tests can call it; it is part of the tested API (owner decision, 2026-11-13, FU5).
+- **Code style is Prettier's, with the project config in `frontend/.prettierrc.json`** (owner decision, Gate 2):
   - 4-space indentation
   - double quotes
   - semicolons
@@ -135,7 +141,7 @@ src/
   - lines up to 100 characters
 - Every JavaScript, JSX, CSS, JSON and HTML file follows it, including tests and scripts. Markdown is written by hand and is not formatted.
 - Run `npm run format` before committing. `npm run format:check` must pass.
-- ESLint and Prettier decide formatting. Do not hand-format against them, change `.prettierrc.json`, or disable rules inline without a comment giving the reason. Changing the style needs the owner's approval.
+- ESLint and Prettier decide formatting. Do not hand-format against them, change `frontend/.prettierrc.json`, or disable rules inline without a comment giving the reason. Changing the style needs the owner's approval.
 
 ## 7. UI standards
 
@@ -145,7 +151,7 @@ src/
 - Add components with the shadcn CLI and follow the installed shadcn skill. Do not copy component code from memory or from other projects.
 - Set up shadcn for **Base UI** (owner decision, Gate 0) in JavaScript (`tsx: false`), with the `@/` alias.
 - Build app-specific components by composing shadcn primitives.
-- Generated components in `src/components/ui/` follow the styling rules too (owner decision, Gate 4). In the commit that adds a component:
+- Generated components in `frontend/src/components/ui/` follow the styling rules too (owner decision, Gate 4). In the commit that adds a component:
   - replace its one-off values with tokens and the Tailwind scale
   - set its control heights to the token sizes (`h-control` and its siblings)
   - keep its structure and API as generated
@@ -166,8 +172,8 @@ src/
   - `criteria-1` to `criteria-8`, each with its `-on` pair
 - Themes: the app has one theme (light). Do not add a theme without a task for it.
 - Typography: one font family set and one fixed scale of text roles, defined once and reused. No one-off sizes.
-  - Fonts: Khand for headings and General Sans for everything else, from the files in `src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
-  - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/TASKS.md` §4.2.
+  - Fonts: Khand for headings and General Sans for everything else, from the files in `frontend/src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
+  - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/archive/TASKS.md` §4.2.
   - Minimum sizes: 14px for body text, inputs and buttons.
   - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
 - Spacing and sizing: the Tailwind spacing scale only. Same element, same size everywhere (one button height per size variant, one input height, one card padding).
@@ -175,7 +181,7 @@ src/
 
 **Responsive**
 
-- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The JS sidebar thresholds match them (767 and 1023, `src/hooks/useSidebarState.js`).
+- Mobile-first. Breakpoints: Tailwind defaults `sm` 640, `md` 768, `lg` 1024, `xl` 1280. The JS sidebar thresholds match them (767 and 1023, `frontend/src/hooks/useSidebarState.js`).
 - Every screen must work at 375 (phone), 768 (tablet), 1024 (laptop), and 1440 (desktop) wide:
   - no horizontal scroll
   - no clipped or overlapping content
@@ -213,12 +219,13 @@ src/
   - opens, merges or closes a pull request. A person opens every PR, and the owner reviews and merges it (`docs/TEAM_WORKFLOW.md` §9, decision 6)
   - deletes a branch
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
+- **`docs/archive/` is finished work** (the clean-up's plan, report and screenshots), kept for the record. Don't read or search it unless the owner or the task names a file in it. `.ignore` and `.cursorignore` keep it out of search tools that read them.
 - When resuming in a new session, read `SPEC.md`, the `spec/` files its "Where things are" table lists for the task, this file, and the task's block on `docs/BOARD.md` first.
 
 ## 9. Definition of done for any task
 
 1. The task's "Done when" on `docs/BOARD.md` is met.
-2. Lint, format check, build, and tests pass. New logic in `src/lib/` or `src/services/` has tests.
+2. Lint, format check, build, and tests pass. New logic in `frontend/src/lib/` or `frontend/src/services/` has tests.
 3. Behaviour changes only as the task describes; any screen touched was checked at 375, 768, 1024, and 1440.
 4. `SPEC.md` describes any feature or behaviour the task added or changed (section 2).
 5. No rule in sections 5 to 7 is newly broken.

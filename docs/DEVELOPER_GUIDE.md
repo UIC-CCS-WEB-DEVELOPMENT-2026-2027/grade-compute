@@ -20,12 +20,12 @@ you which file answers which question, and how the pieces fit.
 
 ## 2. Setting up
 
-Follow "Getting Started" in `README.md`: Node.js 20.19+ or 22.12+, then `npm install` and
-`npm run dev`.
+Follow "Getting Started" in `README.md`: Node.js 20.19+ or 22.12+, then, in `frontend/`,
+`npm install` and `npm run dev`. The React app lives in `frontend/`: run every `npm` command there.
 
 Then set your editor to format with the project's Prettier on save. Use the Prettier extension;
-it picks up `.prettierrc.json` by itself. This matters for merge conflicts: if everyone formats the
-same way, nobody's commit rewrites someone else's lines.
+it picks up `frontend/.prettierrc.json` by itself. This matters for merge conflicts: if everyone
+formats the same way, nobody's commit rewrites someone else's lines.
 
 ## 3. A task from start to finish
 
@@ -53,13 +53,13 @@ pick another task.
 **3. Branch out:** `git switch -c Lastname_feat-sandbox-copy`.
 
 **4. Work inside your areas.** Only change the folders listed in your task's Areas. Need a shared
-file (a token in `src/index.css`, a route in `App.jsx`, a new dependency, a data change)? Check
-`TEAM_WORKFLOW.md` §5. Some of those need a lock or a small PR of their own first.
+file (a token in `frontend/src/index.css`, a route in `App.jsx`, a new dependency, a data
+change)? Check `TEAM_WORKFLOW.md` §5. Some of those need a lock or a small PR of their own first.
 
 **5. Bring in `main` every day you work:** `git fetch origin` then `git merge origin/main`.
 
-**6. Before every commit:** `npm run format`. Before opening the PR: `npm run lint`,
-`npm run format:check`, `npm run build`, `npm test`. All four must pass.
+**6. Before every commit:** `npm run format` (in `frontend/`). Before opening the PR:
+`npm run lint`, `npm run format:check`, `npm run build`, `npm test`. All four must pass.
 
 **7. Open the PR.** Set your task's State to `done in PR #<n>` in the PR's last commit. Say which
 task it closes and which screen widths you checked (375, 768, 1024, 1440). Keep it small.
@@ -135,9 +135,9 @@ The full list is in `AGENTS.md` §5–7. These are the ones broken most often:
   `type-body`, `type-small`, `type-caption`. Not `text-sm` or `font-bold` on their own.
 - **Use shadcn/ui** (`@/components/ui/…`) for buttons, inputs, dialogs, cards and so on. Never build
   your own button. New shadcn components are added with the shadcn CLI.
-- **No new `.css` files.** `src/index.css` is the only stylesheet.
-- **Grade maths lives in `src/lib/`** as pure functions. Components call them; components never
-  calculate grades themselves.
+- **No new `.css` files.** `frontend/src/index.css` is the only stylesheet.
+- **Grade maths lives in `frontend/src/lib/`** as pure functions. Components call them;
+  components never calculate grades themselves.
 - **Named exports and `@/` imports:** `export function Foo()` and `import { Foo } from "@/…"`.
   No `export default`, no `../../`.
 - **Don't change wording, grade calculations or the stored data shape** unless your task says so.
@@ -152,7 +152,7 @@ The full list is in `AGENTS.md` §5–7. These are the ones broken most often:
 | --- | --- |
 | My claim push was rejected | `git pull --rebase`, then push again. A conflict on your State line means someone else got the task first (§3, step 2) |
 | Merge conflict in my feature branch | Resolve it, then run format, lint, build and tests again. If it's in someone else's area, ask them how their side should look |
-| Conflict in `package-lock.json` | Don't edit it by hand. Take `main`'s copy, run `npm install`, commit the result (`TEAM_WORKFLOW.md` §5) |
+| Conflict in `frontend/package-lock.json` | Don't edit it by hand. Take `main`'s copy, run `npm install` in `frontend/`, commit the result (`TEAM_WORKFLOW.md` §5) |
 | Lint or format check fails | Run `npm run format` first, then read the lint message. It usually names the rule |
 | The AI's code doesn't fit the project | Check you pasted the whole context pack. Then reply with the rule number it broke and ask for the full file again |
 | Two tasks need the same file | Talk to each other. Usually one person lands a small PR first, and the other builds on it |
@@ -166,7 +166,7 @@ The full list is in `AGENTS.md` §5–7. These are the ones broken most often:
 | **Area** | A group of folders that belongs to one feature (`TEAM_WORKFLOW.md` §4). Tasks in different areas can run side by side |
 | **Claim** | Marking a task as yours on the board, by pushing a one-line change to `main` |
 | **Lock** | A claim on a shared file that only one person may change at a time (data shape, dependencies, SPEC) |
-| **Token** | A named design value in `src/index.css` (a colour, size or shadow) that components use instead of raw values |
+| **Token** | A named design value in `frontend/src/index.css` (a colour, size or shadow) that components use instead of raw values |
 | **Text role** | One of the `type-*` classes that set font, size and line height together |
 | **Context pack** | The file you paste into a chat AI so it knows this project |
 | **Owner** | The project owner, Jun Mari Manla, who approves tasks and SPEC changes and reviews and merges every PR |
