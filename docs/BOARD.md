@@ -330,6 +330,41 @@ owner makes its decisions during implementation.
 - Spec: WCAG 2.2 SC 2.4.2 Page Titled (Level A); React's `<title>` docs (react.dev/reference/react-dom/components/title). Every screen today is titled "CompuGrade"
 - Done when: each page renders its own `<title>` (for example "Grade Rules · CompuGrade"), with only one `<title>` rendered at once, in a pattern agreed with the owner and T-16; a test checks the titles
 
+### T-JM-30 · A visible focus ring everywhere
+
+- State: todo
+- Areas: shared (frontend/src/index.css, rule file), frontend/src/components/ui/, history (frontend/src/components/history-chart/), grade-rules
+- Spec: docs/ACCESSIBILITY_AUDIT.md AX1, AX2, AX3, AX11 (T-JM-12); WCAG 2.2 SC 1.4.11, 2.4.7, 4.1.2. Owner request, 2026-11-29. The ring colour is the owner's choice (the audit suggests `--primary`). The token change goes in its own small PR first
+- Done when: the `--ring` and `--sidebar-ring` tokens are opaque with at least 3:1 against the card, the page background and the sidebar, and the shadcn components use them at full strength; a focused input keeps a visible border; tab panels (`TabsContent`) show the ring when focused; the history charts have no silent tab stop (the accessibility layer off with `role="img"` on the wrapper, or kept with a visible ring if the arrow keys show the tooltip); the rule pie chart has no tab stop (`rootTabIndex={-1}`); every screen checked by keyboard at 375, 768, 1024 and 1440
+
+### T-JM-31 · Focus and scroll after changing page
+
+- State: todo
+- Areas: frontend/src/app/ (App.jsx is a rule file), frontend/src/pages/, layout
+- Spec: docs/ACCESSIBILITY_AUDIT.md AX5 (T-JM-12); WCAG 2.2 SC 2.4.3. Owner request, 2026-11-29. The audit's AX4 (page titles) is T-JM-22
+- Done when: after a route change the page scrolls to the top, unless `?task=` asks for a task, and focus moves to the page's `h1` (`tabIndex={-1}`) so a screen reader reads it out; one small component in `frontend/src/app/` does it; a test covers the scroll, the `?task=` case and the focus; every screen checked at 375, 768, 1024 and 1440
+
+### T-JM-32 · Form purposes and linked score errors
+
+- State: todo
+- Areas: settings, term-records, sandbox
+- Spec: docs/ACCESSIBILITY_AUDIT.md AX6, AX15 (T-JM-12); WCAG 2.2 SC 1.3.5, 1.3.1. Owner request, 2026-11-29
+- Done when: Settings' Account fields set `autocomplete="name"`, `"email"` and `"username"` (Student ID, program and year level stay as they are); a wrong score box in Current Term Records and in the sandbox points to its message with `aria-describedby`, as Add subject does; tests cover both
+
+### T-JM-33 · Layout fixes: reflow, sticky header and touch targets
+
+- State: todo
+- Areas: term-records, layout, auth, grade-rules, settings, shared (frontend/src/index.css, rule file, for a header-height token)
+- Spec: docs/ACCESSIBILITY_AUDIT.md AX7, AX9, AX10 (T-JM-12); WCAG 2.2 SC 1.4.10, 2.4.11, 2.5.8; `AGENTS.md` §7 (44px targets). Owner request, 2026-11-29
+- Done when: Subject Detail doesn't scroll sideways at 320 pixels (the breakdown button's label wraps); a focused item is never scrolled under the sticky header on phones (`scroll-padding-top` from a header-height token); "Show password", "Add a criterion", a criterion's percentage box and the Notifications switches reach 44 pixels on phone and tablet with the `tap:` sizes; every screen touched checked at 320, 375, 768, 1024 and 1440
+
+### T-JM-34 · Headings and small text
+
+- State: todo
+- Areas: layout, settings, sandbox, subjects, term-records, auth
+- Spec: docs/ACCESSIBILITY_AUDIT.md AX8, AX12, AX13, AX14 (T-JM-12); WCAG 2.2 SC 1.3.1, 1.4.3; `AGENTS.md` §7 (the `caption` role). Owner request, 2026-11-29
+- Done when: each signed-in page has one `h1`, its own title (the header's greeting becomes a `p` with the same look); Settings' row titles are `h3`; the sandbox's step numbers aren't read into their headings; the decorative "•" and "·" separators are `aria-hidden`; the text the audit lists in AX12 uses `type-small` instead of `caption`; the Account Actions description meets 4.5:1; every screen touched checked at 375, 768, 1024 and 1440
+
 ## shared
 
 ### T-14 · Gauge enhancements
