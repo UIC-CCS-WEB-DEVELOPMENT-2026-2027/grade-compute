@@ -434,7 +434,7 @@ owner makes its decisions during implementation.
 
 ### T-JM-14 · Move the React app into frontend/
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_refactor-frontend-folder
+- State: done in PR #134
 - Areas: everything (the whole React app moves), tooling, .claude/, AGENTS.md §4–5, docs/TEAM_WORKFLOW.md §4, README.md, docs/DEVELOPER_GUIDE.md
 - Spec: docs/LARAVEL_PLAN.md §1.3, §5 step 1. First of the back-end tasks
 - Done when: the React app (`src/`, `public/`, `index.html`, `package.json`, `package-lock.json`, the Vite, ESLint, Prettier and `components.json` configs, `scripts/`) is in `frontend/` in one moves-only commit; a second commit fixes the paths in CI, `.claude/`, `AGENTS.md` §4–5, `docs/TEAM_WORKFLOW.md` §4, the README and `docs/DEVELOPER_GUIDE.md`, and adds Axios to `AGENTS.md` §4's approved list; docs, the spec, `AGENTS.md`, `CLAUDE.md`, `.claude/` and `.github/` stay at the root; lint, format check, build, tests and screenshots run from `frontend/`. Do it when no other task branch is open, because the move touches every file
