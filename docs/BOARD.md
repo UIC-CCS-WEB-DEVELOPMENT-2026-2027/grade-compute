@@ -268,7 +268,7 @@ owner makes its decisions during implementation.
 
 ### T-JM-12 · Accessibility audit
 
-- State: proposed
+- State: todo
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
 - Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding
@@ -312,7 +312,7 @@ owner makes its decisions during implementation.
 
 ### T-24 · Recover from unreadable stored data
 
-- State: proposed
+- State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
 - Areas: shared (src/services/db.js), auth
 - Spec: docs/ERROR_HANDLING_REVIEW.md E1, E2, E3 (T-21); AUDIT §12. Changes what the student sees (F1, F15 in `SPEC.md`) and stored data (a backup key), so it needs LOCK-data and `SPEC.md` §5 through its protocol
 - Done when: stored data that can't be used is copied to a backup key and the student sees a recovery screen with "Start again with fresh data" (after a confirmation) instead of the login page; upgraded data is still returned when its write-back fails; blocked storage gets its own message on the login page. Wording agreed with the owner
@@ -333,7 +333,7 @@ owner makes its decisions during implementation.
 
 ### T-29 · Other tabs stay in sync
 
-- State: proposed
+- State: dropped: it only fixes `localStorage`; the back end starts with fresh data and there are no real users (owner decision, 2026-11-28)
 - Areas: shared (src/hooks/useDb.js)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
 - Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
