@@ -1,0 +1,19 @@
+# Checks the dependencies for updates and security fixes every week and opens
+# a pull request for each (OWASP A03:2025, Software Supply Chain Failures).
+# A person reviews and merges each one, like any other PR.
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: /frontend
+      schedule:
+          interval: weekly
+
+    - package-ecosystem: composer
+      directory: /backend
+      schedule:
+          interval: weekly
+
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
