@@ -39,7 +39,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-27 · Damaged records don't crash screens
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_fix-damaged-records
 - Areas: layout (Sidebar), term-records (frontend/src/lib/grades.js)
 - Spec: docs/ERROR_HANDLING_REVIEW.md E7, E8 (T-21); AUDIT §12
 - Done when: the Sidebar treats a missing `studentRecords` or `subjects` list as empty, `toTaskList` drops task entries that aren't objects, and tests cover each damaged shape in the review's §4
