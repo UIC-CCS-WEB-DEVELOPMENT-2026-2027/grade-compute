@@ -295,6 +295,13 @@ owner makes its decisions during implementation.
 - Spec: docs/ACCESSIBILITY_PLAN.md; F21 in `spec/features.md` through the protocol
 - Done when: to be specified with the owner, one option at a time
 
+### T-JM-22 · A title for every page
+
+- State: proposed
+- Areas: frontend/src/pages/; coordinate with T-16 (the page title is branding, AGENTS.md §3)
+- Spec: WCAG 2.2 SC 2.4.2 Page Titled (Level A); React's `<title>` docs (react.dev/reference/react-dom/components/title). Every screen today is titled "CompuGrade"
+- Done when: each page renders its own `<title>` (for example "Grade Rules · CompuGrade"), with only one `<title>` rendered at once, in a pattern agreed with the owner and T-16; a test checks the titles
+
 ## shared
 
 ### T-14 · Gauge enhancements
@@ -353,6 +360,34 @@ owner makes its decisions during implementation.
 - Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
 - Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
 
+### T-JM-18 · Lazy-load the pages
+
+- State: proposed
+- Areas: frontend/src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5)
+- Spec: React's `lazy` docs (react.dev/reference/react/lazy). After T-JM-14 and T-25. The build today is one 1.1 MB JavaScript file (331 kB gzipped), and the login page downloads Recharts and every screen
+- Done when: each page in `App.jsx` loads with `React.lazy` (named exports kept through `.then((m) => ({ default: m.X }))`) behind a `<Suspense>` fallback; a chunk that fails to load (for example after a new deploy) reaches T-25's error boundary with "Reload"; the login page no longer downloads Recharts; the build has no chunk over 500 kB; the size before and after is in the PR
+
+### T-JM-19 · Smaller fonts that show text while loading
+
+- State: proposed
+- Areas: frontend/src/assets/, frontend/src/index.css (rule file)
+- Spec: AGENTS.md §7 (Khand and General Sans only). After T-JM-14. Khand is a 347 kB TTF and General Sans Regular a 46 kB OTF; no `@font-face` sets `font-display`
+- Done when: every font file is WOFF2 (from the font's own source where it ships one, or converted where its licence allows; the conversion tool is not added to `package.json`); every `@font-face` sets `font-display: swap`; the fonts look the same at all four widths; the sizes before and after are in the PR
+
+### T-JM-20 · Empty states on every screen
+
+- State: proposed
+- Areas: shared (one pattern) first, then each screen's area, one PR per area
+- Spec: SPEC.md §7 (UX principles); NN/g "Empty states in complex applications". Wording goes in `SPEC.md` through its protocol. Becomes urgent with the back end: a newly registered API account starts with no data on every screen
+- Done when: every list and screen is checked for three cases (never had data, no results, failed to load), against the full NN/g article; each one says what's happening and offers the next step, using shadcn's `Empty`; a new account with no data is usable on every screen; the findings and the wording are agreed with the owner before the per-area PRs
+
+### T-JM-21 · A "Not found" page
+
+- State: proposed
+- Areas: frontend/src/app/ (`App.jsx` is a rule file), frontend/src/pages/
+- Spec: docs/LARAVEL_PLAN.md §7 (the 404 case). Its wording goes in `SPEC.md` through its protocol. Today unknown URLs quietly redirect to `/` (`App.jsx`, the `path="*"` route)
+- Done when: an unknown URL shows a "Not found" page with a way back (the Dashboard when signed in, the login page otherwise), and the same page is used when the API answers 404 for a record
+
 ## tooling
 
 ### T-17 · Line endings: .gitattributes
@@ -396,6 +431,27 @@ owner makes its decisions during implementation.
 - Areas: docs/defense/, .claude/skills/defense-update/
 - Spec: owner decision, 2026-11-27 (the CC013.23 Code Defense standard; docs/LARAVEL_PLAN.md §8). No spec change. After T-JM-14
 - Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
+
+### T-JM-23 · End-to-end tests with Playwright
+
+- State: blocked: approved by the owner (2026-11-28); waits for the React app to use the API (T-JM-6)
+- Areas: tooling (a Playwright test folder, `.github/`)
+- Spec: CC013.23 (Playwright E2E, CO2); docs/BEHAVIOUR_CHECKLIST.md. Playwright is already approved (AGENTS.md §4)
+- Done when: Playwright tests cover the main flows against the local API (register, sign in, add a subject, enter a score, see the grade change, sign out), run in CI next to the other checks, and cover the checklist items that can be automated
+
+### T-JM-24 · Performance budget in CI
+
+- State: blocked: approved by the owner (2026-11-28); waits for T-JM-18, T-JM-19 and the API (T-JM-6)
+- Areas: tooling (`scripts/`, `.github/`)
+- Spec: web.dev Core Web Vitals (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1); the numbers from T-JM-25
+- Done when: CI fails when the main JavaScript chunk or the total font size grows past a budget the owner sets from T-JM-25's numbers, using a script with no new dependency; Lighthouse CI is added only if the owner approves it as a dependency
+
+### T-JM-25 · Measure load performance
+
+- State: proposed
+- Areas: docs/
+- Spec: web.dev Core Web Vitals. Read-only. The figures so far come only from `npm run build`; no load time has been measured
+- Done when: LCP, INP and CLS are measured with Lighthouse in Chrome DevTools (no new dependency) on `npm run preview` at 375 and 1440 wide, for the login page, the Dashboard and Subject Detail, before and after T-JM-18 and T-JM-19, and written up in `docs/` with the budget to propose for T-JM-24
 
 ---
 
