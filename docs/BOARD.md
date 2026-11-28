@@ -205,7 +205,7 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: backend/ (auth)
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B3), §7; F1, F15; spec/api.md; replaces T-11 and T-13
-- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record; every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, and a 500 shows no details outside Laravel's log; Pest tests cover each
+- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record, and the tests try every role against every kind of record (OWASP A01:2025, Broken Access Control); every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, and a 500 shows no details outside Laravel's log; Pest tests cover each
 
 ### T-JM-5 · Student endpoints
 
@@ -219,7 +219,7 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: shared (frontend/src/services/, frontend/src/hooks/useDb.js), then each screen's area
 - Spec: docs/LARAVEL_PLAN.md §2, §7; spec/api.md
-- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
+- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; loading states follow one convention: shadcn's `Skeleton` for layouts whose shape is known (tables, cards, charts) and a pending button or spinner for actions, checked against the full NN/g skeleton-screens article; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
 
 ### T-JM-7 · Bring over browser data
 
@@ -233,21 +233,28 @@ T-JM-3 to T-JM-5, which follow in order.
 - State: proposed
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
 - Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
-- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
+- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; `vercel.json` also sets security headers: a `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff` and a `Referrer-Policy`, where the CSP's `style-src` allows shadcn's chart `<style>` and the inline accent-colour variables (`'unsafe-inline'` or hashes, decided in this task); the API runs with `APP_DEBUG=false` and `php artisan optimize` on every deploy (OWASP A02:2025, Security Misconfiguration); the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ### T-JM-16 · Back-end spec drafts
 
 - State: todo
 - Areas: docs/proposals/
 - Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
-- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). Each draft starts with its open questions, each with a recommended answer (B5 among them). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
+- Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer. Among them: B5; what the student sees while a sleeping host wakes up (a free host can take about a minute: a "Starting the server…" state, a longer timeout and an automatic retry); where uploaded files such as profile photos are kept, since a host's disk can be wiped on every redeploy (a size-limited database column, or a file-storage service); and dates (stored in UTC, shown in Manila time, UTC+8, sent as ISO 8601). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
 
 ### T-JM-17 · Backend scaffold
 
 - State: todo
 - Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
 - Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
-- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd); `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
+- Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; CI also runs `npm audit` and `composer audit`, and `.github/dependabot.yml` checks npm, Composer and GitHub Actions (OWASP A03:2025, Software Supply Chain Failures); `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd) and warns that every `VITE_*` variable is bundled into the browser's code, so the front end holds no keys; `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
+
+### T-JM-26 · Database backup plan
+
+- State: proposed
+- Areas: docs/, backend/ (only if the plan needs a scheduled export)
+- Spec: the hosted database's backup docs. TiDB Cloud Starter's free tier keeps automatic backups for 1 day, with no point-in-time restore
+- Done when: a backup plan in `docs/` says what is backed up, how often, where the copies are kept (never in the repository) and how long, and how a restore is tested once; it is agreed with the owner before T-JM-8 switches over
 
 ## roles
 
@@ -276,6 +283,13 @@ spec, and adds React screens and the API endpoints behind them.
 - Spec: F20; SPEC.md §1, §8; spec/roles/parent.md
 - Done when: the portal works as `spec/roles/parent.md` describes: a parent linked to a student sees that student's grades, read-only
 
+### T-JM-27 · Data privacy review and privacy notice
+
+- State: proposed
+- Areas: docs/proposals/, then a privacy-notice page (its area set by the review)
+- Spec: the Data Privacy Act of 2012 (RA 10173) and its IRR; NPC guidance for schools. Grades are likely sensitive personal information (a secondary source; to check against the law). Before the role workspaces (T-JM-9 to T-JM-11) and before any real user
+- Done when: a review in `docs/proposals/`, checked against the primary sources and with the professor or UIC's data protection officer, says what the Act asks of CompUGrade: the lawful basis, a privacy notice, showing each role only what it needs, how a parent–student link is verified, and what happens after a breach. Then the notice's wording goes into `SPEC.md` through its protocol, and the app shows it
+
 ## accessibility
 
 Built in the React app; it doesn't wait for the back end (`docs/ACCESSIBILITY_PLAN.md`). The
@@ -286,7 +300,7 @@ owner makes its decisions during implementation.
 - State: todo
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
-- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding
+- Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`), and whether form fields set `autocomplete` (`email`, `current-password`, `new-password`; WCAG 2.2 SC 1.3.5)
 
 ### T-JM-13 · Accessibility and reading preferences (F21)
 
@@ -294,6 +308,13 @@ owner makes its decisions during implementation.
 - Areas: settings, src/index.css (rule file), index.html (coordinate with T-16)
 - Spec: docs/ACCESSIBILITY_PLAN.md; F21 in `spec/features.md` through the protocol
 - Done when: to be specified with the owner, one option at a time
+
+### T-JM-22 · A title for every page
+
+- State: proposed
+- Areas: frontend/src/pages/; coordinate with T-16 (the page title is branding, AGENTS.md §3)
+- Spec: WCAG 2.2 SC 2.4.2 Page Titled (Level A); React's `<title>` docs (react.dev/reference/react-dom/components/title). Every screen today is titled "CompuGrade"
+- Done when: each page renders its own `<title>` (for example "Grade Rules · CompuGrade"), with only one `<title>` rendered at once, in a pattern agreed with the owner and T-16; a test checks the titles
 
 ## shared
 
@@ -353,6 +374,34 @@ owner makes its decisions during implementation.
 - Spec: docs/ERROR_HANDLING_REVIEW.md E10 (T-21); AUDIT §12
 - Done when: `useDb` also re-reads on the browser's `storage` event for `compugrade_db`, with a test
 
+### T-JM-18 · Lazy-load the pages
+
+- State: proposed
+- Areas: frontend/src/app/ (in no area today; `App.jsx` is a rule file, TEAM_WORKFLOW.md §5)
+- Spec: React's `lazy` docs (react.dev/reference/react/lazy). After T-JM-14 and T-25. The build today is one 1.1 MB JavaScript file (331 kB gzipped), and the login page downloads Recharts and every screen
+- Done when: each page in `App.jsx` loads with `React.lazy` (named exports kept through `.then((m) => ({ default: m.X }))`) behind a `<Suspense>` fallback; a chunk that fails to load (for example after a new deploy) reaches T-25's error boundary with "Reload"; the login page no longer downloads Recharts; the build has no chunk over 500 kB; the size before and after is in the PR
+
+### T-JM-19 · Smaller fonts that show text while loading
+
+- State: proposed
+- Areas: frontend/src/assets/, frontend/src/index.css (rule file)
+- Spec: AGENTS.md §7 (Khand and General Sans only). After T-JM-14. Khand is a 347 kB TTF and General Sans Regular a 46 kB OTF; no `@font-face` sets `font-display`
+- Done when: every font file is WOFF2 (from the font's own source where it ships one, or converted where its licence allows; the conversion tool is not added to `package.json`); every `@font-face` sets `font-display: swap`; the fonts look the same at all four widths; the sizes before and after are in the PR
+
+### T-JM-20 · Empty states on every screen
+
+- State: proposed
+- Areas: shared (one pattern) first, then each screen's area, one PR per area
+- Spec: SPEC.md §7 (UX principles); NN/g "Empty states in complex applications". Wording goes in `SPEC.md` through its protocol. Becomes urgent with the back end: a newly registered API account starts with no data on every screen
+- Done when: every list and screen is checked for three cases (never had data, no results, failed to load), against the full NN/g article; each one says what's happening and offers the next step, using shadcn's `Empty`; a new account with no data is usable on every screen; the findings and the wording are agreed with the owner before the per-area PRs
+
+### T-JM-21 · A "Not found" page
+
+- State: proposed
+- Areas: frontend/src/app/ (`App.jsx` is a rule file), frontend/src/pages/
+- Spec: docs/LARAVEL_PLAN.md §7 (the 404 case). Its wording goes in `SPEC.md` through its protocol. Today unknown URLs quietly redirect to `/` (`App.jsx`, the `path="*"` route)
+- Done when: an unknown URL shows a "Not found" page with a way back (the Dashboard when signed in, the login page otherwise), and the same page is used when the API answers 404 for a record
+
 ## tooling
 
 ### T-17 · Line endings: .gitattributes
@@ -396,6 +445,27 @@ owner makes its decisions during implementation.
 - Areas: docs/defense/, .claude/skills/defense-update/
 - Spec: owner decision, 2026-11-27 (the CC013.23 Code Defense standard; docs/LARAVEL_PLAN.md §8). No spec change. After T-JM-14
 - Done when: `docs/defense/` has a README (a status table and who owns what), `architecture.md` (the three tiers mapped to real files), `features/<feature>.md` (one per feature folder, plus the grade maths in `src/lib/`), `glossary.md`, `ai-log.md` and `rehearsal/<prelim|midterm|final>.md`. Each chapter records "Last checked against: <sha>" and "Covers: <paths>", and follows the template: what it does, where the code is, an end-to-end trace of one action, decisions and why, likely questions with bullet-point answers, security and QA notes, AI provenance, and a self-check. Every claim links to the file it describes. A Claude Code skill in `.claude/skills/defense-update/` updates the guide when a major feature is merged or a defense is 1–2 weeks away
+
+### T-JM-23 · End-to-end tests with Playwright
+
+- State: blocked: approved by the owner (2026-11-28); waits for the React app to use the API (T-JM-6)
+- Areas: tooling (a Playwright test folder, `.github/`)
+- Spec: CC013.23 (Playwright E2E, CO2); docs/BEHAVIOUR_CHECKLIST.md. Playwright is already approved (AGENTS.md §4)
+- Done when: Playwright tests cover the main flows against the local API (register, sign in, add a subject, enter a score, see the grade change, sign out), run in CI next to the other checks, and cover the checklist items that can be automated
+
+### T-JM-24 · Performance budget in CI
+
+- State: blocked: approved by the owner (2026-11-28); waits for T-JM-18, T-JM-19 and the API (T-JM-6)
+- Areas: tooling (`scripts/`, `.github/`)
+- Spec: web.dev Core Web Vitals (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1); the numbers from T-JM-25
+- Done when: CI fails when the main JavaScript chunk or the total font size grows past a budget the owner sets from T-JM-25's numbers, using a script with no new dependency; Lighthouse CI is added only if the owner approves it as a dependency
+
+### T-JM-25 · Measure load performance
+
+- State: proposed
+- Areas: docs/
+- Spec: web.dev Core Web Vitals. Read-only. The figures so far come only from `npm run build`; no load time has been measured
+- Done when: LCP, INP and CLS are measured with Lighthouse in Chrome DevTools (no new dependency) on `npm run preview` at 375 and 1440 wide, for the login page, the Dashboard and Subject Detail, before and after T-JM-18 and T-JM-19, and written up in `docs/` with the budget to propose for T-JM-24
 
 ---
 
