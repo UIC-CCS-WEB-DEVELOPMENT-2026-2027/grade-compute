@@ -36,7 +36,7 @@ Rules around the protocol:
 
 ## 3. Scope
 
-The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `docs/REFACTOR_REPORT.md`). Work now comes from tasks on `docs/BOARD.md`, done as `docs/TEAM_WORKFLOW.md` describes.
+The codebase and UI clean-up is finished (PR #118, follow-ups in PR #119; see `docs/archive/REFACTOR_REPORT.md`). Work now comes from tasks on `docs/BOARD.md`, done as `docs/TEAM_WORKFLOW.md` describes.
 
 **Allowed, inside the task you were given and its Areas on `docs/BOARD.md`:**
 
@@ -69,7 +69,7 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 | Lint | `npm run lint` (ESLint 10 flat config, `frontend/eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
 | Format | `npm run format` / `npm run format:check` (Prettier 3, `frontend/.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
 | Test | `npm test` (Vitest 5, React Testing Library, jsdom). Unit and characterization tests next to the code (`*.test.js(x)`, 19 files, 369 tests at the end of the clean-up); helpers in `frontend/src/test/`. The date is frozen at 2026-11-11 |
-| Screenshots | `npm run screenshots [outDir]` (Playwright, `frontend/scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440; `outDir` is relative to the repository root). Before the clean-up in `docs/baseline/`, after it in `docs/after/`; manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
+| Screenshots | `npm run screenshots [outDir]` (Playwright, `frontend/scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440; `outDir` is relative to the repository root, default `docs/screenshots/`, which git ignores). The clean-up's shots are in `docs/archive/baseline/` (before) and `docs/archive/after/` (after); manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
 | Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `frontend/src/app/App.jsx`. `frontend/src/app/RequireStudent.jsx` guards every route except `/` |
 | State management | React local state per component. Components read the database with `useDb` (`frontend/src/hooks/useDb.js`), which re-reads on the `compugrade-db-updated` window event that `saveDb` sends. The sidebar's minimised state is a `useSyncExternalStore` module store (`frontend/src/hooks/useSidebarState.js`). No state library |
 | Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`, schema v2), seeded from `frontend/src/services/db.json` through `frontend/src/services/db.js`; schema-v1 data is upgraded by `frontend/src/services/migrations.js`. Grade computation lives in `frontend/src/lib/` |
@@ -80,7 +80,7 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 ## 5. File structure
 
-The layout the code follows (set up in the clean-up, `docs/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
+The layout the code follows (set up in the clean-up, `docs/archive/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
 
 ```
 frontend/         The React app. Run npm and npx commands here
@@ -173,7 +173,7 @@ frontend/         The React app. Run npm and npx commands here
 - Themes: the app has one theme (light). Do not add a theme without a task for it.
 - Typography: one font family set and one fixed scale of text roles, defined once and reused. No one-off sizes.
   - Fonts: Khand for headings and General Sans for everything else, from the files in `src/assets/`. No other font (Arial and any font a tool adds are removed). Missing weights of these two families may be added as font files (owner decision, Gate 3).
-  - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/TASKS.md` §4.2.
+  - Roles: `display` (the login hero only), `page-title`, `section-title`, `card-title`, `body`, `small`, `caption`. `display` and `card-title` were added at Gate 3. Sizes are in `docs/archive/TASKS.md` §4.2.
   - Minimum sizes: 14px for body text, inputs and buttons.
   - The `caption` role is 12px. Use it only for chart axes, badges and eyebrow labels.
 - Spacing and sizing: the Tailwind spacing scale only. Same element, same size everywhere (one button height per size variant, one input height, one card padding).
@@ -219,6 +219,7 @@ frontend/         The React app. Run npm and npx commands here
   - opens, merges or closes a pull request. A person opens every PR, and the owner reviews and merges it (`docs/TEAM_WORKFLOW.md` §9, decision 6)
   - deletes a branch
 - Stop and ask when: the task is ambiguous, it would change something the task doesn't describe, it conflicts with `SPEC.md`, it needs a new dependency, it needs a file outside its Areas, or you found a bug.
+- **`docs/archive/` is finished work** (the clean-up's plan, report and screenshots), kept for the record. Don't read or search it unless the owner or the task names a file in it. `.ignore` and `.cursorignore` keep it out of search tools that read them.
 - When resuming in a new session, read `SPEC.md`, the `spec/` files its "Where things are" table lists for the task, this file, and the task's block on `docs/BOARD.md` first.
 
 ## 9. Definition of done for any task

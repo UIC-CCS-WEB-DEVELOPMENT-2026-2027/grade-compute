@@ -1,4 +1,4 @@
-/* Tailwind CSS v4 with its preflight reset (turned on in docs/TASKS.md
+/* Tailwind CSS v4 with its preflight reset (turned on in docs/archive/TASKS.md
    T7.P). Cascade layers, lowest priority first: theme, base, components,
    utilities. Anything not in a layer still beats every layer. */
 @import "tailwindcss" source(none);
@@ -115,7 +115,7 @@
     --font-heading: "Khand", sans-serif;
     --font-body: "General Sans", sans-serif;
 
-    /* New design tokens (docs/TASKS.md section 4, T4.5). Approved values.
+    /* New design tokens (docs/archive/TASKS.md section 4, T4.5). Approved values.
        Tokens that already existed keep today's values until T7.0a. */
     --card-foreground: #2c2c2c;
     --popover: #ffffff;
@@ -139,7 +139,7 @@
     --radius: 0.5rem;
 
     /* Sidebar widths (310px expanded, 76px minimised) */
-    /* The sidebar (shadcn Sidebar, TASKS.md section 3.2): yellow, with the
+    /* The sidebar (shadcn Sidebar, docs/archive/TASKS.md section 3.2): yellow, with the
        42% white tint of today's active item, and today's border. */
     --sidebar: #fff799;
     --sidebar-foreground: #2c2c2c;
@@ -224,7 +224,7 @@
        draft rows). */
     --shadow-row-active: inset 3px 0 0 var(--primary);
 
-    /* One size per control (docs/TASKS.md 4.3): h-control, size-control,
+    /* One size per control (docs/archive/TASKS.md 4.3): h-control, size-control,
        and the 44px touch size for phones and tablets (Phase 8). */
     --spacing-control: 2.5rem;
     --spacing-control-sm: 2rem;
@@ -426,7 +426,7 @@
     }
 }
 
-/* Text roles (AGENTS.md section 7, docs/TASKS.md 4.2). Each role sets its
+/* Text roles (AGENTS.md section 7, docs/archive/TASKS.md 4.2). Each role sets its
    font, weight, size and line height, with the phone size first. */
 @utility type-display {
     font-family: var(--font-heading);

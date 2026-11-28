@@ -12,6 +12,3 @@ skills-lock.json
 # Documents are written by hand. SPEC.md is protected (AGENTS.md section 2).
 *.md
 
-# Screenshots
-docs/baseline
-docs/after

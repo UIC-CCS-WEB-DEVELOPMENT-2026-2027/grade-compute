@@ -2,7 +2,7 @@
 
 ## Clean-up — `refactor/cleanup` (2026-11-11 to 2026-11-13)
 
-A codebase and UI clean-up. Grades, saved data and navigation behave as before. Details: `docs/REFACTOR_REPORT.md`.
+A codebase and UI clean-up. Grades, saved data and navigation behave as before. Details: `docs/archive/REFACTOR_REPORT.md`.
 
 ### Added
 
@@ -51,7 +51,7 @@ A codebase and UI clean-up. Grades, saved data and navigation behave as before. 
 
 ## Follow-ups — `refactor/follow-ups` (2026-11-13)
 
-The open items from the clean-up's final check (`docs/TASKS.md` §9). Behaviour unchanged.
+The open items from the clean-up's final check (`docs/archive/TASKS.md` §9). Behaviour unchanged.
 
 ### Changed
 

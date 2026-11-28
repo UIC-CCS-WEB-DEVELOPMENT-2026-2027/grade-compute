@@ -1,5 +1,5 @@
 // Characterization tests: these record what grades.js returns today,
-// right or wrong (docs/REFACTOR_WORKFLOW.md, Phase 2).
+// right or wrong (docs/archive/REFACTOR_WORKFLOW.md, Phase 2).
 import { describe, expect, it } from "vitest";
 import { FIXED_NOW_ISO } from "@/test/fixedDate.js";
 import { makeMixedRecord, makeSeedDb, makeStandardRule, makeTask } from "@/test/fixtures.js";

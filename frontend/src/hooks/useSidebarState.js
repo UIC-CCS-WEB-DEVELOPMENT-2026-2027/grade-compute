@@ -1,7 +1,7 @@
 // Whether the sidebar is minimized (icons only), shared by every page.
 // The shadcn SidebarProvider is controlled from it (AppSidebarProvider), so
 // the choice is remembered under the existing key instead of a cookie
-// (TASKS.md section 3.2, S1).
+// (docs/archive/TASKS.md section 3.2, S1).
 // - Screens 768px and wider: remembered in this browser. Until the student
 //   picks, it starts minimized on tablets (768–1023px) and open on wider
 //   screens.
