@@ -8,9 +8,10 @@ to the deployed back end. `AGENTS.md` holds the standing rules, `docs/BOARD.md` 
 because the owner is busy until the review sitting at CP3. Agents push their task branches; a
 person opens every PR and the owner merges it.
 
-**Status (2026-11-28):** A0 to A3 are done (PRs #128 to #130, and this file). Next: CP1.
+**Status (2026-11-29):** Block A is done (A0 to A9, PRs #128 to #144). Next: CP3.
 
-It can be archived when Block B is finished.
+**The full order of work is in "The full order" below**, including the tasks added while Block A
+ran. It is the one place to check what comes next. It can be archived when CP4 is finished.
 
 ---
 
@@ -36,6 +37,67 @@ It can be archived when Block B is finished.
 
 ---
 
+## The full order
+
+Everything from CP3 to the deployed back end. After CP3, two tracks run side by side:
+
+- **The back-end track** is one task at a time, in order.
+- **The front-end track** can run beside it, because its areas (the React screens) don't
+  overlap with B2 to B4. Its tasks finish before B5 moves the screens to the API, so the two
+  don't edit the same screens at once.
+
+Tasks marked *(CP3)* are `proposed`: the owner approves or rejects them at CP3, and their place
+here is the recommendation. Prompts and branch names are in the sections below.
+
+1. **✋ CP3:** the owner's review sitting, and T-JM-1 writes the spec.
+2. **Straight after CP3, before B2:**
+   - T-JM-29 · Back-end checks in the docs, so every Block B commit runs Pint and Pest.
+   - T-JM-28 · Replace the placeholder bio, so B2's seeders never copy it.
+   - T-JM-27 · Data privacy review *(CP3)*: the draft starts now. Anything it changes in what a
+     role may see goes into the spec, through `AGENTS.md` §2, before B3 builds the policies.
+3. **The back-end track:**
+   1. B2 · Database (T-JM-3)
+   2. B3 · Accounts (T-JM-4)
+   3. B4 · Student endpoints (T-JM-5), one resource at a time
+   4. T-JM-20 · Empty states on every screen *(CP3)*, before B5, so a new API account with no
+      data is usable
+   5. B5 · The React app uses the API (T-JM-6), one area at a time, with T-JM-21 · A "Not
+      found" page *(CP3)* (the API's 404 uses it)
+   6. B6 · Reading preferences (T-JM-13), after the accessibility tasks, so it builds on the
+      fixed focus ring and text sizes
+4. **The front-end track, alongside B2 to B4:**
+   1. B1 · The remaining error fixes: T-25, T-28, T-30, T-26
+   2. T-JM-25 · Measure load performance *(CP3)*: the "before" numbers come before T-JM-18
+      and T-JM-19
+   3. T-JM-30 · A visible focus ring: the token PR first, then the components
+   4. T-JM-32 · Form purposes and linked score errors
+   5. T-JM-33 · Layout fixes: the header-height token PR first, then the fixes
+   6. T-JM-34 · Headings and small text
+   7. T-JM-18 · Lazy-load the pages *(CP3)*, after T-25 (it needs the error boundary)
+   8. T-JM-31 · Focus and scroll after changing page, after T-JM-18
+   9. T-JM-19 · Smaller fonts *(CP3)*, then T-JM-25's "after" numbers
+5. **After B5:**
+   - T-JM-23 · Playwright end-to-end tests (approved; blocked until B5), written against the
+     finished accessibility fixes
+   - T-JM-24 · Performance budget in CI (approved; blocked until T-JM-18, T-JM-19 and B5)
+6. **Before CP4:** T-JM-26 · Database backup plan *(CP3)*.
+7. **✋ CP4:** hosting accounts, then T-JM-8 · deploy and switch over.
+
+**Shared files set the order inside the front-end track** (`docs/TEAM_WORKFLOW.md` §5):
+
+- `frontend/src/app/App.jsx` takes one change per PR, in this order: T-25 (error boundary),
+  T-JM-18 (lazy pages), T-JM-31 (focus and scroll), T-JM-21 (Not found).
+- A token in `frontend/src/index.css` goes in a small PR of its own, merged before the task
+  that uses it (T-JM-30's ring colour, T-JM-33's header height).
+
+**Outside this order:**
+
+- T-JM-22 · A title for every page goes with T-16 (branding has its own branch; the owner
+  schedules it).
+- The role workspaces (T-JM-9 to T-JM-11), features and TLA 1: see "Not in this roadmap".
+
+---
+
 ## Block A — automated
 
 | Task | What | Board | Status |
@@ -46,10 +108,10 @@ It can be archived when Block B is finished.
 | A3 | This file, and the push rule in `AGENTS.md` §8 | — | Done (this PR) |
 | A4 | Move the React app into `frontend/` | T-JM-14 | Done (PR #134) |
 | A5 | The Code Defense Guide and the `defense-update` skill | T-JM-15 | Done (PR #135) |
-| A6 | The error fixes that need no owner input | T-27, T-23, T-31 | After CP2 |
-| A7 | The backend scaffold | T-JM-17 | After CP2 |
-| A8 | The back-end spec drafts in `docs/proposals/` | T-JM-16 | After CP2 |
-| A9 | The accessibility audit (read-only) | T-JM-12 | After CP2 |
+| A6 | The error fixes that need no owner input, and T-32 (owner decision, 2026-11-28) | T-27, T-23, T-31, T-32 | Done (PRs #138 to #141) |
+| A7 | The backend scaffold | T-JM-17 | Done (PR #142) |
+| A8 | The back-end spec drafts in `docs/proposals/` | T-JM-16 | Done (PR #143) |
+| A9 | The accessibility audit (read-only) | T-JM-12 | Done (PR #144) |
 
 ---
 
@@ -164,32 +226,67 @@ Three tasks, so three sessions, branches and PRs. Run them in this order.
 
 ## ✋ CP3 — the owner's review sitting
 
-Merge A5 to A9 as they finish. Then, in one sitting:
+A5 to A9 are merged. The sitting covers:
 
-1. **Answer the open questions** at the top of each A8 draft (B5 among them).
-2. **Approve the spec changes (T-JM-1).** Each one goes through `AGENTS.md` §2 in its two
-   steps. Paste:
+1. **The open questions:** the 37 in `docs/proposals/README.md` (B5 among them).
+2. **The spec (T-JM-1):** the full scope, the three role specs in full, the data model and
+   the API, written into `SPEC.md` and `spec/` one change at a time, each through `AGENTS.md`
+   §2 in its two steps.
+3. **The wording** for T-25, T-28 and T-30. It goes into `SPEC.md` later, in their own tasks.
+4. **The photo size limit** for T-26 (D3 recommends resizing to 256 px with a 300 KB cap).
+5. **The focus-ring colour** for T-JM-30 (the audit suggests `--primary`).
+6. **The *(CP3)* tasks** in "The full order": approve or reject each, and confirm its place.
 
-   > Read `AGENTS.md` and `docs/ROADMAP.md`, the drafts in `docs/proposals/` with my answers,
-   > and T-JM-1 on `docs/BOARD.md`. Claim T-JM-1 for June-05 on branch
-   > `Manla_docs-backend-spec`. Write the approved drafts into `SPEC.md` and `spec/` in the
-   > order `docs/LARAVEL_PLAN.md` §3 gives, one change at a time, through the protocol in
-   > `AGENTS.md` §2: propose, wait for my approval, confirm, wait for my second yes, then
-   > edit and log it in `SPEC.md` §11. Push the branch and stop with a summary.
+Paste this in a new session. If the session ends before everything is done, paste it again in
+the next one: the recorded answers and `SPEC.md` §11 show where to resume.
 
-3. **Approve the wording** for T-25, T-28 and T-30. They go into `SPEC.md` through the same
-   protocol, in their own tasks.
-4. **Decide the photo size limit** for T-26.
-5. **Approve or reject the proposed web-practice tasks** (T-JM-18 to T-JM-22 and T-JM-25 to
-   T-JM-27) and say where each one fits (see "Also on the board" below).
+> Read `AGENTS.md`, `SPEC.md` and every file in `spec/`, `docs/ROADMAP.md` (CP3 and "The full
+> order"), `docs/LARAVEL_PLAN.md` §3, every draft in `docs/proposals/`, and T-JM-1 on
+> `docs/BOARD.md`. This is CP3, my review sitting. Work in the four parts below, in order, and
+> stop for my answer at every question. For this PR I approve changes to `docs/proposals/`,
+> `docs/BOARD.md` and `docs/ROADMAP.md` as described below, outside T-JM-1's Areas.
+>
+> 1. **Claim.** If T-JM-1 isn't claimed yet, claim T-JM-1 and LOCK-spec for June-05 on `main`
+>    as `docs/TEAM_WORKFLOW.md` §3 and §5 describe, then create the branch
+>    `Manla_docs-backend-spec` from that `main`. If they are, check out the branch and resume
+>    where the recorded answers and `SPEC.md` §11 stop.
+> 2. **The open questions.** Take me through the 37 open questions in
+>    `docs/proposals/README.md` one draft at a time, in the order of `docs/LARAVEL_PLAN.md` §3
+>    (scope, professor, administrator, parent, data model, API). For each one, give the
+>    question, your recommendation and its reason in a few lines, and say when the privacy
+>    review (T-JM-27) could change the answer. After each draft, record my answers in
+>    `docs/proposals/README.md`, change the draft wherever my answer differs from the
+>    recommendation, and commit (`docs(proposals)`) and push, so nothing is lost.
+> 3. **The other decisions.** Ask me one at a time: the wording for T-25, T-28 and T-30 (show
+>    what the board and `docs/ERROR_HANDLING_REVIEW.md` propose); the photo size limit for
+>    T-26; the focus-ring colour for T-JM-30; and, for each *(CP3)* task in "The full order",
+>    approve or reject, and its place. Record them in a "CP3 decisions" section of
+>    `docs/proposals/README.md`. Then, each in its own commit: approved tasks go from
+>    `proposed` to `todo` and rejected ones to `dropped: <reason>` (`chore(board)`); the
+>    approved wording, limit and colour go into those tasks' "Done when" (`docs(board)`); any
+>    change to the order goes into `docs/ROADMAP.md` (`docs(roadmap)`).
+> 4. **Into the spec.** Write the approved drafts into `SPEC.md` and `spec/` in the order
+>    `docs/LARAVEL_PLAN.md` §3 gives: `SPEC.md` §2 and §6; `spec/roles/professor.md`,
+>    `spec/roles/admin.md` and `spec/roles/parent.md` in full; `spec/data-model.md` §5;
+>    `spec/api.md`. One change at a time (a section, small enough to read in one go), through
+>    `AGENTS.md` §2: show the exact before and after and the reason; wait for my approval;
+>    restate it in one sentence and ask "Confirm writing this to `<file>`?"; wait for my second
+>    yes; then edit with the file-edit tool and add a dated line to `SPEC.md` §11. Each new
+>    file gets its row in "Where things are". Commit and push after each confirmed change.
+>
+> Change nothing else. If the session is getting long, stop after a pushed commit and tell me
+> where to resume. At the end, push the branch and stop with a summary: my answers, what was
+> written to the spec, what's left, and what needs a decision. LOCK-spec is freed after the PR
+> is merged, when I ask.
 
-Block B doesn't start before these approvals.
+Block B and the front-end track don't start before these approvals.
 
 ---
 
 ## Block B — automated, after CP3
 
-In this order. Each item is a task, or several small ones; each one runs from its own prompt.
+Each item is a task, or several small ones; each one runs from its own prompt. "The full order"
+says when each runs: B1 is on the front-end track, B2 to B6 on the back-end track.
 
 ### B1 — The remaining error fixes (T-25, T-28, T-30, T-26)
 
@@ -256,6 +353,36 @@ removes the `localStorage` storage.
 > Propose the first option only, with its F21 text for `spec/features.md`, and stop for my
 > decision before building it.
 
+### The added tasks
+
+The tasks added while Block A ran, each run from this prompt when "The full order" reaches it:
+
+> Read `AGENTS.md`, `docs/ROADMAP.md`, the files the task's "Spec" line names, and `<task>` on
+> `docs/BOARD.md`. Claim `<task>` for June-05 on branch `<branch>`. Do what its "Done when"
+> says, with the decisions I made at CP3, test-first where there is logic to test. Any
+> `SPEC.md` change goes through `AGENTS.md` §2, two approvals, in the same PR. Check every
+> screen it touches at 375, 768, 1024 and 1440. If it needs a decision I haven't made, a file
+> outside its Areas or a new dependency, stop and ask. Push the branch and stop with a summary.
+
+| Task | Branch | Notes |
+| --- | --- | --- |
+| T-JM-29 | `Manla_docs-backend-checks` | Docs only |
+| T-JM-28 | `Manla_fix-default-bio` | Before B2 |
+| T-JM-27 | `Manla_docs-privacy-review` | From the primary sources; the owner checks the review with the professor or UIC's data protection officer |
+| T-JM-25 | `Manla_docs-load-performance` | Read-only. The "after" numbers follow T-JM-19 |
+| T-JM-30 | `Manla_style-focus-ring-token`, then `Manla_fix-focus-ring` | The ring colour from CP3 |
+| T-JM-32 | `Manla_fix-form-purposes` | |
+| T-JM-33 | `Manla_style-header-height-token`, then `Manla_fix-layout-a11y` | Also check at 320 |
+| T-JM-34 | `Manla_fix-headings-small-text` | |
+| T-JM-18 | `Manla_feat-lazy-pages` | After T-25. `App.jsx` |
+| T-JM-31 | `Manla_fix-route-focus-scroll` | After T-JM-18. `App.jsx` |
+| T-JM-19 | `Manla_chore-woff2-fonts` | No conversion tool in `frontend/package.json` |
+| T-JM-20 | `Manla_feat-empty-states` | Before B5. The findings and wording are agreed with the owner before building |
+| T-JM-21 | `Manla_feat-not-found-page` | With B5. `App.jsx` |
+| T-JM-23 | `Manla_test-e2e-playwright` | After B5 |
+| T-JM-24 | `Manla_chore-performance-budget` | After T-JM-18, T-JM-19 and B5; the owner sets the budget from T-JM-25 |
+| T-JM-26 | `Manla_docs-backup-plan` | Before CP4 |
+
 ---
 
 ## ✋ CP4 — hosting accounts (owner)
@@ -275,26 +402,6 @@ removes the `localStorage` storage.
 
 Render is the host for now. Azure (the owner's student subscription) is an option for later,
 once Mr. Cister confirms it is accepted for the final cloud demo.
-
----
-
-## Also on the board
-
-Added on 2026-11-28 from the web-practices research. They need the owner's approval at CP3,
-and their place in the order is decided there. Recommended:
-
-| Task | What | Recommended place |
-| --- | --- | --- |
-| T-JM-25 | Measure load performance (read-only) | With Block B1; its numbers come before T-JM-18 and T-JM-19 |
-| T-JM-18 | Lazy-load the pages | After T-25 (it needs the error boundary) |
-| T-JM-19 | WOFF2 fonts with `font-display` | Any time after CP3 |
-| T-JM-20 | Empty states on every screen | Before B5, so new API accounts have them |
-| T-JM-21 | A "Not found" page | With B5 (the API's 404 uses it) |
-| T-JM-22 | A title for every page | With T-16 (branding) |
-| T-JM-26 | Database backup plan | Before CP4 |
-| T-JM-27 | Data privacy review and privacy notice | Its review as early as possible, because it can change the role specs; before the role workspaces and any real user |
-| T-JM-23 | Playwright end-to-end tests (approved, blocked) | After B5 |
-| T-JM-24 | Performance budget in CI (approved, blocked) | After T-JM-18, T-JM-19 and B5 |
 
 ---
 

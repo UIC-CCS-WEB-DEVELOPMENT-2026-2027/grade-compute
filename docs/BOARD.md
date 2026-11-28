@@ -1,6 +1,8 @@
 # CompUGrade — Task Board
 
-The team's to-do tracker. How to use it: [`docs/TEAM_WORKFLOW.md`](TEAM_WORKFLOW.md) §2–3.
+The team's to-do tracker. How to use it: [`docs/TEAM_WORKFLOW.md`](TEAM_WORKFLOW.md) §2–3. The
+order of work until the back end is deployed, including where each added task fits, is in
+[`docs/ROADMAP.md`](ROADMAP.md) ("The full order").
 
 **Quick rules**
 
@@ -251,14 +253,14 @@ T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-16 · Back-end spec drafts
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_docs-backend-spec-drafts
+- State: done in PR #143
 - Areas: docs/proposals/
 - Spec: docs/LARAVEL_PLAN.md §3, §4, §6, §7; SPEC.md; spec/. After T-JM-14
 - Done when: drafts in `docs/proposals/` cover the scope (`SPEC.md` §2 and §6), the professor, administrator and parent role specs in full, the database tables for `spec/data-model.md` §5 (every role's), and `spec/api.md` (every endpoint, who may call it, what it accepts, and its error cases). The `spec/api.md` draft also says how the React app calls the API (a request is cancelled when its screen closes, a form can't be submitted twice, network errors can be retried) and which Laravel practices the API follows (rate-limited sign-in, Form Requests for validation, API Resources for responses, pagination, eager loading against N+1 queries). Each draft starts with its open questions, each with a recommended answer. Among them: B5; what the student sees while a sleeping host wakes up (a free host can take about a minute: a "Starting the server…" state, a longer timeout and an automatic retry); where uploaded files such as profile photos are kept, since a host's disk can be wiped on every redeploy (a size-limited database column, or a file-storage service); and dates (stored in UTC, shown in Manila time, UTC+8, sent as ISO 8601). Nothing in `SPEC.md` or `spec/` changes: T-JM-1 writes the approved drafts there
 
 ### T-JM-17 · Backend scaffold
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_chore-backend-scaffold
+- State: done in PR #142
 - Areas: backend/, tooling (.github/, frontend/vite.config.js), docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md §4, AGENTS.md §4–5
 - Spec: docs/LARAVEL_PLAN.md §1, §5 step 2, §8. After T-JM-14
 - Done when: `composer create-project laravel/laravel:^12.0 backend` and `php artisan install:api` give a Laravel 12 API in `backend/` that runs on Laragon with `DB_DATABASE=webdev2` (no tables or endpoints of our own yet; `.env` is not committed, `.env.example` is); Pest runs, and `./vendor/bin/pint --test` passes; CI gets a back-end job next to the React one; the Vite dev server's `server.proxy` sends `/api` and `/sanctum` to `127.0.0.1:8000`; CI also runs `npm audit` and `composer audit`, and `.github/dependabot.yml` checks npm, Composer and GitHub Actions (OWASP A03:2025, Software Supply Chain Failures); `docs/DEVELOPER_GUIDE.md` explains the back-end setup (Laragon, not Herd) and warns that every `VITE_*` variable is bundled into the browser's code, so the front end holds no keys; `docs/TEAM_WORKFLOW.md` §4 gets the `backend/` areas and `AGENTS.md` §4–5 the back-end stack and folders
@@ -318,7 +320,7 @@ owner makes its decisions during implementation.
 
 ### T-JM-12 · Accessibility audit
 
-- State: claimed by June-05 on 2026-11-28, branch Manla_docs-accessibility-audit
+- State: done in PR #144
 - Areas: docs/
 - Spec: docs/ACCESSIBILITY_PLAN.md §4
 - Done when: a WCAG 2.2 AA review of all 14 screens is written up in `docs/`, with a proposed fix for each finding. It also checks whether focus moves to the new page and the scroll position resets after navigating (the declarative router has no `ScrollRestoration`), and whether form fields set `autocomplete` (`email`, `current-password`, `new-password`; WCAG 2.2 SC 1.3.5)
