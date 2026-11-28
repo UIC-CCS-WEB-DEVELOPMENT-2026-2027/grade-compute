@@ -133,7 +133,8 @@ backend/          The Laravel API. Run php, composer and artisan commands here
   database/       migrations/, factories/, seeders/
   routes/         api.php (the API), web.php, console.php
   tests/          Pest: Feature/ (requests to the app), Unit/; Pest.php, TestCase.php
-  public/, resources/, storage/  Laravel's own: the entry point, views, logs and caches
+  public/, storage/  Laravel's own: the entry point, logs and caches
+  resources/views/  Empty: the API has no pages, but `php artisan optimize` needs the folder
 ```
 
 - A file lives with the feature that uses it. It moves to a shared folder only when a second feature needs it.
