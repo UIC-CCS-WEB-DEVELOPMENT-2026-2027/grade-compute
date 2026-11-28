@@ -1,11 +1,13 @@
 // Delete flow for a rule: the last rule can't
 // be deleted, and subjects that use the rule must move to another rule.
-// Calls onDeleted(newDb) with the updated database; the page saves it.
+// Calls onDeleted(newDb) with the updated database, built from the stored
+// data at the moment of deleting; the page saves it.
 // Render it only while it should be open.
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { deleteRule, getRuleSwitchImpact, getRuleUsage } from "@/lib/rules";
+import { getDb } from "@/services/db";
 import { RuleDialog } from "./RuleDialog";
 import { RuleSubjectList } from "./RuleSubjectList";
 import { RuleWarning } from "./RuleWarning";
@@ -38,7 +40,8 @@ export function DeleteRuleDialog({ db, rule, onClose, onDeleted }) {
     const subjectCount = usage.classes.length;
 
     function confirmDelete() {
-        const result = deleteRule(db, rule.id, usage.isUsed ? replacementId : null);
+        // The delete starts from the stored data as it is now (E9).
+        const result = deleteRule(getDb() ?? db, rule.id, usage.isUsed ? replacementId : null);
         if (!result.ok) {
             setError(result.error);
             return;
