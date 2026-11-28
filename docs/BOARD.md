@@ -98,7 +98,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 ### T-23 · Rule pages save fresh data
 
-- State: todo
+- State: claimed by June-05 on 2026-11-28, branch Manla_fix-rule-pages-fresh-data
 - Areas: grade-rules
 - Spec: docs/ERROR_HANDLING_REVIEW.md E9, E15 (T-21); AUDIT §12. Fixes the worst data loss the review found
 - Done when: Grade Rules and the rule editor build every save from the data as it is at the moment of saving, so a subject removed in the Sidebar (or in another tab) doesn't come back; a failed Duplicate on the rule editor shows its error; a test covers removing a subject and then pressing Duplicate
