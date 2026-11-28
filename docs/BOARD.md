@@ -197,7 +197,7 @@ T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-1 · Back end: spec
 
-- State: proposed
+- State: claimed by June-05 on 2026-11-29, branch Manla_docs-backend-spec
 - Areas: SPEC.md, spec/ (LOCK-spec)
 - Spec: docs/LARAVEL_PLAN.md §3, §4; the drafts in docs/proposals/
 - Done when: from the owner-approved drafts in `docs/proposals/`, and through the protocol, `SPEC.md` §2 and §6, `spec/roles/professor.md`, `spec/roles/admin.md` and `spec/roles/parent.md` (each in full), `spec/data-model.md` §5 (every role's tables) and a new `spec/api.md` (every endpoint and its error cases) describe the back end, each new file with a row in "Where things are"
@@ -545,5 +545,5 @@ is merged. See TEAM_WORKFLOW.md §5.
 
 ### LOCK-spec · SPEC.md, spec/
 
-- State: free
+- State: held by June-05 for T-JM-1 since 2026-11-29
 - Files: SPEC.md, spec/ (changes go through the protocol in AGENTS.md §2)
