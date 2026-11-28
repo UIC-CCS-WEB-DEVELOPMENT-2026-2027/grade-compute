@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 // The rule editor builds every save from the data as it is at that moment,
 // so a change made after the page opened, such as removing a subject in the
-// Sidebar, isn't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
+// Sidebar, isn't overwritten (docs/ERROR_HANDLING_REVIEW.md E9), and a
+// failed Duplicate says why (E15).
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -67,5 +68,22 @@ describe("saves use the data as it is now", () => {
 
         expect(storedClassIds()).toEqual([]);
         expect(storedDb().computationRules[0].ruleName).toBe("Renamed rule");
+    });
+});
+
+describe("a failed Duplicate", () => {
+    it("says why when the rule was deleted elsewhere", () => {
+        const db = makeSeedDb();
+        renderPage(db);
+        // Another tab deletes the rule after this page opened.
+        localStorage.setItem(
+            "compugrade_db",
+            JSON.stringify({ ...db, computationRules: [], classes: [] }),
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "Duplicate" }));
+
+        expect(screen.getByRole("status").textContent).toBe("This rule no longer exists.");
+        expect(storedDb().computationRules).toEqual([]);
     });
 });

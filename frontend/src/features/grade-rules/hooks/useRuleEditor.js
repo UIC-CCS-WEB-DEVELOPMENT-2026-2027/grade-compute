@@ -147,7 +147,11 @@ export function useRuleEditor(ruleId) {
 
     function handleDuplicate() {
         const result = duplicateRule(currentDb(), rule.id);
-        if (result.ok && commit(result.db)) navigate(`/student/rules/${result.rule.id}`);
+        if (!result.ok) {
+            setStatus(result.error);
+            return;
+        }
+        if (commit(result.db)) navigate(`/student/rules/${result.rule.id}`);
     }
 
     function handleDiscard() {
