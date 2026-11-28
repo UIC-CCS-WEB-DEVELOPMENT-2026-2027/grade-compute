@@ -44,7 +44,7 @@ It can be archived when Block B is finished.
 | A1 | `docs/LARAVEL_PLAN.md` and the T-JM tasks match the owner's decisions | T-JM-1 to T-JM-13 | Done (PR #129) |
 | A2 | One board update: the error tasks T-23 to T-31, and the new T-JM-14 to T-JM-17 | — | Done (PR #130) |
 | A3 | This file, and the push rule in `AGENTS.md` §8 | — | Done (this PR) |
-| A4 | Move the React app into `frontend/` | T-JM-14 | After CP1 |
+| A4 | Move the React app into `frontend/` | T-JM-14 | Done (PR #134) |
 | A5 | The Code Defense Guide and the `defense-update` skill | T-JM-15 | After CP2 |
 | A6 | The error fixes that need no owner input | T-27, T-23, T-31 | After CP2 |
 | A7 | The backend scaffold | T-JM-17 | After CP2 |
