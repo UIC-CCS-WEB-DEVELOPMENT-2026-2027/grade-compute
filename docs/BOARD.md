@@ -142,91 +142,92 @@ ones in TEAM_WORKFLOW.md §4.
 
 ## backend
 
-A Laravel API behind the React app (`docs/LARAVEL_PLAN.md`). Spec first: T-JM-1 comes before
-everything else, and gives the back-end folders their areas. T-JM-2 to T-JM-5 follow in order.
+A Laravel 12 API in `backend/` behind the React app in `frontend/` (`docs/LARAVEL_PLAN.md`).
+The move into `frontend/` and the backend scaffold come first and don't wait for the spec. Then
+spec first: T-JM-1 comes before T-JM-2 to T-JM-5, which follow in order.
 
-### T-JM-1 · Back end: spec and rules
-
-- State: proposed
-- Areas: SPEC.md, spec/ (LOCK-spec), AGENTS.md, docs/TEAM_WORKFLOW.md
-- Spec: docs/LARAVEL_PLAN.md §3, §4 (decisions B1–B7 first)
-- Done when: `SPEC.md` §2 and §6, `spec/data-model.md` §5 and a new `spec/api.md` describe the back end through the protocol; `AGENTS.md` §4, §5 and §8 and `docs/TEAM_WORKFLOW.md` §4 give its stack, folders, approved packages and areas
-
-### T-JM-2 · Laravel API skeleton
+### T-JM-1 · Back end: spec
 
 - State: proposed
-- Areas: backend/, .github/
-- Spec: docs/LARAVEL_PLAN.md §5 step 2, §7; spec/api.md
-- Done when: a Laravel API in `backend/` runs locally, Pest and Pint run in CI next to the React checks, and every endpoint returns errors in the one format `spec/api.md` gives
+- Areas: SPEC.md, spec/ (LOCK-spec)
+- Spec: docs/LARAVEL_PLAN.md §3, §4; the drafts in docs/proposals/
+- Done when: from the owner-approved drafts in `docs/proposals/`, and through the protocol, `SPEC.md` §2 and §6, `spec/roles/professor.md`, `spec/roles/admin.md` and `spec/roles/parent.md` (each in full), `spec/data-model.md` §5 (every role's tables) and a new `spec/api.md` (every endpoint and its error cases) describe the back end, each new file with a row in "Where things are"
+
+### T-JM-2 · API error format
+
+- State: proposed
+- Areas: backend/
+- Spec: docs/LARAVEL_PLAN.md §7, §8; spec/api.md
+- Done when: every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, a 500 shows no details outside Laravel's log, and Pest tests cover each case
 
 ### T-JM-3 · Database schema and seed data
 
 - State: proposed
 - Areas: backend/ (database/, app/Models/)
-- Spec: docs/LARAVEL_PLAN.md §3 (data-model notes); spec/data-model.md §5
-- Done when: migrations, models and seeders cover the data model in the spec, and the seeders reproduce `src/services/db.json`
+- Spec: docs/LARAVEL_PLAN.md §3 (data-model notes), §8; spec/data-model.md §5; spec/roles/
+- Done when: migrations (made with `php artisan make:model <Name> -m`, never in Workbench), models and seeders cover every table in `spec/data-model.md`, the roles' tables included; the seeders are written fresh from `frontend/src/services/db.json`; `php artisan migrate:fresh --seed` runs on Laragon's MySQL (`webdev2`)
 
 ### T-JM-4 · Accounts, sign-in and roles
 
 - State: proposed
 - Areas: backend/ (auth)
-- Spec: docs/LARAVEL_PLAN.md §4 (B3); F1, F15; replaces T-11 and T-13
-- Done when: register, sign in and sign out work through the API with hashed passwords; every user has a role; permissions let only the right people read and write each record
+- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B3); F1, F15; spec/api.md; replaces T-11 and T-13
+- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record; Pest tests cover each
 
 ### T-JM-5 · Student endpoints
 
 - State: proposed
 - Areas: backend/
-- Spec: spec/api.md; spec/grading-rules.md §4 (ranges to check)
-- Done when: every endpoint the student screens need (subjects, enrolments, tasks and scores, rules, targets, sandbox settings and drafts, Settings) exists as `spec/api.md` describes, with Pest tests
+- Spec: spec/api.md; spec/grading-rules.md §4 (ranges to check); docs/LARAVEL_PLAN.md §8
+- Done when: every endpoint the student screens need (subjects, enrolments, tasks and scores, rules, targets, sandbox settings and drafts, Settings) exists as `spec/api.md` describes, through Eloquent with no raw SQL, with its input validated and Pest tests. Built one resource at a time; split into one task per resource once the spec exists
 
 ### T-JM-6 · The React app uses the API
 
 - State: proposed
-- Areas: shared (src/services/, src/hooks/useDb.js), then each screen's area
+- Areas: shared (frontend/src/services/, frontend/src/hooks/useDb.js), then each screen's area
 - Spec: docs/LARAVEL_PLAN.md §2, §7; spec/api.md
-- Done when: `src/services/` and `useDb` call the API instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes. Split into one task per area once the spec exists
+- Done when: one area at a time, `src/services/` calls the API through Axios (`withCredentials`, `withXSRFToken`) instead of `localStorage`, and every screen shows loading and error states as `spec/api.md` describes; the `localStorage` storage is removed once the last area has moved. Split into one task per area once the spec exists
 
 ### T-JM-7 · Bring over browser data
 
-- State: proposed
+- State: dropped: a fresh start with seeders from db.json, no browser data to import (owner decision, 2026-11-28)
 - Areas: shared (src/services/), backend/
-- Spec: docs/LARAVEL_PLAN.md §4 (B4)
-- Done when: only if B4 chooses it: a student can bring their browser data into their account
+- Spec: docs/LARAVEL_PLAN.md §1.5, §4 (B4)
+- Done when: not done
 
 ### T-JM-8 · Switch over to the back end
 
 - State: proposed
-- Areas: hosting, docs/
-- Spec: docs/LARAVEL_PLAN.md §5 step 8
-- Done when: the API and the React app are deployed, every screen passes `docs/BEHAVIOUR_CHECKLIST.md`, and `localStorage` holds only per-browser settings (such as the sidebar state)
+- Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
+- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 10
+- Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ## roles
 
-After the switch (`docs/LARAVEL_PLAN.md` §6). Each role starts with its `spec/roles/<role>.md`
-through the protocol, then is split into smaller tasks. Each adds React screens and the API
-endpoints behind them.
+Each role's spec is written in full before the database design (T-JM-1); its workspace is built
+after the switch (`docs/LARAVEL_PLAN.md` §6). Each workspace is split into smaller tasks from its
+spec, and adds React screens and the API endpoints behind them.
 
 ### T-JM-9 · Professor workspace
 
 - State: proposed
-- Areas: to be set in its spec (React pages and features for the professor, backend/)
-- Spec: F20; SPEC.md §6, §10 question 1, D1, D2; F6, F10
-- Done when: to be specified in `spec/roles/professor.md`: professors create subjects with their own rules and enter official scores that students see as locked
+- Areas: to be set from its spec (React pages and features for the professor, backend/)
+- Spec: F20; SPEC.md §6, §10 question 1, D1, D2; F6, F10; spec/roles/professor.md
+- Done when: the workspace works as `spec/roles/professor.md` describes: professors create subjects with their own rules and enter official scores that students see as locked
 
 ### T-JM-10 · Administrator workspace
 
 - State: proposed
-- Areas: to be set in its spec (React pages and features for the administrator, backend/)
-- Spec: F20; SPEC.md §6, D11; F3
-- Done when: to be specified in `spec/roles/admin.md`: administrators verify subjects
+- Areas: to be set from its spec (React pages and features for the administrator, backend/)
+- Spec: F20; SPEC.md §6, D11; F3; spec/roles/admin.md
+- Done when: the workspace works as `spec/roles/admin.md` describes: administrators verify subjects
 
 ### T-JM-11 · Parent portal
 
 - State: proposed
-- Areas: to be set in its spec (React pages and features for the parent, backend/)
-- Spec: F20; SPEC.md §1, §8
-- Done when: to be specified in `spec/roles/parent.md`: a parent linked to a student sees that student's grades, read-only
+- Areas: to be set from its spec (React pages and features for the parent, backend/)
+- Spec: F20; SPEC.md §1, §8; spec/roles/parent.md
+- Done when: the portal works as `spec/roles/parent.md` describes: a parent linked to a student sees that student's grades, read-only
 
 ## accessibility
 
