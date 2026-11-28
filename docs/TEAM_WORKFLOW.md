@@ -87,7 +87,8 @@ request.
 After the clean-up, each feature lives in its own folder. Tasks in different areas almost never
 conflict, so they can run side by side.
 
-The React app is in `frontend/`; everything else stays at the root.
+The React app is in `frontend/` and the Laravel API in `backend/`; everything else stays at the
+root.
 
 | Area | Folders |
 | --- | --- |
@@ -103,6 +104,13 @@ The React app is in `frontend/`; everything else stays at the root.
 | `layout` | `frontend/src/components/layout/`, `frontend/src/components/SandboxSubjectPicker.jsx` |
 | `shared` | `frontend/src/components/` (outside `ui/`, `layout/` and `history-chart/`), `frontend/src/hooks/` (outside `usePointHover.js`), `frontend/src/lib/` files not listed above, `frontend/src/services/` files not listed above |
 | `tooling` | `.github/`, `frontend/scripts/`, `frontend/eslint.config.js`, `frontend/.prettierrc.json`, `frontend/vite.config.js`, `.gitattributes` |
+| `backend-data` | `backend/database/` (migrations, factories, seeders), `backend/app/Models/` |
+| `backend-api` | `backend/routes/`, `backend/app/Http/` (controllers, Form Requests, API Resources, middleware), `backend/app/Policies/` |
+| `backend-config` | `backend/config/`, `backend/bootstrap/`, `backend/app/Providers/`, `backend/composer.json`, `backend/composer.lock`, `backend/.env.example`, `backend/phpunit.xml`, `backend/tests/Pest.php`, `backend/tests/TestCase.php`, and the other files at the top of `backend/` |
+
+- **Back-end tests** live in `backend/tests/` and belong to the area of the code they test.
+- **`backend/routes/api.php` is shared by every endpoint task.** Add a resource's routes next to
+  related ones, one resource per PR, as with routes in `frontend/src/app/App.jsx`.
 
 - **`shared` is high-risk.** A change there affects every area that imports it. Keep it to its
   own small PR and get it merged before you build on it. Don't change a shared component's props in
