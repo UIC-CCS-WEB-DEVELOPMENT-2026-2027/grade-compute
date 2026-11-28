@@ -36,7 +36,10 @@ export function useRuleEditor(ruleId) {
     const navigate = useNavigate();
     const location = useLocation();
     const isNew = ruleId === null;
-    const [dbData, setDbData] = useDb({ live: false });
+    // Live: a save elsewhere on the page (the Sidebar) updates the rule's
+    // usage and the delete dialog. Edits in progress live in their own state,
+    // so they stay.
+    const [dbData, setDbData] = useDb();
     const rule = isNew ? null : dbData?.computationRules?.find((item) => item.id === ruleId);
 
     const [details, setDetails] = useState(() => detailsOf(rule));

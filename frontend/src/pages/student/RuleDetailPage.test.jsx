@@ -2,8 +2,8 @@
 // The rule editor builds every save from the data as it is at that moment,
 // so a change made after the page opened, such as removing a subject in the
 // Sidebar, isn't overwritten (docs/ERROR_HANDLING_REVIEW.md E9), and a
-// failed Duplicate says why (E15). It saves nothing when the stored data
-// can't be read (T-32).
+// failed Duplicate says why (E15). It also shows current data after such a
+// change, and saves nothing when the stored data can't be read (T-32).
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -91,6 +91,40 @@ describe("a failed Duplicate", () => {
 });
 
 const UNAVAILABLE = "Your changes could not be saved because local data is unavailable.";
+
+describe("the page shows current data", () => {
+    it("updates the used-by line after a subject is removed in the Sidebar", () => {
+        renderPage();
+        expect(screen.getByText("Used by IT101.")).toBeTruthy();
+
+        removeSubjectInSidebar();
+
+        expect(screen.getByText("Not used by any subject yet.")).toBeTruthy();
+    });
+
+    it("the delete dialog knows the subject was removed", () => {
+        renderPage(duplicateRule(makeSeedDb(), "CR-1").db);
+        removeSubjectInSidebar();
+
+        fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+
+        expect(
+            screen.getByText("No subjects use this rule. Deleting it can't be undone."),
+        ).toBeTruthy();
+    });
+
+    it("keeps unsaved edits when the data changes", () => {
+        renderPage();
+        fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+        fireEvent.change(screen.getByLabelText(/^Rule name/), {
+            target: { value: "Renamed rule" },
+        });
+
+        removeSubjectInSidebar();
+
+        expect(screen.getByLabelText(/^Rule name/).value).toBe("Renamed rule");
+    });
+});
 
 describe("unreadable stored data", () => {
     it("Duplicate saves nothing and says why", () => {

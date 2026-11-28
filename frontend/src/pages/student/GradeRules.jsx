@@ -43,7 +43,7 @@ function writeThumbnail(value) {
 
 export function GradeRules() {
     const navigate = useNavigate();
-    const [dbData, setDbData] = useDb({ live: false });
+    const [dbData, setDbData] = useDb();
     const [query, setQuery] = useState("");
     const [thumbnail, setThumbnail] = useState(readThumbnail);
     const [deleteTarget, setDeleteTarget] = useState(null);
