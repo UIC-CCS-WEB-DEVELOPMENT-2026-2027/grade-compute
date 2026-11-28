@@ -475,6 +475,8 @@ From the error-handling review, `docs/ERROR_HANDLING_REVIEW.md`, which gives for
 | E21 | Low | A Subject Detail target outside 0–100 quietly goes back to the old value, with no message (the sandbox shows one) | T-30 |
 | E22 | Low | Settings' account fields (email, phone and so on) accept anything | none: belongs with T-11 |
 
+Owner decision, 2026-11-28: T-24 (E1–E3) and T-29 (E10) are dropped, and T-26 is narrowed to E19 and the photo size limit (E17's likely cause), so E16, E18 and the rest of E17 are not fixed. They only fix `localStorage`, and the back end starts with fresh data (`docs/LARAVEL_PLAN.md` §7).
+
 ## 13. Assumption check
 
 | Assumption | Verdict | Evidence |

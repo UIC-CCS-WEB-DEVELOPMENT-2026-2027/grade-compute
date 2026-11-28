@@ -123,6 +123,10 @@ in `docs/AUDIT.md` §12.
 | 8 | T-30 | Out-of-range target message on Subject Detail | E21 | subject-detail | `SPEC.md` §4 |
 | 9 | T-31 | Note on testing security features over HTTP | E20 | docs | Nothing |
 
+Owner decision, 2026-11-28: T-24 and T-29 are dropped, and T-26 is narrowed to E19 and the photo
+size limit. They only fixed `localStorage`, and the back end starts with fresh data and no real
+users (`docs/LARAVEL_PLAN.md` §7).
+
 Not proposed as tasks: E4, E5 and E22 (recorded above).
 
 ## 9. How this was checked
