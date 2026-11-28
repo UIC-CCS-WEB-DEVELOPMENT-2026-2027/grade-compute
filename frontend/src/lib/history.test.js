@@ -18,6 +18,29 @@ import {
 
 const rule = makeStandardRule();
 
+// Damaged stored data (docs/ERROR_HANDLING_REVIEW.md E8): a null task in a
+// term's list is ignored, as if it weren't there.
+describe("damaged task lists", () => {
+    const recordWithNullTask = () => {
+        const record = makeMixedRecord();
+        record.grades.prelim.AT.push(null);
+        record.grades.prelim.Exam.unshift(null);
+        return record;
+    };
+
+    it("ignores a null task in the scored tasks and the grade history", () => {
+        const record = recordWithNullTask();
+        const undamaged = makeMixedRecord();
+
+        expect(getScoredTasks(record, rule, "prelim")).toEqual(
+            getScoredTasks(undamaged, rule, "prelim"),
+        );
+        expect(getGradeHistory(record, rule, "prelim")).toEqual(
+            getGradeHistory(undamaged, rule, "prelim"),
+        );
+    });
+});
+
 // The mixed record with score times: t1 entered first, then a3, then a1.
 // a2 has no time, so it comes first.
 function makeTimedRecord() {
