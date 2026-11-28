@@ -1,6 +1,7 @@
 # Runs the checks from AGENTS.md section 8 on every pull request and on main.
 # Playwright and the screenshot script are not part of CI.
-# The React app lives in frontend/, so every step runs there.
+# Two jobs: the React app in frontend/ and the Laravel API in backend/. Both
+# audit their dependencies for known vulnerabilities (OWASP A03:2025).
 name: CI
 
 on:
@@ -36,6 +37,11 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            # Fails on high and critical advisories; moderate ones are listed in
+            # the log, and Dependabot (.github/dependabot.yml) opens updates.
+            - name: Audit dependencies
+              run: npm audit --audit-level=high
+
             - name: Lint
               run: npm run lint
 
@@ -47,3 +53,40 @@ jobs:
 
             - name: Test
               run: npm test
+
+    backend:
+        name: Back end format, test and audit
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - name: Check out the code
+              uses: actions/checkout@v5
+
+            # The lowest PHP version the back end supports (composer.json).
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.2"
+                  tools: composer:v2
+                  coverage: none
+
+            - name: Install dependencies
+              run: composer install --no-interaction --no-progress --prefer-dist
+
+            - name: Audit dependencies
+              run: composer audit
+
+            # Tests use the in-memory SQLite database from phpunit.xml, so CI
+            # needs no MySQL. .env only supplies an app key.
+            - name: Prepare the environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Format check
+              run: ./vendor/bin/pint --test
+
+            - name: Test
+              run: ./vendor/bin/pest

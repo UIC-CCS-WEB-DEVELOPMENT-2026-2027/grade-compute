@@ -27,6 +27,35 @@ Then set your editor to format with the project's Prettier on save. Use the Pret
 it picks up `frontend/.prettierrc.json` by itself. This matters for merge conflicts: if everyone
 formats the same way, nobody's commit rewrites someone else's lines.
 
+### The back end
+
+The Laravel 12 API lives in `backend/`: run every `php`, `composer` and `artisan` command there.
+It runs on **Laragon**, as the course's setup guide says, not on Laravel Herd or XAMPP.
+
+1. Install **Laragon Full** (PHP 8.2+, Composer 2.6+, MySQL 8) and press **Start All**.
+2. Open a new terminal and check that Laragon's PHP comes first: `php -v` shows 8.2 or later, and
+   `where php` (PowerShell: `Get-Command php -All`) lists `C:\laragon\bin\php\…` first. If Herd's
+   or XAMPP's PHP comes first, move Laragon's PHP folder above it in the Windows `Path` (or remove
+   the other one), then open a new terminal.
+3. Create the database once, in Laragon's **Terminal**: `mysql -u root -e "CREATE DATABASE IF NOT
+   EXISTS webdev2"`. Tables are only ever made by migrations (step 4), never by hand in MySQL
+   Workbench, which is for looking only.
+4. In `backend/`:
+   ```
+   composer install
+   copy .env.example .env
+   php artisan key:generate
+   php artisan migrate
+   ```
+   `.env` holds your local settings and keys. It is never committed; `.env.example` is.
+5. Run `php artisan serve` (the API, on `http://127.0.0.1:8000`), and in a second terminal
+   `npm run dev` in `frontend/`. The Vite dev server forwards `/api` and `/sanctum` to the API, so
+   the browser sees one site, as Sanctum's sign-in needs.
+
+Before every commit in `backend/`, `vendor/bin/pint --test` (formatting) and `vendor/bin/pest`
+(tests) must pass, as lint, format check, build and tests do in `frontend/`. `vendor/bin/pint`
+fixes the formatting. In PowerShell, write `.\vendor\bin\pint` and `.\vendor\bin\pest`.
+
 ## 3. A task from start to finish
 
 Here is the whole loop. `docs/TEAM_WORKFLOW.md` has the full rules for each step.
@@ -140,6 +169,9 @@ The full list is in `AGENTS.md` §5–7. These are the ones broken most often:
   components never calculate grades themselves.
 - **Named exports and `@/` imports:** `export function Foo()` and `import { Foo } from "@/…"`.
   No `export default`, no `../../`.
+- **The front end holds no keys or passwords.** Every `VITE_*` variable in a `frontend/.env` file
+  is copied into the JavaScript the browser downloads, where anyone can read it. Keys and
+  passwords live in `backend/.env`, which is never committed.
 - **Don't change wording, grade calculations or the stored data shape** unless your task says so.
 - **`SPEC.md` is protected.** Only the owner changes it, through the protocol in `AGENTS.md` §2.
   If your task needs a SPEC change, ask the owner.
