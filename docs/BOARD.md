@@ -144,7 +144,7 @@ ones in TEAM_WORKFLOW.md §4.
 
 A Laravel 12 API in `backend/` behind the React app in `frontend/` (`docs/LARAVEL_PLAN.md`).
 The move into `frontend/` and the backend scaffold come first and don't wait for the spec. Then
-spec first: T-JM-1 comes before T-JM-2 to T-JM-5, which follow in order.
+spec first: T-JM-1 comes before T-JM-3 to T-JM-5, which follow in order.
 
 ### T-JM-1 · Back end: spec
 
@@ -155,10 +155,10 @@ spec first: T-JM-1 comes before T-JM-2 to T-JM-5, which follow in order.
 
 ### T-JM-2 · API error format
 
-- State: proposed
+- State: dropped: the error format is part of T-JM-4, which adds the first endpoints (owner decision, 2026-11-28)
 - Areas: backend/
-- Spec: docs/LARAVEL_PLAN.md §7, §8; spec/api.md
-- Done when: every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, a 500 shows no details outside Laravel's log, and Pest tests cover each case
+- Spec: docs/LARAVEL_PLAN.md §5, §7
+- Done when: not done
 
 ### T-JM-3 · Database schema and seed data
 
@@ -171,8 +171,8 @@ spec first: T-JM-1 comes before T-JM-2 to T-JM-5, which follow in order.
 
 - State: proposed
 - Areas: backend/ (auth)
-- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B3); F1, F15; spec/api.md; replaces T-11 and T-13
-- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record; Pest tests cover each
+- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B3), §7; F1, F15; spec/api.md; replaces T-11 and T-13
+- Done when: register, sign in and sign out work through Sanctum's SPA cookie auth with hashed passwords; every user has a role; policies let only the right people read and write each record; every API error (401, 403, 404, 419, 422, 500) comes back in the one format `spec/api.md` gives, and a 500 shows no details outside Laravel's log; Pest tests cover each
 
 ### T-JM-5 · Student endpoints
 
@@ -199,7 +199,7 @@ spec first: T-JM-1 comes before T-JM-2 to T-JM-5, which follow in order.
 
 - State: proposed
 - Areas: hosting (frontend/vercel.json, backend/ Docker files), docs/
-- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 10
+- Spec: docs/LARAVEL_PLAN.md §1.6, §4 (B2), §5 step 9
 - Done when: the React app is on Vercel (Root Directory `frontend`) with rewrites for `/api/*` and `/sanctum/*` to the API and then an SPA catch-all, and `x-vercel-enable-rewrite-caching: 0` on `/api/*`; the API runs on Render in Docker (`rootDir` `backend`) with TiDB Cloud; every screen passes `docs/BEHAVIOUR_CHECKLIST.md`; `localStorage` holds only per-browser settings (such as the sidebar state). Needs the owner's TiDB, Render and Vercel accounts first
 
 ## roles
