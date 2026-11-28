@@ -1,6 +1,8 @@
 # CompUGrade — Task Board
 
-The team's to-do tracker. How to use it: [`docs/TEAM_WORKFLOW.md`](TEAM_WORKFLOW.md) §2–3.
+The team's to-do tracker. How to use it: [`docs/TEAM_WORKFLOW.md`](TEAM_WORKFLOW.md) §2–3. The
+order of work until the back end is deployed, including where each added task fits, is in
+[`docs/ROADMAP.md`](ROADMAP.md) ("The full order").
 
 **Quick rules**
 
