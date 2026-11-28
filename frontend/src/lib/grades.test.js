@@ -39,6 +39,41 @@ describe("toTaskList", () => {
         expect(toTaskList("AT")).toEqual([]);
         expect(toTaskList(5)).toEqual([]);
     });
+
+    // Damaged stored data (docs/ERROR_HANDLING_REVIEW.md E8).
+    it("drops list entries that aren't task objects", () => {
+        const first = makeTask("a", 10);
+        const second = makeTask("b", 20);
+        expect(toTaskList([first, null, undefined, "a", 5, [], second])).toEqual([first, second]);
+    });
+});
+
+describe("damaged task lists", () => {
+    const recordWithNullTask = () => {
+        const record = makeMixedRecord();
+        record.grades.prelim.AT.push(null);
+        record.grades.prelim.Exam.unshift(null);
+        return record;
+    };
+
+    it("ignores a null task when computing grades", () => {
+        const record = recordWithNullTask();
+        const undamaged = makeMixedRecord();
+
+        expect(calculateOfficialGrade(record, "prelim", rule)).toBe(
+            calculateOfficialGrade(undamaged, "prelim", rule),
+        );
+        expect(calculateUnofficialGrade(record, "prelim", rule)).toBe(
+            calculateUnofficialGrade(undamaged, "prelim", rule),
+        );
+    });
+
+    it("ignores a null task when listing official assessments", () => {
+        const record = recordWithNullTask();
+        expect(getOfficialAssessments(record.grades.prelim)).toEqual(
+            getOfficialAssessments(makeMixedRecord().grades.prelim),
+        );
+    });
 });
 
 describe("the three task states", () => {

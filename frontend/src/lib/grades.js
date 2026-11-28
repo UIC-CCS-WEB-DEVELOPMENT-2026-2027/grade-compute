@@ -9,9 +9,14 @@ import { toNumber } from "./number.js";
 import { TERM_KEYS } from "./terms.js";
 
 // Every criterion holds a list of tasks. Older data stored the exam as a
-// single object; treat that as a one-task list.
+// single object; treat that as a one-task list. Entries that aren't task
+// objects (damaged data, such as null) are dropped; an undamaged list is
+// returned as it is.
+const isTaskObject = (entry) =>
+    entry !== null && typeof entry === "object" && !Array.isArray(entry);
+
 export function toTaskList(value) {
-    if (Array.isArray(value)) return value;
+    if (Array.isArray(value)) return value.every(isTaskObject) ? value : value.filter(isTaskObject);
     return value && typeof value === "object" && ("maxScore" in value || "id" in value)
         ? [value]
         : [];
