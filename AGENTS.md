@@ -61,63 +61,69 @@ Filled in from the Phase 0 audit. Keep this section accurate; it is the first th
 
 | Item | Value |
 | --- | --- |
+| App folder | `frontend/` holds the React app and its configs. Run every npm and npx command there (the shadcn CLI too). Everything else (docs, the spec, `.github/`, `.claude/`) stays at the root. Elsewhere in this file, a path that starts with `src/` means `frontend/src/` |
 | Language | JavaScript (JSX, ES modules). Do not migrate to TypeScript |
-| Package manager | npm (`package-lock.json`). Use only npm |
+| Package manager | npm (`frontend/package-lock.json`). Use only npm |
 | Dev server | `npm run dev` (Vite, `http://localhost:5173`) |
-| Build | `npm run build` (Vite, output in `dist/`) |
-| Lint | `npm run lint` (ESLint 10 flat config, `eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
-| Format | `npm run format` / `npm run format:check` (Prettier 3, `.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
-| Test | `npm test` (Vitest 5, React Testing Library, jsdom). Unit and characterization tests next to the code (`*.test.js(x)`, 19 files, 369 tests at the end of the clean-up); helpers in `src/test/`. The date is frozen at 2026-11-11 |
-| Screenshots | `npm run screenshots [outDir]` (Playwright, `scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440). Before the clean-up in `docs/baseline/`, after it in `docs/after/`; manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
-| Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `src/app/App.jsx`. `src/app/RequireStudent.jsx` guards every route except `/` |
-| State management | React local state per component. Components read the database with `useDb` (`src/hooks/useDb.js`), which re-reads on the `compugrade-db-updated` window event that `saveDb` sends. The sidebar's minimised state is a `useSyncExternalStore` module store (`src/hooks/useSidebarState.js`). No state library |
-| Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`, schema v2), seeded from `src/services/db.json` through `src/services/db.js`; schema-v1 data is upgraded by `src/services/migrations.js`. Grade computation lives in `src/lib/` |
-| Tailwind version | Tailwind CSS v4 (`@tailwindcss/vite`), with its preflight reset on. shadcn/ui on Base UI (`components.json`, style `base-nova`, JavaScript), components in `src/components/ui/`; `cn()` comes from `src/lib/utils.js` |
-| Global stylesheet | `src/index.css`, the only stylesheet: design tokens, the `type-*` text roles, the `tap:` touch variant and the control sizes (44px below `lg` or on touch screens). The 19 per-component and per-page CSS files found in Phase 0 were merged into it and deleted |
+| Build | `npm run build` (Vite, output in `frontend/dist/`) |
+| Lint | `npm run lint` (ESLint 10 flat config, `frontend/eslint.config.js`). Passes since Phase 2. Ignores `dist` and the tooling folders |
+| Format | `npm run format` / `npm run format:check` (Prettier 3, `frontend/.prettierrc.json`: 4 spaces, double quotes, 100 columns). Markdown files are not formatted |
+| Test | `npm test` (Vitest 5, React Testing Library, jsdom). Unit and characterization tests next to the code (`*.test.js(x)`, 19 files, 369 tests at the end of the clean-up); helpers in `frontend/src/test/`. The date is frozen at 2026-11-11 |
+| Screenshots | `npm run screenshots [outDir]` (Playwright, `frontend/scripts/screenshots.mjs`; 14 screens at 375, 768, 1024 and 1440; `outDir` is relative to the repository root). Before the clean-up in `docs/baseline/`, after it in `docs/after/`; manual flows in `docs/BEHAVIOUR_CHECKLIST.md` |
+| Router | react-router-dom 7, declarative `<BrowserRouter>`/`<Routes>` in `frontend/src/app/App.jsx`. `frontend/src/app/RequireStudent.jsx` guards every route except `/` |
+| State management | React local state per component. Components read the database with `useDb` (`frontend/src/hooks/useDb.js`), which re-reads on the `compugrade-db-updated` window event that `saveDb` sends. The sidebar's minimised state is a `useSyncExternalStore` module store (`frontend/src/hooks/useSidebarState.js`). No state library |
+| Data storage / backend | No backend and no network calls. Browser `localStorage` (`compugrade_db`, schema v2), seeded from `frontend/src/services/db.json` through `frontend/src/services/db.js`; schema-v1 data is upgraded by `frontend/src/services/migrations.js`. Grade computation lives in `frontend/src/lib/` |
+| Tailwind version | Tailwind CSS v4 (`@tailwindcss/vite`), with its preflight reset on. shadcn/ui on Base UI (`frontend/components.json`, style `base-nova`, JavaScript), components in `frontend/src/components/ui/`; `cn()` comes from `frontend/src/lib/utils.js` |
+| Global stylesheet | `frontend/src/index.css`, the only stylesheet: design tokens, the `type-*` text roles, the `tap:` touch variant and the control sizes (44px below `lg` or on touch screens). The 19 per-component and per-page CSS files found in Phase 0 were merged into it and deleted |
 
-**Approved dependencies:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots). Anything else needs the owner's approval first.
+**Approved dependencies:** Tailwind CSS, shadcn/ui and the packages its CLI installs, ESLint, Prettier, Vitest with React Testing Library (plus `@testing-library/dom` and `jsdom`, approved at Gate 2), Playwright (dev only, for screenshots), Axios (owner decision, 2026-11-27, for calling the back-end API; installed by the first task that uses it). Anything else needs the owner's approval first.
 
 ## 5. File structure
 
 The layout the code follows (set up in the clean-up, `docs/TASKS.md` §1). Keep this section up to date when folders change. Do not create folders that would stay empty.
 
 ```
-src/
-  app/            App shell, router, providers (today: App.jsx, main.jsx)
-  pages/          Page components, grouped by area: auth/, student/, settings/
-                  Pages only compose
-  features/       Code that belongs to one feature:
-    auth/           login and register (useAuthForm, the login preview)
-    subjects/       enrolled-subjects table, add subject, Subject Detail's
-                    useSubjectDetail and celebration
-    term-records/   current term records
-    grade-rules/    pill editor, rule card and visuals, rule dialogs, useRuleEditor
-    sandbox/        target grade sandbox
-    history/        the Dashboard and Subject Detail history cards
-    settings/       account settings sections, useGlobalSettings
-    <feature>/    components/, hooks/, and logic for that feature
-  components/
-    ui/           shadcn/ui components (added through the shadcn CLI)
-    layout/       Sidebar, Header, PageFooter, the page shell
-    history-chart/ The grade-history chart kit (chart, frame, table, legend,
-                  tooltip), used by history and the sandbox
-    …             Shared app components used by two or more features
-                  (e.g. TermNavigation, SandboxSubjectPicker, GradeGauge)
-  hooks/          Shared hooks (e.g. useDb, useSidebarState, usePointHover)
-  lib/            Pure logic and helpers, no React. Grade computation lives here
-                  (grades, rules, sandbox, history, subjects, terms, targets,
-                  scores, format, number, celebration)
-                  DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
-  services/       Data access and storage
-                  (db, db.json, migrations, session, records,
-                  localAccountStore, prototypeVerification)
-  assets/         Logo, images, fonts, sounds
-  index.css       The only global stylesheet
+frontend/         The React app. Run npm and npx commands here
+  index.html, package.json, package-lock.json, vite.config.js, eslint.config.js,
+  .prettierrc.json, .prettierignore, jsconfig.json, components.json, vercel.json
+  public/         Static files served as-is (favicon)
+  scripts/        Node scripts (screenshots)
+  src/
+    app/            App shell, router, providers (today: App.jsx, main.jsx)
+    pages/          Page components, grouped by area: auth/, student/, settings/
+                    Pages only compose
+    features/       Code that belongs to one feature:
+      auth/           login and register (useAuthForm, the login preview)
+      subjects/       enrolled-subjects table, add subject, Subject Detail's
+                      useSubjectDetail and celebration
+      term-records/   current term records
+      grade-rules/    pill editor, rule card and visuals, rule dialogs, useRuleEditor
+      sandbox/        target grade sandbox
+      history/        the Dashboard and Subject Detail history cards
+      settings/       account settings sections, useGlobalSettings
+      <feature>/    components/, hooks/, and logic for that feature
+    components/
+      ui/           shadcn/ui components (added through the shadcn CLI)
+      layout/       Sidebar, Header, PageFooter, the page shell
+      history-chart/ The grade-history chart kit (chart, frame, table, legend,
+                    tooltip), used by history and the sandbox
+      …             Shared app components used by two or more features
+                    (e.g. TermNavigation, SandboxSubjectPicker, GradeGauge)
+    hooks/          Shared hooks (e.g. useDb, useSidebarState, usePointHover)
+    lib/            Pure logic and helpers, no React. Grade computation lives here
+                    (grades, rules, sandbox, history, subjects, terms, targets,
+                    scores, format, number, celebration)
+                    DOM-only helpers (focusTask, cssColor) go in lib/dom/ or their feature
+    services/       Data access and storage
+                    (db, db.json, migrations, session, records,
+                    localAccountStore, prototypeVerification)
+    assets/         Logo, images, fonts, sounds
+    index.css       The only global stylesheet
 ```
 
 - A file lives with the feature that uses it. It moves to a shared folder only when a second feature needs it.
 - One exported component per file. The file name matches the component name. Small private sub-components that only that file uses may stay in it (for example chart dot renderers, `SandboxStep`, `PasswordField`).
-- Import across folders with the `@/` alias (maps to `src/`). No `../../..` chains.
+- Import across folders with the `@/` alias (maps to `frontend/src/`). No `../../..` chains.
 
 ## 6. Code conventions
 
