@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RuleCard } from "@/features/grade-rules/components/RuleCard";
 import { DeleteRuleDialog } from "@/features/grade-rules/components/DeleteRuleDialog";
-import { saveDbSafely } from "@/services/db";
+import { getDb, saveDbSafely } from "@/services/db";
 import { duplicateRule, getRuleUsage, searchRules } from "@/lib/rules";
 import { useDb } from "@/hooks/useDb";
 import { cn } from "@/lib/utils";
@@ -51,6 +51,11 @@ export function GradeRules() {
     const rules = dbData?.computationRules ?? [];
     const visibleRules = searchRules(rules, query);
 
+    // Saves start from the stored data as it is now, not the copy read when
+    // the page opened, so changes made since (the Sidebar, another tab)
+    // aren't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
+    const currentDb = () => getDb() ?? dbData;
+
     function commit(updatedDb) {
         const saved = saveDbSafely(updatedDb);
         if (!saved.ok) {
@@ -67,7 +72,7 @@ export function GradeRules() {
     }
 
     function handleDuplicate(ruleId) {
-        const result = duplicateRule(dbData, ruleId);
+        const result = duplicateRule(currentDb(), ruleId);
         if (!result.ok) {
             setMessage(result.error);
             return;

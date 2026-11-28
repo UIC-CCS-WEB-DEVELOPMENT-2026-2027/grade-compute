@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDb } from "@/hooks/useDb";
-import { saveDbSafely } from "@/services/db";
+import { getDb, saveDbSafely } from "@/services/db";
 import {
     buildRuleMath,
     createDefaultTree,
@@ -60,6 +60,11 @@ export function useRuleEditor(ruleId) {
     const isDirty = isNew || hasEdits;
     const usage = isNew || !rule ? null : getRuleUsage(dbData, rule.id);
 
+    // Checks and saves start from the stored data as it is now, not the copy
+    // read when the page opened, so changes made since (the Sidebar, another
+    // tab) aren't overwritten (docs/ERROR_HANDLING_REVIEW.md E9).
+    const currentDb = () => getDb() ?? dbData;
+
     function commit(updatedDb) {
         const saved = saveDbSafely(updatedDb);
         if (!saved.ok) {
@@ -72,7 +77,7 @@ export function useRuleEditor(ruleId) {
 
     // Checks name, tags, schools, and criteria before any save.
     function validate() {
-        const detailCheck = validateRuleDetails(dbData, details, rule?.id ?? null);
+        const detailCheck = validateRuleDetails(currentDb(), details, rule?.id ?? null);
         const math = buildRuleMath(tree);
         const nextErrors = { ...detailCheck.errors, ...(math.ok ? {} : { tree: math.error }) };
         setErrors(nextErrors);
@@ -84,7 +89,7 @@ export function useRuleEditor(ruleId) {
     }
 
     function saveNewRule(ruleName, successNotice = "") {
-        const result = createRule(dbData, { ...details, ruleName, tree });
+        const result = createRule(currentDb(), { ...details, ruleName, tree });
         if (!result.ok) {
             setErrors(result.errors);
             setStatus(result.error);
@@ -100,7 +105,7 @@ export function useRuleEditor(ruleId) {
 
     function applyUpdate() {
         setPendingImpact(null);
-        const result = updateRule(dbData, rule.id, { ...details, tree });
+        const result = updateRule(currentDb(), rule.id, { ...details, tree });
         if (!result.ok) {
             setErrors(result.errors);
             setStatus(result.error);
@@ -122,7 +127,7 @@ export function useRuleEditor(ruleId) {
             saveNewRule(details.ruleName);
             return;
         }
-        const impact = getRuleChangeImpact(dbData, rule.id, tree);
+        const impact = getRuleChangeImpact(currentDb(), rule.id, tree);
         if (impact.classes.length > 0 || isCopy) {
             setPendingImpact({ ...impact, isCopy });
             return;
@@ -135,13 +140,13 @@ export function useRuleEditor(ruleId) {
         setStatus("");
         const sameName = details.ruleName.trim().toLowerCase() === rule.ruleName.toLowerCase();
         saveNewRule(
-            sameName ? getCopyName(dbData, rule.ruleName) : details.ruleName,
+            sameName ? getCopyName(currentDb(), rule.ruleName) : details.ruleName,
             "Your changes were successfully saved as a new rule.",
         );
     }
 
     function handleDuplicate() {
-        const result = duplicateRule(dbData, rule.id);
+        const result = duplicateRule(currentDb(), rule.id);
         if (result.ok && commit(result.db)) navigate(`/student/rules/${result.rule.id}`);
     }
 
