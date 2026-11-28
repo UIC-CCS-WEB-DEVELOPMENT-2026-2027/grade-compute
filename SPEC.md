@@ -96,7 +96,7 @@ The code contains, or contained, these non-student pieces. (f) and (g) are gone;
 
 - (a) **Registering as a Professor** saves the account and shows "Professor account created. Your workspace is coming soon."
 - (b) **Professor and admin logins** are checked and then stopped, with "Login verified. The Professor Workspace is coming soon." or "Login verified. This workspace is not available yet."
-- (c) **Commented-out routes and imports** in `src/app/App.jsx` point to professor and admin pages that don't exist.
+- (c) **Commented-out routes and imports** in `frontend/src/app/App.jsx` point to professor and admin pages that don't exist.
 - (d) **Seed accounts:** professor `U2` and admin `U3`.
 - (e) **Verification data:** `verificationQueue` requests and the class `status` field. `addSubject` writes them, but no one can act on them yet.
 - (f) **An unused prototype:** the "Dev: Switch Workspace" prototype (`src/pages/StudentSettingsPrototype.jsx`), with its CSS. It was dead code and was deleted in Phase 5a of the clean-up job (T5a.1; owner decision, Gate 3, 2026-11-11).
@@ -172,3 +172,4 @@ Suggested by the owner on 2026-11-11:
 - **2026-11-13:** F10, F11, F14, F17, §4 and §6: file lists, score validation, score-percentage rounding and the deleted prototype brought up to date after the clean-up (T9.6, owner approved).
 - **2026-11-13:** F1, F5, F7, F9–F12, F14 and §4: file paths updated after the follow-up tasks (FU1–FU3, owner approved).
 - **2026-11-24:** §3, §4 and §5 moved word for word into `spec/features.md`, `spec/grading-rules.md` and `spec/data-model.md`. Added "Where things are" and the role-spec rule. Section and feature numbers are unchanged (owner approved).
+- **2026-11-28:** §6 (c), F1–F15, F17, F18 and §5: file paths start with `frontend/` after the React app moved there (T-JM-14, owner approved).
