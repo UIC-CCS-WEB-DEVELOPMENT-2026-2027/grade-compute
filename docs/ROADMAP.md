@@ -45,7 +45,7 @@ It can be archived when Block B is finished.
 | A2 | One board update: the error tasks T-23 to T-31, and the new T-JM-14 to T-JM-17 | — | Done (PR #130) |
 | A3 | This file, and the push rule in `AGENTS.md` §8 | — | Done (this PR) |
 | A4 | Move the React app into `frontend/` | T-JM-14 | Done (PR #134) |
-| A5 | The Code Defense Guide and the `defense-update` skill | T-JM-15 | After CP2 |
+| A5 | The Code Defense Guide and the `defense-update` skill | T-JM-15 | Done (PR #135) |
 | A6 | The error fixes that need no owner input | T-27, T-23, T-31 | After CP2 |
 | A7 | The backend scaffold | T-JM-17 | After CP2 |
 | A8 | The back-end spec drafts in `docs/proposals/` | T-JM-16 | After CP2 |
