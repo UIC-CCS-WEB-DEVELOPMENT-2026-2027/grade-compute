@@ -270,6 +270,13 @@ T-JM-3 to T-JM-5, which follow in order.
 - Spec: the hosted database's backup docs. TiDB Cloud Starter's free tier keeps automatic backups for 1 day, with no point-in-time restore
 - Done when: a backup plan in `docs/` says what is backed up, how often, where the copies are kept (never in the repository) and how long, and how a restore is tested once; it is agreed with the owner before T-JM-8 switches over
 
+### T-JM-29 · Back-end checks in the docs
+
+- State: todo
+- Areas: README.md, AGENTS.md §6 and §8, docs/DEVELOPER_GUIDE.md, docs/TEAM_WORKFLOW.md
+- Spec: found after T-JM-17 (owner request, 2026-11-29). T-JM-17 added the back end's commands to `AGENTS.md` §4 and `docs/DEVELOPER_GUIDE.md` §2, but the checklists elsewhere name only the React app's. No spec change
+- Done when: every place that lists the checks to run before a commit or a pull request (`README.md`, `AGENTS.md` §6 and §8, `docs/DEVELOPER_GUIDE.md`'s steps, `docs/TEAM_WORKFLOW.md`'s formatting rule and pull-request checklist) also says that a change in `backend/` needs `vendor/bin/pint --test` and `vendor/bin/pest` to pass, run in `backend/`; `README.md` says how to set up and start the API, or points to `docs/DEVELOPER_GUIDE.md` §2 for it
+
 ## roles
 
 Each role's spec is written in full before the database design (T-JM-1); its workspace is built
