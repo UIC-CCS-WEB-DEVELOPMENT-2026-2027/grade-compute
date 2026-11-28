@@ -193,9 +193,12 @@ screen checks in step 3 stay manual.
 - A chat model that can't see the repo gets `docs/ai-context/CONTEXT_PACK.md` and the template in
   `docs/ai-context/PROMPT_TEMPLATE.md`.
 - **An agent may claim or release a task** for the developer who asks, following §3 (`AGENTS.md`
-  §8). That commit on `main` is the only thing an agent pushes. Agents never push a branch and
-  never merge. They change other parts of `BOARD.md` (tasks, locks, `done in PR #<n>`) only when
-  the owner asks, and a person pushes that change (owner decision, 2026-11-24).
+  §8). That commit is the only thing an agent pushes to `main`.
+- **An agent may push its own task branch** (owner decision, 2026-11-28). It never force-pushes,
+  and never opens, merges or closes a PR: a person opens it and the owner merges it (§9,
+  decision 6).
+- Agents change other parts of `BOARD.md` (tasks, locks, `done in PR #<n>`) only when the owner
+  asks, on a branch, never straight on `main` (owner decisions, 2026-11-24 and 2026-11-28).
 
 ## 9. Decisions (owner, 2026-11-13)
 
@@ -212,3 +215,4 @@ screen checks in step 3 stay manual.
 | 9 | `proposed` tasks stay proposed until the owner approves each one (with `SPEC.md` updated through its protocol) |
 | 10 | Old branches: the 20 already merged into `main` are deleted; `SettingsniMarco` and `SubjectDetail(Add-on)`, built on pre-clean-up code, are closed without merging. Anything still wanted from them becomes a board task |
 | 11 | Branch names: `<Lastname>_<type>-<short-name>`, for example `Manla_feat-sandbox-copy` (§6; owner decision, 2026-11-24) |
+| 12 | An AI agent may push its own task branch; it never opens, merges or closes a PR (§8; `AGENTS.md` §8; owner decision, 2026-11-28) |
